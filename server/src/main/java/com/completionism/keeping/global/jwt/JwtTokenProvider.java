@@ -38,12 +38,11 @@ public class JwtTokenProvider {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        Claims claims = Jwts.claims();
+        Claims claims = Jwts.claims().setSubject(authentication.getName());
         claims.put("auth", authorities);
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
-                .setSubject(authentication.getName())
                 .setClaims(claims)
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenValidTime))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -53,7 +52,6 @@ public class JwtTokenProvider {
 
         // Access Token 생성
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
                 .setClaims(claims)
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidTime))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -71,13 +69,12 @@ public class JwtTokenProvider {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        Claims claims = Jwts.claims();
+        Claims claims = Jwts.claims().setSubject(authentication.getName());
         claims.put("auth", authorities);
         claims.put("name", name);
 
         // Access Token 생성
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
                 .setClaims(claims)
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidTime))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -91,12 +88,11 @@ public class JwtTokenProvider {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        Claims claims = Jwts.claims();
+        Claims claims = Jwts.claims().setSubject(authentication.getName());
         claims.put("auth", authorities);
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
-                .setSubject(authentication.getName())
                 .setClaims(claims)
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenValidTime))
                 .signWith(key, SignatureAlgorithm.HS256)
