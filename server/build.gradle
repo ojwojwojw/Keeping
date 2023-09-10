@@ -54,6 +54,13 @@ dependencies {
 	// api, toStringBuilder
 	implementation 'org.apache.commons:commons-lang3'
 
+	// swagger
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
+
+	// GPT
+	implementation 'com.theokanning.openai-gpt3-java:service:0.12.0'
+
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
