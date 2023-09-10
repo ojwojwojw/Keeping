@@ -11,36 +11,41 @@ import java.time.LocalDate;
 @Data
 public class AddMissionDto {
 
-    private String todo;
-
-    private int money;
-
-    private MissionType type;
-
-    private LocalDate startDate;
-
-    private LocalDate endDate;
-
-    private Completed completed;
+    private MissionType type; // 부모가 아이에게, 아이가 부모에게
     
+    private String to; // 어떤 아이한테 보내야하는지
+
+    private String todo; // 미션 내용
+
+    private int money; // 미션 보상금
+    
+    private String cheeringMessage; // 부모의 응원 메시지
+
+    private LocalDate startDate; // 미션 시작일
+    
+    private LocalDate endDate; // 미션 마감일
+
     @Builder
-    public AddMissionDto(String todo, int money, MissionType type, LocalDate startDate, LocalDate endDate, Completed completed) {
+    public AddMissionDto(MissionType type, String to, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
+        this.type = type;
+        this.to = to;
         this.todo = todo;
         this.money = money;
-        this.type = type;
+        this.cheeringMessage = cheeringMessage;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.completed = completed;
     }
 
+    // Dto 객체로 변환
     public static AddMissionDto toDto(AddMissionRequest request) {
         return AddMissionDto.builder()
+                .type(request.getType())
+                .to(request.getTo())
                 .todo(request.getTodo())
                 .money(request.getMoney())
-                .type(request.getType())
+                .cheeringMessage(request.getCheeringMessage())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
-                .completed(request.getCompleted())
                 .build();
     }
 }

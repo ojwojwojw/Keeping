@@ -4,6 +4,7 @@ import com.completionism.keeping.api.ApiResponse;
 import com.completionism.keeping.api.controller.mission.request.AddMissionRequest;
 import com.completionism.keeping.api.service.mission.MissionService;
 import com.completionism.keeping.api.service.mission.dto.AddMissionDto;
+import com.completionism.keeping.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,14 +31,20 @@ public class MissionApiController {
     public ApiResponse<Long> addMission(
             @Valid @RequestBody AddMissionRequest request
             ) {
-        // TODO: 사용자 정보 가져오기
+        // 사용자 정보 가져오기
+        // String memberId = SecurityUtil.getCurrentLoginId(); TODO: member완성되면 해제 
+        String memberId = "";
         
         log.debug("addMission :: request={}", request);
         log.info("addMission :: request={}", request);
 
         AddMissionDto dto = AddMissionDto.toDto(request);
-        
-        Long missionId = missionService.addMission(dto);
-        return ApiResponse.ok(missionId);
+
+        try {
+            Long missionId = missionService.addMission(memberId, dto);
+            return ApiResponse.ok(missionId);
+        } catch (NotFoundException e) {
+            return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
+        }
     }
 }
