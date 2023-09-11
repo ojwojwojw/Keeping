@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'screens/main_page/main_page.dart';
+import 'package:keeping/screens/notification.dart';
 
-void main() {
-  runApp(const MaterialApp(
-    home: MainPage(),
-  ));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 플러그인 초기화
+  await FlutterLocalNotification.init();
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return MainPage();
+    return MaterialApp(
+      home: MainPage(),
+    );
   }
 }
