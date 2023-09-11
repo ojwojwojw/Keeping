@@ -1,0 +1,121 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: apigateway-service
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    gateway:
+      routes:
+        # login
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/login
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+        # join
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/join
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+        # user health-check
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/actuator/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+        # other
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/**
+            - Method=GET, POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+        # bank
+        - id: bank-service
+          uri: lb://BANK-SERVICE
+          predicates:
+            - Path=/bank-service/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - AuthorizationHeaderFilter
+        # bank actuator
+        - id: bank-service
+          uri: lb://BANK-SERVICE
+          predicates:
+            - Path=/bank-service/actuator/**
+            - Method=GET
+        # mission
+        - id: mission-service
+          uri: lb://MISSION-SERVICE
+          predicates:
+            - Path=/mission-service/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - AuthorizationHeaderFilter
+        # mission actuator
+        - id: mission-service
+          uri: lb://MISSION-SERVICE
+          predicates:
+            - Path=/mission-service/actuator/**
+            - Method=GET
+        # openai
+        - id: openai-service
+          uri: lb://OPENAI-SERVICE
+          predicates:
+            - Path=/openai-service/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - AuthorizationHeaderFilter
+        # openai actuator
+        - id: openai-service
+          uri: lb://OPENAI-SERVICE
+          predicates:
+            - Path=/openai-service/actuator/**
+            - Method=GET
+        # question
+        - id: question-service
+          uri: lb://QUESTION-SERVICE
+          predicates:
+            - Path=/question-service/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - AuthorizationHeaderFilter
+        # question actuator
+        - id: question-service
+          uri: lb://QUESTION-SERVICE
+          predicates:
+            - Path=/question-service/actuator/**
+            - Method=GET
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httptrace, info, metrics, prometheus, busrefresh
