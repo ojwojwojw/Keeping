@@ -11,15 +11,14 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Data
 @NoArgsConstructor(access = PROTECTED)
-public class AddAccountRequest {
+public class CheckPhoneRequest {
 
     @NotBlank
-    @Size(min = 6, max = 6)
-    private String authPassword;
+    private String phone;
 
 
     @Builder
-    private AddAccountRequest(String authPassword) {
-        this.authPassword = authPassword;
+    private CheckPhoneRequest(String phone) {
+        this.phone = phone;
     }
 }
