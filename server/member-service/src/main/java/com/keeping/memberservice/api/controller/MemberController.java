@@ -2,6 +2,7 @@ package com.keeping.memberservice.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keeping.memberservice.api.ApiResponse;
+import com.keeping.memberservice.api.controller.request.JoinChildRequest;
 import com.keeping.memberservice.api.controller.request.JoinParentRequest;
 import com.keeping.memberservice.api.controller.request.SmsCheckRequest;
 import com.keeping.memberservice.api.controller.request.SmsRequest;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
@@ -34,11 +38,22 @@ public class MemberController {
     private final SmsService smsService;
     private final MemberService memberService;
 
+    @PostMapping("/join/child")
+    public ApiResponse<String> joinChild(@RequestBody @Valid JoinChildRequest request) {
+        log.debug("[자녀 회원가입-Controller]");
+
+        AddMemberDto dto = createAddMemberDto(request.getLoginId(), request.getLoginPw(), request.getName(), request.getPhone(), request.getBirth());
+
+        String result = memberService.addChild(dto, request.getParentPhone());
+
+        return ApiResponse.ok(result);
+    }
+
     @PostMapping("/join/parent")
     public ApiResponse<String> joinParent(@RequestBody @Valid JoinParentRequest request) {
         log.debug("[멤버 회원가입-Controller]");
 
-        AddMemberDto dto = createAddMemberDto(request);
+        AddMemberDto dto = createAddMemberDto(request.getLoginId(), request.getLoginPw(), request.getName(), request.getPhone(), request.getBirth());
 
         String result = memberService.addParent(dto);
 
@@ -81,12 +96,13 @@ public class MemberController {
         return phone[0] + phone[1] + phone[2];
     }
 
-    private AddMemberDto createAddMemberDto(JoinParentRequest request) {
+    private AddMemberDto createAddMemberDto(String loginId, String loginPw, String name, String phone, String birth) {
         return AddMemberDto.builder()
-                .loginId(request.getLoginId())
-                .loginPw(request.getLoginPw())
-                .name(request.getName())
-                .phone(request.getPhone())
-                .birth(request.getBirth()).build();
+                .loginId(loginId)
+                .loginPw(loginPw)
+                .name(name)
+                .phone(phone)
+                .birth(birth)
+                .build();
     }
 }

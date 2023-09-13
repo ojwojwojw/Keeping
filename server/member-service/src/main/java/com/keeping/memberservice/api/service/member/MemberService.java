@@ -2,8 +2,10 @@ package com.keeping.memberservice.api.service.member;
 
 import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.dto.AddMemberDto;
+import com.keeping.memberservice.domain.Child;
 import com.keeping.memberservice.domain.Member;
 import com.keeping.memberservice.domain.Parent;
+import com.keeping.memberservice.domain.repository.ChildRepository;
 import com.keeping.memberservice.domain.repository.MemberRepository;
 import com.keeping.memberservice.domain.repository.ParentRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -28,6 +32,7 @@ import java.util.UUID;
 public class MemberService implements UserDetailsService {
 
     private final ParentRepository parentRepository;
+    private final ChildRepository childRepository;
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthService authService;
@@ -50,6 +55,36 @@ public class MemberService implements UserDetailsService {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new NoSuchElementException("등록되지 않은 사용자입니다."));
 
         return member;
+    }
+
+    public String addChild(AddMemberDto dto, String parentPhone) {
+        // 아이디 중복 검사
+        Optional<Member> findMember = memberRepository.findByLoginId(dto.getLoginId());
+
+        if (findMember.isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
+        }
+
+        //번호 인증 검사
+        if (!authService.joinUserConfirm(makeUserPhone(dto.getPhone()))) {
+            throw new IllegalArgumentException("문자 인증이 완료되지 않았습니다.");
+        }
+        //번호 인증 검사
+        if (!authService.joinUserConfirm(makeUserPhone(parentPhone))) {
+            throw new IllegalArgumentException("부모님의 문자 인증이 완료되지 않았습니다.");
+        }
+
+        //가입
+        dto.setMemberKey(UUID.randomUUID().toString());
+        Member newMember = dto.toEntity(passwordEncoder.encode(dto.getLoginPw()));
+
+        Member member = memberRepository.save(newMember);
+
+        Child child = Child.builder()
+                .member(member)
+                .build();
+        Child savedChild = childRepository.save(child);
+        return member.getName();
     }
 
     public String addParent(AddMemberDto dto) {
