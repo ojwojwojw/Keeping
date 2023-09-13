@@ -46,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
 
         String accountNumber = createNewAccountNumber();
 
-        Account account = Account.toAccount(memberKey, accountNumber, passwordEncoder.encode(dto.getAuthPassword()), 0l, true);
+        Account account = Account.toAccount(memberKey, accountNumber, passwordEncoder.encode(dto.getAuthPassword()));
         Account saveAccount = accountRepository.save(account);
 
         return saveAccount.getId();
@@ -91,7 +91,7 @@ public class AccountServiceImpl implements AccountService {
         while(redisUtils.getRedisValue("Account_" + String.valueOf(num), String.class) != null);
 
         String randomNumber = String.valueOf(num);
-        redisUtils.setRedisValue("Account_" + randomNumber, "true");
+        redisUtils.setRedisValue("Account_" + randomNumber, "1");
 
         String validCode = "";
 

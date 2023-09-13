@@ -1,4 +1,4 @@
-package com.keeping.bankservice.account.service;
+package com.keeping.bankservice.account;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keeping.bankservice.api.controller.account.request.AddAccountRequest;
