@@ -5,12 +5,14 @@ import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.AddAccountDto;
 import com.keeping.bankservice.api.service.account.dto.AuthPhoneDto;
 import com.keeping.bankservice.api.service.account.dto.CheckPhoneDto;
+import com.keeping.bankservice.api.service.account.dto.WithdrawMoneyDto;
 import com.keeping.bankservice.api.service.sms.SmsService;
 import com.keeping.bankservice.api.service.sms.dto.MessageDto;
 import com.keeping.bankservice.api.service.sms.dto.SmsResponseDto;
 import com.keeping.bankservice.domain.account.Account;
 import com.keeping.bankservice.domain.account.repository.AccountRepository;
 import com.keeping.bankservice.global.exception.NoAuthorizationException;
+import com.keeping.bankservice.global.exception.NotFoundException;
 import com.keeping.bankservice.global.utils.RedisUtils;
 import com.keeping.bankservice.global.utils.ValidationUtils;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +81,18 @@ public class AccountServiceImpl implements AccountService {
         }
 
         redisUtils.setRedisValue("AccountAuth_" + memberKey, "true", 210l);
+    }
+
+    @Override
+    public void withdrawMoney(String memberKey, WithdrawMoneyDto dto) {
+        Account account = accountRepository.findByAccountNumber(dto.getAccountNumber())
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 계좌가 존재하지 않습니다."));
+
+        if(!account.getMemberKey().equals(memberKey)) {
+            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
+        }
+
+        account.updateBalance(dto.getMoney(), false);
     }
 
     private String createNewAccountNumber() throws JsonProcessingException {

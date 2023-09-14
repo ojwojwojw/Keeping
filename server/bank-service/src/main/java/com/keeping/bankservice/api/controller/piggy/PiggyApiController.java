@@ -3,8 +3,12 @@ package com.keeping.bankservice.api.controller.piggy;
 import com.keeping.bankservice.api.ApiResponse;
 import com.keeping.bankservice.api.controller.piggy.request.AddPiggyRequest;
 import com.keeping.bankservice.api.controller.piggy.response.ShowPiggyResponse;
+import com.keeping.bankservice.api.controller.piggy.request.SavingPiggyRequest;
+import com.keeping.bankservice.api.service.account.AccountService;
+import com.keeping.bankservice.api.service.account.dto.SavingPiggyDto;
 import com.keeping.bankservice.api.service.piggy.PiggyService;
 import com.keeping.bankservice.api.service.piggy.dto.AddPiggyDto;
+import com.keeping.bankservice.global.exception.NoAuthorizationException;
 import com.keeping.bankservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,5 +57,20 @@ public class PiggyApiController {
         } catch (IOException e) {
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "저금통 정보를 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
         }
+    }
+
+    @PostMapping("/saving/{member-key}")
+    public ApiResponse<Void> savingPiggy(@PathVariable("member-key") String memberKey, @RequestBody SavingPiggyRequest request) {
+        log.debug("SavingPiggyRequest={}", request);
+
+        SavingPiggyDto dto = SavingPiggyDto.toDto(request);
+
+        try {
+            piggyService.savingPiggy(memberKey, dto);
+        }
+        catch(NotFoundException | NoAuthorizationException e) {
+            return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
+        }
+        return null;
     }
 }

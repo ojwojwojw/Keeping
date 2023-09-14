@@ -24,7 +24,7 @@ public class Piggy extends TimeBaseEntity {
     @Column(name = "child_key", nullable = false)
     private String childKey;
 
-    @Column(name = "account_number", nullable = false)
+    @Column(name = "account_number", unique = true, nullable = false)
     private String accountNumber;
 
     @Column(nullable = false)
@@ -80,5 +80,9 @@ public class Piggy extends TimeBaseEntity {
                 .completed(INCOMPLETED)
                 .active(true)
                 .build();
+    }
+
+    public void updateBalance(int money) {
+        this.balance += money;
     }
 }

@@ -2,12 +2,18 @@ package com.keeping.bankservice.api.service.piggy.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keeping.bankservice.api.controller.piggy.response.ShowPiggyResponse;
+import com.keeping.bankservice.api.service.account.AccountService;
+import com.keeping.bankservice.api.service.account.dto.SavingPiggyDto;
+import com.keeping.bankservice.api.service.account.dto.WithdrawMoneyDto;
 import com.keeping.bankservice.api.service.piggy.PiggyService;
 import com.keeping.bankservice.api.service.piggy.dto.AddPiggyDto;
 import com.keeping.bankservice.api.service.piggy.dto.ShowPiggyDto;
+import com.keeping.bankservice.api.service.piggy_history.dto.AddPiggyHistoryDto;
+import com.keeping.bankservice.api.service.piggy_history.PiggyHistoryService;
 import com.keeping.bankservice.domain.piggy.Piggy;
 import com.keeping.bankservice.domain.piggy.repository.PiggyQueryRepository;
 import com.keeping.bankservice.domain.piggy.repository.PiggyRepository;
+import com.keeping.bankservice.global.exception.NoAuthorizationException;
 import com.keeping.bankservice.global.exception.NotFoundException;
 import com.keeping.bankservice.global.exception.ServerException;
 import com.keeping.bankservice.global.utils.RedisUtils;
@@ -36,6 +42,8 @@ public class PiggyServiceImpl implements PiggyService {
 
     private final PiggyRepository piggyRepository;
     private final PiggyQueryRepository piggyQueryRepository;
+    private final AccountService accountService;
+    private final PiggyHistoryService piggyHistoryService;
     private final PasswordEncoder passwordEncoder;
     private final RedisUtils redisUtils;
 
@@ -87,6 +95,27 @@ public class PiggyServiceImpl implements PiggyService {
         }
 
         return response;
+    }
+
+    @Override
+    public void savingPiggy(String memberKey, SavingPiggyDto dto) {
+        Piggy piggy = piggyRepository.findByAccountNumber(dto.getPiggyAccountNumber())
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 계좌가 존재하지 않습니다."));
+
+        if(!piggy.getAccountNumber().equals(dto.getPiggyAccountNumber())) {
+            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
+        }
+
+        WithdrawMoneyDto withdrawMoneyDto = WithdrawMoneyDto.toDto(dto.getAccountNumber(), dto.getMoney());
+        accountService.withdrawMoney(memberKey, withdrawMoneyDto);
+
+        // TODO: 출금 거래내역을 등록하는 코드 필요!!
+
+        int balance = piggy.getBalance() + dto.getMoney();
+        piggy.updateBalance(dto.getMoney());
+
+        AddPiggyHistoryDto addPiggyHistoryDto = AddPiggyHistoryDto.toDto(piggy, dto.getMoney(), balance);
+        piggyHistoryService.addPiggyHistory(memberKey, addPiggyHistoryDto);
     }
 
     private String createNewPiggyAccountNumber() throws JsonProcessingException {
