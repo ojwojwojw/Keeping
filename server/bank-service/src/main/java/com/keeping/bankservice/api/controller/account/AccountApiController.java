@@ -5,6 +5,8 @@ import com.keeping.bankservice.api.ApiResponse;
 import com.keeping.bankservice.api.controller.account.request.AddAccountRequest;
 import com.keeping.bankservice.api.controller.account.request.AuthPhoneRequest;
 import com.keeping.bankservice.api.controller.account.request.CheckPhoneRequest;
+import com.keeping.bankservice.api.controller.account.request.DepositAllowanceRequest;
+import com.keeping.bankservice.api.controller.account_history.response.ShowAccountHistoryResponse;
 import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.AddAccountDto;
 import com.keeping.bankservice.api.service.account.dto.AuthPhoneDto;
@@ -76,5 +78,26 @@ public class AccountApiController {
         catch(JsonProcessingException e) {
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "인증 번호를 전송하는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
         }
+    }
+
+    @DeleteMapping("/{member-key}/{account-number}")
+    public ApiResponse<Void> removeAccount(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
+        log.debug("RemoveAccount={}, {}", memberKey, accountNumber);
+
+        return null;
+    }
+
+    @PostMapping("/allowance/{member-key}")
+    public ApiResponse<Void> depositAllowance(@RequestBody DepositAllowanceRequest request) {
+        log.debug("DepositAllowanceRequest={}", request);
+
+        return null;
+    }
+
+    @PostMapping("/allowance/sub/{member-key}")
+    public ApiResponse<Void> depositAllowanceSub(@RequestBody DepositAllowanceRequest request) {
+        log.debug("DepositAllowanceSubRequest={}", request);
+
+        return null;
     }
 }

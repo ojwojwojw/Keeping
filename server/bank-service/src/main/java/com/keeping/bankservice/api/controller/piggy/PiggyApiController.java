@@ -2,6 +2,7 @@ package com.keeping.bankservice.api.controller.piggy;
 
 import com.keeping.bankservice.api.ApiResponse;
 import com.keeping.bankservice.api.controller.piggy.request.AddPiggyRequest;
+import com.keeping.bankservice.api.controller.piggy.response.ShowPiggyHistoryResponse;
 import com.keeping.bankservice.api.controller.piggy.response.ShowPiggyResponse;
 import com.keeping.bankservice.api.controller.piggy.request.SavingPiggyRequest;
 import com.keeping.bankservice.api.service.account.AccountService;
@@ -71,6 +72,27 @@ public class PiggyApiController {
         catch(NotFoundException | NoAuthorizationException e) {
             return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
         }
+        return null;
+    }
+
+    @DeleteMapping("/{member-key}/{account-number}")
+    public ApiResponse<Void> removePiggy(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
+        log.debug("RemovePiggy={}, {}", memberKey, accountNumber);
+
+        return null;
+    }
+
+    @DeleteMapping("/approve/{member-key}/{account-number}")
+    public ApiResponse<Void> approveRemovePiggy(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
+        log.debug("ApproveRemovePiggy={}, {}", memberKey, accountNumber);
+
+        return null;
+    }
+
+    @GetMapping("/{member-key}/{account-number}")
+    public ApiResponse<ShowPiggyHistoryResponse> showPiggyHistory(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
+        log.debug("ShowPiggyHistory={}, {}", memberKey, accountNumber);
+
         return null;
     }
 }
