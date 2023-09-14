@@ -2,10 +2,7 @@ package com.keeping.memberservice.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keeping.memberservice.api.ApiResponse;
-import com.keeping.memberservice.api.controller.request.JoinChildRequest;
-import com.keeping.memberservice.api.controller.request.JoinParentRequest;
-import com.keeping.memberservice.api.controller.request.SmsCheckRequest;
-import com.keeping.memberservice.api.controller.request.SmsRequest;
+import com.keeping.memberservice.api.controller.request.*;
 import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.MemberService;
 import com.keeping.memberservice.api.service.member.dto.AddMemberDto;
@@ -14,15 +11,9 @@ import com.keeping.memberservice.api.service.sms.dto.MessageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
@@ -37,6 +28,25 @@ public class MemberController {
     private final AuthService authService;
     private final SmsService smsService;
     private final MemberService memberService;
+
+
+    @PostMapping("/password")
+    public ApiResponse<String> getNewPassword(@RequestBody GetNewPasswordRequest request) {
+        // TODO: 2023-09-14 비밀번호 찾기
+        return ApiResponse.ok("연락처로 새로운 비밀번호가 발급되었습니다.");
+    }
+
+    @GetMapping("/logout/{memberKey}")
+    public ApiResponse<String> logout(@PathVariable String memberKey) {
+        // TODO: 2023-09-14 로그아웃
+        return ApiResponse.ok("성공");
+    }
+
+    @GetMapping("/id/{loginId}")
+    public ApiResponse<String> idDuplicateCheck(@PathVariable String loginId) {
+        // TODO: 2023-09-14 아이디 중복 체크
+        return ApiResponse.ok("");
+    }
 
     @PostMapping("/join/child")
     public ApiResponse<String> joinChild(@RequestBody @Valid JoinChildRequest request) {
