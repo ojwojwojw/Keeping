@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:keeping/screens/child_spending_route_page/child_spending_route_page.dart';
 import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/page3/page3.dart';
+import 'package:keeping/screens/sample_code_page/sample_code_page.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/floating_btn.dart';
@@ -30,6 +31,11 @@ class Page1 extends StatelessWidget {
             ConfirmBtn(
               text: '자녀 메인페이지',
               action: ChildMainPage(),
+            ),
+            SizedBox(height: 15),
+            ConfirmBtn(
+              text: '샘플코드',
+              action: SampleCodePage(),
             ),
           ],
         ),
