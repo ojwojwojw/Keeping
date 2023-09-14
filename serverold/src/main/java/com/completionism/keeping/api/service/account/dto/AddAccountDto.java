@@ -5,18 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import static lombok.AccessLevel.PROTECTED;
 
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 public class AddAccountDto {
 
     private String authPassword;
 
 
     @Builder
-    public AddAccountDto(String authPassword) {
+    private AddAccountDto(String authPassword) {
         this.authPassword = authPassword;
     }
 

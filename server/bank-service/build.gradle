@@ -81,6 +81,8 @@ dependencies {
 
 	// sms
 	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+
+	implementation group: 'commons-io', name: 'commons-io', version: '2.13.0'
 }
 
 dependencyManagement {

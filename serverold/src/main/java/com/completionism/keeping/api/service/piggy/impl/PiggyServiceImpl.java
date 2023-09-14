@@ -1,18 +1,18 @@
-package com.keeping.bankservice.api.service.piggy.impl;
+package com.completionism.keeping.api.service.piggy.impl;
 
+import com.completionism.keeping.api.controller.piggy.response.ShowPiggyResponse;
+import com.completionism.keeping.api.service.piggy.PiggyService;
+import com.completionism.keeping.api.service.piggy.dto.AddPiggyDto;
+import com.completionism.keeping.api.service.piggy.dto.ShowPiggyDto;
+import com.completionism.keeping.domain.piggy.Piggy;
+import com.completionism.keeping.domain.piggy.repository.PiggyQueryRepository;
+import com.completionism.keeping.domain.piggy.repository.PiggyRepository;
+import com.completionism.keeping.global.exception.NotFoundException;
+import com.completionism.keeping.global.exception.ServerException;
+import com.completionism.keeping.global.utils.RedisUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.keeping.bankservice.api.controller.piggy.response.ShowPiggyResponse;
-import com.keeping.bankservice.api.service.piggy.PiggyService;
-import com.keeping.bankservice.api.service.piggy.dto.AddPiggyDto;
-import com.keeping.bankservice.api.service.piggy.dto.ShowPiggyDto;
-import com.keeping.bankservice.domain.piggy.Piggy;
-import com.keeping.bankservice.domain.piggy.repository.PiggyQueryRepository;
-import com.keeping.bankservice.domain.piggy.repository.PiggyRepository;
-import com.keeping.bankservice.global.exception.NotFoundException;
-import com.keeping.bankservice.global.exception.ServerException;
-import com.keeping.bankservice.global.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -76,13 +76,9 @@ public class PiggyServiceImpl implements PiggyService {
         List<ShowPiggyResponse> response = new ArrayList<>();
 
         for(ShowPiggyDto dto: result) {
-            File file = new File(piggyPath + "\\" + dto.getSavedImage());
-            byte[] byteImage = new byte[(int)file.length()];
-            FileInputStream fis = new FileInputStream(file);
-            fis.read(byteImage);
-            String base64Image = new String(Base64.encodeBase64(byteImage));
+            InputStream in = new FileInputStream(piggyPath + "\\" + dto.getSavedImage());
+            ShowPiggyResponse piggyResponse = ShowPiggyResponse.toResponse(dto, IOUtils.toByteArray(in));
 
-            ShowPiggyResponse piggyResponse = ShowPiggyResponse.toResponse(dto, base64Image);
             response.add(piggyResponse);
         }
 
