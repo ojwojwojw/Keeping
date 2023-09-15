@@ -1,0 +1,21 @@
+version: "3"
+services:
+  discovery-service:
+    image: tngus2sh/keeping-backend-discovery
+    port:
+      - "8761:8761"
+    container_name: discovery-service
+  apigateway-service:
+    image: tngus2sh/keeping-backend-apigateway
+    port:
+      - "8000:8000"
+    depends_on:
+      - discovery-service
+    container_name: apigateway-service
+  config-service:
+    image: tngus2sh/keeping-backend-config
+    port: 
+      - "8888:8888"
+    depends_on:
+      - discovery-service
+      - apigateway-service
