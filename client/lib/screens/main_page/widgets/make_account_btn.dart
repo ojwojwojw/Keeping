@@ -1,10 +1,9 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/make_account_page/make_account_page.dart';
 
 class MakeAccountBtn extends StatelessWidget {
+  MakeAccountBtn({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -27,29 +26,19 @@ class MakeAccountBtn extends StatelessWidget {
         Navigator.push(context, MaterialPageRoute(builder: (_) => MakeAccountPage()));
       },
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: const [
-          Icon(Icons.plus_one),
-          Text('계좌 만들기'),
+          Icon(Icons.add),
+          Text(
+            '계좌 만들기',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 25
+            ),
+          ),
         ],
       ),
     );
   }
 }
-
-// axiosPost();
-
-// Future<List<dynamic>?> axiosPost(String url, Map<String, String>? headers) async {
-//   try {
-//     var response = await http.post(Uri.parse(url), headers: headers);
-//     if (response.statusCode == 200) {
-//       var result = jsonDecode(response.body);
-//       return result;
-//     } else {
-//       print('HTTP Request Failed with status code: ${response.statusCode}');
-//       return null;
-//     }
-//   } catch (e) {
-//     print('Error during HTTP request: $e');
-//     return null;
-//   }
-// }
