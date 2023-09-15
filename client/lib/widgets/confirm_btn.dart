@@ -20,12 +20,12 @@ class ConfirmBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        if (action == null) {
-          Navigator.pop(context);
-        } else if (action is Widget) {
+        if (action is Widget) {
           Navigator.push(context, MaterialPageRoute(builder: (_) => action));
+        } else if (action is Function) {
+          action();
         } else {
-          action(context);
+          Navigator.pop(context);
         }
       },
       style: confirmBtnStyle(bgColor, textColor),
