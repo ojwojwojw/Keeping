@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/widgets/header.dart';
 
 class Page2 extends StatelessWidget {
   const Page2({super.key});
@@ -6,15 +7,16 @@ class Page2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Icon(Icons.arrow_back),
-        ),
+      body: Row(
+        children: [
+          MyHeader(
+            text: '페이지 2',
+            elementColor: Colors.black,
+            icon: Icon(Icons.arrow_circle_up),
+            path: Page2(),
+          ),
+        ],
       ),
-      body: Center(child: Text('this is Page2')),
     );
   }
 }
