@@ -81,6 +81,10 @@ dependencies {
 
     // sms
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+    
+    // FCM
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '9.1.1'
+
 }
 
 dependencyManagement {
