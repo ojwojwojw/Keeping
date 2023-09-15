@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/sample_code_page/sample_code_page.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import '../page1/page1.dart';
 import '../page2/page2.dart';
 import '../page3/page3.dart';
@@ -17,6 +19,10 @@ class MainPage extends StatelessWidget {
       body: SizedBox(
           child: Column(
         children: [
+          ConfirmBtn(
+            text: '샘플코드',
+            action: SampleCodePage(),
+          ),
           ElevatedButton(
             onPressed: () {
               Navigator.push(context,
