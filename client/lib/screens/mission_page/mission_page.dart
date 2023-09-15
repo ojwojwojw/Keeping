@@ -5,6 +5,12 @@ import 'widgets/filtering_bar.dart';
 import '../../util/axios_test.dart';
 import 'package:keeping/widgets/header.dart';
 
+import 'package:keeping/util/camera_test2.dart';
+import 'package:keeping/util/ocr_test.dart';
+import 'package:keeping/util/ocr_test2.dart';
+import 'package:keeping/provider/counter_test.dart';
+import 'package:keeping/provider/array_test.dart';
+
 //전역변수들
 final List<Map<String, dynamic>> missions = [
   {
@@ -101,7 +107,12 @@ class _MissonPageState extends State<MissionPage> {
         CreateMissonBox(),
         FilteringBar(),
         missionBoxs(),
-        axiosButton(context)
+        axiosButton(context),
+        cameraButton(context),
+        ocrButton(context),
+        ocrButtonML(context),
+        prividerBtn(context),
+        arrayProviderBtn(context),
       ],
     )));
   }
@@ -118,13 +129,88 @@ Widget missionBoxs() {
           }));
 }
 
-//Axios 테스트로 이동하는 버튼
+// //Axios 테스트로 이동하는 버튼
 Widget axiosButton(BuildContext context) {
   return ElevatedButton(
     onPressed: () {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => AxiosTest()));
     },
-    child: const Text('axiosText!!'),
+    child: const Text('axiosTest!!!'),
+  );
+}
+
+// Camera 테스트로 이동하는 버튼
+Widget cameraButton(BuildContext context) {
+  return ElevatedButton(
+    onPressed: () async {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CameraTest(),
+        ),
+      );
+    },
+    child: const Text('cameraTest?'),
+  );
+}
+
+// ocr test로 이동하는 버튼
+Widget ocrButton(BuildContext context) {
+  return ElevatedButton(
+    onPressed: () async {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OcrTest(),
+        ),
+      );
+    },
+    child: const Text('ocrTest?'),
+  );
+}
+
+// 구글 ML kit를 이용한 ocr test로 이동하는 버튼
+Widget ocrButtonML(BuildContext context) {
+  return ElevatedButton(
+    onPressed: () async {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainScreen(),
+        ),
+      );
+    },
+    child: const Text('ocrTest using ML_kit'),
+  );
+}
+
+// 프로바이더(카운터) 테스트로 이동할 버튼 //
+Widget prividerBtn(BuildContext context) {
+  return ElevatedButton(
+    onPressed: () async {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CounterTest(),
+        ),
+      );
+    },
+    child: const Text('provider(counter) test'),
+  );
+}
+
+// 프로바이더(어레이) 테스트로 이동할 버튼 //
+Widget arrayProviderBtn(BuildContext context) {
+  return ElevatedButton(
+    onPressed: () async {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ArrayTest(),
+        ),
+      );
+    },
+    child: const Text('provider(array) test'),
   );
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // body에 들어가는 상단 헤더 클래스
-class MyHeader extends StatelessWidget {
+class MyHeader extends StatelessWidget implements PreferredSizeWidget {
   final String text;
   final Color bgColor;
   final Color elementColor;
@@ -12,9 +12,12 @@ class MyHeader extends StatelessWidget {
       {super.key,
       required this.text,
       this.bgColor = Colors.transparent,
-      required this.elementColor,
+      this.elementColor = Colors.black,
       this.icon,
       this.path});
+
+  @override
+  Size get preferredSize => Size.fromHeight(70);
 
   @override
   Widget build(BuildContext context) {

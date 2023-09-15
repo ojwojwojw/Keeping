@@ -17,6 +17,23 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   @override
+  //페이지를 초기에 접속하면 input 받는 컨트롤러 초기화
+  void initState() {
+    super.initState();
+    _userId = TextEditingController();
+    _userPw = TextEditingController();
+  }
+
+  // 페이지가 파기될 때 컨트롤러를 해제
+
+  @override
+  void dispose() {
+    _userId.dispose();
+    _userPw.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -93,4 +110,29 @@ void login(BuildContext context) {
   String userId = _userId.text;
   String userPwd = _userPw.text;
   print('로그인 시도');
+}
+
+//로그인, 회원가입과 같이 유효성 검사가 필요한 곳에 사용하세요. form과 함께 사용하면 됩니다.
+Widget BuildTextFormField({
+  required TextEditingController controller,
+  required String labelText,
+  required String hintText,
+  required String? Function(String?) validator, // 유효성 검사시 이용
+  bool obscureText = false, // 비밀번호와 같이 가려져야 하는 필드의 경우 true로 설정
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      TextFormField(
+        controller: controller,
+        obscureText: obscureText,
+        validator: validator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        decoration: InputDecoration(labelText: labelText, hintText: hintText),
+      ),
+      SizedBox(
+        height: 16.0,
+      )
+    ],
+  );
 }

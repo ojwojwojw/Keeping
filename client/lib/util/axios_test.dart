@@ -1,94 +1,44 @@
-import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:keeping/util/axios.dart';
 
-Future<List<Data>> fetchData() async {
-  final response =
-      await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
-
-  if (response.statusCode == 200) {
-    final List<dynamic> jsonData = jsonDecode(response.body);
-    List<Data> dataList = jsonData.map((json) => Data.fromJson(json)).toList();
-    return dataList;
-  } else {
-    throw Exception('Failed to load data');
-  }
-}
-
-class Data {
-  final int userId;
-  final int id;
-  final String title;
-  final String body;
-
-  Data({
-    required this.userId,
-    required this.id,
-    required this.title,
-    required this.body,
-  });
-
-  factory Data.fromJson(Map<String, dynamic> json) {
-    return Data(
-      userId: json['userId'],
-      id: json['id'],
-      title: json['title'],
-      body: json['body'],
-    );
-  }
-}
+//https://jsonplaceholder.typicode.com/posts
 
 class AxiosTest extends StatefulWidget {
-  AxiosTest({Key? key}) : super(key: key);
+  const AxiosTest({Key? key});
 
   @override
-  _AxiosTestState createState() => _AxiosTestState();
+  State<AxiosTest> createState() => _AxiosTestState();
 }
 
 class _AxiosTestState extends State<AxiosTest> {
-  late Future<List<Data>> futureData;
-
-  @override
-  void initState() {
-    super.initState();
-    futureData = fetchData();
-  }
+  String result = ''; // 결과를 저장할 상태 변수
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Fetch Data Example'),
-      ),
-      body: Center(
-        child: FutureBuilder<List<Data>>(
-          future: futureData,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              List<Data> dataList = snapshot.data!;
-              return ListView.builder(
-                itemCount: dataList.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('UserID: ${dataList[index].userId}'),
-                      Text('ID: ${dataList[index].id}'),
-                      Text('Title: ${dataList[index].title}'),
-                      Text('Body: ${dataList[index].body}'),
-                      Divider(),
-                    ],
-                  );
-                },
-              );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            }
-
-            return CircularProgressIndicator();
-          },
-        ),
+      body: Column(
+        children: [
+          Container(
+            height: 300,
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final response = await axiosGet(
+                  'https://jsonplaceholder.typicode.com/posts', null);
+              if (response != null) {
+                setState(() {
+                  result = response.toString(); // 결과를 상태 변수에 저장
+                });
+              } else {
+                setState(() {
+                  result = 'Request failed'; // 실패 시 메시지 저장
+                });
+              }
+            },
+            child: Text('요청보내기'), // 상태 변수를 사용하여 Text 위젯 업데이트
+          ),
+          Text(result)
+        ],
       ),
     );
   }
