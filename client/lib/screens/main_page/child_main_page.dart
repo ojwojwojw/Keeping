@@ -1,17 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/main_page/widgets/account_info.dart';
 import 'package:keeping/screens/main_page/widgets/gradient_btn.dart';
 import 'package:keeping/screens/main_page/widgets/make_account_btn.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/screens/online_request_payment/online_request_payment.dart';
-import 'package:keeping/screens/piggy_page/make_piggy_test.dart';
 import 'package:keeping/screens/piggy_page/piggy_page.dart';
 import 'package:keeping/screens/question_page/question_page.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 
-class ChildMainPage extends StatelessWidget {
+class ChildMainPage extends StatefulWidget {
+  ChildMainPage({super.key});
+
+  _ChildMainPageState createState() => _ChildMainPageState();
+}
+
+class _ChildMainPageState extends State<ChildMainPage> {
+  bool account = false;
+
+  makeAccount() {
+    setState(() {
+      account = true;
+    });
+  }
+
+  deleteAccount() {
+    setState(() {
+      account = false; 
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -30,7 +49,7 @@ class ChildMainPage extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: 100,),
-              MakeAccountBtn(),
+              account ? AccountInfo(deleteAccount: deleteAccount,) : MakeAccountBtn(makeAccount: makeAccount),
               SizedBox(height: 10),
               SizedBox(
                 width: 350,
@@ -77,7 +96,7 @@ class ChildMainPage extends StatelessWidget {
               SizedBox(height: 20,),
               ElevatedButton(
                 onPressed: () {},
-                child: Text('임시 계좌 개설'),
+                child: Text('부모 계정 전환'),
               )
             ],
           )

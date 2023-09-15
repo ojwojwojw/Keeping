@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/keyboard_test/keyboard_test.dart';
-import 'package:keeping/screens/page2/page2.dart';
+import 'package:keeping/screens/main_page/child_main_page.dart';
 
 // 하단 내비게이션 클래스
 class BottomNav extends StatelessWidget {
@@ -41,7 +41,7 @@ Widget notificationBtn(BuildContext context) {
 Widget homeBtn(BuildContext context) {
   return IconButton(
     onPressed: () {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => Page2()));
+      Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMainPage()));
     },
     icon: Icon(Icons.home),
     color: Colors.black,
