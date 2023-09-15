@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/make_account_page/make_account_page.dart';
-import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 
 // 임시 통신 주소 로그인 키
@@ -57,7 +56,7 @@ class _MakeAccountSamplePageState extends State<MakeAccountSamplePage> {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json'
           },
-          {'code': '237362'}
+          {'code': '732857'}
         );  // 3분 30초 지나면 다시 인증받아서 값 넣기
         if (response != null) {
           setState(() {
@@ -113,23 +112,17 @@ class _MakeAccountSamplePageState extends State<MakeAccountSamplePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(child: renderPhoneNumberText()),
-                      authenticationBtn(),
-                    ],
-                  ),
+                  SizedBox(height: 20),
+                  authenticationBtn(),
                   SizedBox(height: 20),
                   Text(result),
-                  Row(
-                    children: [
-                      Expanded(child: renderPhoneVerificationText()),
-                      verificationBtn(),
-                    ],
-                  ),
+                  SizedBox(height: 20),
+                  verificationBtn(),
                   SizedBox(height: 20),
                   Text(verificationResult),
+                  SizedBox(height: 20),
                   makeAccountBtn(),
+                  SizedBox(height: 20),
                   Text(makeAccountResult)
                 ],
               ),
@@ -137,62 +130,6 @@ class _MakeAccountSamplePageState extends State<MakeAccountSamplePage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomBtn(
-        text: '다음',
-        action: () {},
-      ),
     );
   }
-}
-
-Widget renderPhoneNumberText() {
-  return BuildTextFormField(
-    controller: _phoneNumber,
-    labelText: '전화 번호',
-    hintText: '전화 번호를 입력해 주세요.',
-    validator: (value) {
-      if (value == null || value.isEmpty) {
-        return '전화 번호를 입력해 주세요.';
-      }
-      return null;
-    }
-  );
-}
-Widget renderPhoneVerificationText() {
-  return BuildTextFormField(
-    controller: _phoneVerification,
-    labelText: '인증 번호',
-    hintText: '인증 번호를 입력해 주세요.',
-    validator: (value) {
-      if (value == null || value.isEmpty) {
-        return '인증 번호를 입력해 주세요.';
-      }
-      return null;
-    }
-  );
-}
-
-Widget BuildTextFormField({
-  required TextEditingController controller,
-  required String labelText,
-  required String hintText,
-  required String? Function(String?) validator,
-  bool obscureText = false,
-}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      TextFormField(
-        controller: controller,
-        obscureText: obscureText,
-        validator: validator,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(
-          labelText: labelText,
-          hintText: hintText
-        ),
-      ),
-      SizedBox(height: 16,)
-    ],
-  );
 }
