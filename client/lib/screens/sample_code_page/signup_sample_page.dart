@@ -4,16 +4,18 @@ import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/util/build_text_form_field.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:keeping/screens/sample_code_page/utils/utils.dart';
 
-class SignUpParentPage extends StatefulWidget {
-  const SignUpParentPage({Key? key}) : super(key: key);
+class SignupSamplePage extends StatefulWidget {
+  const SignupSamplePage({Key? key}) : super(key: key);
 
   @override
-  _SignUpParentPageState createState() => _SignUpParentPageState();
+  _SignUpSamplePageState createState() => _SignUpSamplePageState();
 }
 
-class _SignUpParentPageState extends State<SignUpParentPage> {
+class _SignUpSamplePageState extends State<SignupSamplePage> {
   String idDupRes = ''; // 소스코드 결과 출력
+  String signupRes = ''; // 회원가입 결과 출력
   TextEditingController _userId = TextEditingController();
   TextEditingController _userPw = TextEditingController();
   TextEditingController _userPwCk = TextEditingController();
@@ -46,7 +48,6 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                 text: '부모가 회원 가입 중',
                 elementColor: Colors.black,
                 icon: Icon(Icons.arrow_circle_up),
-                path: SignUpParentPage(),
               ),
               Padding(
                 padding: EdgeInsets.all(16.0),
@@ -57,8 +58,9 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                     ElevatedButton(
                       onPressed: () async {
                         print('중복 체크 중');
-                        final response = await httpGet(
-                            'https://jsonplaceholder.typicode.com/posts', null);
+                        String userId = _userId.text;
+                        final response =
+                            await httpGet('member-service/id/$userId}', null);
                         print('$response, 비동기 요청 완료');
                         if (response != null) {
                           setState(() {
@@ -66,11 +68,12 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                           });
                         } else {
                           setState(() {
-                            idDupRes = '중복';
+                            idDupRes = '로직 오류 혹은 아이디 중복';
                           });
                         }
                       },
                       child: Text('닉네임 중복 체크'),
+                      style: authenticationBtnStyle(),
                     ),
                     Text(idDupRes),
                     userPwField(),
@@ -78,18 +81,45 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                     usernameField(),
                     userBirthField(),
                     userPhoneNumberField(),
+                    ElevatedButton(
+                      onPressed: () async {
+                        print('회원가입 함수 실행');
+                        String userId = _userId.text;
+                        String userPw = _userPw.text;
+                        String userName = _userName.text;
+                        String userBirth = _userBirth.text;
+                        String userPhoneNumber = _userPhoneNumber.text;
+                        final response = await httpPost(
+                          '/member-service/join/parent',
+                          null,
+                          {
+                            "loginId": userId,
+                            "loginPw": userPw,
+                            "name": userName,
+                            "birth": userBirth,
+                            "phone": userPhoneNumber
+                          },
+                        );
+                        if (response != null) {
+                          setState(() {
+                            signupRes = response.toString();
+                          });
+                        } else {
+                          setState(() {
+                            signupRes = '회원가입 실패';
+                          });
+                        }
+                      },
+                      child: Text('회원가입'),
+                      style: authenticationBtnStyle(),
+                    ),
+                    Text(signupRes)
                   ],
                 ),
               ),
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomBtn(
-        text: '회원가입부모',
-        action: () {
-          signUp();
-        },
       ),
     );
   }
@@ -219,12 +249,23 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
     if (_signupKey.currentState!.validate()) {
       print('유효성 검사 통과');
     }
-    String userId = _userId.text;
-    String userPw = _userPw.text;
-    String userPwCk = _userPwCk.text;
-    String userName = _userName.text;
-    String userBirth = _userBirth.text;
-    String userPhoneNumber = _userPhoneNumber.text;
+
     // 여기서 회원가입 로직을 수행하세요.
   }
+}
+
+ButtonStyle authenticationBtnStyle() {
+  return ButtonStyle(
+      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+      foregroundColor:
+          MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
+      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(
+          color: const Color(0xFF8320E7), // 테두리 색상 설정
+          width: 2.0, // 테두리 두께 설정
+        ),
+      )),
+      fixedSize: MaterialStateProperty.all<Size>(Size(90, 40)));
 }

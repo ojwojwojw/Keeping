@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/main_page/widgets/make_account_btn.dart';
+import 'package:keeping/screens/piggy_page/make_piggy_test.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 
 class ChildMainPage extends StatelessWidget {
@@ -24,7 +25,12 @@ class ChildMainPage extends StatelessWidget {
             MakeAccountBtn(),
             Row(
               children: [
-                Container(),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => MakePiggyTest()));
+                  }, 
+                  child: Text('저금통 샘플 코드')
+                ),
                 Container()
               ],
             ),
