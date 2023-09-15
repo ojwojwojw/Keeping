@@ -32,7 +32,16 @@ spring:
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=/member-service/join
+            - Path=/member-service/join/**
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+        # phone
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/phone
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
@@ -50,7 +59,7 @@ spring:
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=/member-service/**
+            - Path=/member-service/auth/**
             - Method=GET, POST
           filters:
             - RemoveRequestHeader=Cookie

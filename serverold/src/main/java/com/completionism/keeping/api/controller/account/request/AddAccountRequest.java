@@ -6,10 +6,11 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+
+import static lombok.AccessLevel.PROTECTED;
 
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 public class AddAccountRequest {
 
     @NotBlank
@@ -18,7 +19,7 @@ public class AddAccountRequest {
 
 
     @Builder
-    public AddAccountRequest(String authPassword) {
+    private AddAccountRequest(String authPassword) {
         this.authPassword = authPassword;
     }
 }
