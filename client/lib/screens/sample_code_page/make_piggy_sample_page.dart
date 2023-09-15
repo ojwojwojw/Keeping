@@ -5,7 +5,7 @@ import 'package:keeping/screens/make_account_page/make_account_page.dart';
 import 'package:keeping/widgets/header.dart';
 
 // 임시 통신 주소 로그인 키
-const accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ5ZWppIiwiYXV0aCI6IlVTRVIiLCJuYW1lIjoi7JiI7KeAIiwicGhvbmUiOiIwMTAtMDAwMC0wMDAwIiwiZXhwIjoxNjk1ODgyMDcxfQ.XgYC2up60frNzdg8TMJ3nC3JRRwFFZiBFXTE0XRTmS4';
+const accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ5ZWppIiwiYXV0aCI6IlVTRVIiLCJuYW1lIjoi7JiI7KeAIiwicGhvbmUiOiIwMTAtMDAwMC0wMDAwIiwiZXhwIjoxNjk1OTQ3NTc3fQ.DCRGwyr_pSBSuyJA-21G8giFcozG9GVlD03fC9J6asU';
 
 class MakePiggySamplePage extends StatefulWidget {
   MakePiggySamplePage({super.key});
@@ -18,7 +18,7 @@ class _MakePiggySamplePageState extends State<MakePiggySamplePage> {
   String uploadImgResult = '이미지X';
   String makePiggyResult = '생성X';
 
-  String baseUri = 'https://14c6-121-178-98-20.ngrok-free.app/bank-service/piggy/yoonyeji';
+  String baseUri = 'https://14c6-121-178-98-20.ngrok-free.app';
 
   Map<String, dynamic> headers = {
     'Authorization': 'Bearer $accessToken',
@@ -30,7 +30,7 @@ class _MakePiggySamplePageState extends State<MakePiggySamplePage> {
     "authPassword": "123456",
   };
 
-  late final data;
+  late FormData data;
 
   Widget makePiggyBtn() {
     return Column(
@@ -45,7 +45,16 @@ class _MakePiggySamplePageState extends State<MakePiggySamplePage> {
         SizedBox(height: 15,),
         ElevatedButton(
           onPressed: () async {
-            patchPiggyImage(headers, baseUri, data);
+            final response = await patchPiggyImage(headers, baseUri, data);
+            if (response != null) {
+              setState(() {
+                makePiggyResult = '생성 성공';
+              });
+            } else {
+              setState(() {
+                makePiggyResult = '생성 실패';
+              });
+            }
           },
           style: authenticationBtnStyle(),
           child: Text('저금통 만들기'),
@@ -68,9 +77,6 @@ class _MakePiggySamplePageState extends State<MakePiggySamplePage> {
     final pickedFile =
         await ImagePicker().pickImage(
           source: ImageSource.gallery,
-          maxHeight: 75,
-          maxWidth: 75,
-          imageQuality: 30,
         );
     if (pickedFile == null) {
       setState(() {
@@ -94,12 +100,15 @@ Future<dynamic> patchPiggyImage(dynamic headers, dynamic baseUri, dynamic data) 
     print("프로필 사진 서버에 업로드");
     var dio = Dio();
     try {
+      dio.options.baseUrl = baseUri;
       dio.options.contentType = 'multipart/form-data';
       dio.options.maxRedirects.isFinite;
+      dio.options.connectTimeout = Duration(seconds: 5);
+      dio.options.receiveTimeout = Duration(seconds: 3);
 
       dio.options.headers = headers;
-      var response = await dio.patch(
-        baseUri,
+      var response = await dio.post(
+        '/bank-service/piggy/yoonyeji',
         data: data
       );
       print('업로드 성공');
