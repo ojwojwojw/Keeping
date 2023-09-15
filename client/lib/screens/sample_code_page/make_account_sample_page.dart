@@ -29,7 +29,7 @@ class _MakeAccountSamplePageState extends State<MakeAccountSamplePage> {
     return ElevatedButton(
       onPressed: () async {
         final response = await httpPost(
-          'https://e8aa-121-178-98-20.ngrok-free.app/bank-service/account/phone-check/yoonyeji',
+          'https://14c6-121-178-98-20.ngrok-free.app/bank-service/account/phone-check/yoonyeji',
           {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json'
@@ -55,7 +55,7 @@ class _MakeAccountSamplePageState extends State<MakeAccountSamplePage> {
     return ElevatedButton(
       onPressed: () async {
         final response = await httpPost(
-          'https://e8aa-121-178-98-20.ngrok-free.app/bank-service/account/phone-auth/yoonyeji',
+          'https://14c6-121-178-98-20.ngrok-free.app/bank-service/account/phone-auth/yoonyeji',
           {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json'
@@ -81,7 +81,7 @@ class _MakeAccountSamplePageState extends State<MakeAccountSamplePage> {
     return ElevatedButton(
       onPressed: () async {
         final response = await httpPost(
-          'https://e8aa-121-178-98-20.ngrok-free.app/bank-service/account/yoonyeji',
+          'https://14c6-121-178-98-20.ngrok-free.app/bank-service/account/yoonyeji',
           {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json'
@@ -199,40 +199,3 @@ Widget BuildTextFormField({
     ],
   );
 }
-
-ButtonStyle authenticationBtnStyle() {
-  return ButtonStyle(
-    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-    foregroundColor: MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
-    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-      RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(
-          color: const Color(0xFF8320E7), // 테두리 색상 설정
-          width: 2.0, // 테두리 두께 설정
-        ),
-      )
-    ),
-    fixedSize: MaterialStateProperty.all<Size>(
-      Size(90, 40)
-    )
-  );
-}
-
-// Future<dynamic> httpPost(String url, Map<String, String>? headers, Map<String, dynamic> body) async {
-//   try {
-//     var response = await http.post
-//       (Uri.parse(url), headers: headers, body: json.encode(body)
-//     );
-//     if (response.statusCode == 200) {
-//       var result = jsonDecode(response.body);
-//       return result;
-//     } else {
-//       print('HTTP Request Failed with status code: ${response.statusCode}');
-//       return null;
-//     }
-//   } catch (e) {
-//     print('Error during HTTP request: $e');
-//     return null;
-//   }
-// }

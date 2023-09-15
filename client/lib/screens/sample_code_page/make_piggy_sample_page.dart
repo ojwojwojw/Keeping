@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/make_account_page/make_account_page.dart';
 import 'package:keeping/widgets/header.dart';
 
 // 임시 통신 주소 로그인 키
@@ -17,7 +18,7 @@ class _MakePiggySamplePageState extends State<MakePiggySamplePage> {
   String uploadImgResult = '이미지X';
   String makePiggyResult = '생성X';
 
-  String baseUri = 'https://e8aa-121-178-98-20.ngrok-free.app/bank-service/piggy/yoonyeji';
+  String baseUri = 'https://14c6-121-178-98-20.ngrok-free.app/bank-service/piggy/yoonyeji';
 
   Map<String, dynamic> headers = {
     'Authorization': 'Bearer $accessToken',
@@ -49,6 +50,8 @@ class _MakePiggySamplePageState extends State<MakePiggySamplePage> {
           style: authenticationBtnStyle(),
           child: Text('저금통 만들기'),
         ),
+        SizedBox(height: 15,),
+        Text(makePiggyResult),
       ],
     );
   }
@@ -63,7 +66,12 @@ class _MakePiggySamplePageState extends State<MakePiggySamplePage> {
 
   Future<void> _getFromGallery() async {
     final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+        await ImagePicker().pickImage(
+          source: ImageSource.gallery,
+          maxHeight: 75,
+          maxWidth: 75,
+          imageQuality: 30,
+        );
     if (pickedFile == null) {
       setState(() {
         uploadImgResult = '업로드 실패';
@@ -83,8 +91,8 @@ class _MakePiggySamplePageState extends State<MakePiggySamplePage> {
 }
 
 Future<dynamic> patchPiggyImage(dynamic headers, dynamic baseUri, dynamic data) async {
-    print("프로필 사진을 서버에 업로드 합니다.");
-    var dio = new Dio();
+    print("프로필 사진 서버에 업로드");
+    var dio = Dio();
     try {
       dio.options.contentType = 'multipart/form-data';
       dio.options.maxRedirects.isFinite;
@@ -94,29 +102,9 @@ Future<dynamic> patchPiggyImage(dynamic headers, dynamic baseUri, dynamic data) 
         baseUri,
         data: data
       );
-      print('성공적으로 업로드했습니다');
+      print('업로드 성공');
       return response.data;
     } catch (e) {
       print('Error during HTTP request: $e');
     }
   }
-
-
-ButtonStyle authenticationBtnStyle() {
-  return ButtonStyle(
-    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-    foregroundColor: MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
-    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-      RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(
-          color: const Color(0xFF8320E7), // 테두리 색상 설정
-          width: 2.0, // 테두리 두께 설정
-        ),
-      )
-    ),
-    fixedSize: MaterialStateProperty.all<Size>(
-      Size(180, 40)
-    )
-  );
-}
