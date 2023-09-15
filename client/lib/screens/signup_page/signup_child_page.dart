@@ -4,24 +4,23 @@ import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/util/build_text_form_field.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:keeping/screens/sample_code_page/utils/utils.dart';
 
-class SignupSamplePage extends StatefulWidget {
-  const SignupSamplePage({Key? key}) : super(key: key);
+class SignUpChildPage extends StatefulWidget {
+  const SignUpChildPage({Key? key}) : super(key: key);
 
   @override
-  _SignUpSamplePageState createState() => _SignUpSamplePageState();
+  _SignUpChildPageState createState() => _SignUpChildPageState();
 }
 
-class _SignUpSamplePageState extends State<SignupSamplePage> {
+class _SignUpChildPageState extends State<SignUpChildPage> {
   String idDupRes = ''; // 소스코드 결과 출력
-  String signupRes = ''; // 회원가입 결과 출력
   TextEditingController _userId = TextEditingController();
   TextEditingController _userPw = TextEditingController();
   TextEditingController _userPwCk = TextEditingController();
   TextEditingController _userName = TextEditingController();
   TextEditingController _userBirth = TextEditingController();
   TextEditingController _userPhoneNumber = TextEditingController();
+  TextEditingController _parentPhoneNumber = TextEditingController();
 
   final _signupKey = GlobalKey<FormState>();
 
@@ -33,6 +32,7 @@ class _SignUpSamplePageState extends State<SignupSamplePage> {
     _userName.dispose();
     _userBirth.dispose();
     _userPhoneNumber.dispose();
+    _parentPhoneNumber.dispose();
     super.dispose();
   }
 
@@ -48,6 +48,7 @@ class _SignUpSamplePageState extends State<SignupSamplePage> {
                 text: '부모가 회원 가입 중',
                 elementColor: Colors.black,
                 icon: Icon(Icons.arrow_circle_up),
+                path: SignUpChildPage(),
               ),
               Padding(
                 padding: EdgeInsets.all(16.0),
@@ -58,68 +59,39 @@ class _SignUpSamplePageState extends State<SignupSamplePage> {
                     ElevatedButton(
                       onPressed: () async {
                         print('중복 체크 중');
-                        String userId = _userId.text;
-                        final response =
-                            await httpGet('member-service/id/$userId}', null);
-                        print('$response, 비동기 요청 완료');
-                        if (response != null) {
-                          setState(() {
-                            idDupRes = response.toString();
-                          });
-                        } else {
-                          setState(() {
-                            idDupRes = '로직 오류 혹은 아이디 중복';
-                          });
-                        }
+                        // final response = await httpGet(
+                        //     'https://api.example.com/member-service/id/$_userId');
+                        // if (response != null) {
+                        //   setState(() {
+                        //     idDupRes = response.toString();
+                        //   });
+                        // } else {
+                        //   setState(() {
+                        //     idDupRes = '중복';
+                        //   });
+                        // }
                       },
                       child: Text('닉네임 중복 체크'),
-                      style: authenticationBtnStyle(),
                     ),
                     Text(idDupRes),
                     userPwField(),
                     userPwCkField(),
                     usernameField(),
                     userBirthField(),
+                    parentPhoneNumberField(),
                     userPhoneNumberField(),
-                    ElevatedButton(
-                      onPressed: () async {
-                        print('회원가입 함수 실행');
-                        String userId = _userId.text;
-                        String userPw = _userPw.text;
-                        String userName = _userName.text;
-                        String userBirth = _userBirth.text;
-                        String userPhoneNumber = _userPhoneNumber.text;
-                        final response = await httpPost(
-                          '/member-service/join/parent',
-                          null,
-                          {
-                            "loginId": userId,
-                            "loginPw": userPw,
-                            "name": userName,
-                            "birth": userBirth,
-                            "phone": userPhoneNumber
-                          },
-                        );
-                        if (response != null) {
-                          setState(() {
-                            signupRes = response.toString();
-                          });
-                        } else {
-                          setState(() {
-                            signupRes = '회원가입 실패';
-                          });
-                        }
-                      },
-                      child: Text('회원가입'),
-                      style: authenticationBtnStyle(),
-                    ),
-                    Text(signupRes)
                   ],
                 ),
               ),
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomBtn(
+        text: '회원가입부모',
+        action: () {
+          signUp();
+        },
       ),
     );
   }
@@ -212,6 +184,20 @@ class _SignUpSamplePageState extends State<SignupSamplePage> {
     );
   }
 
+  Widget parentPhoneNumberField() {
+    return BuildTextFormField(
+      controller: _parentPhoneNumber,
+      labelText: '부모님 휴대폰 번호',
+      hintText: '- 없이 숫자만 입력해주세요. (예:01012345678)',
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return '필수 항목입니다';
+        }
+        return null;
+      },
+    );
+  }
+
   Widget userPhoneNumberField() {
     return BuildTextFormField(
       controller: _userPhoneNumber,
@@ -226,11 +212,11 @@ class _SignUpSamplePageState extends State<SignupSamplePage> {
     );
   }
 
-  Future<List<dynamic>?> httpGet(
-      String url, Map<String, String>? headers) async {
+  Future<dynamic> httpGet(String url) async {
     try {
-      var response = await http.get(Uri.parse(url), headers: headers);
-      print(response);
+      var response = await http.get(
+        Uri.parse(url),
+      );
       if (response.statusCode == 200) {
         var result = jsonDecode(response.body);
         return result;
@@ -249,23 +235,12 @@ class _SignUpSamplePageState extends State<SignupSamplePage> {
     if (_signupKey.currentState!.validate()) {
       print('유효성 검사 통과');
     }
-
+    String userId = _userId.text;
+    String userPw = _userPw.text;
+    String userPwCk = _userPwCk.text;
+    String userName = _userName.text;
+    String userBirth = _userBirth.text;
+    String userPhoneNumber = _userPhoneNumber.text;
     // 여기서 회원가입 로직을 수행하세요.
   }
-}
-
-ButtonStyle authenticationBtnStyle() {
-  return ButtonStyle(
-      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-      foregroundColor:
-          MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
-      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(
-          color: const Color(0xFF8320E7), // 테두리 색상 설정
-          width: 2.0, // 테두리 두께 설정
-        ),
-      )),
-      fixedSize: MaterialStateProperty.all<Size>(Size(90, 40)));
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SelectKidBtn extends StatelessWidget {
-  const SelectKidBtn({super.key});
+class SelectChildBtn extends StatelessWidget {
+  const SelectChildBtn({super.key});
 
   @override
   Widget build(BuildContext context) {
