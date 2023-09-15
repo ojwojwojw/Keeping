@@ -1,11 +1,15 @@
 version: "3"
 services:
   discovery-service:
+    networks:
+      - keeping-network
     image: tngus2sh/keeping-backend-discovery
     port:
       - "8761:8761"
     container_name: discovery-service
   apigateway-service:
+    networks:
+      - keeping-network
     image: tngus2sh/keeping-backend-apigateway
     port:
       - "8000:8000"
@@ -13,9 +17,93 @@ services:
       - discovery-service
     container_name: apigateway-service
   config-service:
+    networks:
+      - keeping-network
     image: tngus2sh/keeping-backend-config
-    port: 
+    port:
       - "8888:8888"
     depends_on:
       - discovery-service
       - apigateway-service
+    container_name: config-service
+  member-service:
+    networks:
+      - keeping-network
+    image: tngus2sh/keeping-backend-member
+    port:
+      - "8889:8889"
+    depends_on:
+      - discovery-service
+      - apigateway-service
+      - config-service
+    container_name: member-service
+  mission-service:
+    networks:
+      - keeping-network
+    image: tngus2sh/keeping-backend-mission
+    port:
+      - "8887:8887"
+    depends_on:
+      - discovery-service
+      - apigateway-service
+      - config-service
+    container_name: mission-service
+  noti-service:
+    networks:
+      - keeping-network
+    image: tngus2sh/keeping-backend-noti
+    port:
+      - "8886:8886"
+    depends_on:
+      - discovery-service
+      - apigateway-service
+      - config-service
+    container_name: noti-service
+  openai-service:
+    networks:
+      - keeping-network
+    image: tngus2sh/keeping-backend-openai
+    port:
+      - "8885:8885"
+    depends_on:
+      - discovery-service
+      - apigateway-service
+      - config-service
+    container_name: openai-service
+  question-service:
+    networks:
+      - keeping-network
+    image: tngus2sh/keeping-backend-question
+    port:
+      - "8884:8884"
+    depends_on:
+      - discovery-service
+      - apigateway-service
+      - config-service
+    container_name: question-service
+  bank-service:
+    networks:
+      - keeping-network
+    image: tngus2sh/keeping-backend-bank
+    port:
+      - "8883:8883"
+    depends_on:
+      - discovery-service
+      - apigateway-service
+      - config-service
+    container_name: bank-service
+  noti-service:
+    networks:
+      - keeping-network
+    image: tngus2sh/keeping-backend-noti
+    port:
+      - "8882:8882"
+    depends_on:
+      - discovery-service
+      - apigateway-service
+      - config-service
+    container_name: noti-service
+
+networks:
+  keeping-network:
+    driver: bridge
