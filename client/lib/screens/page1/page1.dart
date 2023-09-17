@@ -27,7 +27,13 @@ class Page1 extends StatelessWidget {
               text: '확인확인',
               action: Page3(),
             ),
-            testBtn(context),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                bottomModaltBtn(context),
+                roundedModalBtn(context)
+              ]
+            ),
             ConfirmBtn(
               text: '자녀 메인페이지',
               action: ChildMainPage(),
@@ -49,7 +55,7 @@ class Page1 extends StatelessWidget {
 }
 
 // 모달 테스트용 - 클릭하면 모달 나옴
-Widget testBtn(BuildContext context) {
+Widget bottomModaltBtn(BuildContext context) {
   return ElevatedButton(
     onPressed: () {
       showModalBottomSheet(
@@ -62,7 +68,25 @@ Widget testBtn(BuildContext context) {
             );
           });
     },
-    child: const Text('모달'),
+    child: const Text('하단 모달'),
+  );
+}
+
+// 모달 테스트용 - 클릭하면 모달 나옴
+Widget roundedModalBtn(BuildContext context) {
+  return ElevatedButton(
+    onPressed: () {
+      showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return BottomModal(
+              title: '안녕',
+              content: testContent(context),
+              button: ConfirmBtn(),
+            );
+          });
+    },
+    child: const Text('둥근 모달'),
   );
 }
 

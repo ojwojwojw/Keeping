@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/main_page/widgets/account_info.dart';
 import 'package:keeping/screens/main_page/widgets/gradient_btn.dart';
 import 'package:keeping/screens/main_page/widgets/make_account_btn.dart';
+import 'package:keeping/screens/make_account_page/widgets/styles.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/screens/online_request_payment/online_request_payment.dart';
 import 'package:keeping/screens/piggy_page/piggy_page.dart';
@@ -34,16 +36,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: const [
-              Color(0xFF1C0038),
-              Color(0xFF401C64)
-            ]
-          )
-        ),
+        decoration: bgStyle(),
         child: SizedBox(
           width: 350,
           child: Column(
@@ -95,7 +88,9 @@ class _ChildMainPageState extends State<ChildMainPage> {
               ),
               SizedBox(height: 20,),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => ParentMainPage()));
+                },
                 child: Text('부모 계정 전환'),
               )
             ],

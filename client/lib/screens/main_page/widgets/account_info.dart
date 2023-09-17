@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/make_account_page/widgets/styles.dart';
 
 class AccountInfo extends StatelessWidget {
   AccountInfo({
@@ -52,20 +53,7 @@ class AccountInfo extends StatelessWidget {
                 onPressed: () {
                   
                 },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Color(0xFFC286FF)),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                  textStyle: MaterialStateProperty.all<TextStyle>(
-                      TextStyle(fontSize: 18)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0), // 테두리 둥글기 반지름 설정
-                    ),
-                  ),
-                  minimumSize: MaterialStateProperty.all<Size>(
-                    Size(300.0, 50.0), // 버튼의 최소 높이와 너비 설정
-                  ),
-                ),
+                style: accountInfoRoundedBtn(300, 50),
                 child: Text('용돈 조르기'),
               )
             ],
