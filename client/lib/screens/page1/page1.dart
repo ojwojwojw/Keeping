@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/child_spending_route_page/child_spending_route_page.dart';
 import 'package:keeping/screens/main_page/child_main_page.dart';
-import 'package:keeping/screens/page3/page3.dart';
 import 'package:keeping/screens/sample_code_page/sample_code_page.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
+import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
@@ -40,6 +40,14 @@ class Page1 extends StatelessWidget {
               text: '샘플코드',
               action: SampleCodePage(),
             ),
+            SizedBox(height: 15,),
+            ConfirmBtn(
+              text: '확인 페이지',
+              action: CompletedPage(
+                text: '안녕하새요\n나는 예지\n라고함',
+                image: 'assets/image/temp_image.jpg',
+              ),
+            )
           ],
         ),
         floatingActionButton: FloatingBtn(
