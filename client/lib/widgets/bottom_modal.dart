@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 // 크게 제목, 내용, 버튼으로 나누어져 있는 하단 모달 위젯
 class BottomModal extends StatelessWidget {
   final String title; // 모달 제목
-  final double height;
   final Color bgColor;
   final Widget content; // 모달에 들어갈 내용
   final Widget button; // 모달에 들어갈 버튼
@@ -11,7 +10,6 @@ class BottomModal extends StatelessWidget {
   BottomModal({
     super.key,
     required this.title,
-    this.height = 200,
     this.bgColor = Colors.white,
     required this.content,
     required this.button,
