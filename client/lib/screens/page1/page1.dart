@@ -55,15 +55,12 @@ class Page1 extends StatelessWidget {
 Widget bottomModaltBtn(BuildContext context) {
   return ElevatedButton(
     onPressed: () {
-      showModalBottomSheet(
+      bottomModal(
         context: context,
-        builder: (BuildContext context) {
-          return BottomModal(
-            title: '안녕',
-            content: testContent(context),
-            button: ConfirmBtn(),
-          );
-        });
+        title: '안녕',
+        content: testContent(context),
+        button: ConfirmBtn(),
+      );
     },
     child: const Text('하단 모달'),
   );
