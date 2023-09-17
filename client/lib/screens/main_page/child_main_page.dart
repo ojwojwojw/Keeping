@@ -21,13 +21,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
 
   makeAccount() {
     setState(() {
-      account = true;
-    });
-  }
-
-  deleteAccount() {
-    setState(() {
-      account = false; 
+      account = !account;
     });
   }
 
@@ -42,7 +36,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
           child: Column(
             children: [
               SizedBox(height: 100,),
-              account ? AccountInfo(deleteAccount: deleteAccount,) : MakeAccountBtn(makeAccount: makeAccount),
+              account ? AccountInfo() : MakeAccountBtn(makeAccount: makeAccount),
               SizedBox(height: 10),
               SizedBox(
                 width: 350,
@@ -92,7 +86,13 @@ class _ChildMainPageState extends State<ChildMainPage> {
                   Navigator.push(context, MaterialPageRoute(builder: (_) => ParentMainPage()));
                 },
                 child: Text('부모 계정 전환'),
-              )
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  makeAccount();
+                },
+                child: Text('계좌 유무'),
+              ),
             ],
           )
         )

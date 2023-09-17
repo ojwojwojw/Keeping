@@ -66,7 +66,7 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        account ? AccountInfo(deleteAccount: deleteAccount,) : MakeAccountBtn(makeAccount: makeAccount),
+                        account ? AccountInfo() : MakeAccountBtn(makeAccount: makeAccount),
                         SizedBox(height: 10),
                         SizedBox(
                           width: 350,
@@ -124,7 +124,7 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        account ? AccountInfo(deleteAccount: deleteAccount,) : MakeAccountBtn(makeAccount: makeAccount),
+                        account ? AccountInfo() : MakeAccountBtn(makeAccount: makeAccount),
                         SizedBox(height: 10),
                         SizedBox(
                           width: 350,
@@ -176,7 +176,7 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        account ? AccountInfo(deleteAccount: deleteAccount,) : MakeAccountBtn(makeAccount: makeAccount),
+                        account ? AccountInfo() : MakeAccountBtn(makeAccount: makeAccount),
                         SizedBox(height: 10),
                         SizedBox(
                           width: 350,

@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
 import 'package:keeping/screens/make_account_page/widgets/styles.dart';
 
 class AccountInfo extends StatelessWidget {
   AccountInfo({
     super.key,
-    this.deleteAccount
   });
-
-  final deleteAccount;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        deleteAccount();
+        Navigator.push(context, MaterialPageRoute(builder: (_) => AllowanceLedgerPage()));
       },
       child: SizedBox(
         width: 350,
