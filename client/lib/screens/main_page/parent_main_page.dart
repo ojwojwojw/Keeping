@@ -92,7 +92,12 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                 children: <Widget>[
                   me(context, account, makeAccount),
                   Center(
-                    child: Text("It's rainy here"),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMainPage()));
+                      },
+                      child: Text('자식 계정 전환'),
+                    )
                   ),
                   Center(
                     child: Text("It's sunny here"),
@@ -102,7 +107,8 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
             ), 
           ]
         )
-      )
+      ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 }
@@ -158,12 +164,6 @@ Widget me(BuildContext context, bool account, Function makeAccount) {
           ),
         ),
         SizedBox(height: 20,),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMainPage()));
-          },
-          child: Text('자식 계정 전환'),
-        )
       ],
     )
   );
