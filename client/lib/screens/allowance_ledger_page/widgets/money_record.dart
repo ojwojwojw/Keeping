@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
@@ -32,12 +30,12 @@ class _MoneyRecordState extends State<MoneyRecord> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
+      onLongPress: () {
         bottomModal(
           context: context,
           title: '상세 내역 쓰기',
-          content: Text('안녕'),
-          button: Text('안녕'),
+          content: moneyRecordModalContent(widget.date, widget.storeName, widget.money),
+          button: moneyRecordModalBtns(),
         );
       },
       child: Padding(
@@ -137,6 +135,79 @@ TextStyle smallStyle() {
 }
 
 // 용돈기입장 내역 클릭시 나오는 모달에 들어갈 내용
+Widget moneyRecordModalContent(DateTime date, String storeName, num money) {
+  return Container(
+    decoration: BoxDecoration(
+      border: Border(
+        top: BorderSide(
+          color: Color.fromARGB(255, 236, 236, 236), // 위쪽 테두리 색상
+          width: 2.0, // 위쪽 테두리 두께
+        ),
+        bottom: BorderSide(
+          color: Color.fromARGB(255, 236, 236, 236), // 아래쪽 테두리 색상
+          width: 2.0, // 아래쪽 테두리 두께
+        ),
+      ),
+    ),
+    child: Padding(
+      padding: EdgeInsets.symmetric(vertical: 15),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(DateFormat('M월 d일').format(date).toString()),
+            ]
+          ),
+          SizedBox(height: 7,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(storeName, style: bigStyle(),),
+              Text('${NumberFormat('#,##0').format(money).toString()}원', style: bigStyle(),)
+            ],
+          )
+        ],
+      )
+    )
+  );
+}
 
+// 용돈기입장 내역 클릭시 나오는 모달에 들어갈 버튼(2개)
+Row moneyRecordModalBtns() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      moneyRecordModalBtn(Icons.receipt_long, '영수증 찍기'),
+      moneyRecordModalBtn(Icons.create, '직접 쓰기')
+    ],
+  );
+}
 
-// 용돈기입장 내역 클릭시 나오는 모달에 들어갈 버튼
+// 용돈기입장 내역 클릭시 나오는 모달에 들어가는 버튼 한 개
+Container moneyRecordModalBtn(IconData icon, String text) {
+  return Container(
+    width: 150,
+    height: 150,
+    decoration: moneyRecordModalBtnStyle(),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(icon, size: 50,),
+        Text(text, style: TextStyle(fontSize: 20),)
+      ],
+    ),
+  );
+}
+
+// 용돈기입장 내역 클릭시 나오는 모달 버튼 스타일
+BoxDecoration moneyRecordModalBtnStyle() {
+  return BoxDecoration(
+    borderRadius: BorderRadius.circular(30),
+    border: Border.all(
+      color: Color.fromARGB(255, 236, 236, 236), // 테두리 색상
+      width: 2.0, // 테두리 두께
+    ),
+  );
+}

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/account_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/allow_search_bar.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
