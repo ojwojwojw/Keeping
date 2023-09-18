@@ -12,7 +12,7 @@ class _AccountInfoState extends State<AccountInfo> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 200,
+      height: 180,
       decoration: BoxDecoration(
         color: const Color(0xFF8320E7),
       ),
