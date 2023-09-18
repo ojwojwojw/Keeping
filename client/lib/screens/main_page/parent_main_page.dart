@@ -3,6 +3,7 @@ import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/widgets/account_info.dart';
 import 'package:keeping/screens/main_page/widgets/gradient_btn.dart';
 import 'package:keeping/screens/main_page/widgets/make_account_btn.dart';
+import 'package:keeping/screens/main_page/widgets/tab_profile.dart';
 import 'package:keeping/screens/make_account_page/widgets/styles.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/screens/online_request_payment/online_request_payment.dart';
@@ -13,12 +14,13 @@ import 'package:keeping/widgets/bottom_nav.dart';
 class ParentMainPage extends StatefulWidget {
   ParentMainPage({super.key});
 
-  _ParentMainPageState createState() => _ParentMainPageState();
+  @override
+  State<ParentMainPage> createState() => _ParentMainPageState();
 }
 
 class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStateMixin {
   bool account = false;
-  late TabController _tabController;
+  late final TabController _tabController;
 
   makeAccount() {
     setState(() {
@@ -26,211 +28,143 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
     });
   }
 
-  deleteAccount() {
-    setState(() {
-      account = false; 
-    });
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
-  void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: double.infinity,
         decoration: bgStyle(),
-        child: SizedBox(
-          width: 350,
-          child: Column(
-            children: [
-              SizedBox(height: 100,),
-              TabBar(
-                tabs: const [
-                  Tab(text: '나',),
-                  Tab(text: '김첫째',),
-                  Tab(text: '김둘째',)
-                ],
-                indicator: BoxDecoration(
-                  
+        child: Column(
+          children: [
+            SizedBox(height: 50,),
+            TabBar(
+              controller: _tabController,
+              isScrollable: true,
+              tabAlignment: TabAlignment.center,
+              indicator: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                color: const Color(0xFFFFD600).withOpacity(0.2),
+                backgroundBlendMode: BlendMode.srcATop,
+                border: Border.all(
+                  color: const Color(0xFFFFD600), // 테두리 색상
+                  width: 2.0, // 테두리 두께
                 ),
-                controller: _tabController,
               ),
-              TabBarView(
+              tabs: <Widget>[
+                Tab(
+                  height: 110,
+                  child: TabProfile(
+                    imgPath: 'assets/image/temp_image.jpg',
+                    name: '나',
+                  ),
+                ),
+                Tab(
+                  height: 110,
+                  child: TabProfile(
+                    imgPath: 'assets/image/temp_image.jpg',
+                    name: '김첫째',
+                  ),
+                ),
+                Tab(
+                  height: 110,
+                  child: TabProfile(
+                    imgPath: 'assets/image/temp_image.jpg',
+                    name: '김둘째',
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20,),
+            Expanded(
+              child: TabBarView(
                 controller: _tabController,
-                children: [
-                  SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        account ? AccountInfo() : MakeAccountBtn(makeAccount: makeAccount),
-                        SizedBox(height: 10),
-                        SizedBox(
-                          width: 350,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GradientBtn(
-                                path: PiggyPage(),
-                                text: '저금통',
-                                beginColor: Color(0xFF9271C8),
-                                endColor: Color(0xFF6E2FD5),
-                              ),
-                              GradientBtn(
-                                path: OnlineRequestPayment(),
-                                text: '온라인 결제\n부탁 목록',
-                                beginColor: Color(0xFFFF7595),
-                                endColor: Color(0xFFFA3B68),
-                                fontSize: 26,
-                              ),
-                            ],
-                          )
-                        ),
-                        SizedBox(height: 8),
-                        SizedBox(
-                          width: 350,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GradientBtn(
-                                path: MissionPage(),
-                                text: '미션',
-                                beginColor: Color(0xFF07B399),
-                                endColor: Color(0xFF068572),
-                              ),
-                              GradientBtn(
-                                path: QuestionPage(),
-                                text: '질문',
-                                beginColor: Color(0xFFFFCE72),
-                                endColor: Color(0xFFFFBC3F),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 20,),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMainPage()));
-                          },
-                          child: Text('자식 계정 전환'),
-                        )
-                      ],
-                    ),
+                children: <Widget>[
+                  me(context, account, makeAccount),
+                  Center(
+                    child: Text("It's rainy here"),
                   ),
-                  SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        account ? AccountInfo() : MakeAccountBtn(makeAccount: makeAccount),
-                        SizedBox(height: 10),
-                        SizedBox(
-                          width: 350,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GradientBtn(
-                                path: PiggyPage(),
-                                text: '저금통',
-                                beginColor: Color(0xFF9271C8),
-                                endColor: Color(0xFF6E2FD5),
-                              ),
-                              GradientBtn(
-                                path: OnlineRequestPayment(),
-                                text: '온라인 결제\n부탁 목록',
-                                beginColor: Color(0xFFFF7595),
-                                endColor: Color(0xFFFA3B68),
-                                fontSize: 26,
-                              ),
-                            ],
-                          )
-                        ),
-                        SizedBox(height: 8),
-                        SizedBox(
-                          width: 350,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GradientBtn(
-                                path: MissionPage(),
-                                text: '미션',
-                                beginColor: Color(0xFF07B399),
-                                endColor: Color(0xFF068572),
-                              ),
-                              GradientBtn(
-                                path: QuestionPage(),
-                                text: '질문',
-                                beginColor: Color(0xFFFFCE72),
-                                endColor: Color(0xFFFFBC3F),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 20,),
-                      ],
-                    ),
+                  Center(
+                    child: Text("It's sunny here"),
                   ),
-                  SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        account ? AccountInfo() : MakeAccountBtn(makeAccount: makeAccount),
-                        SizedBox(height: 10),
-                        SizedBox(
-                          width: 350,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GradientBtn(
-                                path: PiggyPage(),
-                                text: '저금통',
-                                beginColor: Color(0xFF9271C8),
-                                endColor: Color(0xFF6E2FD5),
-                              ),
-                              GradientBtn(
-                                path: OnlineRequestPayment(),
-                                text: '온라인 결제\n부탁 목록',
-                                beginColor: Color(0xFFFF7595),
-                                endColor: Color(0xFFFA3B68),
-                                fontSize: 26,
-                              ),
-                            ],
-                          )
-                        ),
-                        SizedBox(height: 8),
-                        SizedBox(
-                          width: 350,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GradientBtn(
-                                path: MissionPage(),
-                                text: '미션',
-                                beginColor: Color(0xFF07B399),
-                                endColor: Color(0xFF068572),
-                              ),
-                              GradientBtn(
-                                path: QuestionPage(),
-                                text: '질문',
-                                beginColor: Color(0xFFFFCE72),
-                                endColor: Color(0xFFFFBC3F),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 20,),
-                      ],
-                    )
-                  )
                 ],
-              )
-            ],
-          )
+              ),
+            ), 
+          ]
         )
-      ),
-      bottomNavigationBar: BottomNav()
+      )
     );
   }
+}
+
+Widget me(BuildContext context, bool account, Function makeAccount) {
+  return SizedBox(
+    width: 350,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        account ? AccountInfo() : MakeAccountBtn(makeAccount: makeAccount),
+        SizedBox(height: 10),
+        SizedBox(
+          width: 350,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GradientBtn(
+                path: PiggyPage(),
+                text: '저금통',
+                beginColor: Color(0xFF9271C8),
+                endColor: Color(0xFF6E2FD5),
+              ),
+              GradientBtn(
+                path: OnlineRequestPayment(),
+                text: '온라인 결제\n부탁 목록',
+                beginColor: Color(0xFFFF7595),
+                endColor: Color(0xFFFA3B68),
+                fontSize: 26,
+              ),
+            ],
+          )
+        ),
+        SizedBox(height: 8),
+        SizedBox(
+          width: 350,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GradientBtn(
+                path: MissionPage(),
+                text: '미션',
+                beginColor: Color(0xFF07B399),
+                endColor: Color(0xFF068572),
+              ),
+              GradientBtn(
+                path: QuestionPage(),
+                text: '질문',
+                beginColor: Color(0xFFFFCE72),
+                endColor: Color(0xFFFFBC3F),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 20,),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMainPage()));
+          },
+          child: Text('자식 계정 전환'),
+        )
+      ],
+    )
+  );
 }
