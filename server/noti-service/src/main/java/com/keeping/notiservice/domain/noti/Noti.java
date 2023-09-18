@@ -9,7 +9,6 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@NoArgsConstructor
 @RequiredArgsConstructor
 public class Noti extends TimeBaseEntity {
     
