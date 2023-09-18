@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/account_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/allow_search_bar.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
+import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/header.dart';
 
@@ -13,7 +15,7 @@ class AllowanceLedgerPage extends StatefulWidget {
 }
 
 class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,15 +35,19 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    moneyRecordDate(),
-                    MoneyRecord(),
-                    MoneyRecord(),
-                    MoneyRecord(),
-                    MoneyRecord(),
-                    MoneyRecord(),
-                    MoneyRecord(),
-                    MoneyRecord(),
-                    MoneyRecord(),
+                    MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
+                    MoneyRecord(
+                      date: DateTime.parse('2020-10-10T14:58:04+09:00'),
+                      storeName: '달콤왕가탕후루 전대',
+                      money: 3000,
+                      balance: 50000,
+                    ),
+                    MoneyRecord(
+                      date: DateTime.parse('2020-10-10T14:58:04+09:00'),
+                      storeName: '올리브영 전대',
+                      money: 5000,
+                      balance: 53000,
+                    ),
                   ],
                 ),
               )
@@ -60,18 +66,18 @@ BoxDecoration moneyRecordsBgStyle() {
   );
 }
 
-Padding moneyRecordDate() {
-  return Padding(
-    padding: EdgeInsets.symmetric(vertical: 8),
-    child: SizedBox(
-      width: 360,
-      child: Text(
-        '9월 18일',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w400
-        ),
-      )  
-    )
-  );
-}
+// Padding moneyRecordDate() {
+//   return Padding(
+//     padding: EdgeInsets.symmetric(vertical: 8),
+//     child: SizedBox(
+//       width: 360,
+//       child: Text(
+//         '9월 18일',
+//         style: TextStyle(
+//           fontSize: 16,
+//           fontWeight: FontWeight.w400
+//         ),
+//       )  
+//     )
+//   );
+// }
