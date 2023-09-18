@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/sample_code_page/sample_code_page.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import '../page1/page1.dart';
 import '../page2/page2.dart';
 import '../page3/page3.dart';
@@ -16,6 +18,43 @@ class MainPage extends StatelessWidget {
       appBar: AppBar(),
       body: SizedBox(
           child: Column(
+        children: [
+          ConfirmBtn(
+            text: '샘플코드',
+            action: SampleCodePage(),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const MissionPage()));
+            },
+            child: const Text('미션페이지'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SignUpPage(), // 회원가입 페이지로 이동
+                ),
+              );
+            },
+            child: const Text('회원가입'), // 회원가입 버튼 추가
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginPage(), // 회원가입 페이지로 이동
+                ),
+              );
+            },
+            child: const Text('로그인'), // 로그인 페이지 이동 버튼 추가
+          ),
+        ],
+      )),
+      child: Column(
         children: [
           ElevatedButton(
             onPressed: () {
@@ -69,7 +108,7 @@ class MainPage extends StatelessWidget {
             child: Text('마이페이지'),
           )
         ],
-      )),
+      ),
       bottomNavigationBar: BottomAppBar(
           child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

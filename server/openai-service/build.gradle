@@ -70,6 +70,9 @@ dependencies {
 
 	// sms
 	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+
+	// GPT
+	implementation 'com.theokanning.openai-gpt3-java:service:0.12.0'
 }
 
 dependencyManagement {
