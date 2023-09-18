@@ -91,6 +91,7 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                 controller: _tabController,
                 children: <Widget>[
                   me(context, account, makeAccount),
+                  myChild(context, account, makeAccount),
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
@@ -98,9 +99,6 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                       },
                       child: Text('자식 계정 전환'),
                     )
-                  ),
-                  Center(
-                    child: Text("It's sunny here"),
                   ),
                 ],
               ),
@@ -113,7 +111,7 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
   }
 }
 
-Widget me(BuildContext context, bool account, Function makeAccount) {
+Widget myChild(BuildContext context, bool account, Function makeAccount) {
   return SizedBox(
     width: 350,
     child: Column(
@@ -164,6 +162,18 @@ Widget me(BuildContext context, bool account, Function makeAccount) {
           ),
         ),
         SizedBox(height: 20,),
+      ],
+    )
+  );
+}
+
+Widget me(BuildContext context, bool account, Function makeAccount) {
+  return SizedBox(
+    width: 350,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        account ? AccountInfo() : MakeAccountBtn(makeAccount: makeAccount),
       ],
     )
   );
