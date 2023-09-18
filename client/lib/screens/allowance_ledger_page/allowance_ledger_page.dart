@@ -64,19 +64,3 @@ BoxDecoration moneyRecordsBgStyle() {
     color: const Color(0xFFFAFAFA),
   );
 }
-
-// Padding moneyRecordDate() {
-//   return Padding(
-//     padding: EdgeInsets.symmetric(vertical: 8),
-//     child: SizedBox(
-//       width: 360,
-//       child: Text(
-//         '9월 18일',
-//         style: TextStyle(
-//           fontSize: 16,
-//           fontWeight: FontWeight.w400
-//         ),
-//       )  
-//     )
-//   );
-// }

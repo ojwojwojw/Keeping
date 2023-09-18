@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_detail_create_page.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
 
 class MoneyRecord extends StatefulWidget {
@@ -35,7 +36,7 @@ class _MoneyRecordState extends State<MoneyRecord> {
           context: context,
           title: '상세 내역 쓰기',
           content: moneyRecordModalContent(widget.date, widget.storeName, widget.money),
-          button: moneyRecordModalBtns(),
+          button: moneyRecordModalBtns(context, widget.date, widget.storeName, widget.money, widget.balance),
         );
       },
       child: Padding(
@@ -174,30 +175,45 @@ Widget moneyRecordModalContent(DateTime date, String storeName, num money) {
 }
 
 // 용돈기입장 내역 클릭시 나오는 모달에 들어갈 버튼(2개)
-Row moneyRecordModalBtns() {
+Row moneyRecordModalBtns(
+  BuildContext context, DateTime date, String storeName, num money, num balance
+) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      moneyRecordModalBtn(Icons.receipt_long, '영수증 찍기'),
-      moneyRecordModalBtn(Icons.create, '직접 쓰기')
+      moneyRecordModalBtn(
+        Icons.receipt_long, 
+        '영수증 찍기', 
+        context, 
+        AllowanceLedgerDetailCreatePage(date: date, storeName: storeName, money: money, balance: balance,)),
+      moneyRecordModalBtn(
+        Icons.create, 
+        '직접 쓰기', 
+        context, 
+        AllowanceLedgerDetailCreatePage(date: date, storeName: storeName, money: money, balance: balance,))
     ],
   );
 }
 
 // 용돈기입장 내역 클릭시 나오는 모달에 들어가는 버튼 한 개
-Container moneyRecordModalBtn(IconData icon, String text) {
-  return Container(
-    width: 150,
-    height: 150,
-    decoration: moneyRecordModalBtnStyle(),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Icon(icon, size: 50,),
-        Text(text, style: TextStyle(fontSize: 20),)
-      ],
-    ),
+InkWell moneyRecordModalBtn(IconData icon, String text, BuildContext context, Widget path) {
+  return InkWell(
+    onTap: () {
+      Navigator.push(context, MaterialPageRoute(builder: (_) => path));
+    },
+    child: Container(
+      width: 150,
+      height: 150,
+      decoration: moneyRecordModalBtnStyle(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(icon, size: 50,),
+          Text(text, style: TextStyle(fontSize: 20),)
+        ],
+      ),
+    )
   );
 }
 
