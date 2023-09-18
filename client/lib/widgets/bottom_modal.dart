@@ -17,19 +17,22 @@ Future<dynamic> bottomModal({
             color: bgColor,
             borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)), // 테두리 둥글기 설정
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,  // 모달 높이 자동으로 지정
-            children: [
-              SizedBox(height: 15),
-              modalHeader(title, context),
-              SizedBox(height: 15),
-              content,
-              SizedBox(height: 25),
-              button,
-              SizedBox(height: 25),
-            ],
-          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,  // 모달 높이 자동으로 지정
+              children: [
+                SizedBox(height: 15),
+                modalHeader(title, context),
+                SizedBox(height: 15),
+                content,
+                SizedBox(height: 25),
+                button,
+                SizedBox(height: 25),
+              ],
+            ),
+          )
         )
       );
     }
