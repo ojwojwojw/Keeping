@@ -1,6 +1,6 @@
 package com.keeping.missionservice.domain.mission;
 
-import com.completionism.keeping.global.common.TimeBaseEntity;
+import com.keeping.missionservice.global.common.TimeBaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +18,10 @@ public class Mission extends TimeBaseEntity {
     @Column(name = "mission_id")
     private Long id;
     
-    // TODO: 회원 연관관계
-    @ManyToOne
-    @Column(name = "child_id")
-    private Child child;
+//    // TODO: 회원 연관관계
+//    @ManyToOne
+//    @Column(name = "child_id")
+//    private Child child;
 
     @Column
     private MissionType type;
@@ -48,9 +48,8 @@ public class Mission extends TimeBaseEntity {
     private Completed completed;
     
     @Builder
-    public Mission(Long id, Child child, MissionType type, String todo, int money, String cheeringMessage, String childComment, LocalDate startDate, LocalDate endDate, Completed completed) {
+    public Mission(Long id, MissionType type, String todo, int money, String cheeringMessage, String childComment, LocalDate startDate, LocalDate endDate, Completed completed) {
         this.id = id;
-        this.child = child;
         this.type = type;
         this.todo = todo;
         this.money = money;
@@ -61,9 +60,8 @@ public class Mission extends TimeBaseEntity {
         this.completed = completed;
     }
 
-    public static Mission toMission(Child child, MissionType type, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate, Completed completed) {
+    public static Mission toMission(MissionType type, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate, Completed completed) {
         return Mission.builder()
-                .child(child)
                 .type(type)
                 .todo(todo)
                 .money(money)

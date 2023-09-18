@@ -1,6 +1,6 @@
 package com.keeping.missionservice.domain.mission.repository;
 
-import com.completionism.keeping.domain.mission.Mission;
+import com.keeping.missionservice.domain.mission.Mission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
