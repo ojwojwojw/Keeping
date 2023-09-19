@@ -8,6 +8,29 @@ import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
 
+final List<Map<String, dynamic>> tempData = [
+  {
+    "id": 3,
+    "childKey" :"0986724",
+    "accountNumber": "172-123456-707-27",
+    "content": "아디다스 삼바",
+    "goalMoney": 140000,
+    "balance": 70000,
+    "savedImage": '[Base64 이미지]',
+    "completed": "INCOMPLETED"
+  },
+  {
+    "id": 7,
+    "childKey" :"0986724",
+    "accountNumber": "172-234567-707-27",
+    "content": "후드티 갖고 싶다",
+    "goalMoney": 140000,
+    "balance": 70000,
+    "savedImage": '[Base64 이미지]',
+    "completed": "INCOMPLETED"
+  }
+];
+
 class PiggyPage extends StatelessWidget {
   PiggyPage({super.key});
 
@@ -22,7 +45,7 @@ class PiggyPage extends StatelessWidget {
       body: Column(
         children: [
           PiggyInfo(),
-          PiggyFilters(),
+          // PiggyFilters(),
           Expanded(
             child: Container(
               decoration: lightGreyBgStyle(),
@@ -30,22 +53,16 @@ class PiggyPage extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    PiggyInfoCard(
-                      balance: 74000,
-                      content: '아디다스 삼바 내꺼야',
-                      goalMoney: 140000,
-                    ),
-                    PiggyInfoCard(
-                      balance: 74000,
-                      content: '아디다스 삼바 내꺼야',
-                      goalMoney: 140000,
-                    ),
-                    PiggyInfoCard(
-                      balance: 74000,
-                      content: '아디다스 삼바 내꺼야',
-                      goalMoney: 140000,
-                    ),
-                  ],
+                    SizedBox(height: 10,),
+                    ...tempData.map((e) => 
+                      PiggyInfoCard(
+                        content: e['content'], 
+                        balance: e['balance'], 
+                        goalMoney: e['goalMoney'],
+                        // img: Base64Decoder().convert(e['savedImage']),
+                      )
+                    ).toList()
+                  ]
                 ),
               ),
             ),
