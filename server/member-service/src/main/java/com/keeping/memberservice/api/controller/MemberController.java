@@ -21,7 +21,6 @@ import java.security.NoSuchAlgorithmException;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/member-service")
 @Slf4j
 public class MemberController {
 
