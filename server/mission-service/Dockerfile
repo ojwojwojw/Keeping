@@ -16,6 +16,6 @@ RUN dos2unix gradlew
 RUN ./gradlew bootJar
 
 FROM openjdk:17
-COPY --from=builder build/libs/*.jar app.jar
+COPY --from=builder build/libs/*.jar MissionServer.jar
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "MissionServer.jar"]
