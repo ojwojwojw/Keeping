@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "926429802747",
+    "project_id": "keeping-dc42f",
+    "storage_bucket": "keeping-dc42f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:926429802747:android:1c00de6777c5e72f90805e",
+        "android_client_info": {
+          "package_name": "com.example.keeping"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWmD28vXwr8HQcIQmjrW_fZMTVq8a2SNo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
