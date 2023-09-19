@@ -54,35 +54,6 @@ class MainPage extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const MissionPage()));
-            },
-            child: const Text('미션페이지'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SignUpPage(), // 회원가입 페이지로 이동
-                ),
-              );
-            },
-            child: const Text('회원가입'), // 회원가입 버튼 추가
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginPage(), // 회원가입 페이지로 이동
-                ),
-              );
-            },
-            child: const Text('로그인'), // 로그인 페이지 이동 버튼 추가
-          ),
-          ElevatedButton(
-            onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
