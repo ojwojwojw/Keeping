@@ -1,9 +1,19 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/util/build_text_form_field.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+
+TextEditingController _userId = TextEditingController();
+TextEditingController _userPw = TextEditingController();
+TextEditingController _userPwCk = TextEditingController();
+TextEditingController _userName = TextEditingController();
+TextEditingController _userBirth = TextEditingController();
+TextEditingController _userPhoneNumber = TextEditingController();
+final _signupKey = GlobalKey<FormState>();
 
 class SignUpParentPage extends StatefulWidget {
   const SignUpParentPage({Key? key}) : super(key: key);
@@ -13,15 +23,25 @@ class SignUpParentPage extends StatefulWidget {
 }
 
 class _SignUpParentPageState extends State<SignUpParentPage> {
-  String idDupRes = ''; // 소스코드 결과 출력
-  TextEditingController _userId = TextEditingController();
-  TextEditingController _userPw = TextEditingController();
-  TextEditingController _userPwCk = TextEditingController();
-  TextEditingController _userName = TextEditingController();
-  TextEditingController _userBirth = TextEditingController();
-  TextEditingController _userPhoneNumber = TextEditingController();
+  String userId = _userId.text;
+  String userPw = _userPw.text;
+  String userPwCk = _userPwCk.text;
+  String userName = _userName.text;
+  String userBirth = _userBirth.text;
+  String userPhoneNumber = _userPhoneNumber.text;
 
-  final _signupKey = GlobalKey<FormState>();
+  String idDupRes = '';
+  String verificationResult = '';
+  @override
+  void initState() {
+    super.initState();
+    _userId = TextEditingController();
+    _userPw = TextEditingController();
+    _userPwCk = TextEditingController();
+    _userName = TextEditingController();
+    _userPhoneNumber = TextEditingController();
+    _userBirth = TextEditingController();
+  }
 
   @override
   void dispose() {
@@ -32,6 +52,18 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
     _userBirth.dispose();
     _userPhoneNumber.dispose();
     super.dispose();
+  }
+
+  handledupCheck(result) {
+    setState(() {
+      idDupRes = result;
+    });
+  }
+
+  handleCerficationPhone(result) {
+    setState(() {
+      verificationResult = result;
+    });
   }
 
   @override
@@ -54,23 +86,11 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     userIdField(),
-                    ElevatedButton(
-                      onPressed: () async {
-                        print('중복 체크 중');
-                        final response = await httpGet(
-                            'https://jsonplaceholder.typicode.com/posts', null);
-                        print('$response, 비동기 요청 완료');
-                        if (response != null) {
-                          setState(() {
-                            idDupRes = response.toString();
-                          });
-                        } else {
-                          setState(() {
-                            idDupRes = '중복';
-                          });
-                        }
+                    ConfirmBtn(
+                      text: '아이디 중복 확인',
+                      action: () {
+                        idDupliCheck(context, handledupCheck);
                       },
-                      child: Text('닉네임 중복 체크'),
                     ),
                     Text(idDupRes),
                     userPwField(),
@@ -78,6 +98,13 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                     usernameField(),
                     userBirthField(),
                     userPhoneNumberField(),
+                    ConfirmBtn(
+                      text: '인증번호 받기',
+                      action: () {
+                        verificationPhone(context, handleCerficationPhone);
+                      },
+                    ),
+                    Text(verificationResult),
                   ],
                 ),
               ),
@@ -196,35 +223,91 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
     );
   }
 
-  Future<List<dynamic>?> httpGet(
-      String url, Map<String, String>? headers) async {
-    try {
-      var response = await http.get(Uri.parse(url), headers: headers);
-      print(response);
-      if (response.statusCode == 200) {
-        var result = jsonDecode(response.body);
-        return result;
-      } else {
-        print('HTTP Request Failed with status code: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      print('Error during HTTP request: $e');
-      return null;
-    }
-  }
-
   void signUp() {
     print('회원가입 함수까지 옵니다.');
     if (_signupKey.currentState!.validate()) {
       print('유효성 검사 통과');
     }
-    String userId = _userId.text;
-    String userPw = _userPw.text;
-    String userPwCk = _userPwCk.text;
-    String userName = _userName.text;
-    String userBirth = _userBirth.text;
-    String userPhoneNumber = _userPhoneNumber.text;
+
     // 여기서 회원가입 로직을 수행하세요.
+  }
+}
+
+Future<void> idDupliCheck(BuildContext context, Function handledupCheck) async {
+  String id = _userId.text;
+  print(id);
+  final response = await httpGet('/member-service/id/${id}', null);
+  if (response != null) {
+    handledupCheck('인증에 성공했습니다.');
+  } else {
+    handledupCheck('인증에 실패하였습니다.');
+  }
+}
+
+Future<void> verificationPhone(
+    BuildContext context, Function handleCertificationPhone) async {
+  String tmpNumber = _userPhoneNumber.text;
+
+  // 전화 번호를 하이픈 형식으로 변환
+  String formattedNumber = formatPhoneNumber(tmpNumber);
+
+  print(formattedNumber);
+
+  final response = await httpPost(
+    '/member-service/phone',
+    null,
+    {'phone': formattedNumber},
+  );
+
+  if (response != null) {
+    handleCertificationPhone('인증에 성공했습니다.');
+  } else {
+    handleCertificationPhone('인증에 실패했습니다');
+  }
+}
+
+String formatPhoneNumber(String phoneNumber) {
+  if (phoneNumber.length == 11) {
+    return phoneNumber.replaceFirstMapped(RegExp(r'(\d{3})(\d{4})(\d{4})'),
+        (match) {
+      return '${match[1]}-${match[2]}-${match[3]}';
+    });
+  } else {
+    return phoneNumber; // 형식에 맞지 않는 경우 그대로 반환
+  }
+}
+
+Future<List<dynamic>?> httpGet(String url, Map<String, String>? headers) async {
+  try {
+    var response = await http.get(Uri.parse(url), headers: headers);
+    print(response);
+    if (response.statusCode == 200) {
+      var result = jsonDecode(response.body);
+      return result;
+    } else {
+      print('HTTP Request Failed with status code: ${response.statusCode}');
+      return null;
+    }
+  } catch (e) {
+    print('Error during HTTP request: $e');
+    return null;
+  }
+}
+
+Future<dynamic> httpPost(
+    String url, Map<String, String>? headers, Map<String, dynamic> body) async {
+  try {
+    var response = await http.post(Uri.parse(url),
+        headers: headers, body: json.encode(body));
+    if (response.statusCode == 200) {
+      var result = jsonDecode(response.body);
+      return result;
+    } else {
+      print('HTTP Request Failed with status code: ${response.statusCode}');
+      return null;
+    }
+  } catch (e) {
+    print('Error during HTTP request: $e');
+    return null;
   }
 }
