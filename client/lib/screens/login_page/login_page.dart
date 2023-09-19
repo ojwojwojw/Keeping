@@ -4,6 +4,10 @@ import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/util/build_text_form_field.dart';
 
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();
 final _loginKey = GlobalKey<FormState>();
@@ -16,6 +20,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  String loginResult = '로그인 안 된 상태';
+  String userId = _userId.text;
+  String userPw = _userPw.text;
+
   @override
   //페이지를 초기에 접속하면 input 받는 컨트롤러 초기화
   void initState() {
@@ -31,6 +39,12 @@ class _LoginPageState extends State<LoginPage> {
     _userId.dispose();
     _userPw.dispose();
     super.dispose();
+  }
+
+  handleLogin(result) {
+    setState(() {
+      loginResult = result;
+    });
   }
 
   @override
@@ -52,14 +66,16 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [renderLoginText()],
+                  children: [userIdField(), userPwField(), Text(loginResult)],
                 ),
               ),
 
               //로그인 버튼
               ConfirmBtn(
                 text: '로그인',
-                action: login,
+                action: () {
+                  login(context, handleLogin);
+                },
               ),
 
               //회원가입 버튼
@@ -77,62 +93,65 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-// 초기 로그인 텍스트 렌더링
-Widget renderLoginText() {
-  return Column(
-    children: [
-      BuildTextFormField(
-          controller: _userId,
-          labelText: '아이디',
-          hintText: '아이디를 입력해 주세요.',
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return '필수 항목입니다';
-            }
-            return null;
-          }),
-      BuildTextFormField(
-          controller: _userPw,
-          labelText: '비밀번호',
-          hintText: '비밀번호를 입력해 주세요.',
-          obscureText: true,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return '필수 항목입니다';
-            }
-            return null;
-          })
-    ],
-  );
-}
-
-void login(BuildContext context) {
+Future<void> login(BuildContext context, Function handleLogin) async {
   String userId = _userId.text;
-  String userPwd = _userPw.text;
+  String userPw = _userPw.text;
+  final response = await httpPost(
+    '/member-service/login',
+    null,
+    {'loginId': userId, 'loginPw': userPw},
+  );
+  if (response != null) {
+    handleLogin('성공');
+  } else {
+    handleLogin('실패');
+  }
   print('로그인 시도');
 }
 
-//로그인, 회원가입과 같이 유효성 검사가 필요한 곳에 사용하세요. form과 함께 사용하면 됩니다.
-Widget BuildTextFormField({
-  required TextEditingController controller,
-  required String labelText,
-  required String hintText,
-  required String? Function(String?) validator, // 유효성 검사시 이용
-  bool obscureText = false, // 비밀번호와 같이 가려져야 하는 필드의 경우 true로 설정
-}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      TextFormField(
-        controller: controller,
-        obscureText: obscureText,
-        validator: validator,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(labelText: labelText, hintText: hintText),
-      ),
-      SizedBox(
-        height: 16.0,
-      )
-    ],
+Widget userIdField() {
+  return BuildTextFormField(
+    controller: _userId,
+    labelText: '아이디',
+    hintText: '아이디를 입력해주세요',
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return '필수 항목입니다';
+      }
+      return null;
+    },
   );
+}
+
+Widget userPwField() {
+  return BuildTextFormField(
+    controller: _userPw,
+    labelText: '비밀번호',
+    hintText: '비밀번호를 입력해주세요',
+    obscureText: true,
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return '필수 항목입니다';
+      }
+      return null;
+    },
+  );
+}
+
+Future<dynamic> httpPost(
+    String url, Map<String, String>? headers, Map<String, dynamic> body) async {
+  try {
+    var response = await http.post(Uri.parse(url),
+        headers: headers, body: json.encode(body));
+    if (response.statusCode == 200) {
+      var result = jsonDecode(response.body);
+      return result;
+    } else {
+      print('HTTP Request Failed with status code: ${response.statusCode}');
+      return null;
+    }
+  } catch (e) {
+    print('Error during HTTP request: $e');
+    return null;
+  }
 }

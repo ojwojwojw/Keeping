@@ -2,12 +2,11 @@
 <module type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$">
-      <excludeFolder url="file://$MODULE_DIR$/client/build" />
-      <excludeFolder url="file://$MODULE_DIR$/client/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/client/.pub" />
-    </content>
+    <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="SonarLintModuleSettings">
+    <option name="uniqueId" value="fbb68c9a-f639-40e1-b106-cd5b48c6b821" />
   </component>
 </module>

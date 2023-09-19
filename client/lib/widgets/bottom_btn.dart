@@ -22,6 +22,7 @@ class BottomBtn extends StatelessWidget {
     return BottomAppBar(
       color: bgColor,
       height: 70.0,
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: TextButton(
         onPressed: () {
           if (action is Widget) {

@@ -1,6 +1,5 @@
 package com.completionism.keeping.domain.account;
 
-import com.completionism.keeping.domain.member.Member;
 import com.completionism.keeping.global.common.TimeBaseEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,9 +8,11 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
+import static lombok.AccessLevel.PROTECTED;
+
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 public class Account extends TimeBaseEntity {
 
     @Id
@@ -19,9 +20,8 @@ public class Account extends TimeBaseEntity {
     @Column(name = "account_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @Column(name = "member_key", nullable = false)
+    private String memberKey;
 
     @Column(name = "account_number", unique = true, nullable = false)
     @Size(min = 18, max = 18)
@@ -39,22 +39,22 @@ public class Account extends TimeBaseEntity {
 
 
     @Builder
-    public Account(Long id, Member member, String accountNumber, String authPassword, Long balance, boolean active) {
+    private Account(Long id, String memberKey, String accountNumber, String authPassword, Long balance, boolean active) {
         this.id = id;
-        this.member = member;
+        this.memberKey = memberKey;
         this.accountNumber = accountNumber;
         this.authPassword = authPassword;
         this.balance = balance;
         this.active = active;
     }
 
-    public static Account toAccount(Member member, String accountNumber, String authPassword, Long balance, boolean active) {
+    public static Account toAccount(String memberKey, String accountNumber, String authPassword) {
         return Account.builder()
-                .member(member)
+                .memberKey(memberKey)
                 .accountNumber(accountNumber)
                 .authPassword(authPassword)
-                .balance(balance)
-                .active(active)
+                .balance(0l)
+                .active(true)
                 .build();
     }
 

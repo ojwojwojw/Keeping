@@ -34,13 +34,13 @@ import java.util.List;
 @Transactional
 public class SmsServiceImpl implements SmsService {
 
-    @Value("${naver-cloud-sms.accessKey}")
+    @Value("${sms.accessKey}")
     private String accessKey;
-    @Value("${naver-cloud-sms.secretKey}")
+    @Value("${sms.secretKey}")
     private String secretKey;
-    @Value("${naver-cloud-sms.serviceId}")
+    @Value("${sms.serviceId}")
     private String serviceId;
-    @Value("${naver-cloud-sms.senderPhone}")
+    @Value("${sms.senderPhone}")
     private String phone;
 
 //    private final MemberRepository memberRepository;

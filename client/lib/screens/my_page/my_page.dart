@@ -73,32 +73,28 @@ Widget logoutBtn(BuildContext context) {
 
 void pressLogoutBtn(BuildContext context) {
   print('로그아웃 중');
-  showModalBottomSheet(
+  bottomModal(
     context: context,
-    builder: (BuildContext context) {
-      return BottomModal(
-        title: '로그아웃',
-        content: logoutDescription(),
-        button: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('확인'),
-            ),
-            SizedBox(width: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('취소'),
-            ),
-          ],
+    title: '로그아웃',
+    content: logoutDescription(),
+    button: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('확인'),
         ),
-      );
-    },
+        SizedBox(width: 20),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('취소'),
+        ),
+      ],
+    ),
   );
 }
 
