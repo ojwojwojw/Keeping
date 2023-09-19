@@ -81,6 +81,8 @@ dependencies {
 
 	// sms
 	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+
+	runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 dependencyManagement {
@@ -97,6 +99,12 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
+}
+
+bootJar{
+	archivesBaseName = 'bank-service-1.0'
+	archiveFileName = 'bank-service-1.0.jar'
+	archiveVersion = "0.0.0"
 }
 
 def querydslDir = "$buildDir/generated/querydsl"
