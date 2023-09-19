@@ -5,6 +5,9 @@ RUN apt-get update && apt-get install -y dos2unix openjdk-17-jdk
 # Set JAVA_HOME environment variable
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
+VOLUME /tmp
+COPY apiEncryptionKey.jks apiEncryptionKey.jks
+
 COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
@@ -16,6 +19,6 @@ RUN dos2unix gradlew
 RUN ./gradlew bootJar
 
 FROM openjdk:17
-COPY --from=builder build/libs/*.jar app.jar
+COPY --from=builder build/libs/*.jar ConfigServer.jar
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "ConfigServer.jar"]
