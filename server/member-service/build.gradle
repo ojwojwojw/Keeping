@@ -79,7 +79,7 @@ dependencies {
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
 	//spring cloud bus
-	implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
 
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
