@@ -6,7 +6,7 @@ spring:
     name: discovery-service
   cloud:
     config:
-      uri: http://127.0.0.1:8888
+      uri: http://j9c207.p.ssafy.io:8888/
       nane: keeping
 
 eureka:

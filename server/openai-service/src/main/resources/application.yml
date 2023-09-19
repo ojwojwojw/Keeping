@@ -16,7 +16,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://j9c207.p.ssafy.io:8761/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
@@ -25,7 +25,8 @@ spring:
   application:
     name: openai-service
   rabbitmq:
-    host: 127.0.0.1
+    # host: 127.0.0.1
+    host: rabbitmq
     port: 5672
     username: guest
     password: guest
