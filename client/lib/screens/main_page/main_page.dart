@@ -52,10 +52,6 @@ class MainPage extends StatelessWidget {
             },
             child: const Text('로그인'), // 로그인 페이지 이동 버튼 추가
           ),
-        ],
-      )),
-      child: Column(
-        children: [
           ElevatedButton(
             onPressed: () {
               Navigator.push(context,
@@ -108,7 +104,7 @@ class MainPage extends StatelessWidget {
             child: Text('마이페이지'),
           )
         ],
-      ),
+      )),
       bottomNavigationBar: BottomAppBar(
           child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
