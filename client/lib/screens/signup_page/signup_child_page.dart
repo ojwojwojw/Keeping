@@ -10,17 +10,18 @@ TextEditingController _userPwCk = TextEditingController();
 TextEditingController _userName = TextEditingController();
 TextEditingController _userBirth = TextEditingController();
 TextEditingController _userPhoneNumber = TextEditingController();
+TextEditingController _parentPhoneNumber = TextEditingController();
 // 폼의 상태 관리
 final _signupKey = GlobalKey<FormState>();
 
-class SignUpParentPage extends StatefulWidget {
-  const SignUpParentPage({Key? key}) : super(key: key);
+class SignUpChildPage extends StatefulWidget {
+  const SignUpChildPage({Key? key}) : super(key: key);
 
   @override
-  _SignUpParentPageState createState() => _SignUpParentPageState();
+  _SignUpChildPageState createState() => _SignUpChildPageState();
 }
 
-class _SignUpParentPageState extends State<SignUpParentPage> {
+class _SignUpChildPageState extends State<SignUpChildPage> {
   @override
   //페이지를 초기에 접속하면 input 받는 컨트롤러 초기화
   void initState() {
@@ -31,10 +32,11 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
     _userName = TextEditingController();
     _userBirth = TextEditingController();
     _userPhoneNumber = TextEditingController();
+    _parentPhoneNumber = TextEditingController();
   }
+  // 페이지가 파기될 때 컨트롤러를 해제
 
   @override
-  // 페이지가 파기될 때 컨트롤러를 해제
   void dispose() {
     _userId.dispose();
     _userPw.dispose();
@@ -42,6 +44,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
     _userName.dispose();
     _userBirth.dispose();
     _userPhoneNumber.dispose();
+    _parentPhoneNumber.dispose();
     super.dispose();
   }
 
@@ -53,10 +56,10 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
           child: Column(
             children: [
               MyHeader(
-                text: '부모가 회원 가입 중',
+                text: '자녀가 회원 가입 중',
                 elementColor: Colors.black,
                 icon: Icon(Icons.arrow_circle_up),
-                path: SignUpParentPage(),
+                path: SignUpChildPage(),
               ),
               Padding(
                 padding: EdgeInsets.all(16.0),
@@ -70,7 +73,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
         ),
       ),
       bottomNavigationBar: BottomBtn(
-        text: '회원가입부모',
+        text: '회원가입자녀',
         action: (BuildContext context) {
           //유효성 검사 전부 통과하면 회원가입
           if (_signupKey.currentState!.validate()) {
@@ -167,6 +170,17 @@ Widget renderSignupText() {
       BuildTextFormField(
         controller: _userPhoneNumber,
         labelText: '휴대폰 번호',
+        hintText: '- 없이 숫자만 입력해주세요. (예:01012345678)',
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return '필수 항목입니다';
+          }
+          return null;
+        },
+      ),
+      BuildTextFormField(
+        controller: _parentPhoneNumber,
+        labelText: '부모님 휴대폰 번호',
         hintText: '- 없이 숫자만 입력해주세요. (예:01012345678)',
         validator: (value) {
           if (value == null || value.isEmpty) {
