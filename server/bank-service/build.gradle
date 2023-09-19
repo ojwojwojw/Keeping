@@ -81,6 +81,11 @@ dependencies {
 
 	// sms
 	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+
+	// WebClient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation group: 'org.json', name: 'json', version: '20210307'
+
 }
 
 dependencyManagement {

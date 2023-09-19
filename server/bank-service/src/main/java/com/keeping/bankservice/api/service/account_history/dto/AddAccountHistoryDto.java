@@ -12,25 +12,29 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class AddAccountHistoryDto {
 
-    private Account account;
+    private String accountNumber;
     private String storeName;
     private boolean type;
     private Long money;
+    private String address;
+
 
     @Builder
-    private AddAccountHistoryDto(Account account, String storeName, boolean type, Long money) {
-        this.account = account;
+    private AddAccountHistoryDto(String accountNumber, String storeName, boolean type, Long money, String address) {
+        this.accountNumber = accountNumber;
         this.storeName = storeName;
         this.type = type;
         this.money = money;
+        this.address = address;
     }
 
     public static AddAccountHistoryDto toDto(AddAccountHistoryRequest request) {
         return AddAccountHistoryDto.builder()
-                .account(request.getAccount())
+                .accountNumber(request.getAccountNumber())
                 .storeName(request.getStoreName())
-                .type(request.isType())
+                .type(request.getType())
                 .money(request.getMoney())
+                .address(request.getAddress())
                 .build();
     }
 

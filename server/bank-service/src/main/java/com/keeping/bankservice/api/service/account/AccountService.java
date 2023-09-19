@@ -1,10 +1,8 @@
 package com.keeping.bankservice.api.service.account;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.keeping.bankservice.api.service.account.dto.AddAccountDto;
-import com.keeping.bankservice.api.service.account.dto.AuthPhoneDto;
-import com.keeping.bankservice.api.service.account.dto.CheckPhoneDto;
-import com.keeping.bankservice.api.service.account.dto.WithdrawMoneyDto;
+import com.keeping.bankservice.api.service.account.dto.*;
+import com.keeping.bankservice.domain.account.Account;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
@@ -17,5 +15,6 @@ public interface AccountService {
     Long addAccount(String memberKey, AddAccountDto dto) throws JsonProcessingException;
     void checkPhone(String memberKey, CheckPhoneDto dto) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException;
     void authPhone(String memberKey, AuthPhoneDto dto) throws JsonProcessingException;
-    void withdrawMoney(String memberKey, WithdrawMoneyDto dto);
+    Account withdrawMoney(String memberKey, WithdrawMoneyDto dto);
+    Account depositMoney(String memberKey, DepositMoneyDto dto);
 }

@@ -34,7 +34,7 @@ public class PiggyServiceTest {
         // given
         String memberKey = "0986724";
 
-        String fileName = "짱구"; // 파일명
+        String fileName = "짱구1"; // 파일명
         String contentType = "jpg"; // 파일타입
         String filePath = "src/test/resources/testImage/"+fileName+"."+contentType; // 파일 경로
         FileInputStream fileInputStream = new FileInputStream(filePath);

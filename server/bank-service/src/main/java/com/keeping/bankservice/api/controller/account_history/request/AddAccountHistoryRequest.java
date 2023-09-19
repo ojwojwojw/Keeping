@@ -1,11 +1,11 @@
 package com.keeping.bankservice.api.controller.account_history.request;
 
-import com.keeping.bankservice.domain.account.Account;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -14,23 +14,27 @@ import static lombok.AccessLevel.PROTECTED;
 public class AddAccountHistoryRequest {
 
     @NotBlank
-    private Account account;
+    private String accountNumber;
 
     @NotBlank
     private String storeName;
 
-    @NotBlank
-    private boolean type;
+    @NotNull
+    private Boolean type;
 
     @NotBlank
     private Long money;
 
+    @NotBlank
+    private String address;
+
 
     @Builder
-    private AddAccountHistoryRequest(Account account, String storeName, boolean type, Long money) {
-        this.account = account;
+    private AddAccountHistoryRequest(String accountNumber, String storeName, boolean type, Long money, String address) {
+        this.accountNumber = accountNumber;
         this.storeName = storeName;
         this.type = type;
         this.money = money;
+        this.address = address;
     }
 }
