@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/category_dropdown_btn.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
+import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 
@@ -122,13 +123,6 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
   }
 }
 
-TextStyle _labelStyle() {
-  return TextStyle(
-    fontSize: 22,
-    fontWeight: FontWeight.bold
-  );
-}
-
 Padding _renderTextFormField({
   required String label,
   required FormFieldSetter onSaved,
@@ -140,14 +134,14 @@ Padding _renderTextFormField({
     padding: EdgeInsets.symmetric(vertical: 20),
     child: Center(
       child: SizedBox(
-        width: 360,
+        width: 340,
         child: Column(
           children: [
             Row(
               children: [
                 Text(
                   label,
-                  style: _labelStyle(),
+                  style: labelStyle(),
                 )
               ],
             ),
@@ -157,7 +151,6 @@ Padding _renderTextFormField({
               textInputAction: TextInputAction.next,
               controller: controller,
               keyboardType: isNumber ? TextInputType.number : null,
-              
             )
           ],
         )
@@ -171,14 +164,14 @@ Padding _renderCategoryField(Function selectCategory, String selectedCategory) {
     padding: EdgeInsets.symmetric(vertical: 20),
     child: Center(
       child: SizedBox(
-        width: 360,
+        width: 340,
         child: Column(
           children: [
             Row(
               children: [
                 Text(
                   '어떤 종류인가요?',
-                  style: _labelStyle(),
+                  style: labelStyle(),
                 )
               ],
             ),
