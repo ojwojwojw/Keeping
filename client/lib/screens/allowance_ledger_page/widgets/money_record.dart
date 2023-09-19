@@ -54,7 +54,7 @@ class _MoneyRecordState extends State<MoneyRecord> {
                 children: [
                   Padding(
                     padding: EdgeInsets.all(10),
-                    child: categoryImg('assets/image/temp_image.jpg'),
+                    child: _categoryImg('assets/image/temp_image.jpg'),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -107,7 +107,7 @@ BoxDecoration moneyRecordStyle() {
 }
 
 // 카테고리 이미지
-ClipOval categoryImg(String imgPath) {
+ClipOval _categoryImg(String imgPath) {
   return ClipOval(
     child: SizedBox(
       width: 60,
