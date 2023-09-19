@@ -1,6 +1,6 @@
 encrypt:
   key-store:
-    # location: file://${user.home}/Documents/workspace/keeping/keystore/apiEncryptionKey.jks
+    #    location: file://${user.home}/Documents/workspace/keeping/keystore/apiEncryptionKey.jks
     location: file:/apiEncryptionKey.jks
-    password: ssafyc207
+    password:
     alias: apiEncryptionKey
