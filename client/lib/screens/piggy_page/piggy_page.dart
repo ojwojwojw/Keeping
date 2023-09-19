@@ -3,6 +3,7 @@ import 'package:keeping/screens/piggy_page/make_piggy_test.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_filters.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_info.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_info_card.dart';
+import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
@@ -24,7 +25,7 @@ class PiggyPage extends StatelessWidget {
           PiggyFilters(),
           Expanded(
             child: Container(
-              decoration: piggyPageBgStyle(),
+              decoration: lightGreyBgStyle(),
               width: double.infinity,
               child: SingleChildScrollView(
                 child: Column(
@@ -59,10 +60,4 @@ class PiggyPage extends StatelessWidget {
       bottomNavigationBar: BottomNav(),
     );
   }
-}
-
-BoxDecoration piggyPageBgStyle() {
-  return BoxDecoration(
-    color: const Color(0xFFFAFAFA),
-  );
 }

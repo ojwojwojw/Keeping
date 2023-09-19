@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
+import 'package:keeping/styles.dart';
 
 final formattedMoney = NumberFormat('#,##0');
 final formattedTime = DateFormat('HH:mm');
@@ -38,7 +39,7 @@ class _MoneyRecordWithDetail extends State<MoneyRecordWithDetail> {
         child: Center(
           child: Container(
             width: 360,
-            decoration: moneyRecordStyle(),
+            decoration: roundedBoxWithShadowStyle(),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Column(
@@ -69,7 +70,7 @@ Widget _mainMoneyRecord(String storeName, DateTime date, num money, num balance)
           children: [
             Padding(
               padding: EdgeInsets.all(10),
-              child: _categoryImg('assets/image/temp_image.jpg'),
+              child: categoryImg('assets/image/temp_image.jpg'),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -131,7 +132,7 @@ Widget _detailMoneyRecord(String content, num money) {
             children: [
               Padding(
                 padding: EdgeInsets.all(10),
-                child: _categoryImg('assets/image/temp_image.jpg'),
+                child: categoryImg('assets/image/temp_image.jpg'),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -158,19 +159,5 @@ Widget _detailMoneyRecord(String content, num money) {
         ],
       ),
     )
-  );
-}
-
-// 카테고리 이미지
-ClipOval _categoryImg(String imgPath) {
-  return ClipOval(
-    child: SizedBox(
-      width: 60,
-      height: 60,
-      child: Image.asset(
-        imgPath,
-        fit: BoxFit.cover
-      ),
-    ),
   );
 }

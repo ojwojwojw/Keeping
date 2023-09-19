@@ -4,6 +4,7 @@ import 'package:keeping/screens/allowance_ledger_page/widgets/allow_search_bar.d
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record_with_detail.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
+import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/header.dart';
 
@@ -69,7 +70,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
           AllowSearchBar(),
           Expanded(
             child: Container(
-              decoration: moneyRecordsBgStyle(),
+              decoration: lightGreyBgStyle(),
               width: double.infinity,
               child: SingleChildScrollView(
                 child: Column(
@@ -93,22 +94,6 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                         )
                     ).toList(),
                   ]
-                  // children: [
-                    
-                  //   MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
-                  //   MoneyRecord(
-                  //     date: DateTime.parse('2020-10-10T14:58:04+09:00'),
-                  //     storeName: '달콤왕가탕후루 전대',
-                  //     money: 3000,
-                  //     balance: 50000,
-                  //   ),
-                  //   MoneyRecord(
-                  //     date: DateTime.parse('2020-10-10T14:58:04+09:00'),
-                  //     storeName: '올리브영 전대',
-                  //     money: 5000,
-                  //     balance: 53000,
-                  //   ),
-                  // ],
                 ),
               )
             )
@@ -118,10 +103,4 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
       bottomNavigationBar: BottomNav(),
     );
   }
-}
-
-BoxDecoration moneyRecordsBgStyle() {
-  return BoxDecoration(
-    color: const Color(0xFFFAFAFA),
-  );
 }

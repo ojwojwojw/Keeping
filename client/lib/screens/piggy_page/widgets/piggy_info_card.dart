@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:keeping/styles.dart';
 
 class PiggyInfoCard extends StatefulWidget {
   final String content;
@@ -29,13 +30,13 @@ class _PiggyInfoCardState extends State<PiggyInfoCard> {
       child: Container(
         width: 360,
         height: 160,
-        decoration: piggyInfoCardStyle(),
+        decoration: roundedBoxWithShadowStyle(),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 35),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              piggyImg(widget.imgPath),
+              _piggyImg(widget.imgPath),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -61,7 +62,7 @@ class _PiggyInfoCardState extends State<PiggyInfoCard> {
   }
 }
 
-ClipOval piggyImg(String imgPath) {
+ClipOval _piggyImg(String imgPath) {
   return ClipOval(
     child: SizedBox(
       width: 100,
@@ -71,21 +72,6 @@ ClipOval piggyImg(String imgPath) {
         fit: BoxFit.cover
       ),
     ),
-  );
-}
-
-BoxDecoration piggyInfoCardStyle() {
-  return BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(20),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.grey.withOpacity(0.7),
-        spreadRadius: 0,
-        blurRadius: 5.0,
-        offset: Offset(0, 0),
-      ),
-    ],
   );
 }
 
