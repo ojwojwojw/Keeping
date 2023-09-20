@@ -7,7 +7,7 @@ import com.keeping.bankservice.api.service.account_history.AccountHistoryService
 import com.keeping.bankservice.api.service.account_history.dto.AddAccountHistoryDto;
 import com.keeping.bankservice.domain.account.Account;
 import com.keeping.bankservice.domain.account_history.AccountHistory;
-import com.keeping.bankservice.domain.account_history.Category;
+import com.keeping.bankservice.domain.account_history.LargeCategory;
 import com.keeping.bankservice.domain.account_history.repository.AccountHistoryQueryRepository;
 import com.keeping.bankservice.domain.account_history.repository.AccountHistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.keeping.bankservice.domain.account_history.Category.*;
+import static com.keeping.bankservice.domain.account_history.LargeCategory.*;
 
 @Service
 @Transactional
@@ -58,11 +58,11 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         Map keywordResponse = useKakaoLocalApi(true, dto.getStoreName());
         Map addressResponse = useKakaoLocalApi(false, dto.getAddress());
 
-        Category category = null;
+        LargeCategory largeCategory = null;
         String categoryType = null;
         try {
             categoryType = ((LinkedHashMap) ((ArrayList) keywordResponse.get("documents")).get(0)).get("category_group_code").toString();
-            category = mappingCategory(categoryType);
+            largeCategory = mappingCategory(categoryType);
         }
         catch(NullPointerException e) {
             categoryType = "ETC";
@@ -79,7 +79,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         }
 
         // 새로운 거래 내역 등록
-        AccountHistory accountHistory = AccountHistory.toAccountHistory(account, dto.getStoreName(), dto.isType(), dto.getMoney(), account.getBalance(), dto.getMoney(), category, false, dto.getAddress(), latitude, longitude);
+        AccountHistory accountHistory = AccountHistory.toAccountHistory(account, dto.getStoreName(), dto.isType(), dto.getMoney(), account.getBalance(), dto.getMoney(), largeCategory, false, dto.getAddress(), latitude, longitude);
         AccountHistory saveAccountHistory = accountHistoryRepository.save(accountHistory);
 
         return saveAccountHistory.getId();
@@ -121,7 +121,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         return null;
     }
 
-    private Category mappingCategory(String categoryType) {
+    private LargeCategory mappingCategory(String categoryType) {
         switch(categoryType) {
             case "MT1":
                 return MART;
