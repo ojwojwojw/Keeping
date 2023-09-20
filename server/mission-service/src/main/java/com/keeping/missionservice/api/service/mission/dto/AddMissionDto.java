@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class AddMissionDto {
     private MissionType type; // 부모가 아이에게, 아이가 부모에게
 
-    private String to; // 어떤 아이한테 보내야하는지
+    private String to; // 어떤 사람한테 보내야하는지
 
     private String todo; // 미션 내용
 
