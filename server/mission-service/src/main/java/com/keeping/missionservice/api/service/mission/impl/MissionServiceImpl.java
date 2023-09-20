@@ -14,6 +14,7 @@ import com.keeping.missionservice.api.service.mission.dto.EditMissionDto;
 import com.keeping.missionservice.domain.mission.Completed;
 import com.keeping.missionservice.domain.mission.Mission;
 import com.keeping.missionservice.domain.mission.MissionType;
+import com.keeping.missionservice.domain.mission.repository.MissionQueryRepository;
 import com.keeping.missionservice.domain.mission.repository.MissionRepository;
 import com.keeping.missionservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class MissionServiceImpl implements MissionService {
     private MemberFeignClient memberFeignClient;
     private BankFeignClient bankFeignClient;
     private NotiFeignClient notiFeignClient;
+    private final MissionQueryRepository missionQueryRepository;
     private final MissionRepository missionRepository;
 
     /**
@@ -100,8 +102,8 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
-    public List<MissionResponse> showMission(String memberId) {
-        return null;
+    public List<MissionResponse> showMission(String memberKey) {
+        return missionQueryRepository.showMission(memberKey);
     }
 
     @Override

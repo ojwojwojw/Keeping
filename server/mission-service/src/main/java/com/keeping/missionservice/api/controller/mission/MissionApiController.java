@@ -65,15 +65,8 @@ public class MissionApiController {
     public ApiResponse<List<MissionResponse>> showMission(
             @PathVariable("member_key") String memberKey
     ) {
-        String memberId = null;
-
-        try {
-            List<MissionResponse> missionResponses = missionService.showMission(memberId);
-            return ApiResponse.ok(missionResponses);
-        } catch (NotFoundException e) {
-            return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
-        }
-
+        List<MissionResponse> missionResponses = missionService.showMission(memberKey);
+        return ApiResponse.ok(missionResponses);
     }
 
     @GetMapping("/{member_key}/{mission_id}")

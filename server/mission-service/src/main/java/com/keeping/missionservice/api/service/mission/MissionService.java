@@ -11,7 +11,7 @@ public interface MissionService {
 
     public Long addMission(AddMissionDto dto);
     
-    public List<MissionResponse> showMission(String memberId);
+    public List<MissionResponse> showMission(String memberKey);
     
     public MissionResponse showDetailMission(String memberId, Long missionId);
 
