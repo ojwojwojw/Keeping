@@ -1,5 +1,6 @@
 package com.keeping.missionservice.domain.mission;
 
+import com.keeping.missionservice.api.service.mission.dto.EditMissionDto;
 import com.keeping.missionservice.global.common.TimeBaseEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -84,5 +85,12 @@ public class Mission extends TimeBaseEntity {
     public void updateComment(String comment) {
         this.childComment = comment;
     }
-    
+
+    public void updateMission(String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
+        this.todo = todo;
+        this.money = money;
+        this.cheeringMessage = cheeringMessage;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }
