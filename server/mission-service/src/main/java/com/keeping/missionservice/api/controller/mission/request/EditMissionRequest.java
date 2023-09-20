@@ -1,6 +1,5 @@
 package com.keeping.missionservice.api.controller.mission.request;
 
-import com.keeping.missionservice.domain.mission.MissionType;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
@@ -14,13 +13,8 @@ public class EditMissionRequest {
     @NotNull
     private String memberKey;
 
-    @NotBlank
-    @Size(min = 5, max = 6)
-    @Pattern(regexp = "^(PARENT|CHILD)$")
-    private MissionType type; // 부모가 아이에게, 아이가 부모에게
-
     @NotNull
-    private String to; // 어떤 아이한테 보내야하는지
+    private Long missionId;
 
     @NotBlank
     @Size(min = 0)
@@ -38,10 +32,9 @@ public class EditMissionRequest {
     private LocalDate endDate; // 미션 마감일
 
     @Builder
-    public EditMissionRequest(String memberKey, MissionType type, String to, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
+    public EditMissionRequest(String memberKey, Long missionId, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
         this.memberKey = memberKey;
-        this.type = type;
-        this.to = to;
+        this.missionId = missionId;
         this.todo = todo;
         this.money = money;
         this.cheeringMessage = cheeringMessage;

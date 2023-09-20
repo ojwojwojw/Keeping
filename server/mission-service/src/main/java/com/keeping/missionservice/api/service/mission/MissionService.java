@@ -23,5 +23,5 @@ public interface MissionService {
 
     public Long editMission(EditMissionDto dto);
 
-    public Long removeMission(String memberId, Long missionId);
+    public Long removeMission(String memberKey, Long missionId);
 }

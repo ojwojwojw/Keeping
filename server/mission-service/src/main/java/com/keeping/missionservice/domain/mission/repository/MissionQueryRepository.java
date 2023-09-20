@@ -1,10 +1,12 @@
 package com.keeping.missionservice.domain.mission.repository;
 
 import com.keeping.missionservice.api.controller.mission.response.MissionResponse;
+import com.keeping.missionservice.domain.mission.Completed;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,10 +23,12 @@ public class MissionQueryRepository {
     }
 
     public Optional<Integer> countMoney(String childKey) {
+        List<Completed> completeds = Arrays.asList(Completed.YET, Completed.CREATE_WAIT, Completed.FINISH_WAIT);
         return Optional.ofNullable(queryFactory
                 .select(mission.money.sum())
                 .from(mission)
-                .where(mission.childKey.eq(childKey))
+                .where(mission.childKey.eq(childKey),
+                        mission.completed.in(completeds))
                 .groupBy(mission.childKey)
                 .fetchOne());
 
