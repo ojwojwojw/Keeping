@@ -8,20 +8,20 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Data
 @NoArgsConstructor(access = PROTECTED)
-public class WithdrawMoneyDto {
+public class DepositMoneyDto {
 
     private String accountNumber;
     private Long money;
 
 
     @Builder
-    private WithdrawMoneyDto(String accountNumber, Long money) {
+    private DepositMoneyDto(String accountNumber, Long money) {
         this.accountNumber = accountNumber;
         this.money = money;
     }
 
-    public static WithdrawMoneyDto toDto(String accountNumber, Long money) {
-        return WithdrawMoneyDto.builder()
+    public static DepositMoneyDto toDto(String accountNumber, Long money) {
+        return DepositMoneyDto.builder()
                 .accountNumber(accountNumber)
                 .money(money)
                 .build();
