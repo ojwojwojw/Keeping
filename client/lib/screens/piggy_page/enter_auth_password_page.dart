@@ -94,6 +94,7 @@ class _EnterAuthPasswordPageState extends State<EnterAuthPasswordPage> {
           authPassword,
           context.watch<AddPiggyProvider>().imgPath!,
         );},
+        isDisabled: (authPassword != null && authPassword!.length == 6) ? false : true,
       ),
     );
   }

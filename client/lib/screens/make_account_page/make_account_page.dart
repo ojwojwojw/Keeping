@@ -20,6 +20,7 @@ class MakeAccountPage extends StatelessWidget {
       bottomNavigationBar: BottomBtn(
         text: '다음',
         action: () {goNext(context, TermsAndConditionsPage());},
+        isDisabled: false,
       ),
     );
   }
@@ -54,6 +55,7 @@ class TermsAndConditionsPage extends StatelessWidget {
       bottomNavigationBar: BottomBtn(
         text: '다음',
         action: () {goNext(context, PhoneVerificationPage());},
+        isDisabled: false,
       ),
     );
   }
@@ -194,6 +196,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
       bottomNavigationBar: BottomBtn(
         text: '다음',
         action: () {},
+        isDisabled: false,
       ),
     );
   }

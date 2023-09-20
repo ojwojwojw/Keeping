@@ -18,6 +18,7 @@ class BtnTest extends StatelessWidget {
       ),
       bottomNavigationBar: BottomBtn(
         text: '다음',
+        isDisabled: false,
       )
     );
   }

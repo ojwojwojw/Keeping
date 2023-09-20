@@ -116,7 +116,8 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
           } else {
             print('저장실패');
           }
-        }
+        },
+        isDisabled: false,
       ),
     );
   }

@@ -94,6 +94,7 @@ class _MakePiggyPageState extends State<MakePiggyPage> {
             // 모달 띄우기
           }
         },
+        isDisabled: false,
       ),
     );
   }
