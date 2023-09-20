@@ -16,7 +16,7 @@ class AllowanceLedgerPage extends StatefulWidget {
 }
 
 class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
-  final List<Map<String, dynamic>> tempData = [
+  final List<Map<String, dynamic>> _tempData = [
     {
       'date': '2020-10-10T14:58:04+09:00',
       'store_name': '달콤왕가탕후루 전대',
@@ -76,7 +76,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                 child: Column(
                   children: [
                     MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
-                    ...tempData.map((e) => 
+                    ..._tempData.map((e) => 
                       e['detail'].isEmpty ? 
                         MoneyRecord(
                           date: DateTime.parse(e['date']), 

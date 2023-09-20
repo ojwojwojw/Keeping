@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/piggy_page/make_piggy_page.dart';
 import 'package:keeping/screens/piggy_page/make_piggy_test.dart';
+import 'package:keeping/screens/piggy_page/piggy_detail_page.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_filters.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_info.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_info_card.dart';
@@ -13,6 +15,7 @@ final List<Map<String, dynamic>> tempData = [
     "id": 3,
     "childKey" :"0986724",
     "accountNumber": "172-123456-707-27",
+    "piggyAccountNumber" : "1",
     "content": "아디다스 삼바",
     "goalMoney": 140000,
     "balance": 70000,
@@ -23,6 +26,7 @@ final List<Map<String, dynamic>> tempData = [
     "id": 7,
     "childKey" :"0986724",
     "accountNumber": "172-234567-707-27",
+    "piggyAccountNumber" : "2",
     "content": "후드티 갖고 싶다",
     "goalMoney": 140000,
     "balance": 70000,
@@ -55,11 +59,16 @@ class PiggyPage extends StatelessWidget {
                   children: [
                     SizedBox(height: 10,),
                     ...tempData.map((e) => 
-                      PiggyInfoCard(
-                        content: e['content'], 
-                        balance: e['balance'], 
-                        goalMoney: e['goalMoney'],
-                        // img: Base64Decoder().convert(e['savedImage']),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => PiggyDetailPage(piggyAccountNumber: e['piggyAccountNumber'])));
+                        },
+                        child: PiggyInfoCard(
+                          content: e['content'], 
+                          balance: e['balance'], 
+                          goalMoney: e['goalMoney'],
+                          // img: Base64Decoder().convert(e['savedImage']),
+                        )
                       )
                     ).toList()
                   ]
@@ -72,7 +81,7 @@ class PiggyPage extends StatelessWidget {
       floatingActionButton: FloatingBtn(
         text: '만들기',
         icon: Icon(Icons.savings_rounded),
-        path: MakePiggyTest(),
+        path: MakePiggyPage(),
       ),
       bottomNavigationBar: BottomNav(),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/piggy_provider.dart';
 import 'screens/main_page/main_page.dart';
 
 //provider관련
@@ -78,6 +79,8 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => Counts()), //Counts 인스턴스 추가
     ChangeNotifierProvider(create: (_) => TestArray()), // TestArray 인스턴스 추가
+    ChangeNotifierProvider(create: (_) => PiggyDetailProvider()),
+    ChangeNotifierProvider(create: (_) => AddPiggyProvider()),
   ], child: const MaterialApp(home: MainPage())));
 }
 
