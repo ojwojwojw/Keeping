@@ -84,6 +84,8 @@ dependencies {
 	
 	// feign
 	implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+
+	runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 dependencyManagement {
@@ -100,6 +102,12 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
+}
+
+bootJar{
+	archivesBaseName = 'mission-service-1.0'
+	archiveFileName = 'mission-service-1.0.jar'
+	archiveVersion = "0.0.0"
 }
 
 def querydslDir = "$buildDir/generated/querydsl"

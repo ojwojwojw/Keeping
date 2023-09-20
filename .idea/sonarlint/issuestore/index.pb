@@ -53,3 +53,5 @@ P
  server/openai-service/Dockerfile,f\c\fc3498d7c758eea8adf4ca29ddc9ddffc8ba741b
 R
 "server/question-service/Dockerfile,2\3\234e8fd585462ba00120e1636ec0a7d459ccfd77
+N
+client/android/settings.gradle,c/a/ca6a73e144dce2a0288fcd9db1af03977d445202

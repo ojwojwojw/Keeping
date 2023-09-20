@@ -13,6 +13,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@Table(name = "members")
 public class Member extends TimeBaseEntity {
 
     @Id

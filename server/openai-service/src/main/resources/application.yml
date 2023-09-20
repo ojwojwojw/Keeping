@@ -7,7 +7,7 @@ server:
 logging:
   level:
     org.hibernate: debug
-    com.keeping.bankservice: debug
+    com.keeping.openaiservice: debug
 
 ---
 # MSA setting
@@ -23,9 +23,9 @@ eureka:
 #spring default setting
 spring:
   application:
-    name: bank-service
+    name: openai-service
   rabbitmq:
-#    host: 127.0.0.1
+    # host: 127.0.0.1
     host: rabbitmq
     port: 5672
     username: guest
@@ -44,3 +44,9 @@ management:
     web:
       exposure:
         include: refresh, health, beans, info, metrics, prometheus, busrefresh
+
+
+# chat gpt
+gpt:
+  api:
+    key: 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

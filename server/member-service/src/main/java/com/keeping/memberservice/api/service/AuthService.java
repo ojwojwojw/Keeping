@@ -68,9 +68,10 @@ public class AuthService {
         String number = createRandomNumCode();
 
         String certification_request = CERTIFICATION_REQUEST + phone;
+        redisTemplate.delete(certification_request);
         redisTemplate.opsForValue().append(certification_request, number);
         redisTemplate.expire(certification_request, CERTIFICATION_NUMBER_EXPIRE, TimeUnit.SECONDS);
-
+        redisTemplate.delete(VERIFIED_NUMBER + phone);
         return number;
     }
 

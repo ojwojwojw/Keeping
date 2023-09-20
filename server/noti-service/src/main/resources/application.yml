@@ -7,7 +7,7 @@ server:
 logging:
   level:
     org.hibernate: debug
-    com.keeping.bankservice: debug
+    com.keeping.missionservice: debug
 
 ---
 # MSA setting
@@ -23,9 +23,9 @@ eureka:
 #spring default setting
 spring:
   application:
-    name: bank-service
+    name: mission-service
   rabbitmq:
-#    host: 127.0.0.1
+    # host: 127.0.0.1
     host: rabbitmq
     port: 5672
     username: guest
@@ -44,3 +44,7 @@ management:
     web:
       exposure:
         include: refresh, health, beans, info, metrics, prometheus, busrefresh
+        
+fcm:
+  file:
+    name: keeping-95186-firebase-adminsdk-9r919-da255b2f4e.json

@@ -1,0 +1,15 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: discovery-service
+  cloud:
+    config:
+      uri: http://j9c207.p.ssafy.io:8888/
+      nane: keeping
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
