@@ -14,6 +14,7 @@ import com.keeping.missionservice.api.service.mission.dto.EditMissionDto;
 import com.keeping.missionservice.domain.mission.Completed;
 import com.keeping.missionservice.domain.mission.Mission;
 import com.keeping.missionservice.domain.mission.MissionType;
+import com.keeping.missionservice.domain.mission.repository.MissionQueryRepository;
 import com.keeping.missionservice.domain.mission.repository.MissionRepository;
 import com.keeping.missionservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +33,7 @@ public class MissionServiceImpl implements MissionService {
     private MemberFeignClient memberFeignClient;
     private BankFeignClient bankFeignClient;
     private NotiFeignClient notiFeignClient;
+    private final MissionQueryRepository missionQueryRepository;
     private final MissionRepository missionRepository;
 
     /**
@@ -39,7 +42,8 @@ public class MissionServiceImpl implements MissionService {
      * @return 미션 식별키
      */
     @Override
-    public Long addMission(String memberKey, AddMissionDto dto) {
+    public Long addMission(AddMissionDto dto) {
+        String memberKey = dto.getMemberKey();
         // 부모의 계좌에 들어있는 금액 한도 내에서 가능
         AccountResponse parentBalance = bankFeignClient.getAccountBalanceFromParent(memberKey);
         int limitAmount = parentBalance.getBalance();
@@ -99,13 +103,15 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
-    public List<MissionResponse> showMission(String memberId) {
-        return null;
+    public List<MissionResponse> showMission(String memberKey) {
+        return missionQueryRepository.showMission(memberKey);
     }
 
     @Override
-    public MissionResponse showDetailMission(String memberId, Long missionId) {
-        return null;
+    public MissionResponse showDetailMission(String memberKey, Long missionId) {
+        // 상세 미션 조회
+        return missionQueryRepository.showDetailMission(memberKey, missionId)
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
     }
 
     @Override
@@ -119,7 +125,7 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
-    public Long editMission(String memberId, EditMissionDto dto) {
+    public Long editMission(EditMissionDto dto) {
         return null;
     }
 
