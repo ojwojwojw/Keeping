@@ -93,4 +93,8 @@ public class Mission extends TimeBaseEntity {
         this.startDate = startDate;
         this.endDate = endDate;
     }
+
+    public void deleteMission() {
+        this.completed = Completed.DISABLED;
+    }
 }

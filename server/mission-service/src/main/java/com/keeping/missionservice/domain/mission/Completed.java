@@ -5,5 +5,5 @@ public enum Completed {
     YET,                    // 자녀가 아직 미션 수행하지 않음
     FINISH_WAIT,    // 미션 완료 승인 대기
     FINISH,               // 부모가 미션 완료 승인
-    REJECTED         // 승인 거절 당한 미션
+    DISABLED           // 승인 거절 당한 미션
 }

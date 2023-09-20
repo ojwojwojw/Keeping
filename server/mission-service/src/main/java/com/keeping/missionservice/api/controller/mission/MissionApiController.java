@@ -104,5 +104,18 @@ public class MissionApiController {
         } catch (NotFoundException | AlreadyExistException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
         }
-    } 
+    }
+
+    @DeleteMapping("/{member_key}/{mission_id}")
+    public ApiResponse<Long> removeMission(
+            @PathVariable(name = "member_key") String memberKey,
+            @PathVariable(name = "mission_id") Long missionId
+    ) {
+        try {
+            missionService.removeMission(memberKey, missionId);
+            return ApiResponse.ok(missionId);
+        } catch (NotFoundException e) {
+            return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
+        }
+    }
 }

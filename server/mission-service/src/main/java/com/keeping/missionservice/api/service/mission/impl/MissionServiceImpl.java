@@ -252,7 +252,13 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
-    public Long removeMission(String memberId, Long missionId) {
-        return null;
+    public Long removeMission(String memberKey, Long missionId) {
+        // 미션 있는지 확인
+        Mission mission = missionRepository.findMissionByIdAndChildKey(missionId, memberKey)
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
+
+        mission.deleteMission();
+
+        return missionId;
     }
 }
