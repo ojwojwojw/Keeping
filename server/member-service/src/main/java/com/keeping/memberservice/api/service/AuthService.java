@@ -21,6 +21,7 @@ public class AuthService {
     private static final long CERTIFICATION_NUMBER_EXPIRE = 200;
     private static final String VERIFIED_NUMBER = "verified_number_";
 
+//    public String getLinkCode(String memberKey, String )
 
     /**
      * 번호인증이 되었는지 확인하는 함수

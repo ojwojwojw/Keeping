@@ -1,21 +1,30 @@
-FROM ubuntu:20.04 As builder
+#FROM ubuntu:20.04 As builder
+#
+#RUN apt-get update && apt-get install -y dos2unix openjdk-17-jdk
+#
+## Set JAVA_HOME environment variable
+#ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+#
+#COPY gradlew .
+#COPY gradle gradle
+#COPY build.gradle .
+#COPY settings.gradle .
+#COPY src src
+#
+#RUN chmod +x gradlew
+#RUN dos2unix gradlew
+#RUN ./gradlew bootJar
+#
+#FROM openjdk:17
+#COPY --from=builder build/libs/*.jar ApigatewayServer.jar
+#
+#ENTRYPOINT ["java", "-jar", "ApigatewayServer.jar"]
 
-RUN apt-get update && apt-get install -y dos2unix openjdk-17-jdk
 
-# Set JAVA_HOME environment variable
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+FROM openjdk:17-ea-11-jdk-slim
 
-COPY gradlew .
-COPY gradle gradle
-COPY build.gradle .
-COPY settings.gradle .
-COPY src src
+VOLUME /tmp
 
-RUN chmod +x gradlew
-RUN dos2unix gradlew
-RUN ./gradlew bootJar
-
-FROM openjdk:17
-COPY --from=builder build/libs/*.jar ApigatewayServer.jar
+COPY build/libs/apigateway-service-1.0.jar ApigatewayServer.jar
 
 ENTRYPOINT ["java", "-jar", "ApigatewayServer.jar"]

@@ -20,7 +20,7 @@ spring:
   cloud:
     gateway:
       routes:
-        # login
+        # login /
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
@@ -42,8 +42,9 @@ spring:
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=/member-service/phone
-            - Method=POST
+#            - Path=/member-service/phone
+            - Path=/member-service/api/**
+            - Method=POST, GET
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
@@ -56,7 +57,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
-        # user health-check
+        # user health-check /
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
@@ -65,7 +66,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
-        # other
+        # other /
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:

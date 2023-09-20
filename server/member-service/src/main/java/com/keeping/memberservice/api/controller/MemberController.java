@@ -22,6 +22,7 @@ import java.security.NoSuchAlgorithmException;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
+@RequestMapping("/api")
 public class MemberController {
 
     private final AuthService authService;
