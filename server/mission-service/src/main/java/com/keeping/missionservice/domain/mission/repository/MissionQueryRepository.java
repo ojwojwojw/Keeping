@@ -19,7 +19,17 @@ public class MissionQueryRepository {
     public MissionQueryRepository(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
     }
-    
+
+    public Optional<Integer> countMoney(String childKey) {
+        return Optional.ofNullable(queryFactory
+                .select(mission.money.sum())
+                .from(mission)
+                .where(mission.childKey.eq(childKey))
+                .groupBy(mission.childKey)
+                .fetchOne());
+
+    }
+
     public List<MissionResponse> showMission(String childKey) {
         return queryFactory.select(constructor(MissionResponse.class,
                         mission.childKey,
