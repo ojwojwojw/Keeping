@@ -5,7 +5,7 @@ import 'package:keeping/screens/main_page/widgets/gradient_btn.dart';
 import 'package:keeping/screens/main_page/widgets/make_account_btn.dart';
 import 'package:keeping/screens/make_account_page/widgets/styles.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
-import 'package:keeping/screens/online_request_payment/online_request_payment.dart';
+import 'package:keeping/screens/online_payment_request/online_payment_request_page.dart';
 import 'package:keeping/screens/piggy_page/piggy_page.dart';
 import 'package:keeping/screens/question_page/question_page.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
@@ -50,7 +50,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
                       endColor: Color(0xFF6E2FD5),
                     ),
                     GradientBtn(
-                      path: OnlineRequestPayment(),
+                      path: OnlinePaymentRequestPage(),
                       text: '온라인 결제\n부탁하기',
                       beginColor: Color(0xFFFF7595),
                       endColor: Color(0xFFFA3B68),
