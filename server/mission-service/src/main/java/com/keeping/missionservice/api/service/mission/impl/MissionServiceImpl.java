@@ -6,10 +6,7 @@ import com.keeping.missionservice.api.controller.mission.NotiFeignClient;
 import com.keeping.missionservice.api.controller.mission.request.MemberRelationshipRequest;
 import com.keeping.missionservice.api.controller.mission.request.MemberTypeRequest;
 import com.keeping.missionservice.api.controller.mission.request.SendNotiRequest;
-import com.keeping.missionservice.api.controller.mission.response.AccountResponse;
-import com.keeping.missionservice.api.controller.mission.response.MemberRelationshipResponse;
-import com.keeping.missionservice.api.controller.mission.response.MemberTypeResponse;
-import com.keeping.missionservice.api.controller.mission.response.MissionResponse;
+import com.keeping.missionservice.api.controller.mission.response.*;
 import com.keeping.missionservice.api.service.mission.MissionService;
 import com.keeping.missionservice.api.service.mission.dto.AddMissionDto;
 import com.keeping.missionservice.api.service.mission.dto.EditCompleteDto;
@@ -49,9 +46,6 @@ public class MissionServiceImpl implements MissionService {
     @Override
     public Long addMission(AddMissionDto dto) {
         String memberKey = dto.getMemberKey();
-        // 부모의 계좌에 들어있는 금액 한도 내에서 가능
-        AccountResponse parentBalance = bankFeignClient.getAccountBalanceFromParent(memberKey);
-        int limitAmount = parentBalance.getBalance();
 
         // 부모가 자녀에게 미션을 주는 거라면 Completed(완성여부)를 YET으로 설정
         if (dto.getType().equals(MissionType.PARENT)) {
@@ -65,6 +59,18 @@ public class MissionServiceImpl implements MissionService {
                 throw new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 회원을 찾을 수 없습니다.");
             }
 
+            // 부모의 계좌에 들어있는 금액 한도 내에서 가능
+            AccountResponse parentBalance = bankFeignClient.getAccountBalanceFromParent(memberKey);
+            int limitAmount = parentBalance.getBalance();
+
+            // 현재 완료하지 않은 미션 총액
+            Optional<Integer> missionTotalMoney = missionQueryRepository.countMoney(dto.getTo());
+
+            if (missionTotalMoney.isPresent()
+                    && missionTotalMoney.get() < limitAmount) {
+
+                throw new AlreadyExistException("409", HttpStatus.CONFLICT, "잔액보다 미션 총액이 많습니다.");
+            }
 
             Mission mission = Mission.toMission(dto.getTo(), dto.getType(), dto.getTodo(), dto.getMoney(), dto.getCheeringMessage(),dto.getStartDate(), dto.getEndDate(), Completed.YET);
             Mission savedMission = missionRepository.save(mission);
@@ -147,6 +153,27 @@ public class MissionServiceImpl implements MissionService {
             // 기존 상태와 바뀔 상태 비교 CREATE_WAIT -> YET
             if (mission.getCompleted().equals(Completed.CREATE_WAIT)
                     && dto.getCompleted().equals(Completed.YET)) {
+
+                // 부모 통장의 잔액과 미션 총액을 비교
+                AccountResponse parentBalance = bankFeignClient.getAccountBalanceFromParent(memberKey);
+                int limitAmount = parentBalance.getBalance();
+                int totalMissionMoney = 0;
+
+                // 아이들 목록 불러오기
+                List<ChildResponse> children = memberFeignClient.getChildren(memberKey);
+                for (ChildResponse child : children) {
+                    // 현재 완료하지 않은 미션 총액
+                    Optional<Integer> missionMoney = missionQueryRepository.countMoney(child.getChildKey());
+
+                    if (missionMoney.isPresent()) {
+                        totalMissionMoney += missionMoney.get();
+                    }
+                }
+
+                if (totalMissionMoney < limitAmount) {
+
+                    throw new AlreadyExistException("409", HttpStatus.CONFLICT, "잔액보다 미션 총액이 많습니다.");
+                }
 
                 mission.updateCompleted(dto.getCompleted());
             }
