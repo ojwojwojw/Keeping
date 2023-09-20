@@ -8,6 +8,7 @@ import com.keeping.missionservice.api.controller.mission.request.MemberTypeReque
 import com.keeping.missionservice.api.controller.mission.request.SendNotiRequest;
 import com.keeping.missionservice.api.controller.mission.response.*;
 import com.keeping.missionservice.api.service.mission.MissionService;
+import com.keeping.missionservice.api.service.mission.dto.AddCommentDto;
 import com.keeping.missionservice.api.service.mission.dto.AddMissionDto;
 import com.keeping.missionservice.api.service.mission.dto.EditCompleteDto;
 import com.keeping.missionservice.api.service.mission.dto.EditMissionDto;
@@ -126,8 +127,14 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
-    public Long addComment(String memberId, Long missionId) {
-        return null;
+    public Long addComment(AddCommentDto dto) {
+        // 미션 있는지 id로 확인
+        Mission mission = missionRepository.findMissionByIdAndChildKey(dto.getMissionId(), dto.getMemberKey())
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
+
+        mission.updateComment(dto.getComment());
+
+        return dto.getMissionId();
     }
 
     @Override
@@ -175,6 +182,8 @@ public class MissionServiceImpl implements MissionService {
                     throw new AlreadyExistException("409", HttpStatus.CONFLICT, "잔액보다 미션 총액이 많습니다.");
                 }
 
+                // cheeringMessage 추가
+                mission.updateCheeringMessage(dto.getCheeringMessage());
                 mission.updateCompleted(dto.getCompleted());
             }
             // 기존 상태와 바뀔 상태 비교 FINISH_WAIT -> FINISH
