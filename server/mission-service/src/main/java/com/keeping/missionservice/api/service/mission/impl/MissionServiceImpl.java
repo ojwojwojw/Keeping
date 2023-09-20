@@ -1,10 +1,16 @@
 package com.keeping.missionservice.api.service.mission.impl;
 
+import com.keeping.missionservice.api.controller.mission.FromBankApiController;
+import com.keeping.missionservice.api.controller.mission.FromMemberApiController;
+import com.keeping.missionservice.api.controller.mission.request.MemberRelationshipRequest;
+import com.keeping.missionservice.api.controller.mission.response.AccountResponse;
 import com.keeping.missionservice.api.controller.mission.response.MissionResponse;
 import com.keeping.missionservice.api.service.mission.MissionService;
 import com.keeping.missionservice.api.service.mission.dto.AddMissionDto;
 import com.keeping.missionservice.api.service.mission.dto.EditMissionDto;
 import com.keeping.missionservice.domain.mission.Completed;
+import com.keeping.missionservice.domain.mission.Mission;
+import com.keeping.missionservice.domain.mission.MissionType;
 import com.keeping.missionservice.domain.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,9 +23,9 @@ import java.util.List;
 @Transactional
 public class MissionServiceImpl implements MissionService {
     
+    private FromMemberApiController fromMemberApiController;
+    private FromBankApiController fromBankApiController;
     private final MissionRepository missionRepository;
-//    private final MemberQueryRepository memberQueryRepository; // TODO: member 완성시 해제
-//    private final MemberRepository memberRepository; // TODO: member 완성시 해제
 
     /**
      *  미션 등록
@@ -27,29 +33,32 @@ public class MissionServiceImpl implements MissionService {
      * @return 미션 식별키
      */
     @Override
-    public Long addMission(String memberId, AddMissionDto dto) {
-//        // memberId와 dto의 미션을 준 주체(dto.getType())로 해당 멤버가 있는지 확인
-//        Member member = memberRepository.findByloginIdAndType(memberId, dto.getType()).orElseThrow(NotFoundException::new); // TODO: member완성시 해제
-//
-//        // TODO: 2023-09-08 부모의 계좌에 들어있는 금액 한도 내에서 가능
-//
-//        // 부모가 자녀에게 미션을 주는 거라면 Completed(완성여부)를 YET으로 설정
-//        if (dto.getType().equals(MissionType.PARENT)) {
-//            // TODO: 2023-09-08 해당 자녀가 있는지 확인 
-//            Child child = childRepository.findBymemberId(dto.getTo()).orElseThrow(NotFoundException::new);
-//
-//            Mission mission = Mission.toMission(child, dto.getType(), dto.getTodo(), dto.getMoney(), dto.getCheeringMessage(),dto.getStartDate(), dto.getEndDate(), Completed.YET);
-//            Mission savedMission = missionRepository.save(mission);
-//
-//            // TODO: 자녀에게 알림 전송
-//
-//            // TODO: 알림 저장
-//
-//            return savedMission.getId();
-//        }
-//
-//        // 자녀가 부모에게 미션을 주는 거라면 Completed(완성여부)를 CREATE_WAIT으로 설정
-//        else if (dto.getType().equals(MissionType.CHILD)) {
+    public Long addMission(String memberKey, AddMissionDto dto) {
+        // 부모의 계좌에 들어있는 금액 한도 내에서 가능
+        AccountResponse parentBalance = fromBankApiController.getAccountBalanceFromParent(memberKey);
+        int limitAmount = parentBalance.getBalance();
+
+        // 부모가 자녀에게 미션을 주는 거라면 Completed(완성여부)를 YET으로 설정
+        if (dto.getType().equals(MissionType.PARENT)) {
+            // TODO: 2023-09-08 해당 자녀가 있는지 확인 
+            fromMemberApiController.getMemberRelationship(MemberRelationshipRequest.builder()
+                    .parentKey(memberKey)
+                    .childKey(dto.getTo())
+                    .build());
+            
+
+            Mission mission = Mission.toMission(dto.getTo(), dto.getType(), dto.getTodo(), dto.getMoney(), dto.getCheeringMessage(),dto.getStartDate(), dto.getEndDate(), Completed.YET);
+            Mission savedMission = missionRepository.save(mission);
+
+            // TODO: 자녀에게 알림 전송
+
+            // TODO: 알림 저장
+
+            return savedMission.getId();
+        }
+
+        // 자녀가 부모에게 미션을 주는 거라면 Completed(완성여부)를 CREATE_WAIT으로 설정
+        else if (dto.getType().equals(MissionType.CHILD)) {
 //            // TODO: 2023-09-08 해당 자녀가 있는지 확인 
 //            Child child = childRepository.findBymemberId(memberId).orElseThrow(NotFoundException::new);
 //
@@ -59,11 +68,11 @@ public class MissionServiceImpl implements MissionService {
 //            // TODO: 부모에게 알림 전송
 //
 //            // TODO: 알림 저장
-//
+
 //            return savedMission.getId();
-//        } else {
+        } else {
 //            throw new NotFoundException("404", HttpStatus.NOT_FOUND, "해당 회원을 찾을 수 없습니다.");
-//        }
+        }
         return null;
     }
 
