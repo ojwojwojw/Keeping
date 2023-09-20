@@ -182,6 +182,8 @@ public class MissionServiceImpl implements MissionService {
                     throw new AlreadyExistException("409", HttpStatus.CONFLICT, "잔액보다 미션 총액이 많습니다.");
                 }
 
+                // cheeringMessage 추가
+                mission.updateCheeringMessage(dto.getCheeringMessage());
                 mission.updateCompleted(dto.getCompleted());
             }
             // 기존 상태와 바뀔 상태 비교 FINISH_WAIT -> FINISH
