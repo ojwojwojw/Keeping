@@ -8,7 +8,9 @@ import com.keeping.missionservice.api.controller.mission.request.EditMissionRequ
 import com.keeping.missionservice.api.controller.mission.response.MissionResponse;
 import com.keeping.missionservice.api.service.mission.MissionService;
 import com.keeping.missionservice.api.service.mission.dto.AddMissionDto;
+import com.keeping.missionservice.api.service.mission.dto.EditCompleteDto;
 import com.keeping.missionservice.api.service.mission.dto.EditMissionDto;
+import com.keeping.missionservice.global.exception.AlreadyExistException;
 import com.keeping.missionservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -99,9 +101,9 @@ public class MissionApiController {
         @Valid @RequestBody EditCompleteRequest request    
     ) {
         try {
-            Long missionId = missionService.editCompleted(request.getMemberKey(), request.getMissionId(), request.getCompleted());
+            Long missionId = missionService.editCompleted(EditCompleteDto.toDto(request));
             return ApiResponse.ok(missionId);
-        } catch (NotFoundException e) {
+        } catch (NotFoundException | AlreadyExistException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
         }
     } 

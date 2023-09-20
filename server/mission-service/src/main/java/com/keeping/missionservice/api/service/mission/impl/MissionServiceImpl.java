@@ -4,18 +4,23 @@ import com.keeping.missionservice.api.controller.mission.BankFeignClient;
 import com.keeping.missionservice.api.controller.mission.MemberFeignClient;
 import com.keeping.missionservice.api.controller.mission.NotiFeignClient;
 import com.keeping.missionservice.api.controller.mission.request.MemberRelationshipRequest;
+import com.keeping.missionservice.api.controller.mission.request.MemberTypeRequest;
 import com.keeping.missionservice.api.controller.mission.request.SendNotiRequest;
 import com.keeping.missionservice.api.controller.mission.response.AccountResponse;
 import com.keeping.missionservice.api.controller.mission.response.MemberRelationshipResponse;
+import com.keeping.missionservice.api.controller.mission.response.MemberTypeResponse;
 import com.keeping.missionservice.api.controller.mission.response.MissionResponse;
 import com.keeping.missionservice.api.service.mission.MissionService;
 import com.keeping.missionservice.api.service.mission.dto.AddMissionDto;
+import com.keeping.missionservice.api.service.mission.dto.EditCompleteDto;
 import com.keeping.missionservice.api.service.mission.dto.EditMissionDto;
 import com.keeping.missionservice.domain.mission.Completed;
+import com.keeping.missionservice.domain.mission.MemberType;
 import com.keeping.missionservice.domain.mission.Mission;
 import com.keeping.missionservice.domain.mission.MissionType;
 import com.keeping.missionservice.domain.mission.repository.MissionQueryRepository;
 import com.keeping.missionservice.domain.mission.repository.MissionRepository;
+import com.keeping.missionservice.global.exception.AlreadyExistException;
 import com.keeping.missionservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -120,8 +125,57 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
-    public Long editCompleted(String memberId, Long missionId, Completed completed) {
-        return null;
+    public Long editCompleted(EditCompleteDto dto) {
+        String memberKey = dto.getMemberKey();
+        MemberTypeResponse memberType = memberFeignClient.getMemberType(MemberTypeRequest.builder()
+                .memberKey(memberKey)
+                .type(dto.getType())
+                .build());
+
+        // 맞지 않는 멤버와 타입일 떄
+        if (!memberType.isTypeRight()) {
+            throw new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 회원을 찾을 수 없습니다.");
+        }
+
+        // 미션 id로 미션 찾기
+        Mission mission = missionRepository.findMissionByIdAndChildKey(dto.getMissionId(), memberKey)
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
+
+        // 부모라면 CREATE_WAIT -> YET,  FINISH_WAIT -> FINISH
+        if (dto.getType().equals(MemberType.PARENT)) {
+
+            // 기존 상태와 바뀔 상태 비교 CREATE_WAIT -> YET
+            if (mission.getCompleted().equals(Completed.CREATE_WAIT)
+                    && dto.getCompleted().equals(Completed.YET)) {
+
+                mission.updateCompleted(dto.getCompleted());
+            }
+            // 기존 상태와 바뀔 상태 비교 FINISH_WAIT -> FINISH
+            else if (mission.getCompleted().equals(Completed.FINISH_WAIT)
+                    && dto.getCompleted().equals(Completed.FINISH)) {
+
+                mission.updateCompleted(dto.getCompleted());
+            }
+            else {
+                throw new AlreadyExistException("409", HttpStatus.CONFLICT, "완성 상태를 바꿀 수 없습니다.");
+            }
+        }
+        // 자녀라면 YET -> FINISH_WAIT
+        else if (dto.getType().equals(MemberType.PARENT)) {
+
+            if (mission.getCompleted().equals(Completed.YET)
+                    && dto.getCompleted().equals(Completed.FINISH_WAIT)) {
+
+                mission.updateCompleted(dto.getCompleted());
+            }
+            else {
+                throw new AlreadyExistException("409", HttpStatus.CONFLICT, "완성 상태를 바꿀 수 없습니다.");
+            }
+
+        } else {
+            throw new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 회원 타입을 찾을 수 없습니다.");
+        }
+        return mission.getId();
     }
 
     @Override
