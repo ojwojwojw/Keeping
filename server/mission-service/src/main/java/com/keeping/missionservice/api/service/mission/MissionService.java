@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface MissionService {
 
-    public Long addMission(String memberKey, AddMissionDto dto);
+    public Long addMission(AddMissionDto dto);
     
     public List<MissionResponse> showMission(String memberId);
     

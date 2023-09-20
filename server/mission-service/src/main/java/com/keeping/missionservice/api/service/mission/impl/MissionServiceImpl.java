@@ -39,7 +39,8 @@ public class MissionServiceImpl implements MissionService {
      * @return 미션 식별키
      */
     @Override
-    public Long addMission(String memberKey, AddMissionDto dto) {
+    public Long addMission(AddMissionDto dto) {
+        String memberKey = dto.getMemberKey();
         // 부모의 계좌에 들어있는 금액 한도 내에서 가능
         AccountResponse parentBalance = bankFeignClient.getAccountBalanceFromParent(memberKey);
         int limitAmount = parentBalance.getBalance();

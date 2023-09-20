@@ -36,16 +36,13 @@ public class MissionApiController {
     public ApiResponse<Long> addMission(
             @Valid @RequestBody AddMissionRequest request
     ) {
-        // 사용자 정보 가져오기
-        String memberId = "";
-
         log.debug("addMission :: request={}", request);
         log.info("addMission :: request={}", request);
 
         AddMissionDto dto = AddMissionDto.toDto(request);
 
         try {
-            Long missionId = missionService.addMission(memberId, dto);
+            Long missionId = missionService.addMission(request.getMemberKey(), dto);
             return ApiResponse.ok(missionId);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);

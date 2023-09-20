@@ -9,6 +9,9 @@ import java.time.LocalDate;
 
 @Data
 public class AddMissionDto {
+
+    private String memberKey;
+
     private MissionType type; // 부모가 아이에게, 아이가 부모에게
 
     private String to; // 어떤 사람한테 보내야하는지
@@ -24,7 +27,8 @@ public class AddMissionDto {
     private LocalDate endDate; // 미션 마감일
 
     @Builder
-    public AddMissionDto(MissionType type, String to, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
+    public AddMissionDto(String memberKey, MissionType type, String to, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
+        this.memberKey = memberKey;
         this.type = type;
         this.to = to;
         this.todo = todo;
@@ -34,9 +38,11 @@ public class AddMissionDto {
         this.endDate = endDate;
     }
 
+
     // Dto 객체로 변환
     public static AddMissionDto toDto(AddMissionRequest request) {
         return AddMissionDto.builder()
+                .memberKey(request.getMemberKey())
                 .type(request.getType())
                 .to(request.getTo())
                 .todo(request.getTodo())
