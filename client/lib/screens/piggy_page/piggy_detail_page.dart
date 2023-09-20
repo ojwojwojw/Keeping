@@ -33,8 +33,8 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
   @override
   void initState() {
     super.initState();
+    context.read<PiggyDetailProvider>().removePiggyDetail();
     initPiggyDetail();
-
   }
 
   initPiggyDetail() async {

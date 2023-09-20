@@ -55,8 +55,6 @@ class PiggyDetailProvider with ChangeNotifier {
     _balance = null;
     _savedImage = null;
     _completed = null;
-
-    notifyListeners();
   }
 }
 
@@ -64,12 +62,10 @@ class AddPiggyProvider with ChangeNotifier {
   String? _content;
   double? _goalMoney;
   String? _imgPath;
-  String? _authPassword;
 
   String? get content => _content;
   double? get goalMoney => _goalMoney;
   String? get imgPath => _imgPath;
-  String? get authPassword => _authPassword;
 
   void setContent(String content) {
     _content = content;
@@ -98,13 +94,5 @@ class AddPiggyProvider with ChangeNotifier {
     _content = null;
     _goalMoney = null;
     _imgPath = null;
-  }
-
-  void enterAuthPassword(String val) {
-    _authPassword = val;
-  }
-
-  void removeAuthPassword() {
-    _authPassword = null;
   }
 }

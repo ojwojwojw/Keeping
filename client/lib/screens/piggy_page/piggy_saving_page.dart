@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/piggy_provider.dart';
 import 'package:keeping/screens/piggy_page/enter_auth_password_page.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/number_keyboard.dart';
+import 'package:provider/provider.dart';
 
 class PiggySavingPage extends StatefulWidget {
   PiggySavingPage({
@@ -18,6 +20,7 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
   void initState() {
     super.initState();
     amount = '';
+
   }
 
   String amount = '';
@@ -33,11 +36,14 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
 
   onBackspacePress() {
     if (amount.isEmpty) {
-      return;
+      setState(() {
+        return;
+      });
+    } else {
+      setState(() {
+        amount = amount.substring(0, amount.length - 1);
+      });
     }
-    setState(() {
-      amount = amount.substring(0, amount.length - 1);
-    });
   }
 
   @override
@@ -51,7 +57,17 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
         children: [
           Column(
             children: [
-              Text(amount),
+              Text(context.watch<PiggyDetailProvider>().content!),
+              Text(context.watch<PiggyDetailProvider>().balance!.toString()),
+              Text(
+                amount,
+                style: TextStyle(
+                  color: context.watch<PiggyDetailProvider>().balance != null && amount.isNotEmpty && context.watch<PiggyDetailProvider>().balance! < int.parse(amount) 
+                    ? Colors.red : Colors.black
+                ),
+              ),
+              if (context.watch<PiggyDetailProvider>().balance != null && amount.isNotEmpty && context.watch<PiggyDetailProvider>().balance! < int.parse(amount))
+              Text('잔고가 부족합니다.', style: TextStyle(color: Colors.red),)
             ],
           ),
           NumberKeyboard(onNumberPress: onNumberPress, onBackspacePress: onBackspacePress,)

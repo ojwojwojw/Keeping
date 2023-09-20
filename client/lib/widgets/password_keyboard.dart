@@ -30,28 +30,7 @@ class _PasswordKeyboardState extends State<PasswordKeyboard> {
       ['7', '8', '9'],
       ['취소', '0', Icon(Icons.keyboard_backspace)],
     ];
-    // amount = '';
   }
-
-  // onNumberPress(val) {
-  //   if (val == '0' && amount.isEmpty) {
-  //     return;
-  //   }
-
-  //   setState(() {
-  //     amount = amount + val;
-  //   });
-  // }
-
-  // onBackspacePress() {
-  //   if (amount.isEmpty) {
-  //     return;
-  //   }
-
-  //   setState(() {
-  //     amount = amount.substring(0, amount.length - 1);
-  //   });
-  // }
 
   renderPasswordKeyboard() {
     return keys
