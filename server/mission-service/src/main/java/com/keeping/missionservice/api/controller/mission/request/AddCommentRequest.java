@@ -2,24 +2,25 @@ package com.keeping.missionservice.api.controller.mission.request;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class CommentRequest {
-    
-    @NotBlank
+@NoArgsConstructor
+public class AddCommentRequest {
+
+    @NotNull
     private String memberKey;
-    
+
     @NotNull
     private Long missionId;
-    
-    @NotBlank
+
+    @NotNull
     private String comment;
 
     @Builder
-    public CommentRequest(String memberKey, Long missionId, String comment) {
+    public AddCommentRequest(String memberKey, Long missionId, String comment) {
         this.memberKey = memberKey;
         this.missionId = missionId;
         this.comment = comment;
