@@ -73,6 +73,11 @@ public class MissionServiceImpl implements MissionService {
                 throw new AlreadyExistException("409", HttpStatus.CONFLICT, "잔액보다 미션 총액이 많습니다.");
             }
 
+            // 첫날이 시작날보다 이른 날짜인지 확인
+            if (dto.getStartDate().isAfter(dto.getEndDate())) {
+                throw new NotFoundException("409", HttpStatus.CONFLICT, "해당하는 날짜를 입력할 수 없습니다.");
+            }
+
             Mission mission = Mission.toMission(dto.getTo(), dto.getType(), dto.getTodo(), dto.getMoney(), dto.getCheeringMessage(),dto.getStartDate(), dto.getEndDate(), Completed.YET);
             Mission savedMission = missionRepository.save(mission);
 
@@ -216,11 +221,44 @@ public class MissionServiceImpl implements MissionService {
 
     @Override
     public Long editMission(EditMissionDto dto) {
-        return null;
+        // 미션 있는지 확인
+        Mission mission = missionRepository.findMissionByIdAndChildKey(dto.getMissionId(), dto.getMemberKey())
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
+
+        // 부모 통장의 잔액과 미션 총액을 비교
+        AccountResponse parentBalance = bankFeignClient.getAccountBalanceFromParent(dto.getMemberKey());
+        int limitAmount = parentBalance.getBalance();
+        int totalMissionMoney = 0;
+
+        // 아이들 목록 불러오기
+        List<ChildResponse> children = memberFeignClient.getChildren(dto.getMemberKey());
+        for (ChildResponse child : children) {
+            // 현재 완료하지 않은 미션 총액
+            Optional<Integer> missionMoney = missionQueryRepository.countMoney(child.getChildKey());
+
+            if (missionMoney.isPresent()) {
+                totalMissionMoney += missionMoney.get();
+            }
+        }
+
+        // 첫날이 시작날보다 이른 날짜인지 확인
+        if (dto.getStartDate().isAfter(dto.getEndDate())) {
+            throw new NotFoundException("409", HttpStatus.CONFLICT, "해당하는 날짜를 입력할 수 없습니다.");
+        }
+
+        mission.updateMission(dto.getTodo(), dto.getMoney(), dto.getCheeringMessage(), dto.getStartDate(), dto.getEndDate());
+
+        return dto.getMissionId();
     }
 
     @Override
-    public Long removeMission(String memberId, Long missionId) {
-        return null;
+    public Long removeMission(String memberKey, Long missionId) {
+        // 미션 있는지 확인
+        Mission mission = missionRepository.findMissionByIdAndChildKey(missionId, memberKey)
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
+
+        mission.deleteMission();
+
+        return missionId;
     }
 }
