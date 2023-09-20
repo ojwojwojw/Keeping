@@ -22,14 +22,18 @@ public class EditCompleteRequest {
     @NotNull
     private Long missionId;
 
+    @NotNull
+    private String cheeringMessage;
+
     @NotBlank
     private Completed completed;
 
     @Builder
-    public EditCompleteRequest(String memberKey, MemberType type, Long missionId, Completed completed) {
+    public EditCompleteRequest(String memberKey, MemberType type, Long missionId, String cheeringMessage, Completed completed) {
         this.memberKey = memberKey;
         this.type = type;
         this.missionId = missionId;
+        this.cheeringMessage = cheeringMessage;
         this.completed = completed;
     }
 }

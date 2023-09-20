@@ -73,8 +73,16 @@ public class Mission extends TimeBaseEntity {
                 .build();
     }
 
+    public void updateCheeringMessage(String cheeringMessage) {
+        this.cheeringMessage = cheeringMessage;
+    }
+
     public void updateCompleted(Completed completed) {
         this.completed = completed;
+    }
+
+    public void updateComment(String comment) {
+        this.childComment = comment;
     }
     
 }

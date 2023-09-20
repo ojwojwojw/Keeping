@@ -1,12 +1,10 @@
 package com.keeping.missionservice.api.controller.mission;
 
 import com.keeping.missionservice.api.ApiResponse;
-import com.keeping.missionservice.api.controller.mission.request.AddMissionRequest;
-import com.keeping.missionservice.api.controller.mission.request.CommentRequest;
-import com.keeping.missionservice.api.controller.mission.request.EditCompleteRequest;
-import com.keeping.missionservice.api.controller.mission.request.EditMissionRequest;
+import com.keeping.missionservice.api.controller.mission.request.*;
 import com.keeping.missionservice.api.controller.mission.response.MissionResponse;
 import com.keeping.missionservice.api.service.mission.MissionService;
+import com.keeping.missionservice.api.service.mission.dto.AddCommentDto;
 import com.keeping.missionservice.api.service.mission.dto.AddMissionDto;
 import com.keeping.missionservice.api.service.mission.dto.EditCompleteDto;
 import com.keeping.missionservice.api.service.mission.dto.EditMissionDto;
@@ -84,19 +82,19 @@ public class MissionApiController {
         }
     }
 
-    @PostMapping("/comment")
+    @PatchMapping("/comment")
     public ApiResponse<Long> addComment(
-            @Valid @RequestBody CommentRequest request
-    ) {
+            @Valid @RequestBody AddCommentRequest request
+            ) {
         try {
-            Long missionId = missionService.addComment(request.getMemberKey(), request.getMissionId()); 
+            Long missionId = missionService.addComment(AddCommentDto.toDto(request));
             return ApiResponse.ok(missionId);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
         }
     }
 
-    @PostMapping("/complete")
+    @PatchMapping("/complete")
     public ApiResponse<Long> editComplete(
         @Valid @RequestBody EditCompleteRequest request    
     ) {

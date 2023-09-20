@@ -1,6 +1,7 @@
 package com.keeping.missionservice.api.service.mission;
 
 import com.keeping.missionservice.api.controller.mission.response.MissionResponse;
+import com.keeping.missionservice.api.service.mission.dto.AddCommentDto;
 import com.keeping.missionservice.api.service.mission.dto.AddMissionDto;
 import com.keeping.missionservice.api.service.mission.dto.EditCompleteDto;
 import com.keeping.missionservice.api.service.mission.dto.EditMissionDto;
@@ -16,7 +17,7 @@ public interface MissionService {
     
     public MissionResponse showDetailMission(String memberKey, Long missionId);
 
-    public Long addComment(String memberId, Long missionId);
+    public Long addComment(AddCommentDto dto);
 
     public Long editCompleted(EditCompleteDto dto);
 
