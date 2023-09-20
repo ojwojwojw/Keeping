@@ -57,7 +57,7 @@ public class Account extends TimeBaseEntity {
                 .build();
     }
 
-    public void updateBalance(int money, boolean plus) {
+    public void updateBalance(Long money, boolean plus) {
         if(plus) {
             this.balance += money;
         }

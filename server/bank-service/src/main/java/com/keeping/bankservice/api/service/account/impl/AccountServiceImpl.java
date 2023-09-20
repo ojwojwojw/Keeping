@@ -2,10 +2,7 @@ package com.keeping.bankservice.api.service.account.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keeping.bankservice.api.service.account.AccountService;
-import com.keeping.bankservice.api.service.account.dto.AddAccountDto;
-import com.keeping.bankservice.api.service.account.dto.AuthPhoneDto;
-import com.keeping.bankservice.api.service.account.dto.CheckPhoneDto;
-import com.keeping.bankservice.api.service.account.dto.WithdrawMoneyDto;
+import com.keeping.bankservice.api.service.account.dto.*;
 import com.keeping.bankservice.api.service.sms.SmsService;
 import com.keeping.bankservice.api.service.sms.dto.MessageDto;
 import com.keeping.bankservice.api.service.sms.dto.SmsResponseDto;
@@ -42,9 +39,9 @@ public class AccountServiceImpl implements AccountService {
     public Long addAccount(String memberKey, AddAccountDto dto) throws JsonProcessingException {
         String key = "AccountAuth_" + memberKey;
 
-        if(redisUtils.getRedisValue(key, String.class) == null) {
-            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "핸드폰 번호가 인증되지 않았습니다.");
-        }
+//        if(redisUtils.getRedisValue(key, String.class) == null) {
+//            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "핸드폰 번호가 인증되지 않았습니다.");
+//        }
 
         String accountNumber = createNewAccountNumber();
 
@@ -84,7 +81,24 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void withdrawMoney(String memberKey, WithdrawMoneyDto dto) {
+    public Account withdrawMoney(String memberKey, WithdrawMoneyDto dto) {
+        Account account = accountRepository.findByAccountNumber(dto.getAccountNumber())
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 계좌가 존재하지 않습니다."));
+
+        if(!account.getMemberKey().equals(memberKey)) {
+            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
+        }
+        else if(account.getBalance() < dto.getMoney()) {
+            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "계좌 잔액이 부족합니다.");
+        }
+
+        account.updateBalance(dto.getMoney(), false);
+
+        return account;
+    }
+
+    @Override
+    public Account depositMoney(String memberKey, DepositMoneyDto dto) {
         Account account = accountRepository.findByAccountNumber(dto.getAccountNumber())
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 계좌가 존재하지 않습니다."));
 
@@ -92,7 +106,9 @@ public class AccountServiceImpl implements AccountService {
             throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
         }
 
-        account.updateBalance(dto.getMoney(), false);
+        account.updateBalance(dto.getMoney(), true);
+
+        return account;
     }
 
     private String createNewAccountNumber() throws JsonProcessingException {
