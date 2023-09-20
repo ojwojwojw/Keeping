@@ -42,7 +42,7 @@ public class MissionApiController {
         AddMissionDto dto = AddMissionDto.toDto(request);
 
         try {
-            Long missionId = missionService.addMission(request.getMemberKey(), dto);
+            Long missionId = missionService.addMission(dto);
             return ApiResponse.ok(missionId);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
