@@ -78,6 +78,7 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
         action: () async {
           Navigator.push(context, MaterialPageRoute(builder: (_) => EnterAuthPasswordPage()));
         },
+        isDisabled: (amount.isNotEmpty && context.watch<PiggyDetailProvider>().balance! >= int.parse(amount)) ? false : true,
       ),
     );
   }
