@@ -72,5 +72,9 @@ public class Mission extends TimeBaseEntity {
                 .completed(completed)
                 .build();
     }
+
+    public void updateCompleted(Completed completed) {
+        this.completed = completed;
+    }
     
 }
