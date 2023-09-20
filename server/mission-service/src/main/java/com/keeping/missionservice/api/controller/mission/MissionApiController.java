@@ -49,18 +49,6 @@ public class MissionApiController {
         }
     }
 
-    @PatchMapping
-    public ApiResponse<Long> editMission(
-            @Valid @RequestBody EditMissionRequest request
-    ) {
-        try {
-            Long missionId = missionService.editMission(EditMissionDto.toDto(request));
-            return ApiResponse.ok(missionId);
-        } catch (NotFoundException e) {
-            return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
-        }
-    }
-
     @GetMapping("/{member_key}")
     public ApiResponse<List<MissionResponse>> showMission(
             @PathVariable("member_key") String memberKey
@@ -74,11 +62,21 @@ public class MissionApiController {
             @PathVariable("member_key") String memberKey,
             @PathVariable("mission_id") Long missionId
     ) {
-        String memberId = null;
-
         try {
-            MissionResponse response = missionService.showDetailMission(memberId, missionId);
+            MissionResponse response = missionService.showDetailMission(memberKey, missionId);
             return ApiResponse.ok(response);
+        } catch (NotFoundException e) {
+            return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
+        }
+    }
+
+    @PatchMapping
+    public ApiResponse<Long> editMission(
+            @Valid @RequestBody EditMissionRequest request
+    ) {
+        try {
+            Long missionId = missionService.editMission(EditMissionDto.toDto(request));
+            return ApiResponse.ok(missionId);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
         }

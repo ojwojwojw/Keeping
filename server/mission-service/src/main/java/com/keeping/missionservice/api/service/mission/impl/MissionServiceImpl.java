@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -107,8 +108,10 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
-    public MissionResponse showDetailMission(String memberId, Long missionId) {
-        return null;
+    public MissionResponse showDetailMission(String memberKey, Long missionId) {
+        // 상세 미션 조회
+        return missionQueryRepository.showDetailMission(memberKey, missionId)
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
     }
 
     @Override

@@ -13,7 +13,7 @@ public interface MissionService {
     
     public List<MissionResponse> showMission(String memberKey);
     
-    public MissionResponse showDetailMission(String memberId, Long missionId);
+    public MissionResponse showDetailMission(String memberKey, Long missionId);
 
     public Long addComment(String memberId, Long missionId);
 

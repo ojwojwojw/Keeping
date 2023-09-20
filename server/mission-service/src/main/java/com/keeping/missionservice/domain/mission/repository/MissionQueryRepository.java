@@ -36,4 +36,22 @@ public class MissionQueryRepository {
                 .where(mission.childKey.eq(childKey))
                 .fetch();
     }
+
+    public Optional<MissionResponse> showDetailMission(String childKey, Long missionId) {
+        return Optional.ofNullable(queryFactory.select(constructor(MissionResponse.class,
+                        mission.childKey,
+                        mission.id,
+                        mission.todo,
+                        mission.money,
+                        mission.cheeringMessage,
+                        mission.childComment,
+                        mission.startDate,
+                        mission.endDate,
+                        mission.completed,
+                        mission.createdDate))
+                .from(mission)
+                .where(mission.childKey.eq(childKey),
+                        mission.id.eq(missionId))
+                .fetchOne());
+    }
 }
