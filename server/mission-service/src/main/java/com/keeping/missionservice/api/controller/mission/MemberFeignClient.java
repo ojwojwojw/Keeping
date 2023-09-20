@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "member-service")
-public interface FromMemberApiController {
+public interface MemberFeignClient {
 
     @PostMapping("/relationship")
     MemberRelationshipResponse getMemberRelationship(@RequestBody MemberRelationshipRequest request);
