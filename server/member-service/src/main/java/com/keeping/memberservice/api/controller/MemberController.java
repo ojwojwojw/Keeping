@@ -42,10 +42,18 @@ public class MemberController {
         return ApiResponse.ok("성공");
     }
 
+    /**
+     * 아이디 중복체크
+     *
+     * @param loginId 로그인 아이디
+     * @return 결과
+     */
     @GetMapping("/id/{loginId}")
     public ApiResponse<String> idDuplicateCheck(@PathVariable String loginId) {
-        // TODO: 2023-09-14 아이디 중복 체크
-        return ApiResponse.ok("");
+        if (memberService.idDuplicateCheck(loginId)) {
+            return ApiResponse.ok("사용 가능한 아이디입니다.");
+        }
+        return ApiResponse.of(1, HttpStatus.BAD_REQUEST, "사용할 수 없는 아이디입니다.");
     }
 
     @PostMapping("/join/child")
