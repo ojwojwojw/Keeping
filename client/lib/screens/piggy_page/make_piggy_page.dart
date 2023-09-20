@@ -22,6 +22,12 @@ class MakePiggyPage extends StatefulWidget {
 }
 
 class _MakePiggyPageState extends State<MakePiggyPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<AddPiggyProvider>().removeAddPiggyInfo();
+  }
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _goalMoneyController = TextEditingController();
@@ -34,44 +40,46 @@ class _MakePiggyPageState extends State<MakePiggyPage> {
       appBar: MyHeader(
         text: '저금통 만들기',
       ),
-      body: Column(
-        children: [
-          AddPiggyImgBtn(),
-          Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                renderTextFormField(
-                  label: '저금통 이름',
-                  onSaved: (val) {
-                    context.read<AddPiggyProvider>().setContent(val);
-                  },
-                  validator: (val) {
-                    if (val.length < 1) {
-                      return '저금통 이름을 입력해주세요.';
-                    }
-                    return null;
-                  },
-                  controller: _contentController
-                ),
-                renderTextFormField(
-                  label: '목표 금액',
-                  onSaved: (val) {
-                    context.read<AddPiggyProvider>().setGoalMoney(double.parse(val));
-                  },
-                  validator: (val) {
-                    if (val.length < 1) {
-                      return '목표 금액을 입력해주세요.';
-                    }
-                    return null;
-                  },
-                  controller: _goalMoneyController,
-                  isNumber: true
-                ),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            AddPiggyImgBtn(),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  renderTextFormField(
+                    label: '저금통 이름',
+                    onSaved: (val) {
+                      context.read<AddPiggyProvider>().setContent(val);
+                    },
+                    validator: (val) {
+                      if (val.length < 1) {
+                        return '저금통 이름을 입력해주세요.';
+                      }
+                      return null;
+                    },
+                    controller: _contentController
+                  ),
+                  renderTextFormField(
+                    label: '목표 금액',
+                    onSaved: (val) {
+                      context.read<AddPiggyProvider>().setGoalMoney(double.parse(val));
+                    },
+                    validator: (val) {
+                      if (val.length < 1) {
+                        return '목표 금액을 입력해주세요.';
+                      }
+                      return null;
+                    },
+                    controller: _goalMoneyController,
+                    isNumber: true
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: BottomBtn(
         text: '다음',

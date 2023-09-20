@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/category_dropdown_btn.dart';
 import 'package:keeping/styles.dart';
 
@@ -30,6 +31,7 @@ Padding renderTextFormField({
               textInputAction: TextInputAction.next,
               controller: controller,
               keyboardType: isNumber ? TextInputType.number : null,
+              inputFormatters: isNumber ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))] : null
             )
           ],
         )
