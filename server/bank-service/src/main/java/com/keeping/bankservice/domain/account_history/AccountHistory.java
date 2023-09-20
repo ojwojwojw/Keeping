@@ -90,4 +90,9 @@ public class AccountHistory extends TimeBaseEntity {
                 .longitude(longitude)
                 .build();
     }
+
+    public void addAccountDetail(Long money) {
+        this.remain -= money;
+        this.detailed = true;
+    }
 }
