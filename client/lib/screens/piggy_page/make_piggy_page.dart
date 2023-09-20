@@ -27,13 +27,6 @@ class _MakePiggyPageState extends State<MakePiggyPage> {
   final TextEditingController _goalMoneyController = TextEditingController();
   
   String? authPassword;
-  // String? imgPath;
-
-  // setImgPath(String newImgPath) {
-  //   setState(() {
-  //     imgPath = newImgPath;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +37,6 @@ class _MakePiggyPageState extends State<MakePiggyPage> {
       body: Column(
         children: [
           AddPiggyImgBtn(),
-          // AddPiggyImgBtn(setImgPath: setImgPath),
-          // imgPath == null ? AddPiggyImgBtn(setImgPath: setImgPath) : addedPiggyImg(setImgPath, imgPath, context),
-          // if (imgPath != null) Text(imgPath!),
           Form(
             key: _formKey,
             child: Column(
@@ -100,31 +90,6 @@ class _MakePiggyPageState extends State<MakePiggyPage> {
     );
   }
 }
-
-// Center addedPiggyImg(setImgPath, imgPath, context) {
-//   var imagPath = context.watch<AddPiggyProvider>().imgPath;
-
-//   return Center(
-//     child: InkWell(
-//       onTap: () async {
-//         final imgPath = await _getFromGallery();
-//         context.read<PiggyDetailProvider>().setImgPath(imgPath);
-//         // setImgPath(imgPath);
-//       },
-//       child: Container(
-//         width: 200,
-//         height: 200,
-//         decoration: BoxDecoration(
-//           shape: BoxShape.circle,
-//           image: DecorationImage(
-//             fit: BoxFit.cover,
-//             image: FileImage(File(imagPath))
-//           )
-//         ),
-//       )
-//     )
-//   );
-// }
 
 Future<dynamic> _getFromGallery() async {
   final pickedFile =

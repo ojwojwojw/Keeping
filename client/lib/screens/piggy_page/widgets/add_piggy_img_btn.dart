@@ -24,36 +24,33 @@ class _AddPiggyImgBtnState extends State<AddPiggyImgBtn> {
       child: InkWell(
         onTap: () async {
           final imgPath = await _getFromGallery();
-          context.read<AddPiggyProvider>().setImgPath(imgPath!);
+          if (imgPath != null) {
+            context.read<AddPiggyProvider>().setImgPath(imgPath!);
+          }
           // widget.setImgPath(imgPath);
         },
-        child: context.watch<AddPiggyProvider>().imgPath == null ?
-          Container(
+        child: ClipOval(
+          child: Container(
             width: 200,
             height: 200,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: const Color(0xFFECECEC),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.add_rounded, size: 40, color: Color(0xFF545454),),
-                Text('사진 등록', style: TextStyle(fontSize: 30, color: Color(0xFF545454), fontWeight: FontWeight.bold),)
-              ],
-            ),
-          ) :
-          Container(
-            width: 200,
-            height: 200,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
+            child: context.watch<AddPiggyProvider>().imgPath == null ?
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.add_rounded, size: 40, color: Color(0xFF545454),),
+                  Text('사진 등록', style: TextStyle(fontSize: 30, color: Color(0xFF545454), fontWeight: FontWeight.bold),)
+                ],
+              ) :
+              Image.file(
+                File(context.watch<AddPiggyProvider>().imgPath!),
                 fit: BoxFit.cover,
-                image: FileImage(File(context.watch<AddPiggyProvider>().imgPath!))
               )
-            ),
-          )
+          ),
+        )
       )
     );
   }

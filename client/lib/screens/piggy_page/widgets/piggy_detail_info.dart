@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:keeping/provider/piggy_provider.dart';
 import 'package:keeping/screens/piggy_page/widgets/chart_sample.dart';
+import 'package:provider/provider.dart';
 
 class PiggyDetailInfo extends StatefulWidget {
   PiggyDetailInfo({
@@ -23,7 +26,7 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            '무슨 내용을 넣지',
+            context.watch<PiggyDetailProvider>().content!,
             style: TextStyle(
               fontSize: 40,
               color: Colors.white
@@ -32,7 +35,7 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
           Row(
             children: [
               Text('이미지'),
-              Text('74,000원')
+              Text('${NumberFormat('#,##0').format(context.watch<PiggyDetailProvider>().balance)}원')
             ],
           ),
           Text(
@@ -42,4 +45,18 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
       ),
     );
   }
+}
+
+// 둥근 저금통 이미지
+ClipOval categoryImg(String imgPath) {
+  return ClipOval(
+    child: SizedBox(
+      width: 60,
+      height: 60,
+      child: Image.asset(
+        imgPath,
+        fit: BoxFit.cover
+      ),
+    ),
+  );
 }

@@ -18,48 +18,46 @@ class PiggyProvider with ChangeNotifier {
 }
 
 class PiggyDetailProvider with ChangeNotifier {
-  // int? _id;
-  // String? _childKey;
-  // String? _accountNumber;
-  // String? _content;
-  // double? _goalMoney;
-  // double? _balance;
-  // String? _savedImage;
-  // String? _completed;
+  int? _id;
+  String? _childKey;
+  String? _accountNumber;
+  String? _content;
+  int? _goalMoney;
+  int? _balance;
+  String? _savedImage;
+  String? _completed;
 
-  // int? get id => _id;
-  // String? get childKey => _childKey;
-  // String? get accountNumber => _accountNumber;
-  // String? get content => _content;
-  // double? get goalMoney => _goalMoney;
-  // double? get balance => _balance;
-  // String? get savedImage => _savedImage;
-  // String? get completed => _completed;
+  int? get id => _id;
+  String? get childKey => _childKey;
+  String? get accountNumber => _accountNumber;
+  String? get content => _content;
+  int? get goalMoney => _goalMoney;
+  int? get balance => _balance;
+  String? get savedImage => _savedImage;
+  String? get completed => _completed;
 
-  // void initPiggyDetail(Map piggyDetail) {
-  //   _id = piggyDetail['id'];
-  //   _childKey = piggyDetail['childKey'];
-  //   _accountNumber = piggyDetail['accountNumber'];
-  //   _content = piggyDetail['content'];
-  //   _goalMoney = piggyDetail['goalMoney'];
-  //   _balance = piggyDetail['balance'];
-  //   _savedImage = piggyDetail['savedImg'];
-  //   _completed = piggyDetail['completed'];
+  initPiggyDetail(dynamic piggyDetail) {
+    _id = piggyDetail['id'];
+    _childKey = piggyDetail['childKey'];
+    _accountNumber = piggyDetail['accountNumber'];
+    _content = piggyDetail['content'];
+    _goalMoney = piggyDetail['goalMoney'];
+    _balance = piggyDetail['balance'];
+    _savedImage = piggyDetail['savedImg'];
+    _completed = piggyDetail['completed'];
+  }
 
-  //   notifyListeners();
-  // }
+  void removePiggyDetail() {
+    _childKey = null;
+    _accountNumber = null;
+    _content = null;
+    _goalMoney = null;
+    _balance = null;
+    _savedImage = null;
+    _completed = null;
 
-  // void removePiggyDetail() {
-  //   _childKey = null;
-  //   _accountNumber = null;
-  //   _content = null;
-  //   _goalMoney = null;
-  //   _balance = null;
-  //   _savedImage = null;
-  //   _completed = null;
-
-  //   notifyListeners();
-  // }
+    notifyListeners();
+  }
 }
 
 class AddPiggyProvider with ChangeNotifier {

@@ -6,12 +6,14 @@ import 'package:keeping/screens/allowance_ledger_page/widgets/allow_search_bar.d
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
 import 'package:keeping/screens/piggy_page/make_piggy_test.dart';
+import 'package:keeping/screens/piggy_page/piggy_saving_page.dart';
 import 'package:keeping/screens/piggy_page/widgets/chart_sample.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_detail_info.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:provider/provider.dart';
 
 class PiggyDetailPage extends StatefulWidget {
   final String piggyAccountNumber;
@@ -28,38 +30,44 @@ class PiggyDetailPage extends StatefulWidget {
 class _PiggyDetailPageState extends State<PiggyDetailPage> {
   dynamic piggyResponse;
 
-  final _response = {
-    "piggy": {
-      "id": 3,
-      "piggyAccountNumber": "1",
-      "content": "아디다스 삼바",
-      "goalMoney": 140000,
-      "balance": 70000,
-      "uploadImage": "produce1.png",
-    },
-    "saving": [
-      {
-        "id": 13,
-        "name": "1회차",
-        "money": 3000,
-        "balance": 3000,
-        "createdDate": "2023-09-01 12:23"
-      },
-      {
-        "id": 35,
-        "name": "2회차",
-        "money": 5500,
-        "balance": 8500,
-        "createdDate": "2023-09-02 18:45"
-      }
-    ]
-  };
-
   @override
   void initState() {
     super.initState();
-    // context.read<PiggyDetailProvider>().initPiggyDetail(resposne);
+    initPiggyDetail();
+
   }
+
+  initPiggyDetail() async {
+    final _response = {
+      "piggy": {
+        "id": 3,
+        "piggyAccountNumber": "1",
+        "content": "아디다스 삼바",
+        "goalMoney": 140000,
+        "balance": 70000,
+        "uploadImage": "produce1.png",
+      },
+      "saving": [
+        {
+          "id": 13,
+          "name": "1회차",
+          "money": 3000,
+          "balance": 3000,
+          "createdDate": "2023-09-01 12:23"
+        },
+        {
+          "id": 35,
+          "name": "2회차",
+          "money": 5500,
+          "balance": 8500,
+          "createdDate": "2023-09-02 18:45"
+        }
+      ]
+    };
+    await context.read<PiggyDetailProvider>().initPiggyDetail(_response['piggy']);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -98,9 +106,9 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
         ],
       ),
       floatingActionButton: FloatingBtn(
-        text: '만들기',
+        text: '저금하기',
         icon: Icon(Icons.savings_rounded),
-        path: MakePiggyTest(),
+        path: PiggySavingPage(),
       ),
       bottomNavigationBar: BottomNav(),
     );

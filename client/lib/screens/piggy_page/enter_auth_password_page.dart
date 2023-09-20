@@ -33,7 +33,11 @@ class _EnterAuthPasswordPageState extends State<EnterAuthPasswordPage> {
       ),
       bottomNavigationBar: BottomBtn(
         text: '만들기',
-        // action: () {_makePiggy(content, goalMoney, imgPath);},
+        action: () {_makePiggy(
+          context.watch<AddPiggyProvider>().content, 
+          context.watch<AddPiggyProvider>().goalMoney,
+          context.watch<AddPiggyProvider>().imgPath!
+        );},
       ),
     );
   }
