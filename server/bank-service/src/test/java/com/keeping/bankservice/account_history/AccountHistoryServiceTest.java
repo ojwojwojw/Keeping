@@ -8,6 +8,7 @@ import com.keeping.bankservice.api.service.account_history.AccountHistoryService
 import com.keeping.bankservice.api.service.account_history.dto.AddAccountHistoryDto;
 import com.keeping.bankservice.domain.account.Account;
 import com.keeping.bankservice.domain.account.repository.AccountRepository;
+import com.keeping.bankservice.domain.account_history.repository.AccountHistoryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URISyntaxException;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
@@ -26,6 +29,8 @@ public class AccountHistoryServiceTest {
     AccountRepository accountRepository;
     @Autowired
     AccountHistoryService accountHistoryService;
+    @Autowired
+    AccountHistoryRepository accountHistoryRepository;
 
     @Test
     @DisplayName("거래 내역 등록")
@@ -38,7 +43,7 @@ public class AccountHistoryServiceTest {
         AddAccountHistoryRequest request = AddAccountHistoryRequest.builder()
                 .accountNumber(account.getAccountNumber())
                 .storeName("알리바이")
-                .type(true)
+                .type(false)
                 .money(3200l)
                 .address("광주 광산구 왕버들로 11가동 101호")
                 .build();
@@ -46,6 +51,9 @@ public class AccountHistoryServiceTest {
         // then
         AddAccountHistoryDto dto = AddAccountHistoryDto.toDto(request);
         Long accountHistoryId = accountHistoryService.addAccountHistory(memberKey, dto);
+
+        // then
+        assertNotNull(accountHistoryId);
     }
 
     private Account insertAccount(String memberKey) throws JsonProcessingException {

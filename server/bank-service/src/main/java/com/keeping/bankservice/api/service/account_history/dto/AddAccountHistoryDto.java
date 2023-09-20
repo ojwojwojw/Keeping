@@ -1,7 +1,6 @@
 package com.keeping.bankservice.api.service.account_history.dto;
 
 import com.keeping.bankservice.api.controller.account_history.request.AddAccountHistoryRequest;
-import com.keeping.bankservice.domain.account.Account;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;

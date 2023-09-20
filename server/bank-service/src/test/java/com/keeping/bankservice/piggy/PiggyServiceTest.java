@@ -4,7 +4,6 @@ import com.keeping.bankservice.api.controller.piggy.request.AddPiggyRequest;
 import com.keeping.bankservice.api.controller.piggy.response.ShowPiggyResponse;
 import com.keeping.bankservice.api.service.piggy.PiggyService;
 import com.keeping.bankservice.api.service.piggy.dto.AddPiggyDto;
-import com.keeping.bankservice.domain.piggy.Piggy;
 import com.keeping.bankservice.domain.piggy.repository.PiggyRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

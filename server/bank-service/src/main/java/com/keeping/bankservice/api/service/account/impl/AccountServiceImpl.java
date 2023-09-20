@@ -88,6 +88,9 @@ public class AccountServiceImpl implements AccountService {
         if(!account.getMemberKey().equals(memberKey)) {
             throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
         }
+        else if(account.getBalance() < dto.getMoney()) {
+            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "계좌 잔액이 부족합니다.");
+        }
 
         account.updateBalance(dto.getMoney(), false);
 
