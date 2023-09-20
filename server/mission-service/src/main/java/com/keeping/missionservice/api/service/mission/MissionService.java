@@ -19,7 +19,7 @@ public interface MissionService {
 
     public Long editCompleted(String memberId, Long missionId, Completed completed);
 
-    public Long editMission(String memberId, EditMissionDto dto);
+    public Long editMission(EditMissionDto dto);
 
     public Long removeMission(String memberId, Long missionId);
 }

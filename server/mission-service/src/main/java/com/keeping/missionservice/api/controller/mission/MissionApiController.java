@@ -49,15 +49,12 @@ public class MissionApiController {
         }
     }
 
-    @PutMapping
+    @PatchMapping
     public ApiResponse<Long> editMission(
             @Valid @RequestBody EditMissionRequest request
     ) {
-        // 사용자 정보 가져오기
-        String memberId = null;
-
         try {
-            Long missionId = missionService.editMission(memberId, EditMissionDto.toDto(request));
+            Long missionId = missionService.editMission(EditMissionDto.toDto(request));
             return ApiResponse.ok(missionId);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);

@@ -120,7 +120,7 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
-    public Long editMission(String memberId, EditMissionDto dto) {
+    public Long editMission(EditMissionDto dto) {
         return null;
     }
 
