@@ -18,10 +18,8 @@ public class Mission extends TimeBaseEntity {
     @Column(name = "mission_id")
     private Long id;
     
-//    // TODO: 회원 연관관계
-//    @ManyToOne
-//    @Column(name = "child_id")
-//    private Child child;
+    @Column(name = "child_key")
+    private String childKey;
 
     @Column
     private MissionType type;
@@ -46,10 +44,11 @@ public class Mission extends TimeBaseEntity {
     
     @Column
     private Completed completed;
-    
+
     @Builder
-    public Mission(Long id, MissionType type, String todo, int money, String cheeringMessage, String childComment, LocalDate startDate, LocalDate endDate, Completed completed) {
+    public Mission(Long id, String childKey, MissionType type, String todo, int money, String cheeringMessage, String childComment, LocalDate startDate, LocalDate endDate, Completed completed) {
         this.id = id;
+        this.childKey = childKey;
         this.type = type;
         this.todo = todo;
         this.money = money;
@@ -59,9 +58,11 @@ public class Mission extends TimeBaseEntity {
         this.endDate = endDate;
         this.completed = completed;
     }
-
-    public static Mission toMission(MissionType type, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate, Completed completed) {
+    
+    
+    public static Mission toMission(String childKey, MissionType type, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate, Completed completed) {
         return Mission.builder()
+                .childKey(childKey)
                 .type(type)
                 .todo(todo)
                 .money(money)
