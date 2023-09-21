@@ -35,7 +35,6 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
   String userBirth = _userBirth.text;
   String userPhoneNumber = _userPhoneNumber.text;
   String userVerificationNumber = _userVerificationNumber.text;
-  // Future<String> idDi
   String idDupRes = '';
   String verificationResult = ''; // 인증번호 송신 확인
   String certificationResult = ''; // 인증번호 확인
@@ -48,6 +47,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
     _userName = TextEditingController();
     _userPhoneNumber = TextEditingController();
     _userBirth = TextEditingController();
+    _userVerificationNumber = TextEditingController();
   }
 
   @override
@@ -58,6 +58,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
     _userName.dispose();
     _userBirth.dispose();
     _userPhoneNumber.dispose();
+    _userVerificationNumber.dispose();
     super.dispose();
   }
 
@@ -91,7 +92,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
           child: Column(
             children: [
               MyHeader(
-                text: '부모가 회원 가입 중',
+                text: '회원가입',
                 elementColor: Colors.black,
                 icon: Icon(Icons.arrow_circle_up),
                 path: SignUpParentPage(),
@@ -140,7 +141,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
         ),
       ),
       bottomNavigationBar: BottomBtn(
-        text: '회원가입부모',
+        text: '회원가입',
         action: () {
           signUp(context);
         },

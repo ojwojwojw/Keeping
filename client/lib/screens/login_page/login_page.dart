@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
@@ -110,14 +111,15 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 Future<void> login(BuildContext context, Function handleLogin) async {
-  String userId = _userId.text;
-  String userPw = _userPw.text;
+  String loginId = _userId.text;
+  String loginPw = _userPw.text;
   final data = {
-    'loginId': userId,
-    'loginPw': userPw,
+    'loginId': loginId,
+    'loginPw': loginPw,
   };
+  print(data);
   try {
-    final response = await dio.post(
+    var response = await dio.post(
       'http://j9c207.p.ssafy.io:8000/member-service/login',
       data: data,
     );
@@ -125,11 +127,18 @@ Future<void> login(BuildContext context, Function handleLogin) async {
     print(jsonResponse);
     if (response.data.resultStatus.successCode == 0) {
       print(response.data.resultStatus.resultMessage);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainPage(),
+        ),
+      );
     } else {
       handleLogin('아이디 및 비밀번호를 확인해주세요.');
     }
   } catch (err) {
     handleLogin('아이디 및 비밀번호를 확인해주세요.');
+    print(err);
   }
 }
 
