@@ -35,12 +35,12 @@ public class NotiServiceImpl implements NotiService {
     public Long addNoti(AddNotiDto dto) {
         // 알림 저장하기
         Noti noti = notiRepository.save(Noti.toNoti(dto.getReceptionkey(), dto.getSentKey(), dto.getTitle(), dto.getContent(), dto.getType()));
-
         return noti.getId();
     }
 
     @Override
     public List<NotiResponse> showNoti(String memberKey) {
+        
         return null;
     }
 }
