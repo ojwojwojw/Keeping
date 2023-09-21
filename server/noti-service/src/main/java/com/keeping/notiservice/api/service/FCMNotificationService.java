@@ -1,8 +1,8 @@
 package com.keeping.notiservice.api.service;
 
 
-import com.keeping.notiservice.api.request.FCMNotificationRequest;
+import com.keeping.notiservice.api.service.dto.FCMNotificationDto;
 
 public interface FCMNotificationService {
-    public String sendNotification(FCMNotificationRequest request);
+    public String sendNotification(FCMNotificationDto dto);
 }

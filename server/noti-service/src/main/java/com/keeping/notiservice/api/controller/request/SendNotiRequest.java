@@ -1,14 +1,15 @@
-package com.keeping.notiservice.api.controller.response;
+package com.keeping.notiservice.api.controller.request;
 
 import com.keeping.notiservice.domain.noti.Type;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class NotiResponse {
-    
-    private Long notiId;
-    
+@NoArgsConstructor
+public class SendNotiRequest {
+    private String memberKey;
+
     private String receptionkey;
 
     private String sentKey;
@@ -20,8 +21,8 @@ public class NotiResponse {
     private Type type;
 
     @Builder
-    public NotiResponse(Long notiId, String receptionkey, String sentKey, String title, String content, Type type) {
-        this.notiId = notiId;
+    public SendNotiRequest(String memberKey, String receptionkey, String sentKey, String title, String content, Type type) {
+        this.memberKey = memberKey;
         this.receptionkey = receptionkey;
         this.sentKey = sentKey;
         this.title = title;

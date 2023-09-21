@@ -1,6 +1,6 @@
 package com.keeping.notiservice.api.controller;
 
-import com.keeping.notiservice.api.request.FCMNotificationRequest;
+import com.keeping.notiservice.api.service.dto.FCMNotificationDto;
 import com.keeping.notiservice.api.service.FCMNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +15,7 @@ public class NotiApiController {
     
     private final FCMNotificationService fcmNotificationService;
     @PostMapping
-    public String sendNotification(@RequestBody FCMNotificationRequest request) {
+    public String sendNotification(@RequestBody FCMNotificationDto request) {
         return fcmNotificationService.sendNotification(request);
     }
     
