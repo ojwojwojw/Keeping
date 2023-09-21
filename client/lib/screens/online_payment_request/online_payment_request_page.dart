@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/online_payment_request/make_online_payment_request_first_page.dart';
+import 'package:keeping/screens/online_payment_request/online_payment_request_detail_page.dart';
 import 'package:keeping/screens/online_payment_request/widgets/online_payment_request_filters.dart';
 import 'package:keeping/screens/online_payment_request/widgets/online_payment_request_info.dart';
+import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/color_info_card.dart';
 import 'package:keeping/widgets/floating_btn.dart';
@@ -29,7 +31,20 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
         children: [
           OnlinePaymentRequestInfo(),
           OnlinePaymentRequestFilters(),
-          ColorInfoCard(),
+          Expanded(
+            child: Container(
+              decoration: lightGreyBgStyle(),
+              width: double.infinity,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ColorInfoCard(path: OnlinePaymentRequestDetailPage()),
+                  ],
+                )
+              )
+            )
+
+          )
         ],
       ),
       floatingActionButton: FloatingBtn(

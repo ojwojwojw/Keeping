@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:keeping/styles.dart';
 
 class ColorInfoCard extends StatefulWidget {
+  final Widget path;
+
   ColorInfoCard({
     super.key,
+    required this.path,
   });
 
   @override
@@ -15,7 +18,7 @@ class _ColorInfoCardState extends State<ColorInfoCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        
+        Navigator.push(context, MaterialPageRoute(builder: (_) => widget.path));
       },
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 5),
