@@ -57,6 +57,7 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
       bottomNavigationBar: BottomBtn(
         text: '다음',
         action: MissionCreatePage2(),
+        isDisabled: false,
       ),
     );
   }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeping/provider/piggy_provider.dart';
+
+import 'package:keeping/fcmSetting.dart';
 import 'screens/main_page/main_page.dart';
 
 //provider관련
@@ -62,6 +65,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 //여기에 프로바이더를 추가해
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await dotenv.load(fileName: "lib/.env");
   await Firebase.initializeApp(
     // options: const FirebaseOptions(
@@ -77,6 +81,8 @@ void main() async {
   final fcmToken = await FirebaseMessaging.instance.getToken();
   print('인쇄 돼?');
   print('token : ${fcmToken ?? 'tokenNull'}');
+
+  String? firebaseToken = await fcmSetting();
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => Counts()), //Counts 인스턴스 추가

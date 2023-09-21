@@ -1,15 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/util/build_text_form_field.dart';
 
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();
+Dio dio = Dio();
 final _loginKey = GlobalKey<FormState>();
 
 class LoginPage extends StatefulWidget {
@@ -66,18 +68,33 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [userIdField(), userPwField(), Text(loginResult)],
+                  children: [
+                    Container(
+                      height: 20,
+                    ),
+                    userIdField(),
+                    Container(
+                      height: 20,
+                    ),
+                    userPwField(),
+                    Container(
+                      height: 20,
+                    ),
+                    Text(loginResult),
+                  ],
                 ),
               ),
 
               //로그인 버튼
               ConfirmBtn(
                 text: '로그인',
-                action: () {
-                  login(context, handleLogin);
+                action: () async {
+                  await login(context, handleLogin);
                 },
               ),
-
+              Container(
+                height: 20,
+              ),
               //회원가입 버튼
               ConfirmBtn(
                 text: '회원가입',
@@ -94,19 +111,35 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 Future<void> login(BuildContext context, Function handleLogin) async {
-  String userId = _userId.text;
-  String userPw = _userPw.text;
-  final response = await httpPost(
-    '/member-service/login',
-    null,
-    {'loginId': userId, 'loginPw': userPw},
-  );
-  if (response != null) {
-    handleLogin('성공');
-  } else {
-    handleLogin('실패');
+  String loginId = _userId.text;
+  String loginPw = _userPw.text;
+  final data = {
+    'loginId': loginId,
+    'loginPw': loginPw,
+  };
+  print(data);
+  try {
+    var response = await dio.post(
+      'http://j9c207.p.ssafy.io:8000/member-service/login',
+      data: data,
+    );
+    final jsonResponse = jsonDecode(response.toString());
+    print(jsonResponse);
+    if (response.data.resultStatus.successCode == 0) {
+      print(response.data.resultStatus.resultMessage);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainPage(),
+        ),
+      );
+    } else {
+      handleLogin('아이디 및 비밀번호를 확인해주세요.');
+    }
+  } catch (err) {
+    handleLogin('아이디 및 비밀번호를 확인해주세요.');
+    print(err);
   }
-  print('로그인 시도');
 }
 
 Widget userIdField() {
@@ -136,22 +169,4 @@ Widget userPwField() {
       return null;
     },
   );
-}
-
-Future<dynamic> httpPost(
-    String url, Map<String, String>? headers, Map<String, dynamic> body) async {
-  try {
-    var response = await http.post(Uri.parse(url),
-        headers: headers, body: json.encode(body));
-    if (response.statusCode == 200) {
-      var result = jsonDecode(response.body);
-      return result;
-    } else {
-      print('HTTP Request Failed with status code: ${response.statusCode}');
-      return null;
-    }
-  } catch (e) {
-    print('Error during HTTP request: $e');
-    return null;
-  }
 }
