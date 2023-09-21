@@ -117,7 +117,7 @@ Widget myChild(BuildContext context, bool account, Function makeAccount) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        account ? AccountInfo() : MakeAccountBtn(makeAccount: makeAccount),
+        account ? AccountInfo() : MakeAccountBtn(),
         SizedBox(height: 10),
         SizedBox(
           width: 350,
@@ -173,7 +173,7 @@ Widget me(BuildContext context, bool account, Function makeAccount) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        account ? AccountInfo() : MakeAccountBtn(makeAccount: makeAccount),
+        account ? AccountInfo() : MakeAccountBtn(),
       ],
     )
   );

@@ -36,7 +36,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
           child: Column(
             children: [
               SizedBox(height: 100,),
-              account ? AccountInfo() : MakeAccountBtn(makeAccount: makeAccount),
+              account ? AccountInfo() : MakeAccountBtn(),
               SizedBox(height: 10),
               SizedBox(
                 width: 350,
