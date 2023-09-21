@@ -29,18 +29,13 @@ class _ColorInfoDetailCardState extends State<ColorInfoDetailCard> {
             child: Column(
               children: [
                 colorInfoCardStatus(300),
+                colorInfoDetailCardHeader(DateTime.parse('2020-10-10T14:58:04+09:00')),
                 colorInfoDetailCardContents(
                   Column(
                     children: [
                       colorInfoDetailCardContent('금액'),
                       colorInfoDetailCardContent('구매 URL', box: false),
-                      colorInfoDetailCardContent('안녕하세요'),
-                      colorInfoDetailCardContent('금액'),
-                      colorInfoDetailCardContent('구매 URL'),
-                      colorInfoDetailCardContent('안녕하세요'),
-                      colorInfoDetailCardContent('금액'),
-                      colorInfoDetailCardContent('구매 URL'),
-                      colorInfoDetailCardContent('안녕하세요'),
+                      colorInfoDetailCardContent('필요한 이유'),
                     ],
                   )
                 ),

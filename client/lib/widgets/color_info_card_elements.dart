@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:keeping/styles.dart';
 
 Widget colorInfoCardStatus(double width) {
@@ -19,8 +20,26 @@ Widget colorInfoCardContent() {
   return Container();
 }
 
-Widget colorInfoDetailCardHeader() {
-  return Container();
+Widget colorInfoDetailCardHeader(DateTime date) {
+  return Padding(
+    padding: EdgeInsets.symmetric(vertical: 10),
+    child: Column(
+      children: [
+        colorInfoDetailDate(date),
+        Row(
+          children: [
+            
+          ],
+        )
+      ],
+    ),
+  );
+}
+
+Widget colorInfoDetailDate(DateTime date) {
+  return Text(
+    DateFormat('yyyy년 M월 d일').format(date)
+  );
 }
 
 Widget colorInfoDetailCardContents(Column content) {
@@ -31,7 +50,6 @@ Widget colorInfoDetailCardContents(Column content) {
         child: SingleChildScrollView(
           child: SizedBox(
             width: 280,
-            // height: 280,
             child: content,
           )
         )

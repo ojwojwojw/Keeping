@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/widgets/color_info_card_elements.dart';
 import 'package:keeping/widgets/color_info_detail_card.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
