@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/widgets/header.dart';
-import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 
 TextEditingController _controller1 = TextEditingController();
@@ -29,7 +28,21 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
         Text('아이에게 어떤 미션을 줘볼까요?'),
 
         // 입력 폼
-       _form (missionTitle),
+        Form(
+            child: Column(children: [
+          TextFormField(
+            decoration: InputDecoration(labelText: '미션제목을 입력해주세요'),
+            validator: (value) {
+              if (value?.isEmpty ?? false) {
+                return '미션 제목을 입력해주세요.....';
+              }
+              return null;
+            },
+            onSaved: (String? value) {
+              missionTitle = value;
+            },
+          )
+        ])),
 
         SizedBox(
           height: 100,
@@ -47,7 +60,6 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
       ),
     );
   }
-
 
   DateTime dateValue = DateTime.now();
 //데이트 피커
@@ -77,7 +89,6 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
         appBar: MyHeader(text: '미션생성2'),
         body: Column(children: [
           Text('성공하면 얼마를 줄까요?'),
-
         ]));
   }
 }
@@ -100,26 +111,4 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
           // ConfirmBtn(action: )
         ]));
   }
-}
-
-
-
-_form (missionTitle) {
-  return(
-    Form(
-            child: Column(children: [
-          TextFormField(
-            decoration: InputDecoration(labelText: '미션제목을 입력해주세요'),
-            validator: (value) {
-              if (value?.isEmpty ?? false) {
-                return '미션 제목을 입력해주세요.....';
-              }
-              return null;
-            },
-            onSaved: (String? value) {
-              missionTitle = value;
-            },
-          )
-        ])),
-  )
 }

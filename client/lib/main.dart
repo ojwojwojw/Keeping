@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:keeping/provider/piggy_provider.dart';
 import 'screens/main_page/main_page.dart';
 
 //provider관련
@@ -60,6 +62,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 //여기에 프로바이더를 추가해
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: "lib/.env");
   await Firebase.initializeApp(
     // options: const FirebaseOptions(
     //   // apiKey: 'AIzaSyBWmD28vXwr8HQcIQmjrW_fZMTVq8a2SNo',
@@ -78,6 +81,8 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => Counts()), //Counts 인스턴스 추가
     ChangeNotifierProvider(create: (_) => TestArray()), // TestArray 인스턴스 추가
+    ChangeNotifierProvider(create: (_) => PiggyDetailProvider()),
+    ChangeNotifierProvider(create: (_) => AddPiggyProvider()),
   ], child: const MaterialApp(home: MainPage())));
 }
 

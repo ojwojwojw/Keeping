@@ -8,18 +8,26 @@ BoxDecoration lightGreyBgStyle() {
 }
 
 // 은은한 그림자 있는 둥근 하얀 상자 스타일
-BoxDecoration roundedBoxWithShadowStyle({double borderRadius = 20}) {
+BoxDecoration roundedBoxWithShadowStyle({
+  Color bgColor = Colors.white, double borderRadius = 20, bool shadow = true, bool border = false, Color? borderColor, double borderWidth = 2
+}) {
   return BoxDecoration(
-    color: Colors.white,
+    color: bgColor,
     borderRadius: BorderRadius.circular(borderRadius),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.grey.withOpacity(0.7),
-        spreadRadius: 0,
-        blurRadius: 5.0,
-        offset: Offset(0, 0),
-      ),
-    ],
+    border: border ?
+      Border.all(
+        color: borderColor!,
+        width: borderWidth
+      ) : null,
+    boxShadow: shadow ?
+      [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.7),
+          spreadRadius: 0,
+          blurRadius: 5.0,
+          offset: Offset(0, 0),
+        ),
+      ] : null,
   );
 }
 
