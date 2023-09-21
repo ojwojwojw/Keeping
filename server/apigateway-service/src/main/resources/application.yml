@@ -90,6 +90,9 @@ spring:
           predicates:
             - Path=/bank-service/actuator/**
             - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/bank-service/(?<segment>.*), /$\{segment}
         # mission
         - id: mission-service
           uri: lb://MISSION-SERVICE

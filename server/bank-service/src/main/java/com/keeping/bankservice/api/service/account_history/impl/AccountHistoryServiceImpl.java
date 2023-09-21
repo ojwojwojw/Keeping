@@ -4,12 +4,16 @@ import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.DepositMoneyDto;
 import com.keeping.bankservice.api.service.account.dto.WithdrawMoneyDto;
 import com.keeping.bankservice.api.service.account_history.AccountHistoryService;
+import com.keeping.bankservice.api.service.account_history.dto.AddAccountDetailValidationDto;
 import com.keeping.bankservice.api.service.account_history.dto.AddAccountHistoryDto;
 import com.keeping.bankservice.domain.account.Account;
 import com.keeping.bankservice.domain.account_history.AccountHistory;
-import com.keeping.bankservice.domain.account_history.Category;
+import com.keeping.bankservice.domain.account_history.LargeCategory;
 import com.keeping.bankservice.domain.account_history.repository.AccountHistoryQueryRepository;
 import com.keeping.bankservice.domain.account_history.repository.AccountHistoryRepository;
+import com.keeping.bankservice.global.exception.InvalidRequestException;
+import com.keeping.bankservice.global.exception.NoAuthorizationException;
+import com.keeping.bankservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -24,7 +28,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.keeping.bankservice.domain.account_history.Category.*;
+import static com.keeping.bankservice.domain.account_history.LargeCategory.*;
 
 @Service
 @Transactional
@@ -37,8 +41,8 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
     @Override
     public Long addAccountHistory(String memberKey, AddAccountHistoryDto dto) throws URISyntaxException {
-
         Account account = null;
+
         // 입금 상황
         if(dto.isType()) {
             DepositMoneyDto depositMoneyDto = DepositMoneyDto.toDto(dto.getAccountNumber(), dto.getMoney());
@@ -58,11 +62,11 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         Map keywordResponse = useKakaoLocalApi(true, dto.getStoreName());
         Map addressResponse = useKakaoLocalApi(false, dto.getAddress());
 
-        Category category = null;
+        LargeCategory largeCategory = null;
         String categoryType = null;
         try {
             categoryType = ((LinkedHashMap) ((ArrayList) keywordResponse.get("documents")).get(0)).get("category_group_code").toString();
-            category = mappingCategory(categoryType);
+            largeCategory = mappingCategory(categoryType);
         }
         catch(NullPointerException e) {
             categoryType = "ETC";
@@ -79,10 +83,29 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         }
 
         // 새로운 거래 내역 등록
-        AccountHistory accountHistory = AccountHistory.toAccountHistory(account, dto.getStoreName(), dto.isType(), dto.getMoney(), account.getBalance(), dto.getMoney(), category, false, dto.getAddress(), latitude, longitude);
+        AccountHistory accountHistory = AccountHistory.toAccountHistory(account, dto.getStoreName(), dto.isType(), dto.getMoney(), account.getBalance(), dto.getMoney(), largeCategory, false, dto.getAddress(), latitude, longitude);
         AccountHistory saveAccountHistory = accountHistoryRepository.save(accountHistory);
 
         return saveAccountHistory.getId();
+    }
+
+    @Override
+    public AccountHistory addAccountDetail(String memberKey, AddAccountDetailValidationDto dto) {
+        AccountHistory accountHistory = accountHistoryRepository.findById(dto.getAccountHistoryId())
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 거래 내역이 존재하지 않습니다."));
+
+        if(!accountHistory.getAccount().getMemberKey().equals(memberKey)) {
+            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
+        }
+
+        // 쪼개기 가능한 금액보다 쪼갤 금액이 큰 경우
+        if(accountHistory.getRemain() < dto.getMoney()) {
+            throw new InvalidRequestException("400", HttpStatus.BAD_REQUEST, "쪼개기 가능한 금액보다 큽니다.");
+        }
+
+        accountHistory.addAccountDetail(dto.getMoney());
+
+        return accountHistory;
     }
 
     private Map useKakaoLocalApi(boolean flag, String value) {
@@ -121,7 +144,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         return null;
     }
 
-    private Category mappingCategory(String categoryType) {
+    private LargeCategory mappingCategory(String categoryType) {
         switch(categoryType) {
             case "MT1":
                 return MART;

@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/bank-service/account-history")
+@RequestMapping("/account-history")
 public class AccountHistoryApiController {
 
     private final AccountHistoryService accountHistoryService;
 
+    // TODO: service단에 memberKey 넘겨서 검증하는 과정 필요
     @PostMapping("/{member-key}")
     public ApiResponse<Void> addAccountHistory(@PathVariable("member-key") String memberKey, @RequestBody AddAccountHistoryRequest request) {
         log.debug("AddAccountHistory={}", request);
