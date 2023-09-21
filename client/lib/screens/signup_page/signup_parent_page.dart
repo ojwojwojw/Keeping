@@ -298,8 +298,9 @@ Future<void> idDupliCheck(BuildContext context, Function handledupCheck) async {
   String id = _userId.text;
   print(id);
   try {
-    var response = await dio
-        .get('http://j9c207.p.ssafy.io:8000/member-service/api/id/${id}');
+    var response = await dio.get(
+      'http://j9c207.p.ssafy.io:8000/member-service/api/id/${id}',
+    );
     print(response);
     if (response.data.resultStatus.successCode == 0) {
       handledupCheck(response.data.resultBody);

@@ -4,12 +4,11 @@ import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/util/build_text_form_field.dart';
 
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();
+Dio dio = Dio();
 final _loginKey = GlobalKey<FormState>();
 
 class LoginPage extends StatefulWidget {
@@ -86,8 +85,8 @@ class _LoginPageState extends State<LoginPage> {
               //로그인 버튼
               ConfirmBtn(
                 text: '로그인',
-                action: () {
-                  login(context, handleLogin);
+                action: () async {
+                  await login(context, handleLogin);
                 },
               ),
               Container(
@@ -111,17 +110,23 @@ class _LoginPageState extends State<LoginPage> {
 Future<void> login(BuildContext context, Function handleLogin) async {
   String userId = _userId.text;
   String userPw = _userPw.text;
-  final response = await httpPost(
-    'http://j9c207.p.ssafy.io:8000/member-service/login',
-    null,
-    {'loginId': userId, 'loginPw': userPw},
-  );
-  if (response != null) {
-    handleLogin('성공');
-  } else {
-    handleLogin('실패');
+  final data = {
+    'loginId': userId,
+    'loginPw': userPw,
+  };
+  try {
+    final response = await dio.post(
+      'http://j9c207.p.ssafy.io:8000/member-service/login',
+      data: data,
+    );
+    if (response.data.resultStatus.successCode == 0) {
+      print(response.data.resultStatus.resultMessage);
+    } else {
+      handleLogin('아이디 및 비밀번호를 확인해주세요.');
+    }
+  } catch (err) {
+    handleLogin('아이디 및 비밀번호를 확인해주세요.');
   }
-  print('로그인 시도');
 }
 
 Widget userIdField() {
@@ -151,23 +156,4 @@ Widget userPwField() {
       return null;
     },
   );
-}
-
-Future<dynamic> httpPost(
-    String url, Map<String, String>? headers, Map<String, dynamic> body) async {
-  try {
-    var response = await http.post(Uri.parse(url),
-        headers: headers, body: json.encode(body));
-    print(response);
-    if (response.statusCode == 200) {
-      var result = jsonDecode(response.body);
-      return result;
-    } else {
-      print('HTTP Request Failed with status code: ${response.statusCode}');
-      return null;
-    }
-  } catch (e) {
-    print('Error during HTTP request: $e');
-    return null;
-  }
 }
