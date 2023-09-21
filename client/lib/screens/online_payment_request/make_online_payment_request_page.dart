@@ -21,6 +21,31 @@ class _MakeOnlinePaymentRequestFirstPageState extends State<MakeOnlinePaymentReq
       body: Container(),
       bottomNavigationBar: BottomBtn(
         text: '다음',
+        action: MakeOnlinePaymentRequestSecondPage(),
+      ),
+    );
+  }
+}
+
+class MakeOnlinePaymentRequestSecondPage extends StatefulWidget {
+  MakeOnlinePaymentRequestSecondPage({
+    super.key
+  });
+
+  @override
+  State<MakeOnlinePaymentRequestSecondPage> createState() => _MakeOnlinePaymentRequestSecondPageState();
+}
+
+class _MakeOnlinePaymentRequestSecondPageState extends State<MakeOnlinePaymentRequestSecondPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: MyHeader(
+        text: '온라인 결제 부탁하기',
+      ),
+      body: Container(),
+      bottomNavigationBar: BottomBtn(
+        text: '다음',
       ),
     );
   }
