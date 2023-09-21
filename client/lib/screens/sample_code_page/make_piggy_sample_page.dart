@@ -56,7 +56,7 @@ class _MakePiggySamplePageState extends State<MakePiggySamplePage> {
               });
             }
           },
-          style: authenticationBtnStyle(),
+          // style: authenticationBtnStyle(),
           child: Text('저금통 만들기'),
         ),
         SizedBox(height: 15,),

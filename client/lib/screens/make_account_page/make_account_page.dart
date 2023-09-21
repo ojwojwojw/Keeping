@@ -1,9 +1,10 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/make_account_page/make_acount_enter_auth_password_page.dart';
+import 'package:keeping/util/dio_method.dart';
+import 'package:keeping/util/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:keeping/widgets/rounded_modal.dart';
 
 // 임시 통신 주소 로그인 키
 const accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ5ZWppIiwiYXV0aCI6IlVTRVIiLCJuYW1lIjoi7JiI7KeAIiwicGhvbmUiOiIwMTAtMDAwMC0wMDAwIiwiZXhwIjoxNjk1ODgyMDcxfQ.XgYC2up60frNzdg8TMJ3nC3JRRwFFZiBFXTE0XRTmS4';
@@ -61,100 +62,45 @@ class TermsAndConditionsPage extends StatelessWidget {
   }
 }
 
-TextEditingController _phoneNumber = TextEditingController();
-TextEditingController _phoneVerification = TextEditingController();
-final _loginKey = GlobalKey<FormState>();
+// TextEditingController _phoneNumber = TextEditingController();
+// TextEditingController _phoneVerification = TextEditingController();
+// final _loginKey = GlobalKey<FormState>();
 
 // 번호 인증 페이지
 class PhoneVerificationPage extends StatefulWidget {
+  final _phonAuthFormKey = GlobalKey<FormState>();
+  final _verificationFormKey = GlobalKey<FormState>();
+
   PhoneVerificationPage({super.key});
 
   @override
-  _PhoneVerificationPageState createState() => _PhoneVerificationPageState();
+  State<PhoneVerificationPage> createState() => _PhoneVerificationPageState();
 }
 
 class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
-  String result = '인증X';
-  String verificationResult = '확인X';
-  String makeAccountResult = '개설X';
+  bool? _phoneAuthenticationResult;
+  bool? _verificationResult;
 
-  Widget authenticationBtn() {
-    return ElevatedButton(
-      onPressed: () async {
-        final response = await httpPost(
-          'https://e8aa-121-178-98-20.ngrok-free.app/bank-service/account/phone-check/yoonyeji',
-          {
-            'Authorization': 'Bearer $accessToken',
-            'Content-Type': 'application/json'
-          },
-          {'phone': '010-7240-1318'}
-        );
-        if (response != null) {
-          setState(() {
-            result = response.toString();
-          });
-        } else {
-          setState(() {
-            result = '인증 실패';
-          });
-        }
-      },
-      style: authenticationBtnStyle(),
-      child: Text('인증번호'),
-    );
+  void successPhoneAuth() {
+    setState(() {
+      _phoneAuthenticationResult = true;
+    });
   }
 
-  Widget verificationBtn() {
-    return ElevatedButton(
-      onPressed: () async {
-        final response = await httpPost(
-          'https://e8aa-121-178-98-20.ngrok-free.app/bank-service/account/phone-auth/yoonyeji',
-          {
-            'Authorization': 'Bearer $accessToken',
-            'Content-Type': 'application/json'
-          },
-          {'code': '237362'}
-        );  // 3분 30초
-        if (response != null) {
-          setState(() {
-            verificationResult = response.toString();
-          });
-        } else {
-          setState(() {
-            verificationResult = '인증 실패';
-          });
-        }
-      },
-      style: authenticationBtnStyle(),
-      child: Text('인증번호'),
-    );
+  void failPhoneAuth() {
+    setState(() {
+      _phoneAuthenticationResult = false;
+    });
   }
 
-  Widget makeAccountBtn() {
-    return ElevatedButton(
-      onPressed: () async {
-        final response = await httpPost(
-          'https://e8aa-121-178-98-20.ngrok-free.app/bank-service/account/yoonyeji',
-          {
-            'Authorization': 'Bearer $accessToken',
-            'Content-Type': 'application/json'
-          },
-          {'authPassword': '123456'}
-        );  // 3분 30초
-        if (response != null) {
-          setState(() {
-            makeAccountResult = response.toString();
-          });
-        } else {
-          setState(() {
-            makeAccountResult = '개설 실패';
-          });
-        }
-      },
-      style: authenticationBtnStyle(),
-      child: Text('개설하기'),
-    );
+  void failVerification() {
+    setState(() {
+      _verificationResult = false;
+    });
   }
+
+  final _phoneController = TextEditingController();
+  final _verificationController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -170,23 +116,75 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Expanded(child: renderPhoneNumberText()),
-                      authenticationBtn(),
+                      Expanded(
+                        child: Form(
+                          key: widget._phonAuthFormKey,
+                          child: renderTextFormField(
+                            label: '전화번호', 
+                            onSaved: (val) async {
+                              var formattedPhone = val.replaceAllMapped(RegExp(r'(\d{3})(\d{3,4})(\d{4})'), (m) => '${m[1]}-${m[2]}-${m[3]}');
+                              final response = await dioPost(
+                                accessToken: accessToken,
+                                url: '/bank-service/account/phone-check/yoonyeji',
+                                data: {'phone': formattedPhone}
+                              );
+                              if (response != null) {
+                                successPhoneAuth();
+                              } else {
+                                failPhoneAuth();
+                                roundedModal(context: context, title: '다시 입력해주세요');
+                              }
+                            }, 
+                            validator: (val) {
+                              if (val.length < 1) {
+                                return '전화번호를 입력해주세요.';
+                              }
+                              return null;
+                            }, 
+                            controller: _phoneController
+                          )
+                        )
+                      ),
+                      _authenticationBtn(widget._phonAuthFormKey, context, '인증번호 발송'),
                     ],
                   ),
-                  SizedBox(height: 20),
-                  Text(result),
+                  SizedBox(height: 10,),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Expanded(child: renderPhoneVerificationText()),
-                      verificationBtn(),
+                      Expanded(
+                        child: Form(
+                          key: widget._verificationFormKey,
+                          child: renderTextFormField(
+                            label: '인증번호', 
+                            onSaved: (val) async {
+                              final response = await dioPost(
+                                accessToken: accessToken, 
+                                url: '/bank-service/account/phone-auth/yoonyeji',
+                                data: {'code': val}
+                              );
+                              if (response != null) {
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => MakeAccountEnterAuthPasswordPage()));
+                              } else {
+                                failVerification();
+                                roundedModal(context: context, title: '인증번호가 틀렸습니다.');
+                              }
+                            }, 
+                            validator: (val) {
+                              if (val.length < 1 || val.length > 6) {
+                                return '인증번호를 제대로 입력해주세요';
+                              }
+                              return null;
+                            }, 
+                            controller: _verificationController,
+                            isNumber: true
+                          )
+                        )
+                      ),
                     ],
                   ),
-                  SizedBox(height: 20),
-                  Text(verificationResult),
-                  makeAccountBtn(),
-                  Text(makeAccountResult)
                 ],
               ),
             )
@@ -194,67 +192,43 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
         ),
       ),
       bottomNavigationBar: BottomBtn(
-        text: '다음',
-        action: () {},
-        isDisabled: false,
+        text: '인증하기',
+        action: () async {
+          if (widget._verificationFormKey.currentState != null && widget._verificationFormKey.currentState!.validate()) {
+            widget._verificationFormKey.currentState!.save();
+            print('저장완료');
+          } else {
+            print('저장실패');
+            roundedModal(context: context, title: '다시 입력해주세요');
+          }
+        },
+        isDisabled: _phoneAuthenticationResult == true && _verificationController.text.length == 6
+          ? false : true,
       ),
     );
   }
 }
 
-Widget renderPhoneNumberText() {
-  return BuildTextFormField(
-    controller: _phoneNumber,
-    labelText: '전화 번호',
-    hintText: '전화 번호를 입력해 주세요.',
-    validator: (value) {
-      if (value == null || value.isEmpty) {
-        return '전화 번호를 입력해 주세요.';
-      }
-      return null;
-    }
-  );
-}
-Widget renderPhoneVerificationText() {
-  return BuildTextFormField(
-    controller: _phoneVerification,
-    labelText: '인증 번호',
-    hintText: '인증 번호를 입력해 주세요.',
-    validator: (value) {
-      if (value == null || value.isEmpty) {
-        return '인증 번호를 입력해 주세요.';
-      }
-      return null;
-    }
+Widget _authenticationBtn(GlobalKey<FormState> formKey, BuildContext context, String title) {
+  return Padding(
+    padding: EdgeInsets.only(bottom: 20, left: 10),
+    child: ElevatedButton(
+      onPressed: () async {
+        if (formKey.currentState != null && formKey.currentState!.validate()) {
+          formKey.currentState!.save();
+          print('저장완료');
+        } else {
+          print('저장실패');
+          roundedModal(context: context, title: '다시 입력해주세요');
+        }
+      },
+      style: _authenticationBtnStyle(),
+      child: Text(title),
+    )
   );
 }
 
-Widget BuildTextFormField({
-  required TextEditingController controller,
-  required String labelText,
-  required String hintText,
-  required String? Function(String?) validator,
-  bool obscureText = false,
-}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      TextFormField(
-        controller: controller,
-        obscureText: obscureText,
-        validator: validator,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(
-          labelText: labelText,
-          hintText: hintText
-        ),
-      ),
-      SizedBox(height: 16,)
-    ],
-  );
-}
-
-ButtonStyle authenticationBtnStyle() {
+ButtonStyle _authenticationBtnStyle() {
   return ButtonStyle(
     backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
     foregroundColor: MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
@@ -268,25 +242,7 @@ ButtonStyle authenticationBtnStyle() {
       )
     ),
     fixedSize: MaterialStateProperty.all<Size>(
-      Size(90, 40)
+      Size(120, 40)
     )
   );
-}
-
-Future<dynamic> httpPost(String url, Map<String, String>? headers, Map<String, dynamic> body) async {
-  try {
-    var response = await http.post
-      (Uri.parse(url), headers: headers, body: json.encode(body)
-    );
-    if (response.statusCode == 200) {
-      var result = jsonDecode(response.body);
-      return result;
-    } else {
-      print('HTTP Request Failed with status code: ${response.statusCode}');
-      return null;
-    }
-  } catch (e) {
-    print('Error during HTTP request: $e');
-    return null;
-  }
 }
