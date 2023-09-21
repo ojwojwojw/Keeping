@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/main_page/main_page.dart';
+import 'package:keeping/util/build_phone_number_form_field.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/util/build_text_form_field.dart';
 // import 'package:keeping/util/build_phone_number_form_field.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
+
+Dio dio = Dio();
 
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();
@@ -119,9 +122,9 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                         checkVerification(context, handleCheckVerification);
                       },
                     ),
-                    //인증번호 넣어주는 로직 - certification
-                    userVerificationField(),
                     Text(verificationResult),
+                    userVerificationField(),
+                    //인증번호 넣어주는 로직 - certification
                     ConfirmBtn(
                       text: '인증번호 확인',
                       action: () {
@@ -139,7 +142,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
       bottomNavigationBar: BottomBtn(
         text: '회원가입부모',
         action: () {
-          signUp();
+          signUp(context);
         },
       ),
     );
@@ -169,13 +172,13 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
     return BuildTextFormField(
       controller: _userPw,
       labelText: '비밀번호',
-      hintText: '비밀번호를 입력해주세요',
+      hintText: '비밀번호를 입력해주세요. 비밀번호는 숫자, 영문자, 특수문자가 들어가야 합니다.',
       obscureText: true,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return '필수 항목입니다';
         } else if (value.length < 5) {
-          return '비밀번호는 5자 이상이 되어야 합니다';
+          return '비밀번호는 5자 이상이 되어야 합니다.';
         } else if (value.length > 25) {
           return '비밀번호는 25자 이하가 되어야 합니다.';
         }
@@ -234,7 +237,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
   }
 
   Widget userPhoneNumberField() {
-    return BuildTextFormField(
+    return BuildPhoneNumberFormField(
       controller: _userPhoneNumber,
       labelText: '휴대폰 번호',
       hintText: '- 없이 숫자만 입력해주세요. (예:01012345678)',
@@ -262,76 +265,83 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
   }
 }
 
-Future<void> signUp() async {
+Future<void> signUp(BuildContext context) async {
   print('회원가입 함수까지 옵니다.');
-  String userId = _userId.text;
-  String userPw = _userPw.text;
-  String userName = _userName.text;
-  String tmpPhone = _userName.text;
-  String userBirth = _userBirth.text;
+  String loginId = _userId.text;
+  String loginPw = _userPw.text;
+  String name = _userName.text;
+  String phone = _userPhoneNumber.text;
+  String birth = _userBirth.text;
+  var data = {
+    'loginId': loginId,
+    'loginPw': loginPw,
+    'name': name,
+    'phone': phone,
+    'birth': birth
+  };
   // String
   if (_signupKey.currentState!.validate()) {
     print('유효성 검사 통과');
-    final response = await httpPost(
-      'http://j9c207.p.ssafy.io:8000/member-service/api/join/parent',
-      null,
-      {
-        'loginId': userId,
-        'loginPw': userPw,
-        'name': userName,
-        'phone': tmpPhone,
-        'birth': userBirth
-      },
-    );
-    if (response != null) {
-      print('회원 가입 완료');
-    } else {
-      print('회원가입실패');
+    BuildContext currentContext = context;
+    print(data);
+    try {
+      var response = await dio.post(
+        'http://j9c207.p.ssafy.io:8000/member-service/api/join/parent',
+        data: data,
+      );
+      final jsonResponse = json.decode(response.toString());
+      print(jsonResponse);
+      if (jsonResponse['resultStatus']['successCode'] == 0) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainPage(),
+          ),
+        );
+      } else if (jsonResponse['resultStatus']['resultCode'] == 409) {
+        print('이미 가입한 회원입니다.');
+      } else {
+        print('유효성 검사 실패');
+      }
+    } catch (err) {
+      print(err);
     }
   }
-
-  // 여기서 회원가입 로직을 수행하세요.
 }
 
 Future<void> idDupliCheck(BuildContext context, Function handledupCheck) async {
-  Dio dio = Dio();
   String id = _userId.text;
-  print(id);
   try {
     var response = await dio.get(
       'http://j9c207.p.ssafy.io:8000/member-service/api/id/${id}',
     );
-    print(response);
-    if (response.data.resultStatus.successCode == 0) {
-      handledupCheck(response.data.resultBody);
+    var jsonResponse = json.decode(response.toString()); // 문자열로 변환 후 JSON 파싱
+    print('${jsonResponse['resultStatus']}, jsonresponse');
+    if (jsonResponse['resultStatus']['successCode'] == 0) {
+      handledupCheck(jsonResponse['resultBody']);
     } else {
-      handledupCheck(response.data.resultMessage);
+      handledupCheck(jsonResponse['resultStatus']['resultMessage']);
     }
   } catch (err) {
-    print(err);
+    handledupCheck('아이디 양식을 지켜주세요. \n 아이디는 5~20자 사이로, 영어와 숫자만 입력할 수 있습니다.');
   }
 }
 
 // 인증 번호 받기 로직
 Future<void> checkVerification(
     BuildContext context, Function handleCheckVerification) async {
-  Dio dio = Dio();
+  String phone = _userPhoneNumber.text;
 
-  String tmpNumber = _userPhoneNumber.text;
-
-  // 전화 번호를 하이픈 형식으로 변환
-  String formattedNumber = formatPhoneNumber(tmpNumber);
-
-  print(formattedNumber);
   try {
     var response = await dio.post(
       'http://j9c207.p.ssafy.io:8000/member-service/api/phone',
-      data: {'phone': formattedNumber},
+      data: {'phone': phone},
     );
-    if (response.data.resultStatus.successCode == 0) {
-      handleCheckVerification(response.data.resultBody);
+    var jsonResponse = json.decode(response.toString());
+    if (jsonResponse['resultStatus']['successCode'] == 0) {
+      handleCheckVerification(jsonResponse['resultBody']);
     } else if (response.data.resultStatus.successCode == 409) {
-      handleCheckVerification(response.data.resultMessage);
+      handleCheckVerification(jsonResponse['resultBody']);
     } else {
       handleCheckVerification('휴대폰 번호를 다시 확인해주세요');
     }
@@ -343,68 +353,21 @@ Future<void> checkVerification(
 
 Future<void> checkCertification(
     BuildContext context, Function handleCheckCertification) async {
-  String certificationNumber = _userVerificationNumber.text;
-  String tmpNumber = _userPhoneNumber.text;
-  String formattedNumber = formatPhoneNumber(tmpNumber);
-  print('여기까진 오네요 ${formattedNumber} ${certificationNumber}');
-  final response = await httpPost(
-    'http://j9c207.p.ssafy.io:8000/member-service/api/phone-check',
-    null,
-    {'phone': formattedNumber, 'certification': certificationNumber},
-  );
-  print('흠');
-  if (response != null) {
-    handleCheckCertification('인증이 완료되었습니다.');
-  } else {
-    handleCheckCertification('인증에 실패했습니다. 다시 확인해주세요.');
-  }
-}
-
-String formatPhoneNumber(String phoneNumber) {
-  if (phoneNumber.length == 11) {
-    return phoneNumber.replaceFirstMapped(RegExp(r'(\d{3})(\d{4})(\d{4})'),
-        (match) {
-      return '${match[1]}-${match[2]}-${match[3]}';
-    });
-  } else {
-    return phoneNumber; // 형식에 맞지 않는 경우 그대로 반환
-  }
-}
-
-Future<List<dynamic>?> httpGet(String url, Map<String, String>? headers) async {
+  String certification = _userVerificationNumber.text; // 유저가 넣어준 인증번호
+  String phone = _userPhoneNumber.text;
   try {
-    var response = await http.get(Uri.parse(url), headers: headers);
-    print('blah');
-    print(response);
-    print('1');
-    if (response.statusCode == 200) {
-      var result = jsonDecode(response.body);
-      return result;
+    var response = await dio.post(
+      'http://j9c207.p.ssafy.io:8000/member-service/api/phone-check',
+      data: {'phone': phone, 'certification': certification},
+    );
+    var jsonResponse = json.decode(response.toString());
+    print(jsonResponse);
+    if (jsonResponse['resultStatus']['successCode'] == 0) {
+      handleCheckCertification(jsonResponse['resultBody']);
     } else {
-      print('HTTP Request Failed with status code: ${response.statusCode}');
-      return null;
+      handleCheckCertification(jsonResponse['resultStatus']['resultMessage']);
     }
-  } catch (e) {
-    print(2);
-    print('Error during HTTP request: $e');
-    return null;
-  }
-}
-
-Future<dynamic> httpPost(
-    String url, Map<String, String>? headers, Map<String, dynamic> body) async {
-  try {
-    var response = await http.post(Uri.parse(url),
-        headers: headers, body: json.encode(body));
-    if (response.statusCode == 200) {
-      var result = jsonDecode(response.body);
-      return result;
-    } else {
-      print('HTTP Request Failed with status code: ${response.statusCode}');
-      return null;
-    }
-  } catch (e) {
-    print('Error during HTTP request: $e');
-    return null;
+  } catch (err) {
+    print(err);
   }
 }

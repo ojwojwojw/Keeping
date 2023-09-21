@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
 import 'package:keeping/widgets/header.dart';
@@ -119,6 +121,8 @@ Future<void> login(BuildContext context, Function handleLogin) async {
       'http://j9c207.p.ssafy.io:8000/member-service/login',
       data: data,
     );
+    final jsonResponse = jsonDecode(response.toString());
+    print(jsonResponse);
     if (response.data.resultStatus.successCode == 0) {
       print(response.data.resultStatus.resultMessage);
     } else {

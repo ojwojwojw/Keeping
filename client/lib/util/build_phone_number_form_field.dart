@@ -46,12 +46,17 @@ class PhoneNumberFormatter extends TextInputFormatter {
     if (text.isEmpty) {
       return '';
     }
-    String formatted = text.substring(0, 3);
-    if (text.length > 3) {
-      formatted += '-' + text.substring(3, 7);
-    }
-    if (text.length > 7) {
-      formatted += '-' + text.substring(7);
+    String formatted = text;
+    if (text.length >= 3) {
+      formatted = text.substring(0, 3) + '-';
+      if (text.length >= 7) {
+        formatted += text.substring(3, 7) + '-';
+        if (text.length > 7) {
+          formatted += text.substring(7);
+        }
+      } else {
+        formatted += text.substring(3);
+      }
     }
     return formatted;
   }
