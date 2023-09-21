@@ -172,8 +172,8 @@ public class MissionServiceImpl implements MissionService {
                 int totalMissionMoney = 0;
 
                 // 아이들 목록 불러오기
-                List<ChildResponse> children = memberFeignClient.getChildren(memberKey);
-                for (ChildResponse child : children) {
+                ChildResponseList children = memberFeignClient.getChildren(memberKey);
+                for (ChildResponse child : children.getChildResponseList()) {
                     // 현재 완료하지 않은 미션 총액
                     Optional<Integer> missionMoney = missionQueryRepository.countMoney(child.getChildKey());
 
@@ -231,8 +231,8 @@ public class MissionServiceImpl implements MissionService {
         int totalMissionMoney = 0;
 
         // 아이들 목록 불러오기
-        List<ChildResponse> children = memberFeignClient.getChildren(dto.getMemberKey());
-        for (ChildResponse child : children) {
+        ChildResponseList children = memberFeignClient.getChildren(dto.getMemberKey());
+        for (ChildResponse child : children.getChildResponseList()) {
             // 현재 완료하지 않은 미션 총액
             Optional<Integer> missionMoney = missionQueryRepository.countMoney(child.getChildKey());
 
