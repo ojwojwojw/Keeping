@@ -29,22 +29,7 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
         Text('아이에게 어떤 미션을 줘볼까요?'),
 
         // 입력 폼
-
-        Form(
-            child: Column(children: [
-          TextFormField(
-            decoration: InputDecoration(labelText: '미션제목을 입력해주세요'),
-            validator: (value) {
-              if (value?.isEmpty ?? false) {
-                return '미션 제목을 입력해주세요.....';
-              }
-              return null;
-            },
-            onSaved: (String? value) {
-              missionTitle = value;
-            },
-          )
-        ])),
+       _form (missionTitle),
 
         SizedBox(
           height: 100,
@@ -63,8 +48,8 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
     );
   }
 
-  DateTime dateValue = DateTime.now();
 
+  DateTime dateValue = DateTime.now();
 //데이트 피커
   Future datePicker() async {
     DateTime? picked = await showDatePicker(
@@ -90,7 +75,10 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: MyHeader(text: '미션생성2'),
-        body: Column(children: [ConfirmBtn(action: MissionCreatePage3())]));
+        body: Column(children: [
+          Text('성공하면 얼마를 줄까요?'),
+
+        ]));
   }
 }
 
@@ -112,4 +100,26 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
           // ConfirmBtn(action: )
         ]));
   }
+}
+
+
+
+_form (missionTitle) {
+  return(
+    Form(
+            child: Column(children: [
+          TextFormField(
+            decoration: InputDecoration(labelText: '미션제목을 입력해주세요'),
+            validator: (value) {
+              if (value?.isEmpty ?? false) {
+                return '미션 제목을 입력해주세요.....';
+              }
+              return null;
+            },
+            onSaved: (String? value) {
+              missionTitle = value;
+            },
+          )
+        ])),
+  )
 }
