@@ -28,8 +28,10 @@ public class SecurityConfig {
         http.csrf().disable();
 
         http.authorizeRequests()
-                .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll() // 모든 엔드포인트를 인증 없이 허용
-                .antMatchers("/**").permitAll();
+                    .antMatchers("/actuator/**").permitAll() // Actuator 엔드포인트에 대한 모든 요청 허용
+                    .anyRequest().authenticated()
+                .and()
+                    .httpBasic();
 //                .antMatchers("/**").hasIpAddress(env.getProperty("gateway.ip"))
 
         http.headers().frameOptions().disable();
