@@ -80,6 +80,7 @@ public class AccountServiceImpl implements AccountService {
         redisUtils.setRedisValue("AccountAuth_" + memberKey, "true", 210l);
     }
 
+    // TODO: 계좌 잔액이 부족할 때 발생시킬 에러 수정
     @Override
     public Account withdrawMoney(String memberKey, WithdrawMoneyDto dto) {
         Account account = accountRepository.findByAccountNumber(dto.getAccountNumber())
