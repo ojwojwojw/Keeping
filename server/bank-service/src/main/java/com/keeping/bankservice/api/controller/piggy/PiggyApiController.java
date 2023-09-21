@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/bank-service/piggy")
+@RequestMapping("/piggy")
 public class PiggyApiController {
 
     private final PiggyService piggyService;

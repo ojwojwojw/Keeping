@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/bank-service/account-detail")
+@RequestMapping("/account-detail")
 public class AccountDetailApiController {
 
     private final AccountDetailService accountDetailService;

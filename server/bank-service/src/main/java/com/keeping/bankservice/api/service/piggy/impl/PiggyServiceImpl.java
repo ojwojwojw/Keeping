@@ -39,7 +39,7 @@ public class PiggyServiceImpl implements PiggyService {
 
     @Value("${file.path.piggy.window}")
     private String piggyWindowPath;
-    @Value("${file.path.piggy.linux")
+    @Value("${file.path.piggy.linux}")
     private String piggyLinuxPath;
 
     private final PiggyRepository piggyRepository;
