@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
 
 class CategoryDropdownBtn extends StatefulWidget {
@@ -19,15 +20,6 @@ class _CategoryDropdownBtnState extends State<CategoryDropdownBtn> {
   final _categories = [
     '대형마트', '편의점', '문화시설', '음식점', '카페', '병원', '약국'
   ];
-  // String? _selectedCategory;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   setState(() {
-  //     _selectedCategory = _categories[0];  // 현재 데이터의 카테고리를 가져오기
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -59,27 +51,13 @@ class _CategoryDropdownBtnState extends State<CategoryDropdownBtn> {
   }
 }
 
-// 카테고리 이미지
-ClipOval _categoryImg(String imgPath) {
-  return ClipOval(
-    child: SizedBox(
-      width: 60,
-      height: 60,
-      child: Image.asset(
-        imgPath,
-        fit: BoxFit.cover
-      ),
-    ),
-  );
-}
-
 // 카테고리 선택 버튼의 카테고리 이미지 + 카테고리명
 Row _dropdownBtn(String? selectedCategory, List<String> categories) {
   return Row(
     children: [
       Padding(
         padding: EdgeInsets.only(right: 10),
-        child: _categoryImg('assets/image/temp_image.jpg'),
+        child: categoryImg('assets/image/temp_image.jpg'),
       ),
       selectedCategory != null ? Text(selectedCategory, style: _selectedCategoryTextStyle(),) : Text(categories[0], style: _selectedCategoryTextStyle(),),
     ],

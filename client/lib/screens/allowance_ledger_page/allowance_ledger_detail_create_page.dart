@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:keeping/screens/allowance_ledger_page/widgets/category_dropdown_btn.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
+import 'package:keeping/util/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 
@@ -41,7 +41,7 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
     });
   }
 
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +59,10 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
               ],
             ),
             Form(
-              key: formKey,
+              key: _formKey,
               child: Column(
                 children: [
-                  _renderTextFormField(
+                  renderTextFormField(
                     label: '무엇을 구매했나요?', 
                     onSaved: (val) {
                       setState(() {
@@ -77,8 +77,8 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
                     },
                     controller: contentControlloer
                   ),
-                  _renderCategoryField(selectCategory, category),
-                  _renderTextFormField(
+                  renderCategoryField(selectCategory, category),
+                  renderTextFormField(
                     label: '얼마인가요?', 
                     onSaved: (val) {
                       setState(() {
@@ -110,86 +110,15 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
       bottomNavigationBar: BottomBtn(
         text: '등록하기',
         action: () async {
-          if (formKey.currentState != null && formKey.currentState!.validate()) {
-            formKey.currentState!.save();
+          if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+            _formKey.currentState!.save();
             print('저장완료');
           } else {
             print('저장실패');
           }
-        }
+        },
+        isDisabled: false,
       ),
     );
   }
-}
-
-TextStyle _labelStyle() {
-  return TextStyle(
-    fontSize: 22,
-    fontWeight: FontWeight.bold
-  );
-}
-
-Padding _renderTextFormField({
-  required String label,
-  required FormFieldSetter onSaved,
-  required FormFieldValidator validator,
-  required TextEditingController controller,
-  isNumber = false
-}) {
-  return Padding(
-    padding: EdgeInsets.symmetric(vertical: 20),
-    child: Center(
-      child: SizedBox(
-        width: 360,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  label,
-                  style: _labelStyle(),
-                )
-              ],
-            ),
-            TextFormField(
-              onSaved: onSaved,
-              validator: validator,
-              textInputAction: TextInputAction.next,
-              controller: controller,
-              keyboardType: isNumber ? TextInputType.number : null,
-              
-            )
-          ],
-        )
-      )
-    )
-  );
-}
-
-Padding _renderCategoryField(Function selectCategory, String selectedCategory) {
-  return Padding(
-    padding: EdgeInsets.symmetric(vertical: 20),
-    child: Center(
-      child: SizedBox(
-        width: 360,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  '어떤 종류인가요?',
-                  style: _labelStyle(),
-                )
-              ],
-            ),
-            SizedBox(height: 20,),
-            CategoryDropdownBtn(
-              selectedCategory: selectedCategory,
-              selectCategory: selectCategory
-            )
-          ],
-        ),
-      )
-    ),
-  );
 }

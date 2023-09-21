@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/widgets/number_keyboard_key.dart';
 
-class NumberKeyboard extends StatefulWidget {
+class PasswordKeyboard extends StatefulWidget {
   final onNumberPress;
   final onBackspacePress;
+  final onClearPress;
 
-  NumberKeyboard({
+  PasswordKeyboard({
     super.key,
     this.onNumberPress,
-    this.onBackspacePress
+    this.onBackspacePress,
+    this.onClearPress,
   });
   
   @override
-  State<NumberKeyboard> createState() => _NumberKeyboardState();
+  State<PasswordKeyboard> createState() => _PasswordKeyboardState();
 }
 
-class _NumberKeyboardState extends State<NumberKeyboard> {
+class _PasswordKeyboardState extends State<PasswordKeyboard> {
   late List<List<dynamic>> keys;
   // late String amount;
 
@@ -26,32 +28,11 @@ class _NumberKeyboardState extends State<NumberKeyboard> {
       ['1', '2', '3'],
       ['4', '5', '6'],
       ['7', '8', '9'],
-      ['00', '0', Icon(Icons.keyboard_backspace)],
+      ['취소', '0', Icon(Icons.keyboard_backspace)],
     ];
-    // amount = '';
   }
 
-  // onNumberPress(val) {
-  //   if (val == '0' && amount.isEmpty) {
-  //     return;
-  //   }
-
-  //   setState(() {
-  //     amount = amount + val;
-  //   });
-  // }
-
-  // onBackspacePress() {
-  //   if (amount.isEmpty) {
-  //     return;
-  //   }
-
-  //   setState(() {
-  //     amount = amount.substring(0, amount.length - 1);
-  //   });
-  // }
-
-  renderNumberKeyboard() {
+  renderPasswordKeyboard() {
     return keys
       .map((key) => Row(
         children: key.map((k) {
@@ -61,6 +42,8 @@ class _NumberKeyboardState extends State<NumberKeyboard> {
               onTap: (val) {
                 if (val is Widget) {
                   widget.onBackspacePress();
+                } else if (val == '취소') {
+                  widget.onClearPress();
                 } else {
                   widget.onNumberPress(val);
                 }
@@ -74,11 +57,10 @@ class _NumberKeyboardState extends State<NumberKeyboard> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        ...renderNumberKeyboard(),
+        ...renderPasswordKeyboard(),
       ]
     );
   }

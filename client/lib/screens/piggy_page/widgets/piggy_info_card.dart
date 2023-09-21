@@ -1,10 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:keeping/styles.dart';
 
 class PiggyInfoCard extends StatefulWidget {
   final String content;
   final num balance;
   final num goalMoney;
+  // final Uint8List img;
+  final dynamic img;
   final String imgPath;
 
   PiggyInfoCard({
@@ -12,6 +17,8 @@ class PiggyInfoCard extends StatefulWidget {
     required this.content,
     required this.balance,
     required this.goalMoney,
+    this.img,
+    // required this.img,
     this.imgPath = 'assets/image/temp_image.jpg',
   });
 
@@ -29,13 +36,14 @@ class _PiggyInfoCardState extends State<PiggyInfoCard> {
       child: Container(
         width: 360,
         height: 160,
-        decoration: piggyInfoCardStyle(),
+        decoration: roundedBoxWithShadowStyle(),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 35),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              piggyImg(widget.imgPath),
+              _piggyStringImg(widget.imgPath),
+              // widget.img ? _piggyStringImg(widget.imgPath) : _piggyImg(widget.img!),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -61,7 +69,20 @@ class _PiggyInfoCardState extends State<PiggyInfoCard> {
   }
 }
 
-ClipOval piggyImg(String imgPath) {
+ClipOval _piggyImg(Uint8List img) {
+  return ClipOval(
+    child: SizedBox(
+      width: 100,
+      height: 100,
+      child: Image.memory(
+        img,
+        fit: BoxFit.cover
+      ),
+    ),
+  );
+}
+
+ClipOval _piggyStringImg(String imgPath) {
   return ClipOval(
     child: SizedBox(
       width: 100,
@@ -71,21 +92,6 @@ ClipOval piggyImg(String imgPath) {
         fit: BoxFit.cover
       ),
     ),
-  );
-}
-
-BoxDecoration piggyInfoCardStyle() {
-  return BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(20),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.grey.withOpacity(0.7),
-        spreadRadius: 0,
-        blurRadius: 5.0,
-        offset: Offset(0, 0),
-      ),
-    ],
   );
 }
 

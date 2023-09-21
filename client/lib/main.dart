@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/fcmSetting.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:keeping/provider/piggy_provider.dart';
 import 'screens/main_page/main_page.dart';
 
 //provider관련
@@ -62,9 +64,27 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   String? firebaseToken = await fcmSetting();
+  await dotenv.load(fileName: "lib/.env");
+  // await Firebase.initializeApp(
+  //   // options: const FirebaseOptions(
+  //   //   // apiKey: 'AIzaSyBWmD28vXwr8HQcIQmjrW_fZMTVq8a2SNo',
+  //   //   // appId: '1:926429802747:android:1c00de6777c5e72f90805e',
+  //   //   // messagingSenderId: '926429802747',
+  //   //   // projectId: 'keeping-dc42f',
+  //   // ),
+  //   options: DefaultFirebaseOptions.android,
+  //   // options: DefaultFirebaseOptions.currentPlatform,
+  // );
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // final fcmToken = await FirebaseMessaging.instance.getToken();
+  // print('인쇄 돼?');
+  // print('token : ${fcmToken ?? 'tokenNull'}');
+
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => Counts()), //Counts 인스턴스 추가
     ChangeNotifierProvider(create: (_) => TestArray()), // TestArray 인스턴스 추가
+    ChangeNotifierProvider(create: (_) => PiggyDetailProvider()),
+    ChangeNotifierProvider(create: (_) => AddPiggyProvider()),
   ], child: const MaterialApp(home: MainPage())));
 }
 

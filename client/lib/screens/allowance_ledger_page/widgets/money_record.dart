@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_detail_create_page.dart';
+import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
 
 class MoneyRecord extends StatefulWidget {
@@ -45,7 +46,7 @@ class _MoneyRecordState extends State<MoneyRecord> {
           width: 360,
           height: 90,
           alignment: Alignment.center,
-          decoration: moneyRecordStyle(),
+          decoration: roundedBoxWithShadowStyle(),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -54,7 +55,7 @@ class _MoneyRecordState extends State<MoneyRecord> {
                 children: [
                   Padding(
                     padding: EdgeInsets.all(10),
-                    child: _categoryImg('assets/image/temp_image.jpg'),
+                    child: categoryImg('assets/image/temp_image.jpg'),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -88,36 +89,6 @@ class _MoneyRecordState extends State<MoneyRecord> {
       )
     );
   }
-}
-
-// 용돈기입장 내역 상자 스타일
-BoxDecoration moneyRecordStyle() {
-  return BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(20),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.grey.withOpacity(0.7),
-        spreadRadius: 0,
-        blurRadius: 5.0,
-        offset: Offset(0, 0),
-      ),
-    ],
-  );
-}
-
-// 카테고리 이미지
-ClipOval _categoryImg(String imgPath) {
-  return ClipOval(
-    child: SizedBox(
-      width: 60,
-      height: 60,
-      child: Image.asset(
-        imgPath,
-        fit: BoxFit.cover
-      ),
-    ),
-  );
 }
 
 // 용돈기입장 내역 큰 글씨
@@ -204,7 +175,7 @@ InkWell moneyRecordModalBtn(IconData icon, String text, BuildContext context, Wi
     child: Container(
       width: 150,
       height: 150,
-      decoration: moneyRecordModalBtnStyle(),
+      decoration: _moneyRecordModalBtnStyle(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -218,7 +189,7 @@ InkWell moneyRecordModalBtn(IconData icon, String text, BuildContext context, Wi
 }
 
 // 용돈기입장 내역 클릭시 나오는 모달 버튼 스타일
-BoxDecoration moneyRecordModalBtnStyle() {
+BoxDecoration _moneyRecordModalBtnStyle() {
   return BoxDecoration(
     borderRadius: BorderRadius.circular(30),
     border: Border.all(
