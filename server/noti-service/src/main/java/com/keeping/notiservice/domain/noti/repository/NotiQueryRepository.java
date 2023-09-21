@@ -25,13 +25,12 @@ public class NotiQueryRepository {
                 .select(constructor(NotiResponse.class,
                         noti.id,
                         noti.receptionKey,
-                        noti.sentKey,
                         noti.title,
                         noti.content,
                         noti.type,
                         noti.createdDate))
                 .from(noti)
-                .where(noti.sentKey.eq(memberKey))
+                .where(noti.receptionKey.eq(memberKey))
                 .fetch();
     }
 
@@ -40,13 +39,12 @@ public class NotiQueryRepository {
                 .select(constructor(NotiResponse.class,
                         noti.id,
                         noti.receptionKey,
-                        noti.sentKey,
                         noti.title,
                         noti.content,
                         noti.type,
                         noti.createdDate))
                 .from(noti)
-                .where(noti.sentKey.eq(memberKey),
+                .where(noti.receptionKey.eq(memberKey),
                         noti.id.eq(notiId))
                 .fetchOne());
     }

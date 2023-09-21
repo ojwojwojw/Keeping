@@ -23,7 +23,7 @@ public class FCMNotificationDto {
 
     public static FCMNotificationDto toDto(SendNotiDto dto) {
         return FCMNotificationDto.builder()
-                .memberKey(dto.getSentKey())
+                .memberKey(dto.getReceptionkey())
                 .title(dto.getTitle())
                 .body(dto.getContent())
                 .build();
