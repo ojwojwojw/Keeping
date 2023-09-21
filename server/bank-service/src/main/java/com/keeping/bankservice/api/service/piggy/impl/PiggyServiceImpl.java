@@ -37,8 +37,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PiggyServiceImpl implements PiggyService {
 
-    @Value("${file.path.piggy}")
-    private String piggyPath;
+    @Value("${file.path.piggy.window}")
+    private String piggyWindowPath;
+    @Value("${file.path.piggy.linux}")
+    private String piggyLinuxPath;
 
     private final PiggyRepository piggyRepository;
     private final PiggyQueryRepository piggyQueryRepository;
@@ -55,7 +57,16 @@ public class PiggyServiceImpl implements PiggyService {
             throw new NotFoundException("404", HttpStatus.NOT_FOUND, "이미지가 존재하지 않습니다.");
         }
 
-        File folder = new File(piggyPath);
+        File folder = null;
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if(os.contains("win")) {
+            folder = new File(piggyWindowPath);
+        }
+        else {
+            folder = new File(piggyLinuxPath);
+        }
+
         if(!folder.exists()) {
             folder.mkdirs();
         }
@@ -84,7 +95,17 @@ public class PiggyServiceImpl implements PiggyService {
         List<ShowPiggyResponse> response = new ArrayList<>();
 
         for(ShowPiggyDto dto: result) {
-            File file = new File(piggyPath + "\\" + dto.getSavedImage());
+
+            File file = null;
+            String os = System.getProperty("os.name").toLowerCase();
+
+            if(os.contains("win")) {
+                file = new File(piggyWindowPath + "\\" + dto.getSavedImage());
+            }
+            else {
+                file = new File(piggyLinuxPath + "\\" + dto.getSavedImage());
+            }
+
             byte[] byteImage = new byte[(int)file.length()];
             FileInputStream fis = new FileInputStream(file);
             fis.read(byteImage);

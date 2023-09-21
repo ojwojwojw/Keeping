@@ -10,7 +10,7 @@ import com.keeping.bankservice.domain.account_history.AccountHistory;
 import com.keeping.bankservice.domain.account_history.Category;
 import com.keeping.bankservice.domain.account_history.repository.AccountHistoryQueryRepository;
 import com.keeping.bankservice.domain.account_history.repository.AccountHistoryRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,19 +28,29 @@ import static com.keeping.bankservice.domain.account_history.Category.*;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class AccountHistoryServiceImpl implements AccountHistoryService {
 
     private final AccountService accountService;
     private final AccountHistoryRepository accountHistoryRepository;
     private final AccountHistoryQueryRepository accountHistoryQueryRepository;
+    private final Environment env;
+    private String kakaoAk;
+
+    public AccountHistoryServiceImpl(AccountService accountService, AccountHistoryRepository accountHistoryRepository, AccountHistoryQueryRepository accountHistoryQueryRepository, Environment env) {
+        this.accountService = accountService;
+        this.accountHistoryRepository = accountHistoryRepository;
+        this.accountHistoryQueryRepository = accountHistoryQueryRepository;
+        this.env = env;
+        this.kakaoAk = this.env.getProperty("kakao.api");
+    }
+
 
     @Override
     public Long addAccountHistory(String memberKey, AddAccountHistoryDto dto) throws URISyntaxException {
 
         Account account = null;
         // 입금 상황
-        if(dto.isType()) {
+        if (dto.isType()) {
             DepositMoneyDto depositMoneyDto = DepositMoneyDto.toDto(dto.getAccountNumber(), dto.getMoney());
 
             // 계좌의 잔액 갱신
@@ -63,8 +73,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         try {
             categoryType = ((LinkedHashMap) ((ArrayList) keywordResponse.get("documents")).get(0)).get("category_group_code").toString();
             category = mappingCategory(categoryType);
-        }
-        catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             categoryType = "ETC";
         }
 
@@ -72,8 +81,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         try {
             latitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("y"));
             longitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("x"));
-        }
-        catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             latitude = null;
             longitude = null;
         }
@@ -89,13 +97,13 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         RestTemplate restTemplate = new RestTemplate();
 
         final HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "KakaoAK db388e6b11004c2105b5ce40ac21b2a0");
+        headers.set("Authorization", "KakaoAK " + kakaoAk);
 
         // 헤더를 넣은 HttpEntity 생성
         final HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         URI targetUrl = null;
-        if(flag) {
+        if (flag) {
             targetUrl = UriComponentsBuilder
                     .fromUriString("https://dapi.kakao.com/v2/local/search/keyword.json") // 기본 url
                     .queryParam("query", value) // 인자
@@ -103,8 +111,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
                     .build()
                     .encode(StandardCharsets.UTF_8) // 인코딩
                     .toUri();
-        }
-        else {
+        } else {
             targetUrl = UriComponentsBuilder
                     .fromUriString("https://dapi.kakao.com/v2/local/search/address.json") // 기본 url
                     .queryParam("query", value) // 인자
@@ -114,7 +121,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
                     .toUri();
         }
 
-        if(targetUrl != null) {
+        if (targetUrl != null) {
             ResponseEntity<Map> result = restTemplate.exchange(targetUrl, HttpMethod.GET, entity, Map.class);
             return result.getBody(); // 내용 반환
         }
@@ -122,7 +129,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
     }
 
     private Category mappingCategory(String categoryType) {
-        switch(categoryType) {
+        switch (categoryType) {
             case "MT1":
                 return MART;
             case "CS2":
