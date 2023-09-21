@@ -7,8 +7,11 @@ import com.keeping.notiservice.api.service.dto.AddNotiDto;
 import com.keeping.notiservice.api.service.dto.FCMNotificationDto;
 import com.keeping.notiservice.api.service.dto.SendNotiDto;
 import com.keeping.notiservice.domain.noti.Noti;
+import com.keeping.notiservice.domain.noti.repository.NotiQueryRepository;
 import com.keeping.notiservice.domain.noti.repository.NotiRepository;
+import com.keeping.notiservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +22,7 @@ public class NotiServiceImpl implements NotiService {
     
     private final FCMNotificationService fcmNotificationService;
     private final NotiRepository notiRepository;
+    private final NotiQueryRepository notiQueryRepository;
     
     @Override
     public Long sendNoti(SendNotiDto dto) {
@@ -40,7 +44,12 @@ public class NotiServiceImpl implements NotiService {
 
     @Override
     public List<NotiResponse> showNoti(String memberKey) {
-        
-        return null;
+        return notiQueryRepository.showNoti(memberKey);
+    }
+
+    @Override
+    public NotiResponse showDetailNoti(String memberKey, Long notiId) {
+        return notiQueryRepository.showDetailNoti(memberKey, notiId)
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 알람을 찾을 수 없습니다."));
     }
 }

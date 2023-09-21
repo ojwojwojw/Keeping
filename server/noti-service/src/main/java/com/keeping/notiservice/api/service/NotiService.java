@@ -13,4 +13,6 @@ public interface NotiService {
     public Long addNoti(AddNotiDto dto);
 
     public List<NotiResponse> showNoti(String memberKey);
+
+    public NotiResponse showDetailNoti(String memberKey, Long notiId);
 }
