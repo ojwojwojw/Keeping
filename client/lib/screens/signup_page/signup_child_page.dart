@@ -4,6 +4,7 @@ import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/util/build_text_form_field.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:keeping/util/build_phone_number_form_field.dart';
 
 class SignUpChildPage extends StatefulWidget {
   const SignUpChildPage({Key? key}) : super(key: key);
@@ -45,7 +46,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
           child: Column(
             children: [
               MyHeader(
-                text: '부모가 회원 가입 중',
+                text: '자녀가 회원 가입 중',
                 elementColor: Colors.black,
                 icon: Icon(Icons.arrow_circle_up),
                 path: SignUpChildPage(),
@@ -185,7 +186,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
   }
 
   Widget parentPhoneNumberField() {
-    return BuildTextFormField(
+    return BuildPhoneNumberFormField(
       controller: _parentPhoneNumber,
       labelText: '부모님 휴대폰 번호',
       hintText: '- 없이 숫자만 입력해주세요. (예:01012345678)',

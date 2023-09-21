@@ -66,7 +66,20 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [userIdField(), userPwField(), Text(loginResult)],
+                  children: [
+                    Container(
+                      height: 20,
+                    ),
+                    userIdField(),
+                    Container(
+                      height: 20,
+                    ),
+                    userPwField(),
+                    Container(
+                      height: 20,
+                    ),
+                    Text(loginResult),
+                  ],
                 ),
               ),
 
@@ -77,7 +90,9 @@ class _LoginPageState extends State<LoginPage> {
                   login(context, handleLogin);
                 },
               ),
-
+              Container(
+                height: 20,
+              ),
               //회원가입 버튼
               ConfirmBtn(
                 text: '회원가입',
@@ -97,7 +112,7 @@ Future<void> login(BuildContext context, Function handleLogin) async {
   String userId = _userId.text;
   String userPw = _userPw.text;
   final response = await httpPost(
-    '/member-service/login',
+    'http://j9c207.p.ssafy.io:8000/member-service/login',
     null,
     {'loginId': userId, 'loginPw': userPw},
   );
@@ -143,6 +158,7 @@ Future<dynamic> httpPost(
   try {
     var response = await http.post(Uri.parse(url),
         headers: headers, body: json.encode(body));
+    print(response);
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body);
       return result;

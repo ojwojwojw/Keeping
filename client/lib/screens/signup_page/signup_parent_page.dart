@@ -1,11 +1,12 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/util/build_text_form_field.dart';
+// import 'package:keeping/util/build_phone_number_form_field.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();
@@ -13,6 +14,7 @@ TextEditingController _userPwCk = TextEditingController();
 TextEditingController _userName = TextEditingController();
 TextEditingController _userBirth = TextEditingController();
 TextEditingController _userPhoneNumber = TextEditingController();
+TextEditingController _userVerificationNumber = TextEditingController();
 final _signupKey = GlobalKey<FormState>();
 
 class SignUpParentPage extends StatefulWidget {
@@ -29,9 +31,11 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
   String userName = _userName.text;
   String userBirth = _userBirth.text;
   String userPhoneNumber = _userPhoneNumber.text;
-
+  String userVerificationNumber = _userVerificationNumber.text;
+  // Future<String> idDi
   String idDupRes = '';
-  String verificationResult = '';
+  String verificationResult = ''; // 인증번호 송신 확인
+  String certificationResult = ''; // 인증번호 확인
   @override
   void initState() {
     super.initState();
@@ -57,12 +61,21 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
   handledupCheck(result) {
     setState(() {
       idDupRes = result;
+      print(result);
     });
   }
 
-  handleCerficationPhone(result) {
+  //인증번호 송신 확인하는 코드
+  handleCheckVerification(result) {
     setState(() {
       verificationResult = result;
+    });
+  }
+
+  //인증번호 인증되었는지 확인하는 코드
+  handleCheckCertification(result) {
+    setState(() {
+      certificationResult = result;
     });
   }
 
@@ -92,19 +105,30 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                         idDupliCheck(context, handledupCheck);
                       },
                     ),
+                    // FutureBuilder(future: future, builder: builder)
                     Text(idDupRes),
                     userPwField(),
                     userPwCkField(),
                     usernameField(),
                     userBirthField(),
                     userPhoneNumberField(),
+                    //인증번호 관련 로직 - verification
                     ConfirmBtn(
                       text: '인증번호 받기',
                       action: () {
-                        verificationPhone(context, handleCerficationPhone);
+                        checkVerification(context, handleCheckVerification);
                       },
                     ),
+                    //인증번호 넣어주는 로직 - certification
+                    userVerificationField(),
                     Text(verificationResult),
+                    ConfirmBtn(
+                      text: '인증번호 확인',
+                      action: () {
+                        checkCertification(context, handleCheckCertification);
+                      },
+                    ),
+                    Text(certificationResult),
                   ],
                 ),
               ),
@@ -223,46 +247,115 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
     );
   }
 
-  void signUp() {
-    print('회원가입 함수까지 옵니다.');
-    if (_signupKey.currentState!.validate()) {
-      print('유효성 검사 통과');
-    }
-
-    // 여기서 회원가입 로직을 수행하세요.
+  Widget userVerificationField() {
+    return BuildTextFormField(
+      controller: _userVerificationNumber,
+      labelText: '인증번호',
+      hintText: '휴대폰으로 받은 인증번호를 입력해주세요.',
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return '필수 항목입니다';
+        }
+        return null;
+      },
+    );
   }
+}
+
+Future<void> signUp() async {
+  print('회원가입 함수까지 옵니다.');
+  String userId = _userId.text;
+  String userPw = _userPw.text;
+  String userName = _userName.text;
+  String tmpPhone = _userName.text;
+  String userBirth = _userBirth.text;
+  // String
+  if (_signupKey.currentState!.validate()) {
+    print('유효성 검사 통과');
+    final response = await httpPost(
+      'http://j9c207.p.ssafy.io:8000/member-service/api/join/parent',
+      null,
+      {
+        'loginId': userId,
+        'loginPw': userPw,
+        'name': userName,
+        'phone': tmpPhone,
+        'birth': userBirth
+      },
+    );
+    if (response != null) {
+      print('회원 가입 완료');
+    } else {
+      print('회원가입실패');
+    }
+  }
+
+  // 여기서 회원가입 로직을 수행하세요.
 }
 
 Future<void> idDupliCheck(BuildContext context, Function handledupCheck) async {
+  Dio dio = Dio();
   String id = _userId.text;
   print(id);
-  final response = await httpGet('/member-service/id/${id}', null);
-  if (response != null) {
-    handledupCheck('인증에 성공했습니다.');
-  } else {
-    handledupCheck('인증에 실패하였습니다.');
+  try {
+    var response = await dio
+        .get('http://j9c207.p.ssafy.io:8000/member-service/api/id/${id}');
+    print(response);
+    if (response.data.resultStatus.successCode == 0) {
+      handledupCheck(response.data.resultBody);
+    } else {
+      handledupCheck(response.data.resultMessage);
+    }
+  } catch (err) {
+    print(err);
   }
 }
 
-Future<void> verificationPhone(
-    BuildContext context, Function handleCertificationPhone) async {
+// 인증 번호 받기 로직
+Future<void> checkVerification(
+    BuildContext context, Function handleCheckVerification) async {
+  Dio dio = Dio();
+
   String tmpNumber = _userPhoneNumber.text;
 
   // 전화 번호를 하이픈 형식으로 변환
   String formattedNumber = formatPhoneNumber(tmpNumber);
 
   print(formattedNumber);
+  try {
+    var response = await dio.post(
+      'http://j9c207.p.ssafy.io:8000/member-service/api/phone',
+      data: {'phone': formattedNumber},
+    );
+    if (response.data.resultStatus.successCode == 0) {
+      handleCheckVerification(response.data.resultBody);
+    } else if (response.data.resultStatus.successCode == 409) {
+      handleCheckVerification(response.data.resultMessage);
+    } else {
+      handleCheckVerification('휴대폰 번호를 다시 확인해주세요');
+    }
+    print(response);
+  } catch (err) {
+    print(err);
+  }
+}
 
+Future<void> checkCertification(
+    BuildContext context, Function handleCheckCertification) async {
+  String certificationNumber = _userVerificationNumber.text;
+  String tmpNumber = _userPhoneNumber.text;
+  String formattedNumber = formatPhoneNumber(tmpNumber);
+  print('여기까진 오네요 ${formattedNumber} ${certificationNumber}');
   final response = await httpPost(
-    '/member-service/phone',
+    'http://j9c207.p.ssafy.io:8000/member-service/api/phone-check',
     null,
-    {'phone': formattedNumber},
+    {'phone': formattedNumber, 'certification': certificationNumber},
   );
-
+  print('흠');
   if (response != null) {
-    handleCertificationPhone('인증에 성공했습니다.');
+    handleCheckCertification('인증이 완료되었습니다.');
   } else {
-    handleCertificationPhone('인증에 실패했습니다');
+    handleCheckCertification('인증에 실패했습니다. 다시 확인해주세요.');
   }
 }
 
@@ -280,7 +373,9 @@ String formatPhoneNumber(String phoneNumber) {
 Future<List<dynamic>?> httpGet(String url, Map<String, String>? headers) async {
   try {
     var response = await http.get(Uri.parse(url), headers: headers);
+    print('blah');
     print(response);
+    print('1');
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body);
       return result;
@@ -289,6 +384,7 @@ Future<List<dynamic>?> httpGet(String url, Map<String, String>? headers) async {
       return null;
     }
   } catch (e) {
+    print(2);
     print('Error during HTTP request: $e');
     return null;
   }
