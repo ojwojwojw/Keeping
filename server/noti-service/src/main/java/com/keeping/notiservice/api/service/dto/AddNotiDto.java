@@ -28,4 +28,15 @@ public class AddNotiDto {
         this.content = content;
         this.type = type;
     }
+
+    public static AddNotiDto toDto(SendNotiDto dto) {
+        return AddNotiDto.builder()
+                .memberKey(dto.getMemberKey())
+                .receptionkey(dto.getReceptionkey())
+                .sentKey(dto.getSentKey())
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .type(dto.getType())
+                .build();
+    } 
 }

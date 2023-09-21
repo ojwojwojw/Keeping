@@ -84,6 +84,11 @@ dependencies {
     
     // FCM
     implementation group: 'com.google.firebase', name: 'firebase-admin', version: '9.1.1'
+    
+    // feign
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
 }
 
