@@ -37,8 +37,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PiggyServiceImpl implements PiggyService {
 
-    @Value("${file.path.piggy}")
-    private String piggyPath;
+    @Value("${file.path.piggy.window}")
+    private String piggyWindowPath;
+    @Value("${file.path.piggy.linux")
+    private String piggyLinuxPath;
 
     private final PiggyRepository piggyRepository;
     private final PiggyQueryRepository piggyQueryRepository;
@@ -51,19 +53,27 @@ public class PiggyServiceImpl implements PiggyService {
     public Long addPiggy(String memberKey, AddPiggyDto dto) throws IOException {
         String piggyAccountNumber = createNewPiggyAccountNumber();
 
-        if(dto.getUploadImage() == null) {
+        if (dto.getUploadImage() == null) {
             throw new NotFoundException("404", HttpStatus.NOT_FOUND, "이미지가 존재하지 않습니다.");
         }
 
-        File folder = new File(piggyPath);
-        if(!folder.exists()) {
+        File folder = null;
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("win")) {
+            folder = new File(piggyWindowPath);
+        } else {
+            folder = new File(piggyLinuxPath);
+        }
+
+        if (folder != null && !folder.exists()) {
             folder.mkdirs();
         }
 
         MultipartFile file = dto.getUploadImage();
         String originalFileName = file.getOriginalFilename();
 
-        if(!originalFileName.isEmpty()) {
+        if (!originalFileName.isEmpty()) {
             String saveFileName = UUID.randomUUID().toString() + originalFileName.substring(originalFileName.lastIndexOf("."));
 
             file.transferTo(new File(folder, saveFileName));
@@ -83,9 +93,18 @@ public class PiggyServiceImpl implements PiggyService {
 
         List<ShowPiggyResponse> response = new ArrayList<>();
 
-        for(ShowPiggyDto dto: result) {
-            File file = new File(piggyPath + "\\" + dto.getSavedImage());
-            byte[] byteImage = new byte[(int)file.length()];
+        for (ShowPiggyDto dto : result) {
+            File file = null;
+            String os = System.getProperty("os.name").toLowerCase();
+
+            if (os.contains("win")) {
+                file = new File(piggyWindowPath + "\\" + dto.getSavedImage());
+            } else {
+                file = new File(piggyLinuxPath + "\\" + dto.getSavedImage());
+
+            }
+
+            byte[] byteImage = new byte[(int) file.length()];
             FileInputStream fis = new FileInputStream(file);
             fis.read(byteImage);
             String base64Image = new String(Base64.encodeBase64(byteImage));
@@ -102,7 +121,7 @@ public class PiggyServiceImpl implements PiggyService {
         Piggy piggy = piggyRepository.findByAccountNumber(dto.getPiggyAccountNumber())
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 저금통이 존재하지 않습니다."));
 
-        if(!piggy.getAccountNumber().equals(dto.getPiggyAccountNumber())) {
+        if (!piggy.getAccountNumber().equals(dto.getPiggyAccountNumber())) {
             throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
         }
 
@@ -125,7 +144,7 @@ public class PiggyServiceImpl implements PiggyService {
         do {
             num = rand.nextInt(888889) + 111111;
         }
-        while(redisUtils.getRedisValue("Piggy_" + String.valueOf(num), String.class) != null);
+        while (redisUtils.getRedisValue("Piggy_" + String.valueOf(num), String.class) != null);
 
         String randomNumber = String.valueOf(num);
         redisUtils.setRedisValue("Piggy_" + randomNumber, "1");
@@ -133,16 +152,15 @@ public class PiggyServiceImpl implements PiggyService {
         String validCode = "";
 
         int divideNum = num;
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             int num1 = divideNum % 10;
             divideNum /= 10;
             int num2 = divideNum % 10;
 
             int sum = 0;
-            if(i == 1) {
+            if (i == 1) {
                 sum = (num1 * num2) % 10;
-            }
-            else {
+            } else {
                 sum = (num1 + num2) % 10;
             }
             divideNum /= 10;
