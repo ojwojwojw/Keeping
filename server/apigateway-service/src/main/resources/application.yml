@@ -98,8 +98,8 @@ spring:
             - Path=/bank-service/actuator/**
             - Method=GET
           filters:
-            - RemoveRequestHeader=Cookie
-#            - RewritePath=/bank-service/(?<segment>.*), /$\{segment}
+#            - RemoveRequestHeader=Cookie
+            - RewritePath=/bank-service/(?<segment>.*), /$\{segment}
         # mission
         - id: mission-service
           uri: lb://MISSION-SERVICE
@@ -115,6 +115,8 @@ spring:
           predicates:
             - Path=/mission-service/actuator/**
             - Method=GET
+          filters:
+            - RewritePath=/mission-service/(?<segment>.*), /$\{segment}
         # openai
         - id: openai-service
           uri: lb://OPENAI-SERVICE
@@ -130,6 +132,8 @@ spring:
           predicates:
             - Path=/openai-service/actuator/**
             - Method=GET
+          filters:
+            - RewritePath=/openai-service/(?<segment>.*), /$\{segment}
         # question
         - id: question-service
           uri: lb://QUESTION-SERVICE
@@ -145,6 +149,8 @@ spring:
           predicates:
             - Path=/question-service/actuator/**
             - Method=GET
+          filters:
+            - RewritePath=/question-service/(?<segment>.*), /$\{segment}
         # noti
         - id: noti-service
           uri: lb://NOTI-SERVICE
@@ -160,6 +166,8 @@ spring:
           predicates:
             - Path=/noti-service/actuator/**
             - Method=GET
+          filters:
+            - RewritePath=/noti-service/(?<segment>.*), /$\{segment}
 
 
 management:

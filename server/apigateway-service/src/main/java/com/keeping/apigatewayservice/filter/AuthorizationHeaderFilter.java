@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
 
-    private Environment env;
+    private final Environment env;
 
     public AuthorizationHeaderFilter(Environment env) {
         super(Config.class);
@@ -33,16 +33,19 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         return ((exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
 
+            log.debug("[게이트웨이 실행]");
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
             }
 
             String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
             String jwt = authorizationHeader.replace("Bearer", "");
+            log.debug("[게이트웨이] jwt = {}", jwt);
 
             if (!isJwtValid(jwt)) {
                 return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
             }
+            log.debug("[게이트웨이 통과]");
 
             return chain.filter(exchange);
         });
@@ -62,9 +65,9 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         String subject = null;
 
         try {
-            subject = Jwts.parserBuilder().setSigningKey(env.getProperty("jwt.secret"))
-                .build().parseClaimsJws(jwt).getBody()
-                .getSubject();
+            subject = Jwts.parserBuilder().setSigningKey(this.env.getProperty("jwt.secret"))
+                    .build().parseClaimsJws(jwt).getBody()
+                    .getSubject();
 
         } catch (Exception e) {
             returnValue = false;
