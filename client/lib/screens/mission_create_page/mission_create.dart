@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
+import 'package:keeping/widgets/number_keyboard.dart';
 
 TextEditingController _controller1 = TextEditingController();
 
@@ -84,13 +85,59 @@ class MissionCreatePage2 extends StatefulWidget {
 }
 
 class _MissionCreatePage2State extends State<MissionCreatePage2> {
+  String amount = '';
+
+  onNumberPress(val) {
+    if (val == '0' && amount.isEmpty) {
+      return;
+    }
+    setState(() {
+      amount = amount + val;
+    });
+  }
+
+  onBackspacePress() {
+    if (amount.isEmpty) {
+      setState(() {
+        return;
+      });
+    } else {
+      setState(() {
+        amount = amount.substring(0, amount.length - 1);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: MyHeader(text: '미션생성2'),
-        body: Column(children: [
+      appBar: MyHeader(text: '미션생성2'),
+      body: Center(
+        child: Column(children: [
           Text('성공하면 얼마를 줄까요?'),
-        ]));
+
+          //예시 이미지 파일
+          Container(
+            width: 300,
+            height: 300,
+            child:
+                Image.asset('./assets/image/temp_image.jpg'), // 이미지 파일 경로를 지정
+          ),
+
+          //숫자패드
+          Text(amount),
+          NumberKeyboard(
+            onNumberPress: onNumberPress,
+            onBackspacePress: onBackspacePress,
+          ),
+        ]),
+      ),
+      bottomNavigationBar: BottomBtn(
+        text: '다음',
+        action: MissionCreatePage3(),
+        isDisabled: false,
+      ),
+    );
   }
 }
 
@@ -107,9 +154,15 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: MyHeader(text: '미션생성3'),
-        body: Column(children: [
-          // ConfirmBtn(action: )
-        ]));
+      appBar: MyHeader(text: '미션생성3'),
+      body: Column(children: [
+        // ConfirmBtn(action: )
+      ]),
+      bottomNavigationBar: BottomBtn(
+        text: '다음',
+        action: MissionCreatePage2(),
+        isDisabled: false,
+      ),
+    );
   }
 }
