@@ -39,30 +39,11 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
   String _idDupRes = '';
   String _verificationResult = ''; // 인증번호 송신 확인
   String _certificationResult = ''; // 인증번호 확인
+
   @override
   void initState() {
     super.initState();
-    // _userId = TextEditingController();
-    // _userPw = TextEditingController();
-    // _userPwCk = TextEditingController();
-    // _userName = TextEditingController();
-    // _userPhoneNumber = TextEditingController();
-    // _userBirth = TextEditingController();
-    // _userVerificationNumber = TextEditingController();
   }
-
-  // @override
-  // void dispose() {
-
-  //   _loginId.dispose();
-  //   _loginPw.dispose();
-  //   _userPwCk.dispose();
-  //   _userName.dispose();
-  //   _userBirth.dispose();
-  //   _userPhoneNumber.dispose();
-  //   // _userVerificationNumber.dispose();
-  //   super.dispose();
-  // }
 
   void handleUserId(data) {
     setState(() {
@@ -145,32 +126,32 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    renderTextFormField(
-                        label: '아이디',
-                        onChange: (val) {
-                          String userId = val;
-                          handleUserId(userId);
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return '필수 항목입니다';
-                          } else if (value.length < 5) {
-                            return '아이디는 5글자 이상이 되어야 합니다.';
-                          } else if (value.length > 20) {
-                            return '아이디는 20글자 이하가 되어야 합니다.';
-                          } else if (!value.contains(RegExp(r'[a-zA-Z]'))) {
-                            return '아이디에는 영어가 1자 이상 포함되어야 합니다.';
-                          }
-                          return null;
-                        },
-                        controller: _userId),
-                    ConfirmBtn(
-                      text: '아이디 중복 확인',
-                      action: () {
-                        idDupliCheck(context, handledupCheck);
-                      },
+                    Row(
+                      children: [
+                        renderTextFormField(
+                            label: '아이디',
+                            onChange: (val) {
+                              String userId = val;
+                              handleUserId(userId);
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return '필수 항목입니다';
+                              } else if (value.length < 5) {
+                                return '아이디는 5글자 이상이 되어야 합니다.';
+                              } else if (value.length > 20) {
+                                return '아이디는 20글자 이하가 되어야 합니다.';
+                              } else if (!value.contains(RegExp(r'[a-zA-Z]'))) {
+                                return '아이디에는 영어가 1자 이상 포함되어야 합니다.';
+                              }
+                              return null;
+                            },
+                            controller: _userId),
+                      ],
                     ),
-                    // FutureBuilder(future: future, builder: builder)
+                    _authenticationBtn(_signupKey, context, '아이디 중복 확인', () {
+                      idDupliCheck(context, handledupCheck);
+                    }),
                     Text(_idDupRes),
                     renderTextFormField(
                       label: '비밀번호',
@@ -225,7 +206,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                         return null;
                       },
                     ),
-                    renderTextFormField(
+                    renderBirthdayFormField(
                       label: '생년월일',
                       onChange: (val) {
                         String userBirth = val;
@@ -252,12 +233,9 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                       },
                     ),
                     //인증번호 관련 로직 - verification
-                    ConfirmBtn(
-                      text: '인증번호 받기',
-                      action: () {
-                        checkVerification(context, handleCheckVerification);
-                      },
-                    ),
+                    _authenticationBtn(_signupKey, context, '인증번호 받기', () {
+                      checkVerification(context, handleCheckVerification);
+                    }),
                     Text(_verificationResult),
                     renderTextFormField(
                       label: '인증번호 입력',
@@ -273,12 +251,9 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                       },
                     ),
                     //인증번호 넣어주는 로직 - certification
-                    ConfirmBtn(
-                      text: '인증번호 확인',
-                      action: () {
-                        checkCertification(context, handleCheckCertification);
-                      },
-                    ),
+                    _authenticationBtn(_signupKey, context, '인증번호 확인', () {
+                      checkCertification(context, handleCheckCertification);
+                    }),
                     Text(_certificationResult),
                   ],
                 ),
@@ -401,4 +376,45 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
       }
     }
   }
+}
+
+Widget _authenticationBtn(
+  GlobalKey<FormState> formKey,
+  BuildContext context,
+  String title,
+  Function function,
+) {
+  return Padding(
+      padding: EdgeInsets.only(bottom: 20, left: 10),
+      child: ElevatedButton(
+        onPressed: () async {
+          function();
+          // if (formKey.currentState != null &&
+          //     formKey.currentState!.validate()) {
+          //   formKey.currentState!.save();
+          //   print('저장완료');
+          // } else {
+          //   print('저장실패');
+          //   // roundedModal(context: context, title: '다시 입력해주세요');
+          // }
+        },
+        style: _authenticationBtnStyle(),
+        child: Text(title),
+      ));
+}
+
+ButtonStyle _authenticationBtnStyle() {
+  return ButtonStyle(
+      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+      foregroundColor:
+          MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
+      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(
+          color: const Color(0xFF8320E7), // 테두리 색상 설정
+          width: 2.0, // 테두리 두께 설정
+        ),
+      )),
+      fixedSize: MaterialStateProperty.all<Size>(Size(120, 40)));
 }
