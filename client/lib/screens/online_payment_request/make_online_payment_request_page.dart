@@ -24,6 +24,13 @@ class _MakeOnlinePaymentRequestFirstPageState extends State<MakeOnlinePaymentReq
   bool _urlValidate = false;
   bool _reasonValidate = false;
 
+  String _val = '';
+  _setVal(String val) {
+    setState(() {
+      _val = val;
+    });
+  }
+
   void _setNameValidate(bool val) {
     setState(() {
       _nameValidate = val;
@@ -66,24 +73,19 @@ class _MakeOnlinePaymentRequestFirstPageState extends State<MakeOnlinePaymentReq
                 },
                 validator: (val) {
                   if (val.length < 1) {
-                    // _setNameValidate(false);
                     return '부탁하고 싶은 걸 적어주세요.';
                   }
-                  // _setNameValidate(true);
                   return null;
                 },
                 onChange: (val) {
                   if (val.length < 1) {
                     _setNameValidate(false);
-                    // return '부탁하고 싶은 걸 적어주세요.';
                   } else {
                     _setNameValidate(true);
                   }
-                  // return null;
                 },
                 controller: _nameController
               ),
-              Text(_nameValidate.toString()),
               renderTextFormField(
                 label: '어디서 팔고 있나요?',
                 onSaved: (val) {
@@ -104,7 +106,10 @@ class _MakeOnlinePaymentRequestFirstPageState extends State<MakeOnlinePaymentReq
                 },
                 controller: _urlController
               ),
-              Text(_urlValidate.toString())
+              renderBoxFormField(
+                label: '상자 폼',
+              ),
+              renderBirthdayFormField(label: '생년월일')
             ],
           ),
         ),
