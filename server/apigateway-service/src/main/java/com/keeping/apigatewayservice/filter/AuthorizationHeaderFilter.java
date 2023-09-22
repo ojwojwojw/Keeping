@@ -79,6 +79,8 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             returnValue = false;
         }
 
+        log.debug("[멤버키] subject = {}", subject);
+
         if (!subject.equals(memberKey)) {
             returnValue = false;
         }
@@ -89,6 +91,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     private String getMemberKey(ServerWebExchange exchange) {
         String uri = exchange.getRequest().getURI().toString();
         String[] splitUri = uri.split("/");
-        return splitUri[5];
+        log.debug("[멤버키] uri에서 뽑은 멤버키 = {}", splitUri[4]);
+        return splitUri[4];
     }
 }
