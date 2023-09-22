@@ -46,7 +46,7 @@ public class PiggyServiceImpl implements PiggyService {
     private final PiggyQueryRepository piggyQueryRepository;
     private final AccountService accountService;
     private final PiggyHistoryService piggyHistoryService;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
     private final RedisUtils redisUtils;
 
     @Override
@@ -78,7 +78,8 @@ public class PiggyServiceImpl implements PiggyService {
 
             file.transferTo(new File(folder, saveFileName));
 
-            Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), passwordEncoder.encode(dto.getAuthPassword()), originalFileName, saveFileName);
+//            Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), passwordEncoder.encode(dto.getAuthPassword()), originalFileName, saveFileName);
+            Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), dto.getAuthPassword(), originalFileName, saveFileName);
             Piggy savePiggy = piggyRepository.save(piggy);
 
             return savePiggy.getId();
