@@ -25,6 +25,22 @@ class OnlinePaymentRequestFormProvider with ChangeNotifier {
     _reason = reason;
   }
 
+  void setCost(String cost) {
+    if (cost.isNotEmpty) {
+      _cost = int.parse(cost);
+    } else {
+      _cost = 0;
+    }
+  }
+
+  void setPaidMoney(String paidMoney) {
+    if (paidMoney.isNotEmpty) {
+      _paidMoney = int.parse(paidMoney);
+    } else {
+      _paidMoney = 0;
+    }
+  }
+
   void removeOnlinePaymentRequestForm() {
     _name = null;
     _url = null;

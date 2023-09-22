@@ -9,7 +9,7 @@ class CompletedPage extends StatelessWidget {
 
   CompletedPage({
     super.key,
-    required this.image,
+    this.image = 'assets/image/temp_image.jpg',
     required this.text,
     this.content,
     this.button = const ConfirmBtn(),
