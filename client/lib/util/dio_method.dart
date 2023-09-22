@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<dynamic> dioPost({
-  required String accessToken, required String url, String contentType = 'application/json', dynamic data
+  required String accessToken, required String url, String contentType = 'application/json', required dynamic data
 }) async {
   var dio = Dio();
   try {
