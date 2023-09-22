@@ -15,7 +15,6 @@ import org.springframework.core.env.Environment;
 import com.keeping.bankservice.global.exception.InvalidRequestException;
 import com.keeping.bankservice.global.exception.NoAuthorizationException;
 import com.keeping.bankservice.global.exception.NotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,7 +72,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         Map keywordResponse = useKakaoLocalApi(true, dto.getStoreName());
         Map addressResponse = useKakaoLocalApi(false, dto.getAddress());
 
-        LargeCategory largeCategory = null;
+        LargeCategory largeCategory = ETC;
         String categoryType = null;
         try {
             categoryType = ((LinkedHashMap) ((ArrayList) keywordResponse.get("documents")).get(0)).get("category_group_code").toString();

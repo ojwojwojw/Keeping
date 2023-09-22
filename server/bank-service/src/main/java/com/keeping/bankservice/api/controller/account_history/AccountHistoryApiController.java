@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/account-history")
+@RequestMapping("/api/account-history")
 public class AccountHistoryApiController {
 
     private final AccountHistoryService accountHistoryService;
