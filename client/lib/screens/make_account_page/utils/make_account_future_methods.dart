@@ -2,7 +2,7 @@ import 'package:keeping/util/dio_method.dart';
 
 // 계좌 개설을 위한 인증번호 요청
 Future<dynamic> phoneCheck({
-  required String accessToken, required int memberKey, required String phone
+  required String accessToken, required String memberKey, required String phone
 }) async {
   final response = await dioPost(
     accessToken: accessToken,
@@ -22,7 +22,7 @@ Future<dynamic> phoneCheck({
 
 // 계좌 개설을 위한 인증번호 확인
 Future<dynamic> phoneAuth({
-  required String accessToken, required int memberKey, required String code
+  required String accessToken, required String memberKey, required String code
 }) async {
   final response = await dioPost(
     accessToken: accessToken,
@@ -42,7 +42,7 @@ Future<dynamic> phoneAuth({
 
 // 계좌 개설
 Future<dynamic> makeAccount({
-  required String accessToken, required int memberKey, required List<String> authPassword
+  required String accessToken, required String memberKey, required List<String> authPassword
 }) async {
   final response = await dioPost(
     accessToken: accessToken,

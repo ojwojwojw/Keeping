@@ -2,7 +2,7 @@ import 'package:keeping/util/dio_method.dart';
 
 // 저금통 전체 조회
 Future<dynamic> getPiggyList({
-  required String accessToken, required int memberKey,
+  required String accessToken, required String memberKey,
 }) async {
   final response = await dioGet(
     accessToken: accessToken,
@@ -19,7 +19,7 @@ Future<dynamic> getPiggyList({
 
 // 저금통 상세 조회
 Future<dynamic> getPiggyDetailList({
-  required String accessToken, required int memberKey, required String piggyAccountNumber,
+  required String accessToken, required String memberKey, required String piggyAccountNumber,
 }) async {
   final response = await dioGet(
     accessToken: accessToken,
@@ -36,7 +36,7 @@ Future<dynamic> getPiggyDetailList({
 
 // 저금통 등록
 Future<dynamic> makePiggy({
-  required String accessToken, required int memberKey,
+  required String accessToken, required String memberKey,
   required String content, required int goalMoney, required List<String> authPassword, String? uploadImage
 }) async {
   final response = await dioPost(
@@ -60,7 +60,7 @@ Future<dynamic> makePiggy({
 
 // 저금통 저금하기
 Future<dynamic> savePiggy({
-  required String accessToken, required int memberKey,
+  required String accessToken, required String memberKey,
   required String accountNumber, required String piggyAccountNumber, required int money, required List<String> authPassword
 }) async {
   final response = await dioPost(
