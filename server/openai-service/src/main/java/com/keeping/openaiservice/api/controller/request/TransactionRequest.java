@@ -29,7 +29,6 @@ public class TransactionRequest {
     
     private boolean detailed;
     
-    @Builder.Default
     private List<TransactionDetailRequest> transactionDetailRequestList;
 
     @Builder
