@@ -1,8 +1,7 @@
-package com.keeping.openaiservice.controller;
+package com.keeping.openaiservice.api.controller.response.api.controller;
 
-import com.keeping.openaiservice.controller.request.GPTCompletionChatRequest;
-import com.keeping.openaiservice.controller.response.CompletionChatResponse;
-import com.keeping.openaiservice.service.GptService;
+import com.keeping.openaiservice.api.controller.response.api.controller.request.TransactionRequestList;
+import com.keeping.openaiservice.api.controller.response.api.service.GptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,9 +17,9 @@ public class GptApiController {
     
     private final GptService gptService;
 
-    @PostMapping("/gpt")
-    public CompletionChatResponse completionChat(final @RequestBody GPTCompletionChatRequest request) {
+    @PostMapping("/transaction-question")
+    public  completionChat(final @RequestBody TransactionRequestList request) {
         log.info("request={}", request);
-        return gptService.completionChat(request);
+        return gptService.createQuestion(request);
     }
 }
