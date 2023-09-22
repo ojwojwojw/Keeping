@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.keeping.bankservice.domain.account_history.QAccountHistory.accountHistory;
@@ -34,6 +35,29 @@ public class AccountHistoryQueryRepository {
                         accountHistory.longitude))
                 .from(accountHistory)
                 .where(accountHistory.account.accountNumber.eq(accountNumber), accountHistory.account.memberKey.eq(memberKey))
+                .orderBy(accountHistory.createdDate.desc())
+                .fetch();
+
+        return result;
+    }
+
+    public List<ShowAccountHistoryDto> showAccountDailyHistories(String memberKey, String accountNumber, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        List<ShowAccountHistoryDto> result = queryFactory
+                .select(Projections.fields(ShowAccountHistoryDto.class,
+                        accountHistory.id,
+                        accountHistory.account,
+                        accountHistory.storeName,
+                        accountHistory.type,
+                        accountHistory.money,
+                        accountHistory.balance,
+                        accountHistory.remain,
+                        accountHistory.largeCategory,
+                        accountHistory.detailed,
+                        accountHistory.address,
+                        accountHistory.latitude,
+                        accountHistory.longitude))
+                .from(accountHistory)
+                .where(accountHistory.account.accountNumber.eq(accountNumber), accountHistory.account.memberKey.eq(memberKey), accountHistory.createdDate.between(startDateTime, endDateTime))
                 .orderBy(accountHistory.createdDate.desc())
                 .fetch();
 

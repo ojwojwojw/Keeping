@@ -29,6 +29,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -147,6 +150,43 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
             }
 
             String date = dto.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+            if(!response.containsKey(date)) {
+                response.put(date, new ArrayList<ShowAccountHistoryResponse>());
+            }
+
+            response.get(date).add(showAccountHistoryResponse);
+        }
+
+        return response;
+    }
+
+    @Override
+    public Map<String, List<ShowAccountHistoryResponse>> showAccountDailyHistory(String memberKey, String accountNumber, String date) {
+        LocalDate localDate = LocalDate.parse(date);
+        LocalDateTime startDateTime = localDate.atStartOfDay();
+        LocalDateTime endDateTime = localDate.atTime(LocalTime.MAX);
+
+        List<ShowAccountHistoryDto> result = accountHistoryQueryRepository.showAccountDailyHistories(memberKey, accountNumber, startDateTime, endDateTime);
+
+        Map<String, List<ShowAccountHistoryResponse>> response = new HashMap<>();
+
+        for(ShowAccountHistoryDto dto: result) {
+            ShowAccountHistoryResponse showAccountHistoryResponse = null;
+
+            if(dto.isDetailed()) {
+                List<ShowAccountDetailDto> detailResult = accountDetailQueryRepository.showAccountDetailes(dto.getId(), memberKey);
+
+                if(dto.getRemain() != 0) {
+                    ShowAccountDetailDto extraDetailDto = ShowAccountDetailDto.toDto(-1l, "남은 금액", dto.getRemain(), SmallCategory.ETC);
+                    detailResult.add(extraDetailDto);
+                }
+
+                showAccountHistoryResponse = ShowAccountHistoryResponse.toResponse(dto, detailResult);
+            }
+            else {
+                showAccountHistoryResponse = ShowAccountHistoryResponse.toResponse(dto, null);
+            }
 
             if(!response.containsKey(date)) {
                 response.put(date, new ArrayList<ShowAccountHistoryResponse>());

@@ -25,7 +25,7 @@ import java.security.NoSuchAlgorithmException;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/account")
+@RequestMapping("/bank-service/api/account")
 public class AccountApiController {
 
     private final AccountService accountService;

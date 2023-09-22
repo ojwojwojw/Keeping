@@ -15,4 +15,5 @@ public interface AccountHistoryService {
     Long addAccountHistory(String memberKey, AddAccountHistoryDto dto) throws URISyntaxException;
     AccountHistory addAccountDetail(String memberKey, AddAccountDetailValidationDto dto);
     Map<String, List<ShowAccountHistoryResponse>> showAccountHistory(String memberKey, String accountNumber);
+    Map<String, List<ShowAccountHistoryResponse>> showAccountDailyHistory(String memberKey, String accountNumber, String date);
 }
