@@ -6,20 +6,21 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://j9c207.p.ssafy.io:8761/eureka
 
 spring:
   application:
     name: apigateway-service
   rabbitmq:
-    host: 127.0.0.1
+    #    host: 127.0.0.1
+    host: rabbitmq
     port: 5672
     username: guest
     password: guest
   cloud:
     gateway:
       routes:
-        # login
+        # login /
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
@@ -37,16 +38,25 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
-        # phone
+        # no auth all
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=/member-service/phone
+            - Path=/member-service/api/**
+            - Method=POST, GET, PATCH, DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+        # phone-check
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/phone-check
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
-        # user health-check
+        # user health-check /
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
@@ -55,12 +65,12 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
-        # other
+        # other /
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
             - Path=/member-service/auth/**
-            - Method=GET, POST
+            - Method=POST, GET, PATCH, DELETE
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
@@ -70,6 +80,7 @@ spring:
           uri: lb://BANK-SERVICE
           predicates:
             - Path=/bank-service/**
+            - Method=POST, GET, PATCH, DELETE
           filters:
             - RemoveRequestHeader=Cookie
             - AuthorizationHeaderFilter
@@ -84,6 +95,7 @@ spring:
           uri: lb://MISSION-SERVICE
           predicates:
             - Path=/mission-service/**
+            - Method=POST, GET, PATCH, DELETE
           filters:
             - RemoveRequestHeader=Cookie
             - AuthorizationHeaderFilter
@@ -98,6 +110,7 @@ spring:
           uri: lb://OPENAI-SERVICE
           predicates:
             - Path=/openai-service/**
+            - Method=POST, GET, PATCH, DELETE
           filters:
             - RemoveRequestHeader=Cookie
             - AuthorizationHeaderFilter
@@ -112,6 +125,7 @@ spring:
           uri: lb://QUESTION-SERVICE
           predicates:
             - Path=/question-service/**
+            - Method=POST, GET, PATCH, DELETE
           filters:
             - RemoveRequestHeader=Cookie
             - AuthorizationHeaderFilter
@@ -120,6 +134,21 @@ spring:
           uri: lb://QUESTION-SERVICE
           predicates:
             - Path=/question-service/actuator/**
+            - Method=GET
+        # noti
+        - id: noti-service
+          uri: lb://NOTI-SERVICE
+          predicates:
+            - Path=/noti-service/**
+            - Method=POST, GET, PATCH, DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - AuthorizationHeaderFilter
+        # noti actuator
+        - id: noti-service
+          uri: lb://NOTI-SERVICE
+          predicates:
+            - Path=/noti-service/actuator/**
             - Method=GET
 
 

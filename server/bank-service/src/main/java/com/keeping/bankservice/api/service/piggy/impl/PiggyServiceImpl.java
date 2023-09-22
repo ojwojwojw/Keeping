@@ -100,13 +100,13 @@ public class PiggyServiceImpl implements PiggyService {
     @Override
     public void savingPiggy(String memberKey, SavingPiggyDto dto) {
         Piggy piggy = piggyRepository.findByAccountNumber(dto.getPiggyAccountNumber())
-                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 계좌가 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 저금통이 존재하지 않습니다."));
 
         if(!piggy.getAccountNumber().equals(dto.getPiggyAccountNumber())) {
             throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
         }
 
-        WithdrawMoneyDto withdrawMoneyDto = WithdrawMoneyDto.toDto(dto.getAccountNumber(), dto.getMoney());
+        WithdrawMoneyDto withdrawMoneyDto = WithdrawMoneyDto.toDto(dto.getAccountNumber(), Long.valueOf(dto.getMoney()));
         accountService.withdrawMoney(memberKey, withdrawMoneyDto);
 
         // TODO: 출금 거래내역을 등록하는 코드 필요!!
