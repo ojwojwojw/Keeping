@@ -59,12 +59,13 @@ Padding renderBoxFormField({
   FormFieldValidator? validator,
   TextEditingController? controller,
   FormFieldSetter? onChange,
+  double width = 340,
 }) {
   return Padding(
       padding: EdgeInsets.symmetric(vertical: 20),
       child: Center(
           child: SizedBox(
-              width: 340,
+              width: width,
               child: Column(
                 children: [
                   Row(
@@ -115,12 +116,13 @@ Padding renderPhoneNumberFormField({
   FormFieldValidator? validator,
   TextEditingController? controller,
   FormFieldSetter? onChange,
+  double width = 340,
 }) {
   return Padding(
       padding: EdgeInsets.symmetric(vertical: 20),
       child: Center(
           child: SizedBox(
-              width: 340,
+              width: width,
               child: Column(
                 children: [
                   Row(
@@ -162,12 +164,13 @@ Padding renderBirthdayFormField({
   FormFieldValidator? validator,
   TextEditingController? controller,
   FormFieldSetter? onChange,
+  double width = 340,
 }) {
   return Padding(
       padding: EdgeInsets.symmetric(vertical: 20),
       child: Center(
           child: SizedBox(
-              width: 340,
+              width: width,
               child: Column(
                 children: [
                   Row(
@@ -202,12 +205,13 @@ Padding renderBirthdayFormField({
               ))));
 }
 
-Padding renderCategoryField(Function selectCategory, String selectedCategory) {
+Padding renderCategoryField(Function selectCategory, String selectedCategory,
+    {double width = 340}) {
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 20),
     child: Center(
         child: SizedBox(
-      width: 340,
+      width: width,
       child: Column(
         children: [
           Row(
