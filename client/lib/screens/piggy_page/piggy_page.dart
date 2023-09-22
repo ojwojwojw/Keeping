@@ -4,6 +4,7 @@ import 'package:keeping/screens/piggy_page/piggy_detail_page.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_info.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_info_card.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
@@ -44,37 +45,61 @@ class PiggyPage extends StatelessWidget {
         bgColor: const Color(0xFF8320E7),
         elementColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          PiggyInfo(),
-          // PiggyFilters(),
-          Expanded(
-            child: Container(
-              decoration: lightGreyBgStyle(),
-              width: double.infinity,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(height: 10,),
-                    ...tempData.map((e) => 
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => PiggyDetailPage(piggyAccountNumber: e['piggyAccountNumber'])));
-                        },
-                        child: PiggyInfoCard(
-                          content: e['content'], 
-                          balance: e['balance'], 
-                          goalMoney: e['goalMoney'],
-                          // img: Base64Decoder().convert(e['savedImage']),
-                        )
-                      )
-                    ).toList()
-                  ]
-                ),
-              ),
-            ),
-          )
-        ],
+      body: FutureBuilder(
+        future: dioGet(
+          accessToken: '00', 
+          url: '/bank-service/piggy/{member-key}'
+        ),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Text('로딩중');
+          } else if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return const Text('에러');
+            } else if (snapshot.hasData) {
+              return Column(
+                children: [
+                  PiggyInfo(),
+                  // PiggyFilters(),
+                  Expanded(
+                    child: Container(
+                      decoration: lightGreyBgStyle(),
+                      width: double.infinity,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10,),
+                            ...tempData.map((e) => 
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PiggyDetailPage(piggyAccountNumber: e['piggyAccountNumber'])));
+                                },
+                                child: PiggyInfoCard(
+                                  content: e['content'], 
+                                  balance: e['balance'], 
+                                  goalMoney: e['goalMoney'],
+                                  // img: Base64Decoder().convert(e['savedImage']),
+                                )
+                              )
+                            ).toList()
+                          ]
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              );
+            } else {
+              return const Text('스냅샷 데이터 없음');
+            }
+          } else {
+            return Text('퓨처 객체 null');
+          }
+
+
+
+          
+        }
       ),
       floatingActionButton: FloatingBtn(
         text: '만들기',

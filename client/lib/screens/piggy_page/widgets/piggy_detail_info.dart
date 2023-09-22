@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:keeping/provider/piggy_provider.dart';
-import 'package:keeping/screens/piggy_page/widgets/chart_sample.dart';
 import 'package:provider/provider.dart';
 
 class PiggyDetailInfo extends StatefulWidget {
