@@ -8,6 +8,7 @@ import com.keeping.bankservice.api.service.sms.dto.MessageDto;
 import com.keeping.bankservice.api.service.sms.dto.SmsResponseDto;
 import com.keeping.bankservice.domain.account.Account;
 import com.keeping.bankservice.domain.account.repository.AccountRepository;
+import com.keeping.bankservice.global.exception.InvalidRequestException;
 import com.keeping.bankservice.global.exception.NoAuthorizationException;
 import com.keeping.bankservice.global.exception.NotFoundException;
 import com.keeping.bankservice.global.utils.RedisUtils;
@@ -91,7 +92,7 @@ public class AccountServiceImpl implements AccountService {
             throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
         }
         else if(account.getBalance() < dto.getMoney()) {
-            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "계좌 잔액이 부족합니다.");
+            throw new InvalidRequestException("400", HttpStatus.BAD_REQUEST, "계좌 잔액이 부족합니다.");
         }
 
         account.updateBalance(dto.getMoney(), false);
