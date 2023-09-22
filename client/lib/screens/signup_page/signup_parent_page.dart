@@ -150,7 +150,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                       ],
                     ),
                     _authenticationBtn(_signupKey, context, '아이디 중복 확인', () {
-                      idDupliCheck(context, handledupCheck);
+                      idDupliCheck(_loginId, handledupCheck);
                     }),
                     Text(_idDupRes),
                     renderTextFormField(
@@ -234,7 +234,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                     ),
                     //인증번호 관련 로직 - verification
                     _authenticationBtn(_signupKey, context, '인증번호 받기', () {
-                      checkVerification(context, handleCheckVerification);
+                      checkVerification(_phone, handleCheckVerification);
                     }),
                     Text(_verificationResult),
                     renderTextFormField(
@@ -252,7 +252,8 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                     ),
                     //인증번호 넣어주는 로직 - certification
                     _authenticationBtn(_signupKey, context, '인증번호 확인', () {
-                      checkCertification(context, handleCheckCertification);
+                      checkCertification(_phone, _userVerificationNumber,
+                          handleCheckCertification);
                     }),
                     Text(_certificationResult),
                   ],
@@ -271,10 +272,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
     );
   }
 
-  Future<void> idDupliCheck(
-      BuildContext context, Function handledupCheck) async {
-    final id = _loginId;
-    print(id);
+  Future<void> idDupliCheck(id, Function handledupCheck) async {
     try {
       var response = await dio.get(
         'http://j9c207.p.ssafy.io:8000/member-service/api/id/${id}',
@@ -294,9 +292,9 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
 
 // 인증 번호 받기 로직
   Future<void> checkVerification(
-      BuildContext context, Function handleCheckVerification) async {
+      phone, Function handleCheckVerification) async {
     final data = {
-      'phone': _phone,
+      'phone': phone,
     };
     try {
       var response = await dio.post(
@@ -318,9 +316,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
   }
 
   Future<void> checkCertification(
-      BuildContext context, Function handleCheckCertification) async {
-    String certification = _userVerificationNumber; // 유저가 넣어준 인증번호
-    String phone = _phone;
+      phone, certification, Function handleCheckCertification) async {
     try {
       var response = await dio.post(
         'http://j9c207.p.ssafy.io:8000/member-service/api/phone-check',
