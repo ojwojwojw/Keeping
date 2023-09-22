@@ -5,6 +5,7 @@ import com.keeping.memberservice.api.controller.request.PasswordCheckRequest;
 import com.keeping.memberservice.api.controller.request.SetFcmTokenRequest;
 import com.keeping.memberservice.api.controller.request.UpdateLoginPwRequest;
 import com.keeping.memberservice.api.controller.response.*;
+import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.List;
 public class MemberAuthController {
 
     private final MemberService memberService;
+    private final AuthService authService;
 
     @PostMapping("/{type}/link")
     public ApiResponse<LinkResultResponse> link(@PathVariable String memberKey,
@@ -41,6 +43,8 @@ public class MemberAuthController {
     public ApiResponse<LinkcodeResponse> createLinkcode(@PathVariable String memberKey,
                                                         @PathVariable String type) {
         // TODO: 2023-09-14 연결 코드 생성
+        // TODO: 2023-09-22 멤버가 타입이랑 맞는지 검사해야함 
+        String linkCode = authService.createLinkCode(type, memberKey);
         return ApiResponse.ok(LinkcodeResponse.builder().build());
     }
 

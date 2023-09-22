@@ -19,9 +19,24 @@ public class AuthService {
     private final RedisTemplate<String, String> redisTemplate;
     private static final String CERTIFICATION_REQUEST = "certification_request";
     private static final long CERTIFICATION_NUMBER_EXPIRE = 200;
+    private static final long ONE_DAY = 86400;
     private static final String VERIFIED_NUMBER = "verified_number_";
 
-//    public String getLinkCode(String memberKey, String )
+    //    public String getLinkCode(String memberKey, String )
+
+    public String createLinkCode(String type, String memberKey) {
+        ValueOperations<String, String> redisString = redisTemplate.opsForValue();
+
+        String linkCode = createRandomNumCode();
+        String code = insertLinkCode(type, linkCode);
+        redisString.append(code, memberKey);
+        redisTemplate.expire(code, ONE_DAY, TimeUnit.SECONDS);
+        return linkCode;
+    }
+
+    private static String insertLinkCode(String type, String linkCode) {
+        return "LINKCODE_" + type + "_" + linkCode;
+    }
 
     /**
      * 번호인증이 되었는지 확인하는 함수
