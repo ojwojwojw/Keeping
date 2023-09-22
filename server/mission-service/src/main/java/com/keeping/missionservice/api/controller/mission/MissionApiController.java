@@ -20,7 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/mission-service")
+@RequestMapping("/mission-service/api")
 @Slf4j
 public class MissionApiController {
 

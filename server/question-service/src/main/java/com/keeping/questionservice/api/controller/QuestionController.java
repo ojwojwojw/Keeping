@@ -4,6 +4,11 @@ import com.keeping.questionservice.api.ApiResponse;
 import com.keeping.questionservice.api.controller.request.AddAnswerRequest;
 import com.keeping.questionservice.api.controller.request.AddQuestionRequest;
 import com.keeping.questionservice.api.controller.response.QuestionResponse;
+import com.keeping.questionservice.api.controller.response.QuestionResponseList;
+import com.keeping.questionservice.api.service.QuestionService;
+import com.keeping.questionservice.api.service.dto.AddQuestionDto;
+import com.keeping.questionservice.global.exception.AlreadyExistException;
+import com.keeping.questionservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -13,36 +18,52 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/question-service/{memberKey}")
+@RequestMapping("/question-service/api/{memberKey}")
 @Slf4j
 public class QuestionController {
 
+    private final QuestionService questionService;
 
-    @PostMapping("/{questionId}/answer")
-    public ApiResponse<String> addAnswer(@RequestBody AddAnswerRequest request,
-                                         @PathVariable String memberKey,
-                                         @PathVariable String questionId) {
-        // TODO: 2023-09-14 질문 답변 등록
+    @PostMapping("/answer")
+    public ApiResponse<String> addAnswer(
+            @RequestBody AddAnswerRequest request,
+            @PathVariable String memberKey
+    ) {
         return ApiResponse.ok("");
     }
 
     @GetMapping("/questions")
-    public ApiResponse<List<QuestionResponse>> getQuestionList(@PathVariable String memberKey) {
-        // TODO: 2023-09-14 질문 목록 조회
-        return ApiResponse.ok(null);
+    public ApiResponse<QuestionResponseList> getQuestionList(@PathVariable String memberKey) {
+        return ApiResponse.ok(questionService.showQuestion(memberKey));
     }
 
-    @GetMapping("/questions/{date}")
-    public ApiResponse<QuestionResponse> getQuestion(@PathVariable String memberKey,
-                                                     @PathVariable String date) {
-        // TODO: 2023-09-14 질문 조회
-        return ApiResponse.ok(QuestionResponse.builder().build());
+    @GetMapping("/questions/{question_id}")
+    public ApiResponse<QuestionResponse> getQuestion(
+            @PathVariable String memberKey,
+            @PathVariable(name = "question_id") Long questionId
+    ) {
+
+        try {
+            QuestionResponse questionResponse = questionService.showDetailQuestion(memberKey, questionId);
+            return ApiResponse.ok(questionResponse);
+        } catch (NotFoundException e) {
+            return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage());
+        }
+
     }
+
 
     @PostMapping
-    public ApiResponse<String> addQuestion(@RequestBody @Valid AddQuestionRequest request,
-                                           @PathVariable String memberKey) {
-        // TODO: 2023-09-14 질문 등록
-        return ApiResponse.ok("");
+    public ApiResponse<Long> addQuestion(
+            @RequestBody @Valid AddQuestionRequest request,
+            @PathVariable String memberKey
+    ) {
+
+        try {
+            Long questionId = questionService.addQuestion(memberKey, AddQuestionDto.toDto(request));
+            return ApiResponse.ok(questionId);
+        } catch (AlreadyExistException e) {
+            return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage());
+        }
     }
 }

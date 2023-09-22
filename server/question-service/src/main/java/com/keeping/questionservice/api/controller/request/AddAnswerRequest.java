@@ -1,9 +1,11 @@
 package com.keeping.questionservice.api.controller.request;
 
+import com.keeping.questionservice.domain.MemberType;
 import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 public class AddAnswerRequest {
@@ -12,13 +14,17 @@ public class AddAnswerRequest {
     private Long questionId;
     @NotBlank
     private String answer;
+    @NotNull
+    private boolean isCreated;
     @NotBlank
-    private String type;
+    private MemberType type;
+
 
     @Builder
-    private AddAnswerRequest(Long questionId, String answer, String type) {
+    public AddAnswerRequest(Long questionId, String answer, boolean isCreated, MemberType type) {
         this.questionId = questionId;
         this.answer = answer;
+        this.isCreated = isCreated;
         this.type = type;
     }
 }
