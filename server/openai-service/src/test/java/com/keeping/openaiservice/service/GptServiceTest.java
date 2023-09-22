@@ -1,7 +1,8 @@
 package com.keeping.openaiservice.service;
 
-import com.keeping.openaiservice.controller.request.GPTCompletionChatRequest;
-import com.keeping.openaiservice.controller.response.CompletionChatResponse;
+import com.keeping.openaiservice.api.controller.request.GPTCompletionChatRequest;
+import com.keeping.openaiservice.api.controller.response.CompletionChatResponse;
+import com.keeping.openaiservice.api.service.GptService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
