@@ -1,5 +1,6 @@
 package com.keeping.memberservice.api.service.member;
 
+import com.keeping.memberservice.api.controller.response.LoginMember;
 import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.dto.AddMemberDto;
 import com.keeping.memberservice.domain.Child;
@@ -18,12 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -36,6 +32,37 @@ public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthService authService;
+
+    /**
+     * 로그인 후 정보요청
+     *
+     * @param memberKey 로그인한 멤버 키
+     * @return 로그인 유저 정보
+     */
+    public LoginMember getLoginUser(String memberKey) {
+        Member findMember = memberRepository.findByMemberKey(memberKey).orElseThrow(() -> new NoSuchElementException("등록되지 않은 사용자입니다."));
+        Optional<Parent> findParent = parentRepository.findByMember(findMember);
+        boolean isParent = findParent.isPresent();
+        LoginMember loginMember = null;
+        if (isParent) {
+            // 부모일 때
+            // TODO: 2023-09-22 자녀 가져오기
+//            List<ChildrenResponse> list =
+            // TODO: 2023-09-22 자녀 연결 해야함
+            loginMember = LoginMember.builder()
+                    .isParent(true)
+                    .name(findMember.getName())
+                    .profileImage(findMember.getProfileImage())
+//                .childrenList(list)
+                    .build();
+        } else {
+            // 자녀일 때
+            loginMember = getChildResponse(findMember);
+        }
+
+
+        return loginMember;
+    }
 
     /**
      * @param loginId 로그인 아이디
@@ -128,5 +155,13 @@ public class MemberService implements UserDetailsService {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new NoSuchElementException("등록되지 않은 사용자입니다."));
 
         return member;
+    }
+
+    private LoginMember getChildResponse(Member findMember) {
+        return LoginMember.builder()
+                .isParent(false)
+                .name(findMember.getName())
+                .profileImage(findMember.getProfileImage())
+                .build();
     }
 }

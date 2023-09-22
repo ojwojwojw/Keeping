@@ -42,7 +42,9 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             String jwt = authorizationHeader.replace("Bearer", "");
             log.debug("[게이트웨이] jwt = {}", jwt);
 
-            if (!isJwtValid(jwt)) {
+            String memberKey = getMemberKey(exchange);
+
+            if (!isJwtValid(jwt, memberKey)) {
                 return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
             }
             log.debug("[게이트웨이 통과]");
@@ -59,7 +61,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         return response.setComplete();
     }
 
-    private boolean isJwtValid(String jwt) {
+    private boolean isJwtValid(String jwt, String memberKey) {
         boolean returnValue = true;
 
         String subject = null;
@@ -77,6 +79,16 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             returnValue = false;
         }
 
+        if (!subject.equals(memberKey)) {
+            returnValue = false;
+        }
+
         return returnValue;
+    }
+
+    private String getMemberKey(ServerWebExchange exchange) {
+        String uri = exchange.getRequest().getURI().toString();
+        String[] splitUri = uri.split("/");
+        return splitUri[5];
     }
 }

@@ -4,10 +4,8 @@ import com.keeping.memberservice.api.ApiResponse;
 import com.keeping.memberservice.api.controller.request.PasswordCheckRequest;
 import com.keeping.memberservice.api.controller.request.SetFcmTokenRequest;
 import com.keeping.memberservice.api.controller.request.UpdateLoginPwRequest;
-import com.keeping.memberservice.api.controller.response.ChildrenResponse;
-import com.keeping.memberservice.api.controller.response.LinkResultResponse;
-import com.keeping.memberservice.api.controller.response.LinkcodeResponse;
-import com.keeping.memberservice.api.controller.response.MemberResponse;
+import com.keeping.memberservice.api.controller.response.*;
+import com.keeping.memberservice.api.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +19,8 @@ import java.util.List;
 @RequestMapping("/auth/{memberKey}")
 @Slf4j
 public class MemberAuthController {
+
+    private final MemberService memberService;
 
     @PostMapping("/{type}/link")
     public ApiResponse<LinkResultResponse> link(@PathVariable String memberKey,
@@ -87,5 +87,11 @@ public class MemberAuthController {
     public ApiResponse<String> passwordCheck(@RequestBody @Valid PasswordCheckRequest request) {
         // TODO: 2023-09-14 정보 변경 시 비밀번호 체크
         return ApiResponse.ok("");
+    }
+
+    @GetMapping("/login-check")
+    public ApiResponse<LoginMember> getLoginMember(@PathVariable String memberKey) {
+        LoginMember loginUser = memberService.getLoginUser(memberKey);
+        return ApiResponse.ok(loginUser);
     }
 }
