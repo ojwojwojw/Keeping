@@ -8,62 +8,63 @@ Padding renderTextFormField({
   required FormFieldSetter onSaved,
   required FormFieldValidator validator,
   required TextEditingController controller,
-  isNumber = false
+  isNumber = false,
+  bool isPassword = false, // 비밀번호 가리는 기능을 위한 옵션 추가
 }) {
   return Padding(
-    padding: EdgeInsets.symmetric(vertical: 20),
-    child: Center(
-      child: SizedBox(
-        width: 340,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  label,
-                  style: labelStyle(),
-                )
-              ],
-            ),
-            TextFormField(
-              onSaved: onSaved,
-              validator: validator,
-              textInputAction: TextInputAction.next,
-              controller: controller,
-              keyboardType: isNumber ? TextInputType.number : null,
-              inputFormatters: isNumber ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))] : null
-            )
-          ],
-        )
-      )
-    )
-  );
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Center(
+          child: SizedBox(
+              width: 340,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        label,
+                        style: labelStyle(),
+                      )
+                    ],
+                  ),
+                  TextFormField(
+                    onSaved: onSaved,
+                    validator: validator,
+                    textInputAction: TextInputAction.next,
+                    controller: controller,
+                    keyboardType: isNumber ? TextInputType.number : null,
+                    inputFormatters: isNumber
+                        ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))]
+                        : null,
+                    obscureText: isPassword, // 옵션에 따라 비밀번호 가리는 기능 설정
+                  )
+                ],
+              ))));
 }
 
 Padding renderCategoryField(Function selectCategory, String selectedCategory) {
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 20),
     child: Center(
-      child: SizedBox(
-        width: 340,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  '어떤 종류인가요?',
-                  style: labelStyle(),
-                )
-              ],
-            ),
-            SizedBox(height: 20,),
-            CategoryDropdownBtn(
+        child: SizedBox(
+      width: 340,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text(
+                '어떤 종류인가요?',
+                style: labelStyle(),
+              )
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          CategoryDropdownBtn(
               selectedCategory: selectedCategory,
-              selectCategory: selectCategory
-            )
-          ],
-        ),
-      )
-    ),
+              selectCategory: selectCategory)
+        ],
+      ),
+    )),
   );
 }

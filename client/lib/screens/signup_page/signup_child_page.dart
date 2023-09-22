@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/keyboard_test/keyboard_test.dart';
 import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/util/build_phone_number_form_field.dart';
+import 'package:keeping/util/render_field.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
@@ -18,6 +20,7 @@ TextEditingController _userName = TextEditingController();
 TextEditingController _userBirth = TextEditingController();
 TextEditingController _userPhoneNumber = TextEditingController();
 TextEditingController _userVerificationNumber = TextEditingController();
+
 final _signupKey = GlobalKey<FormState>();
 
 class SignUpChildPage extends StatefulWidget {
@@ -27,6 +30,8 @@ class SignUpChildPage extends StatefulWidget {
   _SignUpChildPageState createState() => _SignUpChildPageState();
 }
 
+final _parentVerificationNumber = TextEditingController();
+
 class _SignUpChildPageState extends State<SignUpChildPage> {
   String userId = _userId.text;
   String userPw = _userPw.text;
@@ -35,9 +40,11 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
   String userBirth = _userBirth.text;
   String userPhoneNumber = _userPhoneNumber.text;
   String userVerificationNumber = _userVerificationNumber.text;
+  String parentVerificationNumber = _parentVerificationNumber.text;
   String idDupRes = '';
   String verificationResult = ''; // 인증번호 송신 확인
   String certificationResult = ''; // 인증번호 확인
+  String parentVerificationResult = '';
   @override
   void initState() {
     super.initState();
@@ -132,7 +139,9 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                       },
                     ),
                     Text(certificationResult),
-                    parentPhoneNumberField()
+                    parentPhoneNumberField(),
+                    Text(parentVerificationResult),
+                    // parentVerificationField()
                   ],
                 ),
               ),
@@ -279,20 +288,34 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
     );
   }
 
-  Widget parentVerificationField() {
-    return BuildTextFormField(
-      controller: _userVerificationNumber,
-      labelText: '부모님 인증번호',
-      hintText: '휴대폰으로 받은 인증번호를 입력해주세요.',
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return '필수 항목입니다';
-        }
-        return null;
-      },
-    );
-  }
+  // Widget parentVerificationField() {
+  //   return renderTextFormField(
+  //       label: '부모님 인증번호',
+  //       onSaved: (val) async {
+  //         final response = dio.post(
+  //             'http://j9c207.p.ssafy.io:8000/member-service/api/phone',
+  //             data: {'phone': phone});
+  //       },
+  //       validator: (val) {
+  //         if (val.length < 1) {
+  //           return '전화번호를 입력해주세요.';
+  //         }
+  //         return null;
+  //       },
+  //       controller: controller);
+  // return BuildTextFormField(
+  //   controller: _userVerificationNumber,
+  //   labelText: '부모님 인증번호',
+  //   hintText: '휴대폰으로 받은 인증번호를 입력해주세요.',
+  //   validator: (value) {
+  //     if (value == null || value.isEmpty) {
+  //       return '필수 항목입니다';
+  //     }
+  //     return null;
+  //   },
+  // );
 }
+// }
 
 Future<void> signUp(BuildContext context) async {
   print('회원가입 함수까지 옵니다.');

@@ -8,6 +8,7 @@ import 'package:keeping/util/build_text_form_field.dart';
 // import 'package:keeping/util/build_phone_number_form_field.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:keeping/util/render_field.dart';
 
 Dio dio = Dio();
 
@@ -150,10 +151,12 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
   }
 
   Widget userIdField() {
-    return BuildTextFormField(
-      controller: _userId,
-      labelText: '아이디',
-      hintText: '아이디를 입력해주세요',
+    return renderTextFormField(
+      label: '아이디',
+      onSaved: (val) async {
+        String userId = val;
+        print(userId);
+      },
       validator: (value) {
         if (value == null || value.isEmpty) {
           return '필수 항목입니다';
@@ -166,6 +169,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
         }
         return null;
       },
+      controller: _userId,
     );
   }
 
