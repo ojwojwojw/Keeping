@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:keeping/provider/online_payment_request_provider.dart';
 import 'package:keeping/provider/piggy_provider.dart';
 
 import 'package:keeping/fcmSetting.dart';
@@ -89,6 +90,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => TestArray()), // TestArray 인스턴스 추가
     ChangeNotifierProvider(create: (_) => PiggyDetailProvider()),
     ChangeNotifierProvider(create: (_) => AddPiggyProvider()),
+    ChangeNotifierProvider(create: (_) => OnlinePaymentRequestFormProvider()),
   ], child: const MaterialApp(home: MainPage())));
 }
 
