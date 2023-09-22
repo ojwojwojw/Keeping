@@ -86,8 +86,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         try {
             categoryType = ((LinkedHashMap) ((ArrayList) keywordResponse.get("documents")).get(0)).get("category_group_code").toString();
             largeCategory = mappingCategory(categoryType);
-        }
-        catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             categoryType = "ETC";
         }
 
@@ -112,12 +111,12 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         AccountHistory accountHistory = accountHistoryRepository.findById(dto.getAccountHistoryId())
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 거래 내역이 존재하지 않습니다."));
 
-        if(!accountHistory.getAccount().getMemberKey().equals(memberKey)) {
+        if (!accountHistory.getAccount().getMemberKey().equals(memberKey)) {
             throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
         }
 
         // 쪼개기 가능한 금액보다 쪼갤 금액이 큰 경우
-        if(accountHistory.getRemain() < dto.getMoney()) {
+        if (accountHistory.getRemain() < dto.getMoney()) {
             throw new InvalidRequestException("400", HttpStatus.BAD_REQUEST, "쪼개기 가능한 금액보다 큽니다.");
         }
 
@@ -128,30 +127,32 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
     @Override
     public Map<String, List<ShowAccountHistoryResponse>> showAccountHistory(String memberKey, String accountNumber) {
+
+        // TODO: 계좌가 존재하는지 확인하고, 소유자를 확인하는 검사 필요
+
         List<ShowAccountHistoryDto> result = accountHistoryQueryRepository.showAccountHistories(memberKey, accountNumber);
 
         Map<String, List<ShowAccountHistoryResponse>> response = new HashMap<>();
 
-        for(ShowAccountHistoryDto dto: result) {
+        for (ShowAccountHistoryDto dto : result) {
             ShowAccountHistoryResponse showAccountHistoryResponse = null;
 
-            if(dto.isDetailed()) {
+            if (dto.isDetailed()) {
                 List<ShowAccountDetailDto> detailResult = accountDetailQueryRepository.showAccountDetailes(dto.getId(), memberKey);
 
-                if(dto.getRemain() != 0) {
+                if (dto.getRemain() != 0) {
                     ShowAccountDetailDto extraDetailDto = ShowAccountDetailDto.toDto(-1l, "남은 금액", dto.getRemain(), SmallCategory.ETC);
                     detailResult.add(extraDetailDto);
                 }
 
                 showAccountHistoryResponse = ShowAccountHistoryResponse.toResponse(dto, detailResult);
-            }
-            else {
+            } else {
                 showAccountHistoryResponse = ShowAccountHistoryResponse.toResponse(dto, null);
             }
 
             String date = dto.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-            if(!response.containsKey(date)) {
+            if (!response.containsKey(date)) {
                 response.put(date, new ArrayList<ShowAccountHistoryResponse>());
             }
 
@@ -163,6 +164,9 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
     @Override
     public Map<String, List<ShowAccountHistoryResponse>> showAccountDailyHistory(String memberKey, String accountNumber, String date) {
+
+        // TODO: 계좌가 존재하는지 확인하고, 소유자를 확인하는 검사 필요
+
         LocalDate localDate = LocalDate.parse(date);
         LocalDateTime startDateTime = localDate.atStartOfDay();
         LocalDateTime endDateTime = localDate.atTime(LocalTime.MAX);
@@ -171,24 +175,23 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
         Map<String, List<ShowAccountHistoryResponse>> response = new HashMap<>();
 
-        for(ShowAccountHistoryDto dto: result) {
+        for (ShowAccountHistoryDto dto : result) {
             ShowAccountHistoryResponse showAccountHistoryResponse = null;
 
-            if(dto.isDetailed()) {
+            if (dto.isDetailed()) {
                 List<ShowAccountDetailDto> detailResult = accountDetailQueryRepository.showAccountDetailes(dto.getId(), memberKey);
 
-                if(dto.getRemain() != 0) {
+                if (dto.getRemain() != 0) {
                     ShowAccountDetailDto extraDetailDto = ShowAccountDetailDto.toDto(-1l, "남은 금액", dto.getRemain(), SmallCategory.ETC);
                     detailResult.add(extraDetailDto);
                 }
 
                 showAccountHistoryResponse = ShowAccountHistoryResponse.toResponse(dto, detailResult);
-            }
-            else {
+            } else {
                 showAccountHistoryResponse = ShowAccountHistoryResponse.toResponse(dto, null);
             }
 
-            if(!response.containsKey(date)) {
+            if (!response.containsKey(date)) {
                 response.put(date, new ArrayList<ShowAccountHistoryResponse>());
             }
 
@@ -234,7 +237,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
     }
 
     private LargeCategory mappingCategory(String categoryType) {
-        switch(categoryType) {
+        switch (categoryType) {
             case "MT1":
                 return MART;
             case "CS2":
