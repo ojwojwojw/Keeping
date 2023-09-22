@@ -46,7 +46,7 @@ public class PiggyServiceImpl implements PiggyService {
     private final PiggyQueryRepository piggyQueryRepository;
     private final AccountService accountService;
     private final PiggyHistoryService piggyHistoryService;
-//    private final PasswordEncoder passwordEncoder;
+    //    private final PasswordEncoder passwordEncoder;
     private final RedisUtils redisUtils;
 
     @Override
@@ -136,6 +136,18 @@ public class PiggyServiceImpl implements PiggyService {
 
         AddPiggyHistoryDto addPiggyHistoryDto = AddPiggyHistoryDto.toDto(piggy, dto.getMoney(), balance);
         piggyHistoryService.addPiggyHistory(memberKey, addPiggyHistoryDto);
+    }
+
+    @Override
+    public Piggy isValidPiggy(String memberKey, Long piggyId) {
+        Piggy piggy = piggyRepository.findById(piggyId)
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 저금통이 존재하지 않습니다."));
+
+        if (!piggy.getChildKey().equals(memberKey)) {
+            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
+        }
+
+        return piggy;
     }
 
     private String createNewPiggyAccountNumber() throws JsonProcessingException {
