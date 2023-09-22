@@ -30,7 +30,7 @@ import java.util.Random;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
     private final RedisUtils redisUtils;
     private final ValidationUtils validationUtils;
     private final SmsService smsService;
@@ -45,7 +45,8 @@ public class AccountServiceImpl implements AccountService {
 
         String accountNumber = createNewAccountNumber();
 
-        Account account = Account.toAccount(memberKey, accountNumber, passwordEncoder.encode(dto.getAuthPassword()));
+//        Account account = Account.toAccount(memberKey, accountNumber, passwordEncoder.encode(dto.getAuthPassword()));
+        Account account = Account.toAccount(memberKey, accountNumber, dto.getAuthPassword());
         Account saveAccount = accountRepository.save(account);
 
         return saveAccount.getId();

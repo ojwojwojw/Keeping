@@ -9,10 +9,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/account-history")
+@RequestMapping("/api/account-history")
 public class AccountHistoryApiController {
 
     private final AccountHistoryService accountHistoryService;
@@ -31,9 +33,14 @@ public class AccountHistoryApiController {
         return null;
     }
 
-    @GetMapping("/account/detail/{member-key}")
-    public ApiResponse<ShowAccountHistoryResponse> showAccountHistory(@PathVariable("member-key") String memberKey) {
+    @GetMapping("/{member-key}")
+    public ApiResponse<Map<String, ShowAccountHistoryResponse>> showAccountHistory(@PathVariable("member-key") String memberKey) {
         log.debug("ShowAccountHistory");
+
+//        try {
+//            Map<String, ShowAccountHistoryResponse> response = accountHistoryService.showAccountHistory(memberKey);
+//        }
+
 
         return null;
     }
