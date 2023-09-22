@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:keeping/styles.dart';
 
-Widget colorInfoCardStatus(double width) {
+Widget colorInfoCardStatus(double width, String status) {
   return Container(
     width: width,
     height: 30,
     alignment: Alignment.center,
     decoration: BoxDecoration(
-      color: const Color(0xFFFFDDDD)
+      color: requestStatusBgColor(status)
     ),
-    child: Text('부탁 거절', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),),
+    child: Text(requestStatusText(status), style: TextStyle(color: requestStatusTextColor(status), fontWeight: FontWeight.bold),),
   );
 }
 
@@ -19,8 +20,26 @@ Widget colorInfoCardContent() {
   return Container();
 }
 
-Widget colorInfoDetailCardHeader() {
-  return Container();
+Widget colorInfoDetailCardHeader(DateTime date, String name) {
+  return Padding(
+    padding: EdgeInsets.symmetric(vertical: 10),
+    child: Column(
+      children: [
+        colorInfoDetailDate(date),
+        Row(
+          children: [
+            Text(name),
+          ],
+        )
+      ],
+    ),
+  );
+}
+
+Widget colorInfoDetailDate(DateTime date) {
+  return Text(
+    DateFormat('yyyy년 M월 d일').format(date)
+  );
 }
 
 Widget colorInfoDetailCardContents(Column content) {
@@ -30,8 +49,7 @@ Widget colorInfoDetailCardContents(Column content) {
       child: Scrollbar(
         child: SingleChildScrollView(
           child: SizedBox(
-            width: 280,
-            // height: 280,
+            width: 260,
             child: content,
           )
         )
@@ -40,7 +58,7 @@ Widget colorInfoDetailCardContents(Column content) {
   );
 }
 
-Widget colorInfoDetailCardContent(String title, {bool box = true}) {
+Widget colorInfoDetailCardContent(String title, String content, {bool box = true}) {
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 10),
     child: Column(
@@ -48,8 +66,8 @@ Widget colorInfoDetailCardContent(String title, {bool box = true}) {
       children: [
         colorInfoDetailCardContentTitle(title),
         SizedBox(height: 5,),
-        box ? colorInfoDetailCardContentGreyBox('안녕하세요')
-          : colorInfoDetailCardContentUnderLine('URL입니다'),
+        box ? colorInfoDetailCardContentGreyBox(content)
+          : colorInfoDetailCardContentUnderLine(content),
       ],
     )
   );
@@ -95,4 +113,34 @@ Widget colorInfoDetailCardContentUnderLine(String content) {
       )
     )
   );
+}
+
+String requestStatusText(String status) {
+  if (status == 'ACCEPT') {
+    return '부탁 완료';
+  } else if (status == 'REJECT') {
+    return '부탁 거절';
+  } else {
+    return '부탁 대기';
+  }
+}
+
+Color requestStatusBgColor(String status) {
+  if (status == 'ACCEPT') {
+    return Color(0xFFE0FBD6);
+  } else if (status == 'REJECT') {
+    return Color(0xFFFFDDDD);
+  } else {
+    return Color(0xFFD5D5D5);
+  }
+}
+
+Color requestStatusTextColor(String status) {
+  if (status == 'ACCEPT') {
+    return Color(0xFF62D00B);
+  } else if (status == 'REJECT') {
+    return Color(0xFFFF0000);
+  } else {
+    return Color(0xFF000000);
+  }
 }

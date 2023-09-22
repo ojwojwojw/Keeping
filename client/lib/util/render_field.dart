@@ -5,11 +5,13 @@ import 'package:keeping/styles.dart';
 
 Padding renderTextFormField({
   required String label,
-  required FormFieldSetter onSaved,
-  required FormFieldValidator validator,
-  required TextEditingController controller,
+  String? hintText,
+  FormFieldSetter? onSaved,
+  FormFieldValidator? validator,
+  TextEditingController? controller,
+  FormFieldSetter? onChange,
+  isPassword = false,
   isNumber = false,
-  bool isPassword = false, // 비밀번호 가리는 기능을 위한 옵션 추가
 }) {
   return Padding(
       padding: EdgeInsets.symmetric(vertical: 20),
@@ -27,16 +29,61 @@ Padding renderTextFormField({
                     ],
                   ),
                   TextFormField(
-                    onSaved: onSaved,
-                    validator: validator,
-                    textInputAction: TextInputAction.next,
-                    controller: controller,
-                    keyboardType: isNumber ? TextInputType.number : null,
-                    inputFormatters: isNumber
-                        ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))]
-                        : null,
-                    obscureText: isPassword, // 옵션에 따라 비밀번호 가리는 기능 설정
-                  )
+                      onSaved: onSaved,
+                      validator: validator,
+                      onChanged: onChange,
+                      textInputAction: TextInputAction.next,
+                      controller: controller,
+                      keyboardType: isNumber ? TextInputType.number : null,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: InputDecoration(
+                        hintText: hintText,
+                      ),
+                      obscureText: isPassword,
+                      inputFormatters: isNumber
+                          ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))]
+                          : null)
+                ],
+              ))));
+}
+
+Padding renderPhoneNumberFormField({
+  required String label,
+  String? hintText,
+  FormFieldSetter? onSaved,
+  FormFieldValidator? validator,
+  TextEditingController? controller,
+  FormFieldSetter? onChange,
+}) {
+  return Padding(
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Center(
+          child: SizedBox(
+              width: 340,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        label,
+                        style: labelStyle(),
+                      )
+                    ],
+                  ),
+                  TextFormField(
+                      onSaved: onSaved,
+                      validator: validator,
+                      onChanged: onChange,
+                      textInputAction: TextInputAction.next,
+                      controller: controller,
+                      keyboardType: TextInputType.number,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: InputDecoration(
+                        hintText: hintText,
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp('[0-9]'))
+                      ])
                 ],
               ))));
 }

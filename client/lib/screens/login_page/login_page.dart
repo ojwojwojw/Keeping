@@ -23,25 +23,25 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String loginResult = '로그인 안 된 상태';
-  String loginId = '';
-  String loginPw = '';
+  String _loginResult = '로그인 안 된 상태';
+  String _loginId = '';
+  String _loginPw = '';
 
   void handleUserId(data) {
     setState(() {
-      loginId = data;
+      _loginId = data;
     });
   }
 
   void handleUserPw(data) {
     setState(() {
-      loginPw = data;
+      _loginPw = data;
     });
   }
 
   handleLogin(result) {
     setState(() {
-      loginResult = result;
+      _loginResult = result;
     });
   }
 
@@ -54,7 +54,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // 페이지가 파기될 때 컨트롤러를 해제
-
   @override
   void dispose() {
     _userId.dispose();
@@ -87,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     renderTextFormField(
                       label: '아이디',
-                      onSaved: (val) async {
+                      onChange: (val) {
                         String userId = val;
                         handleUserId(userId);
                       },
@@ -104,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     renderTextFormField(
                       label: '비밀번호',
-                      onSaved: (val) async {
+                      onChange: (val) {
                         String userPw = val;
                         handleUserPw(userPw);
                       },
@@ -120,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       height: 20,
                     ),
-                    Text(loginResult),
+                    Text(_loginResult),
                   ],
                 ),
               ),
@@ -150,22 +149,18 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> login(BuildContext context, Function handleLogin) async {
-    // 아이디와 비밀번호 값을 가져옴
     final data = {
-      'loginId': loginId,
-      'loginPw': loginPw,
+      'loginId': _loginId,
+      'loginPw': _loginPw,
     };
-    print(data);
-    print('수정한 곳');
     try {
       var response = await dio.post(
         'http://j9c207.p.ssafy.io:8000/member-service/login',
         data: data,
       );
-      final jsonResponse = jsonDecode(response.toString());
-      print(jsonResponse);
-      if (response.data.resultStatus.successCode == 0) {
-        // 로그인 성공
+      if (response.statusCode == 200) {
+        print('로그인에 성공했어요!');
+        handleLogin('로그인 성공');
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -173,94 +168,12 @@ class _LoginPageState extends State<LoginPage> {
           ),
         );
       } else {
+        print('로그인에 실패!');
         handleLogin('아이디 및 비밀번호를 확인해주세요.');
       }
     } catch (err) {
-      handleLogin('아이디 및 비밀번호를 확인해주세요.');
       print(err);
+      handleLogin('아이디 및 비밀번호를 확인해주세요.');
     }
   }
 }
-
-// Future<void> login(BuildContext context, Function handleLogin) async {
-//   String loginId = _userId.text;
-//   String loginPw = _userPw.text;
-//   final data = {
-//     'loginId': loginId,
-//     'loginPw': loginPw,
-//   };
-//   print(data);
-//   try {
-//     var response = await dio.post(
-//       'http://j9c207.p.ssafy.io:8000/member-service/login',
-//       data: data,
-//     );
-//     final jsonResponse = jsonDecode(response.toString());
-//     print(jsonResponse);
-//     if (response.data.resultStatus.successCode == 0) {
-//       print(response.data.resultStatus.resultMessage);
-//       Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//           builder: (context) => MainPage(),
-//         ),
-//       );
-//     } else {
-//       handleLogin('아이디 및 비밀번호를 확인해주세요.');
-//     }
-//   } catch (err) {
-//     handleLogin('아이디 및 비밀번호를 확인해주세요.');
-//     print(err);
-//   }
-// }
-
-// Widget userIdField() {
-//   return BuildTextFormField(
-//     controller: _userId,
-//     labelText: '아이디',
-//     hintText: '아이디를 입력해주세요',
-//     validator: (value) {
-//       if (value == null || value.isEmpty) {
-//         return '필수 항목입니다';
-//       }
-//       return null;
-//     },
-//   );
-// }
-
-// Widget userIdField() {
-//   return renderTextFormField(
-//     label: '아이디',
-//     onSaved: (val) async {
-//       // 아이디 필드 값 저장
-//       String userId = val; // val은 입력 필드의 현재 값입니다.
-//       print('아이디 저장: $userId');
-//       handleUserId(val);
-//     },
-//     validator: (val) {
-//       if (val.length < 1) {
-//         return '아이디를 입력해주세요';
-//       }
-//       return null;
-//     },
-//     controller: _userId,
-//   );
-// }
-
-// Widget userPwField() {
-//   return renderTextFormField(
-//     label: '비밀번호',
-//     onSaved: (val) async {
-//       String userPw = val;
-//       // 비밀번호 필드 값 저장
-//     },
-//     validator: (val) {
-//       if (val.length < 1) {
-//         return '비밀번호를 입력해주세요';
-//       }
-//       return null;
-//     },
-//     controller: _userPw,
-//     isPassword: true,
-//   );
-// }
