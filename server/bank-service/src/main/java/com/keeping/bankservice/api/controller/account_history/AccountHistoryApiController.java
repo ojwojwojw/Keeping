@@ -19,7 +19,7 @@ import java.util.Map;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/account-history")
+@RequestMapping("/bank-service/api/account-history")
 public class AccountHistoryApiController {
 
     private final AccountHistoryService accountHistoryService;
@@ -50,6 +50,19 @@ public class AccountHistoryApiController {
 
         try {
             Map<String, List<ShowAccountHistoryResponse>> response = accountHistoryService.showAccountHistory(memberKey, accountNumber);
+            return ApiResponse.ok(response);
+        }
+        catch(Exception e) {
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "거래 내역을 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
+        }
+    }
+
+    @GetMapping("/{member-key}/{account-number}/{date}")
+    public ApiResponse<Map<String, List<ShowAccountHistoryResponse>>> showAccountDailyHistory(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber, @PathVariable("date") String date) {
+        log.debug("ShowAccountDailyHistory");
+
+        try {
+            Map<String, List<ShowAccountHistoryResponse>> response = accountHistoryService.showAccountDailyHistory(memberKey, accountNumber, date);
             return ApiResponse.ok(response);
         }
         catch(Exception e) {
