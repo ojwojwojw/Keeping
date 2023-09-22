@@ -21,6 +21,10 @@ class OnlinePaymentRequestFormProvider with ChangeNotifier {
     _url = url;
   }
 
+  void setReason(String reason) {
+    _reason = reason;
+  }
+
   void removeOnlinePaymentRequestForm() {
     _name = null;
     _url = null;

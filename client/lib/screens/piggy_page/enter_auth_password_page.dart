@@ -88,12 +88,14 @@ class _EnterAuthPasswordPageState extends State<EnterAuthPasswordPage> {
       ),
       bottomNavigationBar: BottomBtn(
         text: '만들기',
-        action: () {_makePiggy(
-          context.watch<AddPiggyProvider>().content, 
-          context.watch<AddPiggyProvider>().goalMoney,
-          authPassword,
-          context.watch<AddPiggyProvider>().imgPath!,
-        );},
+        action: () {
+          _makePiggy(
+            context.watch<AddPiggyProvider>().content, 
+            context.watch<AddPiggyProvider>().goalMoney,
+            authPassword,
+            context.watch<AddPiggyProvider>().imgPath!,
+          );
+        },
         isDisabled: (authPassword != null && authPassword!.length == 6) ? false : true,
       ),
     );
