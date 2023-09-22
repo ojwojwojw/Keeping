@@ -1,4 +1,4 @@
-package com.keeping.openaiservice.controller.request;
+package com.keeping.openaiservice.api.controller.request;
 
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;
