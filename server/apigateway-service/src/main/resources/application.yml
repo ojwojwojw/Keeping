@@ -1,6 +1,13 @@
 server:
   port: 8000
 
+# logging
+logging:
+  level:
+    org.hibernate: debug
+    com.keeping.apigatewayservice: debug
+
+
 eureka:
   client:
     register-with-eureka: true
@@ -79,7 +86,7 @@ spring:
         - id: bank-service
           uri: lb://BANK-SERVICE
           predicates:
-            - Path=/bank-service/**
+            - Path=/bank-service/api/**
             - Method=POST, GET, PATCH, DELETE
           filters:
             - RemoveRequestHeader=Cookie
@@ -92,12 +99,12 @@ spring:
             - Method=GET
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/bank-service/(?<segment>.*), /$\{segment}
+#            - RewritePath=/bank-service/(?<segment>.*), /$\{segment}
         # mission
         - id: mission-service
           uri: lb://MISSION-SERVICE
           predicates:
-            - Path=/mission-service/**
+            - Path=/mission-service/api/**
             - Method=POST, GET, PATCH, DELETE
           filters:
             - RemoveRequestHeader=Cookie
@@ -112,7 +119,7 @@ spring:
         - id: openai-service
           uri: lb://OPENAI-SERVICE
           predicates:
-            - Path=/openai-service/**
+            - Path=/openai-service/api/**
             - Method=POST, GET, PATCH, DELETE
           filters:
             - RemoveRequestHeader=Cookie
@@ -127,7 +134,7 @@ spring:
         - id: question-service
           uri: lb://QUESTION-SERVICE
           predicates:
-            - Path=/question-service/**
+            - Path=/question-service/api/**
             - Method=POST, GET, PATCH, DELETE
           filters:
             - RemoveRequestHeader=Cookie
@@ -142,7 +149,7 @@ spring:
         - id: noti-service
           uri: lb://NOTI-SERVICE
           predicates:
-            - Path=/noti-service/**
+            - Path=/noti-service/api/**
             - Method=POST, GET, PATCH, DELETE
           filters:
             - RemoveRequestHeader=Cookie
