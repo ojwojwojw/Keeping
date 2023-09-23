@@ -2,14 +2,12 @@ package com.keeping.questionservice.api.service.impl;
 
 import com.keeping.questionservice.api.ApiResponse;
 import com.keeping.questionservice.api.controller.MemberFeignClient;
-import com.keeping.questionservice.api.controller.response.MemberTypeResponse;
-import com.keeping.questionservice.api.controller.response.QuestionResponse;
-import com.keeping.questionservice.api.controller.response.QuestionResponseList;
-import com.keeping.questionservice.api.controller.response.TodayQuestionResponse;
+import com.keeping.questionservice.api.controller.response.*;
 import com.keeping.questionservice.api.service.QuestionService;
 import com.keeping.questionservice.api.service.dto.*;
 import com.keeping.questionservice.domain.Comment;
 import com.keeping.questionservice.domain.Question;
+import com.keeping.questionservice.domain.repository.CommentQueryRepository;
 import com.keeping.questionservice.domain.repository.CommentRepository;
 import com.keeping.questionservice.domain.repository.QuestionQueryRepository;
 import com.keeping.questionservice.domain.repository.QuestionRepository;
@@ -34,6 +32,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final QuestionQueryRepository questionQueryRepository;
     private final CommentRepository commentRepository;
+    private final CommentQueryRepository commentQueryRepository;
 
 
     @Override
@@ -62,9 +61,11 @@ public class QuestionServiceImpl implements QuestionService {
         QuestionResponse questionResponse = questionQueryRepository.findByChildKeyAndCreatedDate(memberKey, now)
                 .orElseThrow(() -> new NotFoundException("400", HttpStatus.BAD_REQUEST, "오늘 질문이 없습니다."));
 
+        // 질문에 댓글 있는지 확인
+        List<CommentResponse> commentList = commentQueryRepository.findByIdAndActive(memberKey, true);
 
         // 오늘 날짜의 질문에 대한 상세 정보 반환
-        return TodayQuestionResponse.toDto(questionResponse.getId(), questionResponse.getContent(), questionResponse.isCreated(), questionResponse.getParentAnswer(), questionResponse.getChildAnswer());
+        return TodayQuestionResponse.toDto(questionResponse.getId(), questionResponse.getContent(), questionResponse.isCreated(), questionResponse.getParentAnswer(), questionResponse.getChildAnswer(), commentList);
     }
 
     @Override
@@ -78,8 +79,15 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public QuestionResponse showDetailQuestion(String memberKey, Long questionId) {
-        return questionQueryRepository.getQuetsionByMemberKeyAndId(memberKey, questionId)
+        QuestionResponse questionResponse = questionQueryRepository.getQuetsionByMemberKeyAndId(memberKey, questionId)
                 .orElseThrow(() -> new NotFoundException("400", HttpStatus.BAD_REQUEST, "해당하는 질문을 찾을 수 없습니다."));
+
+        // 질문의 댓글들 불러오기
+        List<CommentResponse> commentList = commentQueryRepository.findByIdAndActive(memberKey, true);
+
+        questionResponse.setCommentResponses(commentList);
+
+        return questionResponse;
     }
 
     @Override

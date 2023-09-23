@@ -10,10 +10,10 @@ import java.util.List;
 @NoArgsConstructor
 public class QuestionResponseList {
     
-    List<QuestionResponse> questionResponseList;
+    List<QuestionResponse> questions;
 
     @Builder
-    public QuestionResponseList(List<QuestionResponse> questionResponseList) {
-        this.questionResponseList = questionResponseList;
+    public QuestionResponseList(List<QuestionResponse> questions) {
+        this.questions = questions;
     }
 }
