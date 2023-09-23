@@ -50,5 +50,13 @@ public class Question extends TimeBaseEntity {
                 .isCreated(isCreated)
                 .build();
     }
-    
+
+    public void updateParentAnswer(String answer) {
+        this.parentAnswer = answer;
+    }
+
+    public void updateChildAnswer(String answer) {
+        this.childAnswer = answer;
+    }
+
 }

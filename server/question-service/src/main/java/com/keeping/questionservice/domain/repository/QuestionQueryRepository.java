@@ -22,9 +22,15 @@ public class QuestionQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public Optional<Long> findByChildKeyAndCreatedDate(String childKey, LocalDate createdDate) {
+    public Optional<QuestionResponse> findByChildKeyAndCreatedDate(String childKey, LocalDate createdDate) {
         return Optional.ofNullable(queryFactory
-                .select(question.id)
+                .select(constructor(QuestionResponse.class,
+                        question.id,
+                        question.content,
+                        question.parentAnswer,
+                        question.childKey,
+                        question.isCreated,
+                        question.createdDate))
                 .from(question)
                 .where(question.childKey.eq(childKey),
                         question.createdDate.between(createdDate.atStartOfDay(), createdDate.plusDays(1).atStartOfDay()))

@@ -16,15 +16,11 @@ public class AddAnswerRequest {
     private String answer;
     @NotNull
     private boolean isCreated;
-    @NotBlank
-    private MemberType type;
-
 
     @Builder
-    public AddAnswerRequest(Long questionId, String answer, boolean isCreated, MemberType type) {
+    public AddAnswerRequest(Long questionId, String answer, boolean isCreated) {
         this.questionId = questionId;
         this.answer = answer;
         this.isCreated = isCreated;
-        this.type = type;
     }
 }

@@ -1,8 +1,11 @@
 package com.keeping.questionservice.api.service.impl;
 
+import com.keeping.questionservice.api.ApiResponse;
+import com.keeping.questionservice.api.controller.MemberFeignClient;
 import com.keeping.questionservice.api.controller.response.MemberTypeResponse;
 import com.keeping.questionservice.api.controller.response.QuestionResponse;
 import com.keeping.questionservice.api.controller.response.QuestionResponseList;
+import com.keeping.questionservice.api.controller.response.TodayQuestionResponse;
 import com.keeping.questionservice.api.service.QuestionService;
 import com.keeping.questionservice.api.service.dto.AddAnswerDto;
 import com.keeping.questionservice.api.service.dto.AddQuestionDto;
@@ -20,26 +23,47 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class QuestionServiceImpl implements QuestionService {
 
+    private MemberFeignClient memberFeignClient;
     private final QuestionRepository questionRepository;
     private final QuestionQueryRepository questionQueryRepository;
+
 
     @Override
     public Long addQuestion(String memberKey, AddQuestionDto dto) {
 
         // 이미 오늘 날짜로 질문이 등록되어 있다면 에러 발생
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        questionQueryRepository.findByChildKeyAndCreatedDate(dto.getChildMemberKey(), now)
-                .orElseThrow(() -> new AlreadyExistException("409", HttpStatus.CONFLICT, "이미 해당 날짜에 질문이 존재합니다."));
+        Optional<QuestionResponse> checkQuestionAdded = questionQueryRepository.findByChildKeyAndCreatedDate(dto.getChildMemberKey(), now);
+        if (checkQuestionAdded.isPresent()) {
+            throw new AlreadyExistException("409", HttpStatus.CONFLICT, "이미 해당 날짜에 질문이 존재합니다.");
+        }
+
 
         Question question = questionRepository.save(Question.toQuestion(memberKey, dto.getChildMemberKey(), dto.getContent(), true));
 
         return question.getId();
+    }
+
+    @Override
+    public TodayQuestionResponse showQuestionToday(String memberKey) {
+
+        // 오늘 날짜 구하기
+        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+
+        // 오늘 날짜의 질문이 있는지 확인, 없다면 예외 발생
+        QuestionResponse questionResponse = questionQueryRepository.findByChildKeyAndCreatedDate(memberKey, now)
+                .orElseThrow(() -> new NotFoundException("400", HttpStatus.BAD_REQUEST, "오늘 질문이 없습니다."));
+
+
+        // 오늘 날짜의 질문에 대한 상세 정보 반환
+        return TodayQuestionResponse.toDto(questionResponse.getId(), questionResponse.getContent(), questionResponse.isCreated(), questionResponse.getParentAnswer(), questionResponse.getChildAnswer());
     }
 
     @Override
@@ -54,16 +78,27 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public QuestionResponse showDetailQuestion(String memberKey, Long questionId) {
         return questionQueryRepository.getQuetsionByMemberKeyAndId(memberKey, questionId)
-                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 질문을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("400", HttpStatus.BAD_REQUEST, "해당하는 질문을 찾을 수 없습니다."));
     }
 
     @Override
     public Long addAnswer(String memberKey, AddAnswerDto dto) {
 
-        // TODO: 2023-09-22 부모라면 자녀 키를 가져오고, 자녀라면 부모 키를 가져와야 함
-        
-//        questionRepository.save(Question.toQuestion())
-        
-        return null;
+        // member type 가져오기
+        ApiResponse<MemberTypeResponse> memberType = memberFeignClient.getMemberType(memberKey);
+
+        // 질문에 대한 답변 등록
+        // 질문 id로 질문 찾아오고 답변 수정
+        Question question = questionRepository.findById(dto.getQuestionId())
+                .orElseThrow(() -> new NotFoundException("400", HttpStatus.BAD_REQUEST, "해당하는 질문을 찾을 수 없습니다."));
+
+        // 부모일 때 부모 답변으로 넣기
+        if (memberType.getResultBody().isParent()) {
+            question.updateParentAnswer(dto.getAnswer());
+        } else {
+            question.updateChildAnswer(dto.getAnswer());
+        }
+
+        return question.getId();
     }
 }

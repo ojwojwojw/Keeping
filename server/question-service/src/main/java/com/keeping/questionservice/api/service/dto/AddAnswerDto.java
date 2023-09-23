@@ -17,15 +17,12 @@ public class AddAnswerDto {
     private String answer;
     
     private boolean isCreated;
-    
-    private MemberType memberType;
-    
+
     @Builder
-    public AddAnswerDto(Long questionId, String answer, boolean isCreated, MemberType memberType) {
+    public AddAnswerDto(Long questionId, String answer, boolean isCreated) {
         this.questionId = questionId;
         this.answer = answer;
         this.isCreated = isCreated;
-        this.memberType = memberType;
     }
 
     public static AddAnswerDto toDto(AddAnswerRequest request) {
@@ -33,7 +30,6 @@ public class AddAnswerDto {
                 .questionId(request.getQuestionId())
                 .answer(request.getAnswer())
                 .isCreated(request.isCreated())
-                .memberType(request.getType())
                 .build();
     }
 }
