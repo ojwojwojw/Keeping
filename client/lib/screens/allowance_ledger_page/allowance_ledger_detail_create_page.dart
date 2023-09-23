@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
-import 'package:keeping/util/render_field.dart';
+import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 
@@ -13,20 +13,21 @@ class AllowanceLedgerDetailCreatePage extends StatefulWidget {
   final num balance;
   final Map<String, dynamic>? detail;
 
-  AllowanceLedgerDetailCreatePage({
-    super.key,
-    required this.date,
-    required this.storeName,
-    required this.money,
-    required this.balance,
-    this.detail
-  });
+  AllowanceLedgerDetailCreatePage(
+      {super.key,
+      required this.date,
+      required this.storeName,
+      required this.money,
+      required this.balance,
+      this.detail});
 
   @override
-  State<AllowanceLedgerDetailCreatePage> createState() => _AllowanceLedgerDetailCreatePageState();
+  State<AllowanceLedgerDetailCreatePage> createState() =>
+      _AllowanceLedgerDetailCreatePageState();
 }
 
-class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailCreatePage> {
+class _AllowanceLedgerDetailCreatePageState
+    extends State<AllowanceLedgerDetailCreatePage> {
   TextEditingController contentControlloer = TextEditingController();
   TextEditingController moneyControlloer = TextEditingController();
   TextEditingController categoryIdxControlloer = TextEditingController();
@@ -54,8 +55,14 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
           children: [
             Column(
               children: [
-                MoneyRecordsDate(date: widget.date,),
-                MoneyRecord(date: widget.date, storeName: widget.storeName, money: widget.money, balance: widget.balance)
+                MoneyRecordsDate(
+                  date: widget.date,
+                ),
+                MoneyRecord(
+                    date: widget.date,
+                    storeName: widget.storeName,
+                    money: widget.money,
+                    balance: widget.balance)
               ],
             ),
             Form(
@@ -63,46 +70,40 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
               child: Column(
                 children: [
                   renderTextFormField(
-                    label: '무엇을 구매했나요?', 
-                    onSaved: (val) {
-                      setState(() {
-                        content = val;
-                      });
-                    }, 
-                    validator: (val) {
-                      if (val.length < 1) {
-                        return '물품명을 입력해주세요.';
-                      }
-                      return null;
-                    },
-                    controller: contentControlloer
-                  ),
+                      label: '무엇을 구매했나요?',
+                      onSaved: (val) {
+                        setState(() {
+                          content = val;
+                        });
+                      },
+                      validator: (val) {
+                        if (val.length < 1) {
+                          return '물품명을 입력해주세요.';
+                        }
+                        return null;
+                      },
+                      controller: contentControlloer),
                   renderCategoryField(selectCategory, category),
                   renderTextFormField(
-                    label: '얼마인가요?', 
-                    onSaved: (val) {
-                      setState(() {
-                        money = num.parse(val);
-                      });
-                    }, 
-                    validator: (val) {
-                      if (val.length < 1) {
-                        return '제대로 입력해라..';
-                      }
-                      return null;
-                    },
-                    controller: moneyControlloer,
-                    isNumber: true
-                  ),
+                      label: '얼마인가요?',
+                      onSaved: (val) {
+                        setState(() {
+                          money = num.parse(val);
+                        });
+                      },
+                      validator: (val) {
+                        if (val.length < 1) {
+                          return '제대로 입력해라..';
+                        }
+                        return null;
+                      },
+                      controller: moneyControlloer,
+                      isNumber: true),
                 ],
               ),
             ),
             Column(
-              children: [
-                Text(content),
-                Text(money.toString()),
-                Text(category)
-              ],
+              children: [Text(content), Text(money.toString()), Text(category)],
             )
           ],
         ),
@@ -110,7 +111,8 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
       bottomNavigationBar: BottomBtn(
         text: '등록하기',
         action: () async {
-          if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+          if (_formKey.currentState != null &&
+              _formKey.currentState!.validate()) {
             _formKey.currentState!.save();
             print('저장완료');
           } else {

@@ -20,7 +20,6 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
   void initState() {
     super.initState();
     amount = '';
-
   }
 
   String amount = '';
@@ -62,23 +61,41 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
               Text(
                 amount,
                 style: TextStyle(
-                  color: context.watch<PiggyDetailProvider>().balance != null && amount.isNotEmpty && context.watch<PiggyDetailProvider>().balance! < int.parse(amount) 
-                    ? Colors.red : Colors.black
-                ),
+                    color:
+                        context.watch<PiggyDetailProvider>().balance != null &&
+                                amount.isNotEmpty &&
+                                context.watch<PiggyDetailProvider>().balance! <
+                                    int.parse(amount)
+                            ? Colors.red
+                            : Colors.black),
               ),
-              if (context.watch<PiggyDetailProvider>().balance != null && amount.isNotEmpty && context.watch<PiggyDetailProvider>().balance! < int.parse(amount))
-              Text('잔고가 부족합니다.', style: TextStyle(color: Colors.red),)
+              if (context.watch<PiggyDetailProvider>().balance != null &&
+                  amount.isNotEmpty &&
+                  context.watch<PiggyDetailProvider>().balance! <
+                      int.parse(amount))
+                Text(
+                  '잔고가 부족합니다.',
+                  style: TextStyle(color: Colors.red),
+                )
             ],
           ),
-          NumberKeyboard(onNumberPress: onNumberPress, onBackspacePress: onBackspacePress,)
+          NumberKeyboard(
+            onNumberPress: onNumberPress,
+            onBackspacePress: onBackspacePress,
+          )
         ],
       ),
       bottomNavigationBar: BottomBtn(
         text: '다음',
         action: () async {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => EnterAuthPasswordPage()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => EnterAuthPasswordPage()));
         },
-        isDisabled: (amount.isNotEmpty && context.watch<PiggyDetailProvider>().balance! >= int.parse(amount)) ? false : true,
+        isDisabled: (amount.isNotEmpty &&
+                context.watch<PiggyDetailProvider>().balance! >=
+                    int.parse(amount))
+            ? false
+            : true,
       ),
     );
   }

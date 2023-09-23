@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/number_keyboard.dart';
+import 'package:keeping/widgets/render_field.dart';
+import 'package:keeping/screens/mission_page/mission_page.dart';
 
 TextEditingController _controller1 = TextEditingController();
 
@@ -29,21 +31,7 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
         Text('아이에게 어떤 미션을 줘볼까요?'),
 
         // 입력 폼
-        Form(
-            child: Column(children: [
-          TextFormField(
-            decoration: InputDecoration(labelText: '미션제목을 입력해주세요'),
-            validator: (value) {
-              if (value?.isEmpty ?? false) {
-                return '미션 제목을 입력해주세요.....';
-              }
-              return null;
-            },
-            onSaved: (String? value) {
-              missionTitle = value;
-            },
-          )
-        ])),
+        renderTextFormField(label: '미션제목을 입력해주세요'),
 
         SizedBox(
           height: 100,
@@ -134,7 +122,7 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
       ),
       bottomNavigationBar: BottomBtn(
         text: '다음',
-        action: MissionCreatePage3(),
+        action: MissionPage(),
         isDisabled: false,
       ),
     );
@@ -151,12 +139,35 @@ class MissionCreatePage3 extends StatefulWidget {
 }
 
 class _MissionCreatePage3State extends State<MissionCreatePage3> {
+  List<Map<String, dynamic>> data = [
+    {
+      "memberKey": 2,
+      "name": "김첫째",
+      "profileImage": "profile.png",
+      "questionTime": "22:00"
+    },
+    {
+      "memberKey": 3,
+      "name": "김둘째",
+      "profileImage": "profile.png",
+      "questionTime": "22:00"
+    },
+    {
+      "memberKey": 4,
+      "name": "김셋째",
+      "profileImage": "profile.png",
+      "questionTime": "22:00"
+    }
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(text: '미션생성3'),
       body: Column(children: [
-        // ConfirmBtn(action: )
+        Text('누구에게 얼마를 줄까요?'),
+        _children_data(data),
+        renderBoxFormField(label: 'test'),
       ]),
       bottomNavigationBar: BottomBtn(
         text: '다음',
@@ -165,4 +176,33 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
       ),
     );
   }
+}
+
+Widget _children_data(data) {
+  return (Expanded(
+    child: ListView.builder(
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          final item = data[index];
+          return Container(
+            height: 50,
+            width: 400,
+            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.white, // 배경색 설정
+              border: Border.all(color: Color(0xFF8320E7)), // 테두리 설정
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: Text(
+                item['name'],
+                style: TextStyle(
+                  fontSize: 20, // 텍스트 크기 설정
+                  color: Colors.black, // 텍스트 색상 설정
+                ),
+              ),
+            ),
+          );
+        }),
+  ));
 }
