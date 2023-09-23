@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/mission_page/widgets/mission_box.dart';
 import 'package:keeping/widgets/header.dart';
-import 'package:keeping/screens/mission_create_page/mission_create.dart';
+import 'package:keeping/screens/mission_create_page/child_mission_create.dart';
 
 import 'package:keeping/util/camera_test2.dart';
 import 'package:keeping/util/ocr_test.dart';

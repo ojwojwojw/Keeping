@@ -22,27 +22,30 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF8320E7),
       appBar: MyHeader(text: '미션생성'),
-      body: Column(children: [
-        SizedBox(
-          height: 50,
-        ),
+      body: Center(
+        child: Column(children: [
+          SizedBox(
+            height: 50,
+          ),
 
-        Text('아이에게 어떤 미션을 줘볼까요?'),
+          Text('아이에게 어떤 미션을 줘볼까요?'),
 
-        // 입력 폼
-        renderTextFormField(label: '미션제목을 입력해주세요'),
+          // 입력 폼
+          renderTextFormField(label: '미션제목을 입력해주세요'),
 
-        SizedBox(
-          height: 100,
-        ),
+          SizedBox(
+            height: 100,
+          ),
 
-        //달력 들어갈곳
-        Text('미션 마감일을 정해줘요.'),
-        ElevatedButton(onPressed: datePicker, child: Text('누르면 달력나와요')),
+          //달력 들어갈곳
+          Text('미션 마감일을 정해줘요.'),
+          ElevatedButton(onPressed: datePicker, child: Text('누르면 달력나와요')),
 
-        // 다음 페이지로 가는 버튼
-      ]),
+          // 다음 페이지로 가는 버튼
+        ]),
+      ),
       bottomNavigationBar: BottomBtn(
         text: '다음',
         action: MissionCreatePage2(),
@@ -122,7 +125,7 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
       ),
       bottomNavigationBar: BottomBtn(
         text: '다음',
-        action: MissionPage(),
+        action: MissionCreatePage3(),
         isDisabled: false,
       ),
     );
@@ -171,7 +174,7 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
       ]),
       bottomNavigationBar: BottomBtn(
         text: '다음',
-        action: MissionCreatePage2(),
+        action: MissionPage(),
         isDisabled: false,
       ),
     );

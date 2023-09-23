@@ -9,6 +9,7 @@ import '../signup_page/signup_user_type_select_page.dart';
 import '../login_page/login_page.dart';
 import '../user_link_page/before_user_link_page.dart';
 import '../my_page/my_page.dart';
+import '../diary_page/child_diary_page.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -73,7 +74,18 @@ class MainPage extends StatelessWidget {
               );
             },
             child: Text('마이페이지'),
-          )
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ChildDiaryPage(),
+                ),
+              );
+            },
+            child: Text('일기페이지'),
+          ),
         ],
       )),
       bottomNavigationBar: BottomAppBar(
