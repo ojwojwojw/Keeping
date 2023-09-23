@@ -62,12 +62,17 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
     public Long addAccountHistory(String memberKey, AddAccountHistoryDto dto) throws URISyntaxException {
         Account account = null;
 
+        LargeCategory largeCategory = null;
+        Double latitude = null, longitude = null;
+
         // 입금 상황
         if (dto.isType()) {
             DepositMoneyDto depositMoneyDto = DepositMoneyDto.toDto(dto.getAccountNumber(), dto.getMoney());
 
             // 계좌의 잔액 갱신
             account = accountService.depositMoney(memberKey, depositMoneyDto);
+
+            largeCategory = DEPOSIT;
         }
         // 출금 상황
         else {
@@ -75,28 +80,25 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
             // 계좌의 잔액 갱신
             account = accountService.withdrawMoney(memberKey, withdrawMoneyDto);
-        }
 
-        // 장소의 위도, 경도, 카테고리 가져오기
-        Map keywordResponse = useKakaoLocalApi(true, dto.getStoreName());
-        Map addressResponse = useKakaoLocalApi(false, dto.getAddress());
+            largeCategory = ETC;
+            String categoryType = null;
 
-        LargeCategory largeCategory = ETC;
-        String categoryType = null;
-        try {
-            categoryType = ((LinkedHashMap) ((ArrayList) keywordResponse.get("documents")).get(0)).get("category_group_code").toString();
-            largeCategory = mappingCategory(categoryType);
-        } catch (NullPointerException e) {
-            categoryType = "ETC";
-        }
+            // 장소의 위도, 경도, 카테고리 가져오기
+            Map keywordResponse = useKakaoLocalApi(true, dto.getStoreName());
+            Map addressResponse = useKakaoLocalApi(false, dto.getAddress());
 
-        Double latitude = null, longitude = null;
-        try {
-            latitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("y"));
-            longitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("x"));
-        } catch (NullPointerException e) {
-            latitude = null;
-            longitude = null;
+            try {
+                categoryType = ((LinkedHashMap) ((ArrayList) keywordResponse.get("documents")).get(0)).get("category_group_code").toString();
+                largeCategory = mappingCategory(categoryType);
+            } catch (NullPointerException e) {
+            }
+
+            try {
+                latitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("y"));
+                longitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("x"));
+            } catch (NullPointerException e) {
+            }
         }
 
         // 새로운 거래 내역 등록
