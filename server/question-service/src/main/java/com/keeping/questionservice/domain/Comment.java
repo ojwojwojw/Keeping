@@ -7,8 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends TimeBaseEntity {
 
     @Id

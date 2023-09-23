@@ -8,7 +8,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@RequiredArgsConstructor
 public class Question extends TimeBaseEntity {
     
     @Id
