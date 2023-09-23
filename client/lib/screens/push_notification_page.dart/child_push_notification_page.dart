@@ -13,11 +13,8 @@ class _ChildPushNotificationPageState extends State<ChildPushNotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [MyHeader(text: '알림')],
-        ),
-      ),
+      appBar: MyHeader(text: '알림'),
+      body: SingleChildScrollView(),
     );
     // return const Placeholder();
   }

@@ -8,7 +8,8 @@ import '../mission_page/mission_page.dart';
 import '../signup_page/signup_user_type_select_page.dart';
 import '../login_page/login_page.dart';
 import '../user_link_page/before_user_link_page.dart';
-import '../my_page/my_page.dart';
+import '../my_page/parent_my_page.dart';
+import '../my_page/child_my_page.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -68,11 +69,22 @@ class MainPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const MyPage(),
+                  builder: (context) => const ParentMyPage(),
                 ),
               );
             },
-            child: Text('마이페이지'),
+            child: Text('부모 마이페이지'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ChildMyPage(),
+                ),
+              );
+            },
+            child: Text('자녀 마이페이지'),
           )
         ],
       )),
