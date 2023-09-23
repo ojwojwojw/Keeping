@@ -7,9 +7,10 @@ import com.keeping.questionservice.api.controller.response.QuestionResponse;
 import com.keeping.questionservice.api.controller.response.QuestionResponseList;
 import com.keeping.questionservice.api.controller.response.TodayQuestionResponse;
 import com.keeping.questionservice.api.service.QuestionService;
-import com.keeping.questionservice.api.service.dto.AddAnswerDto;
-import com.keeping.questionservice.api.service.dto.AddQuestionDto;
+import com.keeping.questionservice.api.service.dto.*;
+import com.keeping.questionservice.domain.Comment;
 import com.keeping.questionservice.domain.Question;
+import com.keeping.questionservice.domain.repository.CommentRepository;
 import com.keeping.questionservice.domain.repository.QuestionQueryRepository;
 import com.keeping.questionservice.domain.repository.QuestionRepository;
 import com.keeping.questionservice.global.exception.AlreadyExistException;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +33,7 @@ public class QuestionServiceImpl implements QuestionService {
     private MemberFeignClient memberFeignClient;
     private final QuestionRepository questionRepository;
     private final QuestionQueryRepository questionQueryRepository;
+    private final CommentRepository commentRepository;
 
 
     @Override
@@ -100,5 +101,50 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         return question.getId();
+    }
+
+    @Override
+    public Long addComment(String memberKey, AddCommentDto dto) {
+
+        // questionId로 해당 질문 가져오기
+        Question question = questionRepository.findById(dto.getQuestionId())
+                .orElseThrow(() -> new NotFoundException("400", HttpStatus.BAD_REQUEST, "해당하는 질문이 없습니다."));
+
+        // Comment entity 생성 후 저장
+        Comment comment = Comment.toComment(question, memberKey, dto.getContent(), true);
+
+        Comment save = commentRepository.save(comment);
+        return save.getId();
+    }
+
+    @Override
+    public void editQuestion(String memberKey, EditQuestionDto dto) {
+
+        // questionId로 해당 질문 가져오기
+        Question question = questionRepository.findById(dto.getQuestionId())
+                .orElseThrow(() -> new NotFoundException("400", HttpStatus.BAD_REQUEST, "해당하는 질문이 없습니다."));
+
+        question.updateQuestion(dto.getContent());
+    }
+
+    @Override
+    public void editComment(String memberKey, EditCommentDto dto) {
+
+        // commentId로 해당 댓글 가져오기
+        Comment comment = commentRepository.findByIdAndActive(dto.getCommentId(), true)
+                .orElseThrow(() -> new NotFoundException("400", HttpStatus.BAD_REQUEST, "해당하는 댓글이 없습니다."));
+
+        comment.updateComment(dto.getContent());
+
+    }
+
+    @Override
+    public void removeComment(String memberKey, Long commentId) {
+
+        // commentId로 해당 댓글 가져오기
+        Comment comment = commentRepository.findByIdAndActive(commentId, true)
+                .orElseThrow(() -> new NotFoundException("400", HttpStatus.BAD_REQUEST, "해당하는 댓글이 없습니다."));
+
+        comment.deleteComment();
     }
 }
