@@ -73,7 +73,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         List<QuestionResponse> questionByParentKey = questionQueryRepository.getQuestionByMemberKey(memberKey);
         return QuestionResponseList.builder()
-                .questionResponseList(questionByParentKey)
+                .questions(questionByParentKey)
                 .build();
     }
 
@@ -85,7 +85,7 @@ public class QuestionServiceImpl implements QuestionService {
         // 질문의 댓글들 불러오기
         List<CommentResponse> commentList = commentQueryRepository.findByIdAndActive(memberKey, true);
 
-        questionResponse.setCommentResponses(commentList);
+        questionResponse.setComments(commentList);
 
         return questionResponse;
     }
