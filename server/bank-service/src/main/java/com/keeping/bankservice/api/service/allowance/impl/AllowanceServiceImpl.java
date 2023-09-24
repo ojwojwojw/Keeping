@@ -5,7 +5,7 @@ import com.keeping.bankservice.api.service.allowance.AllowanceService;
 import com.keeping.bankservice.api.service.allowance.dto.AddAllowanceDto;
 import com.keeping.bankservice.api.service.allowance.dto.ApproveAllowanceDto;
 import com.keeping.bankservice.domain.allowance.Allowance;
-import com.keeping.bankservice.domain.allowance.Approve;
+import com.keeping.bankservice.global.common.Approve;
 import com.keeping.bankservice.domain.allowance.repository.AllowanceQueryRepository;
 import com.keeping.bankservice.domain.allowance.repository.AllowanceRepository;
 import com.keeping.bankservice.global.exception.NotFoundException;
@@ -16,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.keeping.bankservice.domain.allowance.Approve.WAIT;
+import static com.keeping.bankservice.global.common.Approve.APPROVE;
+import static com.keeping.bankservice.global.common.Approve.WAIT;
 
 @Service
 @Transactional
@@ -44,9 +45,13 @@ public class AllowanceServiceImpl implements AllowanceService {
         // TODO: 요청을 보낸 사용자가 부모인지 확인하는 부분 필요
 
         Allowance allowance = allowanceRepository.findById(dto.getAllowanceId())
-                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 거래 내역이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 용돈 조르기가 존재하지 않습니다."));
 
         allowance.updateApproveStatus(dto.getApprove());
+
+        if(dto.getApprove() == APPROVE) {
+            // TODO: 자녀에게 용돈 주는 부분 필요
+        }
     }
 
     @Override

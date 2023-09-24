@@ -7,7 +7,7 @@ import com.keeping.bankservice.api.controller.allowance.response.ShowAllowanceRe
 import com.keeping.bankservice.api.service.allowance.AllowanceService;
 import com.keeping.bankservice.api.service.allowance.dto.AddAllowanceDto;
 import com.keeping.bankservice.api.service.allowance.dto.ApproveAllowanceDto;
-import com.keeping.bankservice.domain.allowance.Approve;
+import com.keeping.bankservice.global.common.Approve;
 import com.keeping.bankservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

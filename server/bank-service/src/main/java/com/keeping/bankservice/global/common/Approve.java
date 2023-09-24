@@ -1,4 +1,4 @@
-package com.keeping.bankservice.domain.allowance;
+package com.keeping.bankservice.global.common;
 
 public enum Approve {
     WAIT, APPROVE, REJECT
