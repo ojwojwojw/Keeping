@@ -4,7 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:keeping/firebase_options.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
 }
 
 Future<String?> fcmSetting() async {
@@ -13,12 +13,13 @@ Future<String?> fcmSetting() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
+//iOS
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true, // Required to display a heads up notification
     badge: true,
     sound: true,
   );
-
+//Android
   await FirebaseMessaging.instance.requestPermission(
     alert: true,
     announcement: true,
@@ -28,6 +29,7 @@ Future<String?> fcmSetting() async {
     provisional: true,
     sound: true,
   );
+  // Android용 새 Notification Channel
 
   const AndroidNotificationChannel androidNotificationChannel =
       AndroidNotificationChannel(
@@ -45,21 +47,30 @@ Future<String?> fcmSetting() async {
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(androidNotificationChannel);
 
+  await flutterLocalNotificationsPlugin.initialize(
+      InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      ),
+      onDidReceiveNotificationResponse:
+          (NotificationResponse response) async {});
+
 // foreground 푸시 알림 핸들링
-  FirebaseMessaging.onMessageOpenedApp.listen(
+  FirebaseMessaging.onMessage.listen(
     (RemoteMessage message) {
+      print(message);
+      print('포그라운드 수신');
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
 
-      if (message.notification != null && android != null) {
+      if (notification != null && android != null) {
         flutterLocalNotificationsPlugin.show(
-          notification.hashCode,
-          notification?.title,
-          notification?.body,
+          0,
+          notification.title!,
+          notification.body!,
           NotificationDetails(
             android: AndroidNotificationDetails(
-              androidNotificationChannel.id,
-              androidNotificationChannel.name,
+              'keeping_notification',
+              'keeping_notification',
               channelDescription: androidNotificationChannel.description,
               icon: android.smallIcon,
             ),
@@ -68,6 +79,7 @@ Future<String?> fcmSetting() async {
       }
     },
   );
+
   String? firebaseToken = await messaging.getToken();
   print('firebase_token : $firebaseToken');
   return firebaseToken;
