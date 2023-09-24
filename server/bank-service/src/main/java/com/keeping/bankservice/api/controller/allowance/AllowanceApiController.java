@@ -3,6 +3,7 @@ package com.keeping.bankservice.api.controller.allowance;
 import com.keeping.bankservice.api.ApiResponse;
 import com.keeping.bankservice.api.controller.allowance.request.AddAllowanceRequest;
 import com.keeping.bankservice.api.controller.allowance.request.ApproveAllowanceRequest;
+import com.keeping.bankservice.api.controller.allowance.response.ShowAllowanceResponse;
 import com.keeping.bankservice.api.service.allowance.AllowanceService;
 import com.keeping.bankservice.api.service.allowance.dto.AddAllowanceDto;
 import com.keeping.bankservice.api.service.allowance.dto.ApproveAllowanceDto;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -48,5 +51,17 @@ public class AllowanceApiController {
         }
 
         return ApiResponse.ok(null);
+    }
+
+    @GetMapping("/{target-key}")
+    public ApiResponse<List<ShowAllowanceResponse>> showAllowance(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey) {
+        log.debug("ShowAllowance={}", targetKey);
+
+        try {
+            List<ShowAllowanceResponse> response = allowanceService.showAllowance(memberKey, targetKey);
+            return ApiResponse.ok(response);
+        } catch (Exception e) {
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "현재 서비스 이용이 불가능합니다. 잠시 후 다시 시도해 주세요.", null);
+        }
     }
 }
