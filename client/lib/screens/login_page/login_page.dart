@@ -162,8 +162,9 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         print('로그인에 성공했어요!');
         handleLogin('로그인 성공');
-        final userData = json.decode(response.data.toString());
-        context.read<UserInfoProvider>().login(userData);
+        // final userData = json.decode(response.data.toString());
+        // print(userData);
+        // context.read<UserInfoProvider>().login(userData);
         Navigator.push(
           context,
           MaterialPageRoute(
