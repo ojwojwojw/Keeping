@@ -5,6 +5,7 @@ import com.keeping.bankservice.api.service.allowance.AllowanceService;
 import com.keeping.bankservice.api.service.allowance.dto.AddAllowanceDto;
 import com.keeping.bankservice.api.service.allowance.dto.ApproveAllowanceDto;
 import com.keeping.bankservice.domain.allowance.Allowance;
+import com.keeping.bankservice.domain.allowance.Approve;
 import com.keeping.bankservice.domain.allowance.repository.AllowanceQueryRepository;
 import com.keeping.bankservice.domain.allowance.repository.AllowanceRepository;
 import com.keeping.bankservice.global.exception.NotFoundException;
@@ -55,6 +56,17 @@ public class AllowanceServiceImpl implements AllowanceService {
         }
 
         List<ShowAllowanceResponse> result = allowanceQueryRepository.showAllowances(targetKey);
+
+        return result;
+    }
+
+    @Override
+    public List<ShowAllowanceResponse> showTypeAllowance(String memberKey, String targetKey, Approve approve) {
+        if(!targetKey.equals(memberKey)) {
+            // TODO: 타켓키가 멤버키의 자식인지 확인하는 부분 필요
+        }
+
+        List<ShowAllowanceResponse> result = allowanceQueryRepository.showTypeAllowances(targetKey, approve);
 
         return result;
     }

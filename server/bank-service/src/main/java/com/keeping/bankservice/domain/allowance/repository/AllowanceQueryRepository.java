@@ -1,6 +1,7 @@
 package com.keeping.bankservice.domain.allowance.repository;
 
 import com.keeping.bankservice.api.controller.allowance.response.ShowAllowanceResponse;
+import com.keeping.bankservice.domain.allowance.Approve;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
@@ -33,4 +34,19 @@ public class AllowanceQueryRepository {
         return result;
     }
 
+    public List<ShowAllowanceResponse> showTypeAllowances(String memberKey, Approve approve) {
+        List<ShowAllowanceResponse> result = queryFactory
+                .select(Projections.fields(ShowAllowanceResponse.class,
+                        allowance.id,
+                        allowance.content,
+                        allowance.money,
+                        allowance.approve,
+                        allowance.createdDate))
+                .from(allowance)
+                .where(allowance.childKey.eq(memberKey), allowance.approve.eq(approve))
+                .orderBy(allowance.createdDate.desc())
+                .fetch();
+
+        return result;
+    }
 }

@@ -7,6 +7,7 @@ import com.keeping.bankservice.api.controller.allowance.response.ShowAllowanceRe
 import com.keeping.bankservice.api.service.allowance.AllowanceService;
 import com.keeping.bankservice.api.service.allowance.dto.AddAllowanceDto;
 import com.keeping.bankservice.api.service.allowance.dto.ApproveAllowanceDto;
+import com.keeping.bankservice.domain.allowance.Approve;
 import com.keeping.bankservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +60,18 @@ public class AllowanceApiController {
 
         try {
             List<ShowAllowanceResponse> response = allowanceService.showAllowance(memberKey, targetKey);
+            return ApiResponse.ok(response);
+        } catch (Exception e) {
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "현재 서비스 이용이 불가능합니다. 잠시 후 다시 시도해 주세요.", null);
+        }
+    }
+
+    @GetMapping("/{target-key}/{approve}")
+    public ApiResponse<List<ShowAllowanceResponse>> showTypeAllowance(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("approve") Approve approve) {
+        log.debug("ShowTypeAllowance={}, {}", targetKey, approve);
+
+        try {
+            List<ShowAllowanceResponse> response = allowanceService.showTypeAllowance(memberKey, targetKey, approve);
             return ApiResponse.ok(response);
         } catch (Exception e) {
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "현재 서비스 이용이 불가능합니다. 잠시 후 다시 시도해 주세요.", null);
