@@ -72,4 +72,8 @@ public class Online extends TimeBaseEntity {
                 .approve(approve)
                 .build();
     }
+
+    public void updateApproveStatus(Approve approve) {
+        this.approve = approve;
+    }
 }

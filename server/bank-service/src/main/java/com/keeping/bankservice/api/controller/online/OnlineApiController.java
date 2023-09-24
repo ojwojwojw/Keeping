@@ -2,8 +2,11 @@ package com.keeping.bankservice.api.controller.online;
 
 import com.keeping.bankservice.api.ApiResponse;
 import com.keeping.bankservice.api.controller.online.request.AddOnlineRequest;
+import com.keeping.bankservice.api.controller.online.request.ApproveOnlineRequest;
 import com.keeping.bankservice.api.service.online.OnlineService;
 import com.keeping.bankservice.api.service.online.dto.AddOnlineDto;
+import com.keeping.bankservice.api.service.online.dto.ApproveOnlineDto;
+import com.keeping.bankservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,5 +34,21 @@ public class OnlineApiController {
 
         return ApiResponse.ok(null);
     }
+
+    @PostMapping("/approve")
+    public ApiResponse<Void> approveOnline(@PathVariable("member-key") String memberKey, @RequestBody ApproveOnlineRequest request) {
+        log.debug("ApproveAllowance={}", request);
+
+        ApproveOnlineDto dto = ApproveOnlineDto.toDto(request);
+
+        try {
+            onlineService.approveOnline(memberKey, dto);
+        } catch (NotFoundException e) {
+            return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
+        }
+
+        return ApiResponse.ok(null);
+    }
+
 
 }
