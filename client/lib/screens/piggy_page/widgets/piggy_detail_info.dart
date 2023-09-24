@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/piggy_provider.dart';
+import 'package:keeping/screens/piggy_page/widgets/piggy_detail_chart.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +40,8 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
           ),
           Text(
             '저금통 통계를 넣어볼까',
-          )
+          ),
+          PiggyDetailChart(balance: 50, goalMoney: 100, createdDate: DateTime.parse('2020-10-10T14:58:04+09:00'),)
         ],
       ),
     );
