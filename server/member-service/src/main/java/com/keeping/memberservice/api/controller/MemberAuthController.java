@@ -9,6 +9,7 @@ import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -42,10 +43,15 @@ public class MemberAuthController {
     @PostMapping("/{type}/linkcode")
     public ApiResponse<LinkcodeResponse> createLinkcode(@PathVariable String memberKey,
                                                         @PathVariable String type) {
-        // TODO: 2023-09-14 연결 코드 생성
-        // TODO: 2023-09-22 멤버가 타입이랑 맞는지 검사해야함 
-        String linkCode = authService.createLinkCode(type, memberKey);
-        return ApiResponse.ok(LinkcodeResponse.builder().build());
+        boolean isParent = memberService.isParent(memberKey);
+        if ((isParent && type.equals("parent")) ||
+                (!isParent && type.equals("child"))) {
+            String linkCode = authService.createLinkCode(type, memberKey);
+            return ApiResponse.ok(createLinkcodeResponse(linkCode));
+        } else {
+            return ApiResponse.of(1, HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+        }
+
     }
 
     @GetMapping("/children")
@@ -97,5 +103,12 @@ public class MemberAuthController {
     public ApiResponse<LoginMember> getLoginMember(@PathVariable String memberKey) {
         LoginMember loginUser = memberService.getLoginUser(memberKey);
         return ApiResponse.ok(loginUser);
+    }
+
+    private LinkcodeResponse createLinkcodeResponse(String linkCode) {
+        return LinkcodeResponse.builder()
+                .linkcode(linkCode)
+                .expire(86400)
+                .build();
     }
 }
