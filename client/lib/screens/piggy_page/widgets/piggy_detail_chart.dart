@@ -17,7 +17,7 @@ class PiggyDetailChart extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: SizedBox(
         height: 50,
         child: Column(
@@ -39,7 +39,7 @@ class PiggyDetailChart extends StatelessWidget {
 
 Widget _piggyChart({required double balance, required double goalMoney}) {
   return SizedBox(
-    height: 15,
+    height: 10,
     child: Stack(
       children: [
         Container(

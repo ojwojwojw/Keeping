@@ -1,13 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/piggy_provider.dart';
-import 'package:keeping/screens/allowance_ledger_page/widgets/allow_search_bar.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
-import 'package:keeping/screens/piggy_page/make_piggy_test.dart';
 import 'package:keeping/screens/piggy_page/piggy_saving_page.dart';
-import 'package:keeping/screens/piggy_page/widgets/chart_sample.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_detail_info.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
@@ -44,7 +39,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
       "piggy": {
         "id": 3,
         "piggyAccountNumber": "1",
-        "content": "아디다스 삼바",
+        "content": "아디다스 삼바 살거야",
         "goalMoney": 140000,
         "balance": 70000,
         "uploadImage": "produce1.png",
@@ -97,8 +92,6 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
                   // List<Post> _posts = snapshot.data as List<Post>; 이런 식으로 정의하기
                   return Column(
                     children: [
-                      // PiggyDetailInfo(),
-                      // AllowSearchBar(),
                       Expanded(
                         child: Container(
                           decoration: lightGreyBgStyle(),
@@ -121,7 +114,6 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
                           )
                         )
                       )
-                      // ChartSample(),
                     ],
                   );
                 } else {
