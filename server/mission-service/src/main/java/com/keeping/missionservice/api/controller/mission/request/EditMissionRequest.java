@@ -9,10 +9,6 @@ import java.time.LocalDate;
 
 @Data
 public class EditMissionRequest {
-
-    @NotNull
-    private String memberKey;
-
     @NotNull
     private Long missionId;
 
@@ -32,8 +28,7 @@ public class EditMissionRequest {
     private LocalDate endDate; // 미션 마감일
 
     @Builder
-    public EditMissionRequest(String memberKey, Long missionId, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
-        this.memberKey = memberKey;
+    public EditMissionRequest(Long missionId, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
         this.missionId = missionId;
         this.todo = todo;
         this.money = money;
