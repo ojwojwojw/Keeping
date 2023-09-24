@@ -12,9 +12,6 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 public class EditCompleteRequest {
-    
-    @NotBlank
-    private String memberKey;
 
     @NotNull
     private MemberType type;
@@ -29,8 +26,7 @@ public class EditCompleteRequest {
     private Completed completed;
 
     @Builder
-    public EditCompleteRequest(String memberKey, MemberType type, Long missionId, String cheeringMessage, Completed completed) {
-        this.memberKey = memberKey;
+    public EditCompleteRequest(MemberType type, Long missionId, String cheeringMessage, Completed completed) {
         this.type = type;
         this.missionId = missionId;
         this.cheeringMessage = cheeringMessage;
