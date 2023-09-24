@@ -4,6 +4,7 @@ import com.keeping.questionservice.global.common.TimeBaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -29,9 +30,11 @@ public class Question extends TimeBaseEntity {
     @Lob
     private String childAnswer;
 
+    private LocalDateTime scheduledTime;
+
 
     @Builder
-    public Question(Long id, String parentKey, String childKey, String content, boolean isCreated, String parentAnswer, String childAnswer) {
+    public Question(Long id, String parentKey, String childKey, String content, boolean isCreated, String parentAnswer, String childAnswer, LocalDateTime scheduledTime) {
         this.id = id;
         this.parentKey = parentKey;
         this.childKey = childKey;
@@ -39,14 +42,16 @@ public class Question extends TimeBaseEntity {
         this.isCreated = isCreated;
         this.parentAnswer = parentAnswer;
         this.childAnswer = childAnswer;
+        this.scheduledTime = scheduledTime;
     }
 
-    public static Question toQuestion(String parentKey, String childKey, String content, boolean isCreated) {
+    public static Question toQuestion(String parentKey, String childKey, String content, boolean isCreated, LocalDateTime scheduledTime) {
         return Question.builder()
                 .parentKey(parentKey)
                 .childKey(childKey)
                 .content(content)
                 .isCreated(isCreated)
+                .scheduledTime(scheduledTime)
                 .build();
     }
 
