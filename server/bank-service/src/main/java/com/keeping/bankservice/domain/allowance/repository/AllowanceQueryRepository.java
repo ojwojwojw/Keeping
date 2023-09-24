@@ -23,7 +23,8 @@ public class AllowanceQueryRepository {
                         allowance.id,
                         allowance.content,
                         allowance.money,
-                        allowance.approve))
+                        allowance.approve,
+                        allowance.createdDate))
                 .from(allowance)
                 .where(allowance.childKey.eq(memberKey))
                 .orderBy(allowance.createdDate.desc())
