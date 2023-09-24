@@ -16,6 +16,7 @@ import com.keeping.questionservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -154,5 +155,11 @@ public class QuestionServiceImpl implements QuestionService {
                 .orElseThrow(() -> new NotFoundException("400", HttpStatus.BAD_REQUEST, "해당하는 댓글이 없습니다."));
 
         comment.deleteComment();
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    private void createQuestion() {
+        // 질문 생성하기
+
     }
 }
