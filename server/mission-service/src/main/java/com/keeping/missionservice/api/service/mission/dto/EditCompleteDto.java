@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EditCompleteDto {
 
-    private String memberKey;
     private MemberType type;
     private Long missionId;
     private String cheeringMessage;
@@ -19,8 +18,7 @@ public class EditCompleteDto {
 
 
     @Builder
-    public EditCompleteDto(String memberKey, MemberType type, Long missionId, String cheeringMessage, Completed completed) {
-        this.memberKey = memberKey;
+    public EditCompleteDto(MemberType type, Long missionId, String cheeringMessage, Completed completed) {
         this.type = type;
         this.missionId = missionId;
         this.cheeringMessage = cheeringMessage;
@@ -29,7 +27,6 @@ public class EditCompleteDto {
 
     public static EditCompleteDto toDto(EditCompleteRequest request) {
         return EditCompleteDto.builder()
-                .memberKey(request.getMemberKey())
                 .type(request.getType())
                 .missionId(request.getMissionId())
                 .cheeringMessage(request.getCheeringMessage())

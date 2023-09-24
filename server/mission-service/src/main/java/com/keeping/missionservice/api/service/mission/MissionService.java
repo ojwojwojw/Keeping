@@ -11,17 +11,17 @@ import java.util.List;
 
 public interface MissionService {
 
-    public Long addMission(AddMissionDto dto);
+    public Long addMission(String memberKey, AddMissionDto dto);
     
     public List<MissionResponse> showMission(String memberKey);
     
     public MissionResponse showDetailMission(String memberKey, Long missionId);
 
-    public Long addComment(AddCommentDto dto);
+    public Long addComment(String memberKey, AddCommentDto dto);
 
-    public Long editCompleted(EditCompleteDto dto);
+    public Long editCompleted(String memberKey, EditCompleteDto dto);
 
-    public Long editMission(EditMissionDto dto);
+    public Long editMission(String memberKey, EditMissionDto dto);
 
     public Long removeMission(String memberKey, Long missionId);
 }

@@ -11,17 +11,13 @@ import javax.validation.constraints.NotNull;
 public class AddCommentRequest {
 
     @NotNull
-    private String memberKey;
-
-    @NotNull
     private Long missionId;
 
     @NotNull
     private String comment;
 
     @Builder
-    public AddCommentRequest(String memberKey, Long missionId, String comment) {
-        this.memberKey = memberKey;
+    public AddCommentRequest(Long missionId, String comment) {
         this.missionId = missionId;
         this.comment = comment;
     }

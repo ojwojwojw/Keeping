@@ -9,13 +9,11 @@ public class ChildrenResponse {
     private String memberKey;
     private String name;
     private String profileImage;
-    private String questionTime;
 
     @Builder
-    private ChildrenResponse(String memberKey, String name, String profileImage, String questionTime) {
+    private ChildrenResponse(String memberKey, String name, String profileImage) {
         this.memberKey = memberKey;
         this.name = name;
         this.profileImage = profileImage;
-        this.questionTime = questionTime;
     }
 }

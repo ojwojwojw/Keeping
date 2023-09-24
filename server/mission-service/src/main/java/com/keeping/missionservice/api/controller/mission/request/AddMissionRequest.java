@@ -13,9 +13,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class AddMissionRequest {
 
-    @NotNull
-    private String memberKey;
-
     @NotBlank
     @Size(min = 5, max = 6)
     @Pattern(regexp = "^(PARENT|CHILD)$")
