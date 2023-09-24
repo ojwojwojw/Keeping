@@ -1,7 +1,7 @@
 package com.keeping.bankservice.api.service.allowance.dto;
 
 import com.keeping.bankservice.api.controller.allowance.request.ApproveAllowanceRequest;
-import com.keeping.bankservice.domain.allowance.Approve;
+import com.keeping.bankservice.global.common.Approve;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
