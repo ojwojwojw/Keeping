@@ -66,30 +66,30 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
       'latitude': 35.208040,
       'longitude': 126.818698,
     },
-    {
-      "date": "2023-09-07",
-      'store_name': '스타벅스',
-      'latitude': 35.209040,
-      'longitude': 126.818698,
-    },
-    {
-      "date": "2023-09-07",
-      'store_name': '스타벅스',
-      'latitude': 35.210040,
-      'longitude': 126.818698,
-    },
-    {
-      "date": "2023-09-07",
-      'store_name': '스타벅스',
-      'latitude': 35.211040,
-      'longitude': 126.818698,
-    },
-    {
-      "date": "2023-09-07",
-      'store_name': '스타벅스',
-      'latitude': 35.212040,
-      'longitude': 126.818698,
-    },
+    // {
+    //   "date": "2023-09-07",
+    //   'store_name': '스타벅스',
+    //   'latitude': 35.209040,
+    //   'longitude': 126.818698,
+    // },
+    // {
+    //   "date": "2023-09-07",
+    //   'store_name': '스타벅스',
+    //   'latitude': 35.210040,
+    //   'longitude': 126.818698,
+    // },
+    // {
+    //   "date": "2023-09-07",
+    //   'store_name': '스타벅스',
+    //   'latitude': 35.211040,
+    //   'longitude': 126.818698,
+    // },
+    // {
+    //   "date": "2023-09-07",
+    //   'store_name': '스타벅스',
+    //   'latitude': 35.212040,
+    //   'longitude': 126.818698,
+    // },
   ];
 
   // @override
@@ -114,7 +114,6 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
 
   @override
   void initState() {
-    // AuthRepository.initialize(appKey: 'b2768527932bfa91c8d7012e1da2f8bb');
     AuthRepository.initialize(appKey: dotenv.env['KAKAO_MAP_API_KEY']!);
     markers.addAll(
       _places.map(
@@ -124,11 +123,23 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
             e['latitude'] as double,
             e['longitude'] as double,
           ),
+          // infoWindowContent: '<div>안녕</div>',
+          infoWindowContent: '''
+            <div
+              style="border: 2px solid black; border-radius: 10px; padding: 10px;
+            >
+              ${e['store_name']}
+            </div>
+          ''',
+          infoWindowFirstShow: true,
+          // infoWindowRemovable: true,
         ),
       ),
     );
     super.initState();
   }
+
+  final String storeName = '싸피';
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +169,26 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                       mapController = controller;
                     }),
                     center: LatLng(_places.first['latitude'] as double, _places.first['longitude'] as double),
-                    markers: markers.toList(),
+                    // markers: markers.toList(),
+                    markers: [
+                      Marker(
+                        markerId: '싸피',
+                        latLng: LatLng(
+                          35.205472,
+                          126.811582,
+                        ),
+                        infoWindowContent: '<div style="border: 2px solid red; border-radius: 10px; padding: 10px;">$storeName</div>',
+                        // infoWindowContent: '''
+                        //   <div
+                        //     style="border: 2px solid black; border-radius: 10px; padding: 10px;"
+                        //   >
+                        //     $storeName
+                        //   </div>
+                        // ''',
+                        infoWindowFirstShow: true,
+                        // infoWindowRemovable: true,
+                      ),
+                    ],
                     polylines: [
                       Polyline(
                         polylineId: '9월 1일',
@@ -167,6 +197,7 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                         strokeStyle: StrokeStyle.dashDot
                       )
                     ],
+                    zoomControl: true,
                   ),
                   FloatingDateBtn()  // 커스텀 위젯
                 ],
