@@ -7,6 +7,7 @@ import com.keeping.bankservice.api.controller.online.response.ShowOnlineResponse
 import com.keeping.bankservice.api.service.online.OnlineService;
 import com.keeping.bankservice.api.service.online.dto.AddOnlineDto;
 import com.keeping.bankservice.api.service.online.dto.ApproveOnlineDto;
+import com.keeping.bankservice.global.common.Approve;
 import com.keeping.bankservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,4 +66,15 @@ public class OnlineApiController {
         }
     }
 
+    @GetMapping("/{target-key}/{approve}")
+    public ApiResponse<List<ShowOnlineResponse>> showTypeOnline(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("approve") Approve approve) {
+        log.debug("ShowTypeOnline={}, {}", targetKey, approve);
+
+        try {
+            List<ShowOnlineResponse> response = onlineService.showTypeOnline(memberKey, targetKey, approve);
+            return ApiResponse.ok(response);
+        } catch (Exception e) {
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "현재 서비스 이용이 불가능합니다. 잠시 후 다시 시도해 주세요.", null);
+        }
+    }
 }

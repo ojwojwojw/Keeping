@@ -7,6 +7,7 @@ import com.keeping.bankservice.api.service.online.dto.ApproveOnlineDto;
 import com.keeping.bankservice.domain.online.Online;
 import com.keeping.bankservice.domain.online.repository.OnlineQueryRepository;
 import com.keeping.bankservice.domain.online.repository.OnlineRepository;
+import com.keeping.bankservice.global.common.Approve;
 import com.keeping.bankservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -57,6 +58,17 @@ public class OnlineServiceImpl implements OnlineService {
         }
 
         List<ShowOnlineResponse> result = onlineQueryRepository.showOnlines(targetKey);
+
+        return result;
+    }
+
+    @Override
+    public List<ShowOnlineResponse> showTypeOnline(String memberKey, String targetKey, Approve approve) {
+        if(!targetKey.equals(memberKey)) {
+            // TODO: 타켓키가 멤버키의 자식인지 확인하는 부분 필요
+        }
+
+        List<ShowOnlineResponse> result = onlineQueryRepository.showTypeOnlines(targetKey, approve);
 
         return result;
     }
