@@ -1,5 +1,6 @@
 package com.keeping.bankservice.api.service.online.impl;
 
+import com.keeping.bankservice.api.controller.online.response.ShowOnlineResponse;
 import com.keeping.bankservice.api.service.online.OnlineService;
 import com.keeping.bankservice.api.service.online.dto.AddOnlineDto;
 import com.keeping.bankservice.api.service.online.dto.ApproveOnlineDto;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.keeping.bankservice.global.common.Approve.APPROVE;
 import static com.keeping.bankservice.global.common.Approve.WAIT;
@@ -45,5 +48,16 @@ public class OnlineServiceImpl implements OnlineService {
         if(dto.getApprove() == APPROVE) {
             // TODO: 부모님한테서 출금하는 것 필요
         }
+    }
+
+    @Override
+    public List<ShowOnlineResponse> showOnline(String memberKey, String targetKey) {
+        if(!targetKey.equals(memberKey)) {
+            // TODO: 타켓키가 멤버키의 자식인지 확인하는 부분 필요
+        }
+
+        List<ShowOnlineResponse> result = onlineQueryRepository.showOnlines(targetKey);
+
+        return result;
     }
 }
