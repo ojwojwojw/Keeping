@@ -11,6 +11,8 @@ import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
 
+const String type = 'PARENT';
+
 class PiggyDetailPage extends StatefulWidget {
   final String piggyAccountNumber;
 
@@ -87,9 +89,9 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
               //     return const Text('에러');
               //   } else if (snapshot.hasData) {
                   // List<Post> _posts = snapshot.data as List<Post>; 이런 식으로 정의하기
-                  return Column(
-                    children: [
-                      Expanded(
+                  // return Column(
+                  //   children: [
+                      return Expanded(
                         child: Container(
                           decoration: lightGreyBgStyle(),
                           width: double.infinity,
@@ -110,8 +112,8 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
                             ),
                           )
                         )
-                      )
-                    ],
+                    //   )
+                    // ],
                   );
               //   } else {
               //     return const Text('스냅샷 데이터 없음');
@@ -123,13 +125,11 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
           ),
         ],
       ),
-      
-
-      floatingActionButton: FloatingBtn(
+      floatingActionButton: type != 'PARENT' ? FloatingBtn(
         text: '저금하기',
         icon: Icon(Icons.savings_rounded),
         path: PiggySavingPage(),
-      ),
+      ) : null,
       bottomNavigationBar: BottomNav(),
     );
   }

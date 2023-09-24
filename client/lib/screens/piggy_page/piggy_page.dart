@@ -35,6 +35,8 @@ final List<Map<String, dynamic>> tempData = [
   }
 ];
 
+const String type = 'PARENT';
+
 class PiggyPage extends StatelessWidget {
   PiggyPage({super.key});
 
@@ -96,11 +98,11 @@ class PiggyPage extends StatelessWidget {
           // }
         }
       ),
-      floatingActionButton: FloatingBtn(
+      floatingActionButton: type != 'PARENT' ? FloatingBtn(
         text: '만들기',
         icon: Icon(Icons.savings_rounded),
         path: MakePiggyPage(),
-      ),
+      ) : null,
       bottomNavigationBar: BottomNav(),
     );
   }
