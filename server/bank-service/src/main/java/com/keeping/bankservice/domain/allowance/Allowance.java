@@ -1,5 +1,6 @@
 package com.keeping.bankservice.domain.allowance;
 
+import com.keeping.bankservice.global.common.Approve;
 import com.keeping.bankservice.global.common.TimeBaseEntity;
 import lombok.Builder;
 import lombok.Getter;

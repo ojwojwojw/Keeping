@@ -1,6 +1,6 @@
 package com.keeping.bankservice.api.controller.allowance.response;
 
-import com.keeping.bankservice.domain.allowance.Approve;
+import com.keeping.bankservice.global.common.Approve;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;

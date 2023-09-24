@@ -1,7 +1,7 @@
 package com.keeping.bankservice.domain.allowance.repository;
 
 import com.keeping.bankservice.api.controller.allowance.response.ShowAllowanceResponse;
-import com.keeping.bankservice.domain.allowance.Approve;
+import com.keeping.bankservice.global.common.Approve;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
