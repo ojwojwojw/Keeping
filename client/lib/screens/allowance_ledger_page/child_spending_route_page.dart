@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_map_plugin/kakao_map_plugin.dart';
-import 'package:keeping/screens/child_spending_route_page/widgets/floating_date_btn.dart';
+import 'package:keeping/screens/allowance_ledger_page/widgets/floating_date_btn.dart';
 import 'package:keeping/widgets/header.dart';
 
 class ChildSpendingRoutePage extends StatefulWidget {

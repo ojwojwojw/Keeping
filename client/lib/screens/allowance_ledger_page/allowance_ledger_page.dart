@@ -4,7 +4,7 @@ import 'package:keeping/screens/allowance_ledger_page/widgets/account_info.dart'
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record_with_detail.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
-import 'package:keeping/screens/child_spending_route_page/child_spending_route_page.dart';
+import 'package:keeping/screens/allowance_ledger_page/child_spending_route_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
