@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kakao_map_plugin/kakao_map_plugin.dart';
+import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/floating_date_btn.dart';
 import 'package:keeping/widgets/header.dart';
 
@@ -32,6 +34,60 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
       "date": "2023-09-07",
       'store_name': '스타벅스',
       'latitude': 35.203040,
+      'longitude': 126.818698,
+    },
+    {
+      "date": "2023-09-07",
+      'store_name': '스타벅스',
+      'latitude': 35.204040,
+      'longitude': 126.818698,
+    },
+    {
+      "date": "2023-09-07",
+      'store_name': '스타벅스',
+      'latitude': 35.205040,
+      'longitude': 126.818698,
+    },
+    {
+      "date": "2023-09-07",
+      'store_name': '스타벅스',
+      'latitude': 35.206040,
+      'longitude': 126.818698,
+    },
+    {
+      "date": "2023-09-07",
+      'store_name': '스타벅스',
+      'latitude': 35.207040,
+      'longitude': 126.818698,
+    },
+    {
+      "date": "2023-09-07",
+      'store_name': '스타벅스',
+      'latitude': 35.208040,
+      'longitude': 126.818698,
+    },
+    {
+      "date": "2023-09-07",
+      'store_name': '스타벅스',
+      'latitude': 35.209040,
+      'longitude': 126.818698,
+    },
+    {
+      "date": "2023-09-07",
+      'store_name': '스타벅스',
+      'latitude': 35.210040,
+      'longitude': 126.818698,
+    },
+    {
+      "date": "2023-09-07",
+      'store_name': '스타벅스',
+      'latitude': 35.211040,
+      'longitude': 126.818698,
+    },
+    {
+      "date": "2023-09-07",
+      'store_name': '스타벅스',
+      'latitude': 35.212040,
       'longitude': 126.818698,
     },
   ];
@@ -77,33 +133,46 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ko', 'KR')
+      ],
       home: Scaffold(
-        appBar: MyHeader(
-          text: '소비경로',
-          bgColor: Colors.purple,
-          elementColor: Colors.white,
-        ),
-        body: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            KakaoMap(
-              onMapCreated: ((controller) async {
-                mapController = controller;
-              }),
-              center: LatLng(_places.first['latitude'] as double, _places.first['longitude'] as double),
-              markers: markers.toList(),
-              polylines: [
-                Polyline(
-                  polylineId: '9월 1일',
-                  points: _places.map((e) => LatLng(e['latitude'] as double, e['longitude'] as double)).toList(),
-                  strokeColor: Colors.blue,
-                  strokeStyle: StrokeStyle.dashDot
-                )
-              ],
-            ),
-            FloatingDateBtn()  // 커스텀 위젯
-          ],
-        )
+          appBar: MyHeader(
+            text: '소비경로',
+            bgColor: Colors.purple,
+            elementColor: Colors.white,
+          ),
+          body: FutureBuilder(
+            future: getAccountListByDate(accessToken: 'accessToken', memberKey: 'memberKey', accountNumber: 'accountNumber', date: '2023-01-01'),
+            builder: (context, snapshot) {
+              return Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  KakaoMap(
+                    onMapCreated: ((controller) async {
+                      mapController = controller;
+                    }),
+                    center: LatLng(_places.first['latitude'] as double, _places.first['longitude'] as double),
+                    markers: markers.toList(),
+                    polylines: [
+                      Polyline(
+                        polylineId: '9월 1일',
+                        points: _places.map((e) => LatLng(e['latitude'] as double, e['longitude'] as double)).toList(),
+                        strokeColor: Colors.blue,
+                        strokeStyle: StrokeStyle.dashDot
+                      )
+                    ],
+                  ),
+                  FloatingDateBtn()  // 커스텀 위젯
+                ],
+              );
+            }
+          )
       ),
     );
   }
