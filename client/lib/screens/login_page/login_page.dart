@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
 import 'package:keeping/util/render_field.dart';
@@ -148,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<void> login(BuildContext context, Function handleLogin) async {
+  Future<void> login(context, Function handleLogin) async {
     final data = {
       'loginId': _loginId,
       'loginPw': _loginPw,
@@ -161,6 +162,8 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         print('로그인에 성공했어요!');
         handleLogin('로그인 성공');
+        final userData = json.decode(response.data.toString());
+        context.read<UserInfoProvider>().login(userData);
         Navigator.push(
           context,
           MaterialPageRoute(
