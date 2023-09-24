@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/piggy_page/make_piggy_page.dart';
 import 'package:keeping/screens/piggy_page/piggy_detail_page.dart';
+import 'package:keeping/screens/piggy_page/utils/piggy_future_methods.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_info.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_info_card.dart';
 import 'package:keeping/styles.dart';
@@ -46,17 +47,15 @@ class PiggyPage extends StatelessWidget {
         elementColor: Colors.white,
       ),
       body: FutureBuilder(
-        future: dioGet(
-          accessToken: '00', 
-          url: '/bank-service/piggy/{member-key}'
-        ),
+        future: getPiggyList(accessToken: 'accessToken', memberKey: 'memberKey'),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text('로딩중');
-          } else if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return const Text('에러');
-            } else if (snapshot.hasData) {
+          print('스냅샷스냅샷스냅샷 ${snapshot.toString()}');
+          // if (snapshot.connectionState == ConnectionState.waiting) {
+          //   return const Text('로딩중');
+          // } else if (snapshot.connectionState == ConnectionState.done) {
+          //   if (snapshot.hasError) {
+          //     return const Text('스냅샷에 에러 발생');
+          //   } else if (snapshot.hasData) {
               return Column(
                 children: [
                   PiggyInfo(),
@@ -89,16 +88,12 @@ class PiggyPage extends StatelessWidget {
                   )
                 ],
               );
-            } else {
-              return const Text('스냅샷 데이터 없음');
-            }
-          } else {
-            return Text('퓨처 객체 null');
-          }
-
-
-
-          
+          //   } else {
+          //     return const Text('스냅샷 데이터 없음');
+          //   }
+          // } else {
+          //   return Text('퓨처 객체 null');
+          // }
         }
       ),
       floatingActionButton: FloatingBtn(

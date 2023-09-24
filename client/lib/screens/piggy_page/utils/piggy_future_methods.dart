@@ -4,17 +4,22 @@ import 'package:keeping/util/dio_method.dart';
 Future<dynamic> getPiggyList({
   required String accessToken, required String memberKey,
 }) async {
-  final response = await dioGet(
-    accessToken: accessToken,
-    url: '/bank-service/piggy/$memberKey',
-  );
-
-  // 이후 처리는 나중에..
-  if (response != null) {
+  try {
+    final response = await dioGet(
+      accessToken: accessToken,
+      url: '/bank-service/piggy/$memberKey',
+    );
     return response;
-  } else {
-    return null;
+  } catch (e) {
+    rethrow;
   }
+
+  // // 이후 처리는 나중에..
+  // if (response != null) {
+  //   return response;
+  // } else {
+  //   return null;
+  // }
 }
 
 // 저금통 상세 조회

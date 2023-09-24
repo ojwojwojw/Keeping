@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/display_format.dart';
 
 class PiggyInfoCard extends StatefulWidget {
   final String content;
@@ -27,7 +27,6 @@ class PiggyInfoCard extends StatefulWidget {
 }
 
 class _PiggyInfoCardState extends State<PiggyInfoCard> {
-  final formattedMoney = NumberFormat('#,##0');
   
   @override
   Widget build(BuildContext context) {
@@ -52,11 +51,11 @@ class _PiggyInfoCardState extends State<PiggyInfoCard> {
                     style: _contentStyle(),
                   ),
                   Text(
-                    '${formattedMoney.format(widget.balance)}원',
+                    formattedMoney(widget.balance),
                     style: _balanceStyle(),
                   ),
                   Text(
-                    '목표 금액 ${formattedMoney.format(widget.goalMoney)}원',
+                    '목표 금액 ${formattedMoney(widget.goalMoney)}',
                     style: _goalMoneyStyle(),
                   ),
                 ],
