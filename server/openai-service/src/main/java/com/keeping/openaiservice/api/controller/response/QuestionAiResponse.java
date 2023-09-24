@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class QuestionAiResponse {
-    
+
+    private String memberKey;
     private String answer;
 
     @Builder
-    public QuestionAiResponse(String answer) {
+    public QuestionAiResponse(String memberKey, String answer) {
+        this.memberKey = memberKey;
         this.answer = answer;
     }
 }

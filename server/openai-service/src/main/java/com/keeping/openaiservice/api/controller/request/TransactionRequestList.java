@@ -9,11 +9,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class TransactionRequestList {
+
+    private String memberKey;
     
     private List<TransactionRequest> transactionRequsetList;
 
     @Builder
-    public TransactionRequestList(List<TransactionRequest> transactionRequsetList) {
+    public TransactionRequestList(String memberKey, List<TransactionRequest> transactionRequsetList) {
+        this.memberKey = memberKey;
         this.transactionRequsetList = transactionRequsetList;
     }
 }
