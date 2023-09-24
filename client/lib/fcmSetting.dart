@@ -13,13 +13,13 @@ Future<String?> fcmSetting() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-  await messaging.setForegroundNotificationPresentationOptions(
-    alert: true,
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true, // Required to display a heads up notification
     badge: true,
     sound: true,
   );
 
-  NotificationSettings settings = await messaging.requestPermission(
+  await FirebaseMessaging.instance.requestPermission(
     alert: true,
     announcement: true,
     badge: true,
@@ -28,20 +28,22 @@ Future<String?> fcmSetting() async {
     provisional: true,
     sound: true,
   );
-  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+
+  const AndroidNotificationChannel androidNotificationChannel =
+      AndroidNotificationChannel(
     'keeping_notification',
     'keeping_notification',
     description: '키핑 알림',
     importance: Importance.max,
   );
-//forground 푸시 알림 설정
+
+  // Notification Channel을 디바이스에 생성
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+      ?.createNotificationChannel(androidNotificationChannel);
 
 // foreground 푸시 알림 핸들링
   FirebaseMessaging.onMessageOpenedApp.listen(
@@ -56,9 +58,9 @@ Future<String?> fcmSetting() async {
           notification?.body,
           NotificationDetails(
             android: AndroidNotificationDetails(
-              channel.id,
-              channel.name,
-              channelDescription: channel.description,
+              androidNotificationChannel.id,
+              androidNotificationChannel.name,
+              channelDescription: androidNotificationChannel.description,
               icon: android.smallIcon,
             ),
           ),
@@ -67,6 +69,6 @@ Future<String?> fcmSetting() async {
     },
   );
   String? firebaseToken = await messaging.getToken();
-  print('firebase_token : ${firebaseToken}');
+  print('firebase_token : $firebaseToken');
   return firebaseToken;
 }

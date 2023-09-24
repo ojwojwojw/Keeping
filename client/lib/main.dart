@@ -46,10 +46,6 @@ Future<void> showNotification({
         channelDescription: "channelDescription",
         icon: '@mipmap/ic_launcher',
       ),
-      // iOS: const IOSNotificationDetails(
-      //   badgeNumber: 1,
-      //   subtitle: 'subtitle',
-      // ),
     ),
   );
 }
