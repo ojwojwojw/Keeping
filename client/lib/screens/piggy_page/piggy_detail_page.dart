@@ -3,9 +3,9 @@ import 'package:keeping/provider/piggy_provider.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
 import 'package:keeping/screens/piggy_page/piggy_saving_page.dart';
+import 'package:keeping/screens/piggy_page/utils/piggy_future_methods.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_detail_info.dart';
 import 'package:keeping/styles.dart';
-import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
@@ -78,17 +78,14 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
         children: [
           PiggyDetailInfo(),
           FutureBuilder(
-            future: dioGet(
-              accessToken: "dd", 
-              url: "/bank-service/piggy/member-key/piggy-account-number",
-            ),
+            future: getPiggyDetailList(accessToken: 'accessToken', memberKey: 'memberKey', piggyAccountNumber: widget.piggyAccountNumber),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Text('로딩중');
-              } else if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError) {
-                  return const Text('에러');
-                } else if (snapshot.hasData) {
+              // if (snapshot.connectionState == ConnectionState.waiting) {
+              //   return const Text('로딩중');
+              // } else if (snapshot.connectionState == ConnectionState.done) {
+              //   if (snapshot.hasError) {
+              //     return const Text('에러');
+              //   } else if (snapshot.hasData) {
                   // List<Post> _posts = snapshot.data as List<Post>; 이런 식으로 정의하기
                   return Column(
                     children: [
@@ -116,12 +113,12 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
                       )
                     ],
                   );
-                } else {
-                  return const Text('스냅샷 데이터 없음');
-                }
-              } else {
-                return Text('퓨처 객체 null');
-              }
+              //   } else {
+              //     return const Text('스냅샷 데이터 없음');
+              //   }
+              // } else {
+              //   return Text('퓨처 객체 null');
+              // }
             },
           ),
         ],
