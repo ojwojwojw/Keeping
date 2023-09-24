@@ -25,12 +25,14 @@ class MoneyRecord extends StatefulWidget {
   State<MoneyRecord> createState() => _MoneyRecordState();
 }
 
+const String type = 'PARENT';
+
 class _MoneyRecordState extends State<MoneyRecord> {
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onLongPress: () {
+      onLongPress: type == 'PARENT' ? null : () {
         bottomModal(
           context: context,
           title: '상세 내역 쓰기',

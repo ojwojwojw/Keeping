@@ -3,6 +3,7 @@ import 'package:keeping/provider/piggy_provider.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_detail_chart.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
+import 'package:keeping/widgets/child_tag.dart';
 import 'package:provider/provider.dart';
 
 const String type = 'PARENT';
@@ -39,7 +40,7 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
               padding: const EdgeInsets.only(top: 30),
               child: Column(
                 children: [
-                  if (type == 'PARENT') _childTag(childName: '김첫째'),
+                  if (type == 'PARENT') ChildTag(childName: '김첫째', text: '저금통',),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -69,27 +70,4 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
       ),
     );
   }
-}
-
-Widget _childTag({required String childName}) {
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 10),
-    child: Container(
-      decoration: _childTagStyle(),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        child: Text('$childName 저금통', style: TextStyle(fontSize: 18, color: Colors.white),),
-      )
-    ),
-  );
-}
-
-BoxDecoration _childTagStyle() {
-  return BoxDecoration(
-    borderRadius: BorderRadius.circular(50.0), // 둥근 테두리 반경 설정
-    border: Border.all(
-      color: Colors.white, // 테두리 색상 설정
-      width: 1.0, // 테두리 두께 설정
-    ),
-  );
 }
