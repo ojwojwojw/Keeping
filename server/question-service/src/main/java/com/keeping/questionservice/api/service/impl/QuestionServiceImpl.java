@@ -2,6 +2,7 @@ package com.keeping.questionservice.api.service.impl;
 
 import com.keeping.questionservice.api.ApiResponse;
 import com.keeping.questionservice.api.controller.MemberFeignClient;
+import com.keeping.questionservice.api.controller.OpenaiFeignClient;
 import com.keeping.questionservice.api.controller.response.*;
 import com.keeping.questionservice.api.service.QuestionService;
 import com.keeping.questionservice.api.service.dto.*;
@@ -20,7 +21,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +33,7 @@ import java.util.Optional;
 public class QuestionServiceImpl implements QuestionService {
 
     private MemberFeignClient memberFeignClient;
+    private OpenaiFeignClient openaiFeignClient;
     private final QuestionRepository questionRepository;
     private final QuestionQueryRepository questionQueryRepository;
     private final CommentRepository commentRepository;
@@ -45,9 +49,12 @@ public class QuestionServiceImpl implements QuestionService {
         if (checkQuestionAdded.isPresent()) {
             throw new AlreadyExistException("409", HttpStatus.CONFLICT, "이미 해당 날짜에 질문이 존재합니다.");
         }
+        
+        // 질문 등록 시간 넣기
+        ApiResponse<MemberTimeResponse> memberTime = memberFeignClient.getMemberTime(memberKey);
+        LocalTime registrationTime = memberTime.getResultBody().getRegistrationTime();
 
-
-        Question question = questionRepository.save(Question.toQuestion(memberKey, dto.getChildMemberKey(), dto.getContent(), true));
+        Question question = questionRepository.save(Question.toQuestion(memberKey, dto.getChildMemberKey(), dto.getContent(), true, registrationTime));
 
         return question.getId();
     }
@@ -160,6 +167,28 @@ public class QuestionServiceImpl implements QuestionService {
     @Scheduled(cron = "0 0 0 * * ?")
     private void createQuestion() {
         // 질문 생성하기
+        ApiResponse<QuestionAiResponseList> questionAiResponseList = openaiFeignClient.createQuestion();
+        List<QuestionAiResponse> questionAiResponses = questionAiResponseList.getResultBody().getQuestionAiResponses();
+        
+        List<Question> questions = new ArrayList<>();
 
+        for (QuestionAiResponse questionAiResponse : questionAiResponses) {
+            String parentMemberKey = questionAiResponse.getParentMemberKey();
+            String childMemberKey = questionAiResponse.getChildMemberKey();
+            
+            // 이미 오늘 날짜로 질문이 등록되어 있다면 에러 발생
+            LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+            Optional<QuestionResponse> checkQuestionAdded = questionQueryRepository.findByChildKeyAndCreatedDate(childMemberKey, now);
+            if (checkQuestionAdded.isPresent()) {
+                throw new AlreadyExistException("409", HttpStatus.CONFLICT, "이미 해당 날짜에 질문이 존재합니다.");
+            }
+    
+            // 질문 등록 시간 넣기
+            ApiResponse<MemberTimeResponse> memberTime = memberFeignClient.getMemberTime(parentMemberKey);
+            LocalTime registrationTime = memberTime.getResultBody().getRegistrationTime();
+
+            questions.add(Question.toQuestion(parentMemberKey, childMemberKey, questionAiResponse.getAnswer(), false, registrationTime));
+        }
+        questionRepository.saveAll(questions);
     }
 }

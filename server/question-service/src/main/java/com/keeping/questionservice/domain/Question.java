@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -30,11 +31,11 @@ public class Question extends TimeBaseEntity {
     @Lob
     private String childAnswer;
 
-    private LocalDateTime scheduledTime;
+    private LocalTime scheduledTime;
 
 
     @Builder
-    public Question(Long id, String parentKey, String childKey, String content, boolean isCreated, String parentAnswer, String childAnswer, LocalDateTime scheduledTime) {
+    public Question(Long id, String parentKey, String childKey, String content, boolean isCreated, String parentAnswer, String childAnswer, LocalTime scheduledTime) {
         this.id = id;
         this.parentKey = parentKey;
         this.childKey = childKey;
@@ -45,7 +46,7 @@ public class Question extends TimeBaseEntity {
         this.scheduledTime = scheduledTime;
     }
 
-    public static Question toQuestion(String parentKey, String childKey, String content, boolean isCreated, LocalDateTime scheduledTime) {
+    public static Question toQuestion(String parentKey, String childKey, String content, boolean isCreated, LocalTime scheduledTime) {
         return Question.builder()
                 .parentKey(parentKey)
                 .childKey(childKey)

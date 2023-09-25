@@ -96,7 +96,8 @@ public class GptServiceImpl implements GptService {
                     .build());
 
             questionAiResponses.add(QuestionAiResponse.builder()
-                    .memberKey(transactionRequestList.getMemberKey())
+                    .parentMemberKey(transactionRequestList.getParentMemberKey())
+                    .childMemberKey(transactionRequestList.getChildMemberKey())
                     .answer(chatResponse.getMessages().get(0).toString())
                     .build());
 

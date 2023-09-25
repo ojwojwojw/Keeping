@@ -10,13 +10,15 @@ import java.util.List;
 @NoArgsConstructor
 public class TransactionRequestList {
 
-    private String memberKey;
+    private String parentMemberKey;
+    private String childMemberKey;
     
     private List<TransactionRequest> transactionRequsetList;
 
     @Builder
-    public TransactionRequestList(String memberKey, List<TransactionRequest> transactionRequsetList) {
-        this.memberKey = memberKey;
+    public TransactionRequestList(String parentMemberKey, String childMemberKey, List<TransactionRequest> transactionRequsetList) {
+        this.parentMemberKey = parentMemberKey;
+        this.childMemberKey = childMemberKey;
         this.transactionRequsetList = transactionRequsetList;
     }
 }
