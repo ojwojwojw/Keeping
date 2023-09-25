@@ -4,7 +4,7 @@ class PiggyProvider with ChangeNotifier {
   List<Map>? _piggyInfos;
   List<Map>? get piggyInfos => _piggyInfos;
 
-  void initPiggy(List<Map> piggyInfos) {
+  initPiggy(List<Map> piggyInfos) {
     _piggyInfos = piggyInfos;
 
     notifyListeners();
