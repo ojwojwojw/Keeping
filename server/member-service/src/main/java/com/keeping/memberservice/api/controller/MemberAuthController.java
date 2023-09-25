@@ -5,9 +5,11 @@ import com.keeping.memberservice.api.controller.request.PasswordCheckRequest;
 import com.keeping.memberservice.api.controller.request.SetFcmTokenRequest;
 import com.keeping.memberservice.api.controller.request.UpdateLoginPwRequest;
 import com.keeping.memberservice.api.controller.response.*;
+import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,11 +18,12 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/auth/{memberKey}")
+@RequestMapping("/auth/api/{memberKey}")
 @Slf4j
 public class MemberAuthController {
 
     private final MemberService memberService;
+    private final AuthService authService;
 
     @PostMapping("/{type}/link")
     public ApiResponse<LinkResultResponse> link(@PathVariable String memberKey,
@@ -33,15 +36,25 @@ public class MemberAuthController {
     @GetMapping("/{type}/linkcode")
     public ApiResponse<LinkcodeResponse> getLinkcode(@PathVariable String memberKey,
                                                      @PathVariable String type) {
-        // TODO: 2023-09-14 만료시간 요청
-        return ApiResponse.ok(LinkcodeResponse.builder().build());
+        LinkcodeResponse response = authService.getLinkCode(memberKey, type);
+        if (response == null) {
+            return ApiResponse.of(1, HttpStatus.NOT_FOUND, "생성된 인증번호가 없습니다.");
+        }
+        return ApiResponse.ok(response);
     }
 
     @PostMapping("/{type}/linkcode")
     public ApiResponse<LinkcodeResponse> createLinkcode(@PathVariable String memberKey,
                                                         @PathVariable String type) {
-        // TODO: 2023-09-14 연결 코드 생성
-        return ApiResponse.ok(LinkcodeResponse.builder().build());
+        boolean isParent = memberService.isParent(memberKey);
+        if ((isParent && type.equals("parent")) ||
+                (!isParent && type.equals("child"))) {
+            String linkCode = authService.createLinkCode(type, memberKey);
+            return ApiResponse.ok(createLinkcodeResponse(linkCode));
+        } else {
+            return ApiResponse.of(1, HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+        }
+
     }
 
     @GetMapping("/children")
@@ -93,5 +106,12 @@ public class MemberAuthController {
     public ApiResponse<LoginMember> getLoginMember(@PathVariable String memberKey) {
         LoginMember loginUser = memberService.getLoginUser(memberKey);
         return ApiResponse.ok(loginUser);
+    }
+
+    private LinkcodeResponse createLinkcodeResponse(String linkCode) {
+        return LinkcodeResponse.builder()
+                .linkcode(linkCode)
+                .expire(86400)
+                .build();
     }
 }
