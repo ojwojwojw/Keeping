@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class PiggyDetailInfo extends StatefulWidget {
-  String? type;
+  final String? type;
 
   PiggyDetailInfo({
     super.key,
