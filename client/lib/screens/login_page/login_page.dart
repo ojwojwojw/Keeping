@@ -7,7 +7,6 @@ import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
 import 'package:keeping/util/render_field.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
-import 'package:keeping/util/build_text_form_field.dart';
 
 import 'package:dio/dio.dart';
 
