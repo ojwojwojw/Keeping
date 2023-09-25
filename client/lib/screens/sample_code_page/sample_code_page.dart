@@ -30,7 +30,7 @@ class SampleCodePage extends StatelessWidget {
           ),
           ConfirmBtn(
             text: '계좌 만들기',
-            action: MakeAccountSamplePage(),
+            // action: MakeAccountSamplePage(),
           ),
           SizedBox(
             height: 20,

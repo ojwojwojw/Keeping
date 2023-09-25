@@ -21,15 +21,19 @@ public class Link {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Parent parent;
+    private String parentNickname;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "child_id")
     private Child child;
+    private String childNickname;
 
     @Builder
-    private Link(Long id, Parent parent, Child child) {
+    private Link(Long id, Parent parent, String parentNickname, Child child, String childNickname) {
         this.id = id;
         this.parent = parent;
+        this.parentNickname = parentNickname;
         this.child = child;
+        this.childNickname = childNickname;
     }
 }

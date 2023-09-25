@@ -2,13 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:keeping/widgets/number_keyboard_key.dart';
 
 class NumberKeyboard extends StatefulWidget {
+  final onNumberPress;
+  final onBackspacePress;
+
+  NumberKeyboard({
+    super.key,
+    this.onNumberPress,
+    this.onBackspacePress
+  });
+  
   @override
-  _NumberKeyboardState createState() => _NumberKeyboardState();
+  State<NumberKeyboard> createState() => _NumberKeyboardState();
 }
 
 class _NumberKeyboardState extends State<NumberKeyboard> {
   late List<List<dynamic>> keys;
-  late String amount;
+  // late String amount;
 
   @override
   void initState() {
@@ -19,29 +28,28 @@ class _NumberKeyboardState extends State<NumberKeyboard> {
       ['7', '8', '9'],
       ['00', '0', Icon(Icons.keyboard_backspace)],
     ];
-    amount = '';
+    // amount = '';
   }
 
+  // onNumberPress(val) {
+  //   if (val == '0' && amount.isEmpty) {
+  //     return;
+  //   }
 
-  onNumberPress(val) {
-    if (val == '0' && amount.isEmpty) {
-      return;
-    }
+  //   setState(() {
+  //     amount = amount + val;
+  //   });
+  // }
 
-    setState(() {
-      amount = amount + val;
-    });
-  }
+  // onBackspacePress() {
+  //   if (amount.isEmpty) {
+  //     return;
+  //   }
 
-  onBackspacePress() {
-    if (amount.isEmpty) {
-      return;
-    }
-
-    setState(() {
-      amount = amount.substring(0, amount.length - 1);
-    });
-  }
+  //   setState(() {
+  //     amount = amount.substring(0, amount.length - 1);
+  //   });
+  // }
 
   renderNumberKeyboard() {
     return keys
@@ -52,9 +60,9 @@ class _NumberKeyboardState extends State<NumberKeyboard> {
               label: k, 
               onTap: (val) {
                 if (val is Widget) {
-                  onBackspacePress();
+                  widget.onBackspacePress();
                 } else {
-                  onNumberPress(val);
+                  widget.onNumberPress(val);
                 }
               },
               value: k,
