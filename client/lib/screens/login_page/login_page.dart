@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
-import 'package:keeping/util/render_field.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 
 import 'package:dio/dio.dart';
+import 'package:keeping/widgets/render_field.dart';
 
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();

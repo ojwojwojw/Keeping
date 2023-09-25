@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:keeping/util/display_format.dart';
 
 class CurrentBalance extends StatefulWidget {
   final num balance;
@@ -24,7 +25,7 @@ class _CurrentBalanceState extends State<CurrentBalance> {
         child: Row(
           children: [
             Text('출금 가능액'),
-            Text('${NumberFormat('#,##0').format(widget.balance)}원')
+            Text(formattedMoney(widget.balance))
           ],
         ),
       ),

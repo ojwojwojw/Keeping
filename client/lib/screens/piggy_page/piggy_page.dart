@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/piggy_page/make_piggy_page.dart';
 import 'package:keeping/screens/piggy_page/piggy_detail_page.dart';
+import 'package:keeping/screens/piggy_page/utils/piggy_future_methods.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_info.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_info_card.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
@@ -33,6 +35,8 @@ final List<Map<String, dynamic>> tempData = [
   }
 ];
 
+const String type = 'PARENT';
+
 class PiggyPage extends StatelessWidget {
   PiggyPage({super.key});
 
@@ -44,43 +48,61 @@ class PiggyPage extends StatelessWidget {
         bgColor: const Color(0xFF8320E7),
         elementColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          PiggyInfo(),
-          // PiggyFilters(),
-          Expanded(
-            child: Container(
-              decoration: lightGreyBgStyle(),
-              width: double.infinity,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(height: 10,),
-                    ...tempData.map((e) => 
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => PiggyDetailPage(piggyAccountNumber: e['piggyAccountNumber'])));
-                        },
-                        child: PiggyInfoCard(
-                          content: e['content'], 
-                          balance: e['balance'], 
-                          goalMoney: e['goalMoney'],
-                          // img: Base64Decoder().convert(e['savedImage']),
-                        )
-                      )
-                    ).toList()
-                  ]
-                ),
-              ),
-            ),
-          )
-        ],
+      body: FutureBuilder(
+        future: getPiggyList(accessToken: 'accessToken', memberKey: 'memberKey'),
+        builder: (context, snapshot) {
+          print('스냅샷스냅샷스냅샷 ${snapshot.toString()}');
+          // if (snapshot.connectionState == ConnectionState.waiting) {
+          //   return const Text('로딩중');
+          // } else if (snapshot.connectionState == ConnectionState.done) {
+          //   if (snapshot.hasError) {
+          //     return const Text('스냅샷에 에러 발생');
+          //   } else if (snapshot.hasData) {
+              return Column(
+                children: [
+                  PiggyInfo(),
+                  // PiggyFilters(),
+                  Expanded(
+                    child: Container(
+                      decoration: lightGreyBgStyle(),
+                      width: double.infinity,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10,),
+                            ...tempData.map((e) => 
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PiggyDetailPage(piggyAccountNumber: e['piggyAccountNumber'])));
+                                },
+                                child: PiggyInfoCard(
+                                  content: e['content'], 
+                                  balance: e['balance'], 
+                                  goalMoney: e['goalMoney'],
+                                  // img: Base64Decoder().convert(e['savedImage']),
+                                )
+                              )
+                            ).toList()
+                          ]
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              );
+          //   } else {
+          //     return const Text('스냅샷 데이터 없음');
+          //   }
+          // } else {
+          //   return Text('퓨처 객체 null');
+          // }
+        }
       ),
-      floatingActionButton: FloatingBtn(
+      floatingActionButton: type != 'PARENT' ? FloatingBtn(
         text: '만들기',
         icon: Icon(Icons.savings_rounded),
         path: MakePiggyPage(),
-      ),
+      ) : null,
       bottomNavigationBar: BottomNav(),
     );
   }

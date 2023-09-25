@@ -32,7 +32,7 @@ class _ParentMainPageState extends State<ParentMainPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -64,13 +64,13 @@ class _ParentMainPageState extends State<ParentMainPage>
                 ),
               ),
               tabs: <Widget>[
-                Tab(
-                  height: 110,
-                  child: TabProfile(
-                    imgPath: 'assets/image/temp_image.jpg',
-                    name: '나',
-                  ),
-                ),
+                // Tab(
+                //   height: 110,
+                //   child: TabProfile(
+                //     imgPath: 'assets/image/temp_image.jpg',
+                //     name: '나',
+                //   ),
+                // ),
                 Tab(
                   height: 110,
                   child: TabProfile(
@@ -94,7 +94,7 @@ class _ParentMainPageState extends State<ParentMainPage>
               child: TabBarView(
                 controller: _tabController,
                 children: <Widget>[
-                  me(context, account, makeAccount),
+                  // me(context, account, makeAccount),
                   myChild(context, account, makeAccount),
                   Center(
                       child: ElevatedButton(
@@ -169,13 +169,14 @@ Widget myChild(BuildContext context, bool account, Function makeAccount) {
       ));
 }
 
-Widget me(BuildContext context, bool account, Function makeAccount) {
-  return SizedBox(
-      width: 350,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          account ? AccountInfo() : MakeAccountBtn(),
-        ],
-      ));
-}
+// Widget me(BuildContext context, bool account, Function makeAccount) {
+//   return SizedBox(
+//     width: 350,
+//     child: Column(
+//       crossAxisAlignment: CrossAxisAlignment.center,
+//       children: [
+//         account ? AccountInfo() : MakeAccountBtn(),
+//       ],
+//     )
+//   );
+// }

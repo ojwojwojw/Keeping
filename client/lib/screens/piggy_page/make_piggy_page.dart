@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:keeping/provider/piggy_provider.dart';
 import 'package:keeping/screens/piggy_page/enter_auth_password_page.dart';
 import 'package:keeping/screens/piggy_page/widgets/add_piggy_img_btn.dart';
-import 'package:keeping/util/render_field.dart';
+import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';

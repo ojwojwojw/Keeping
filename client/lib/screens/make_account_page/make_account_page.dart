@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/make_account_page/make_acount_enter_auth_password_page.dart';
 import 'package:keeping/util/dio_method.dart';
-import 'package:keeping/util/render_field.dart';
+import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/rounded_modal.dart';

@@ -69,6 +69,7 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => Counts()), //Counts 인스턴스 추가
     ChangeNotifierProvider(create: (_) => TestArray()), // TestArray 인스턴스 추가
+    ChangeNotifierProvider(create: (_) => PiggyProvider()),
     ChangeNotifierProvider(create: (_) => PiggyDetailProvider()),
     ChangeNotifierProvider(create: (_) => AddPiggyProvider()),
     ChangeNotifierProvider(create: (_) => OnlinePaymentRequestFormProvider()),
