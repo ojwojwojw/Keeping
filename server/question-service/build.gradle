@@ -38,7 +38,6 @@ dependencies {
 	//spring boot
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -79,8 +78,10 @@ dependencies {
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-	// sms
-	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+	// feign
+	implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+
+	runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 dependencyManagement {
@@ -97,6 +98,12 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
+}
+
+bootJar{
+	archivesBaseName = 'question-service-1.0'
+	archiveFileName = 'question-service-1.0.jar'
+	archiveVersion = "0.0.0"
 }
 
 
