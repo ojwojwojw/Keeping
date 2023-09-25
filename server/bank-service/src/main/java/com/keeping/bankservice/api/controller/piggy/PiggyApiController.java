@@ -22,14 +22,14 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/bank-service/api/piggy")
+@RequestMapping("/bank-service/api/{member-key}/piggy")
 public class PiggyApiController {
 
     private final PiggyService piggyService;
 
-    @PostMapping("/{member-key}")
-    public ApiResponse<Void> addPiggy(@PathVariable("member-key") String memberKey, @RequestParam("content") String content, @RequestParam("goalMoney") int goalMoney, @RequestParam("authPassword") String authPassword, @RequestParam("uploadImage") MultipartFile uploadImage) {
-        AddPiggyRequest request = AddPiggyRequest.toRequest(content, goalMoney, authPassword, uploadImage);
+    @PostMapping
+    public ApiResponse<Void> addPiggy(@PathVariable("member-key") String memberKey, @RequestParam("content") String content, @RequestParam("goalMoney") int goalMoney, @RequestParam("uploadImage") MultipartFile uploadImage) {
+        AddPiggyRequest request = AddPiggyRequest.toRequest(content, goalMoney, uploadImage);
         log.debug("AddPiggyRequest={}", request);
 
         AddPiggyDto dto = AddPiggyDto.toDto(request);
@@ -45,7 +45,7 @@ public class PiggyApiController {
         return ApiResponse.ok(null);
     }
 
-    @GetMapping("/{member-key}")
+    @GetMapping
     public ApiResponse<List<ShowPiggyResponse>> showPiggy(@PathVariable("member-key") String memberKey) {
         log.debug("showPiggy");
 
@@ -57,7 +57,7 @@ public class PiggyApiController {
         }
     }
 
-    @PostMapping("/saving/{member-key}")
+    @PostMapping("/saving")
     public ApiResponse<Void> savingPiggy(@PathVariable("member-key") String memberKey, @RequestBody SavingPiggyRequest request) {
         log.debug("SavingPiggyRequest={}", request);
 
@@ -71,21 +71,21 @@ public class PiggyApiController {
         return null;
     }
 
-    @DeleteMapping("/{member-key}/{account-number}")
+    @DeleteMapping("/{account-number}")
     public ApiResponse<Void> removePiggy(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
         log.debug("RemovePiggy={}, {}", memberKey, accountNumber);
 
         return null;
     }
 
-    @DeleteMapping("/approve/{member-key}/{account-number}")
+    @DeleteMapping("/approve/{account-number}")
     public ApiResponse<Void> approveRemovePiggy(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
         log.debug("ApproveRemovePiggy={}, {}", memberKey, accountNumber);
 
         return null;
     }
 
-    @GetMapping("/{member-key}/{account-number}")
+    @GetMapping("/{account-number}")
     public ApiResponse<ShowPiggyHistoryResponse> showPiggyHistory(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
         log.debug("ShowPiggyHistory={}, {}", memberKey, accountNumber);
 

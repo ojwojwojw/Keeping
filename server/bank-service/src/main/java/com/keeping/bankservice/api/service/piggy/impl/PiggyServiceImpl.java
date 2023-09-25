@@ -79,7 +79,7 @@ public class PiggyServiceImpl implements PiggyService {
             file.transferTo(new File(folder, saveFileName));
 
 //            Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), passwordEncoder.encode(dto.getAuthPassword()), originalFileName, saveFileName);
-            Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), dto.getAuthPassword(), originalFileName, saveFileName);
+            Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), originalFileName, saveFileName);
             Piggy savePiggy = piggyRepository.save(piggy);
 
             return savePiggy.getId();
@@ -125,6 +125,8 @@ public class PiggyServiceImpl implements PiggyService {
         if (!piggy.getAccountNumber().equals(dto.getPiggyAccountNumber())) {
             throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
         }
+
+        // TODO: authPassword 일치하는지 확인하는 부분 필요
 
         WithdrawMoneyDto withdrawMoneyDto = WithdrawMoneyDto.toDto(dto.getAccountNumber(), Long.valueOf(dto.getMoney()));
         accountService.withdrawMoney(memberKey, withdrawMoneyDto);
