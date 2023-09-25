@@ -37,6 +37,7 @@ public class PiggyApiController {
         try {
             Long piggyId = piggyService.addPiggy(memberKey, dto);
         } catch (IOException e) {
+            log.debug("예외 발생 : {}", e.toString());
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "저금통 개설 과정 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
         } catch (NotFoundException e) {
             return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
@@ -53,6 +54,7 @@ public class PiggyApiController {
             List<ShowPiggyResponse> response = piggyService.showPiggy(memberKey);
             return ApiResponse.ok(response);
         } catch (IOException e) {
+            log.debug("예외 발생 : {}", e.toString());
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "저금통 정보를 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
         }
     }
