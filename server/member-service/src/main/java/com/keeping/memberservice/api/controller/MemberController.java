@@ -21,8 +21,8 @@ import java.security.NoSuchAlgorithmException;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/member-service")
 @Slf4j
+@RequestMapping("/api")
 public class MemberController {
 
     private final AuthService authService;
@@ -42,10 +42,18 @@ public class MemberController {
         return ApiResponse.ok("성공");
     }
 
+    /**
+     * 아이디 중복체크
+     *
+     * @param loginId 로그인 아이디
+     * @return 결과
+     */
     @GetMapping("/id/{loginId}")
     public ApiResponse<String> idDuplicateCheck(@PathVariable String loginId) {
-        // TODO: 2023-09-14 아이디 중복 체크
-        return ApiResponse.ok("");
+        if (memberService.idDuplicateCheck(loginId)) {
+            return ApiResponse.ok("사용 가능한 아이디입니다.");
+        }
+        return ApiResponse.of(1, HttpStatus.BAD_REQUEST, "사용할 수 없는 아이디입니다.");
     }
 
     @PostMapping("/join/child")
@@ -92,12 +100,17 @@ public class MemberController {
 
         MessageDto message = MessageDto.builder()
                 .to(phone)
-                // TODO: 2023-09-12 예리 - 인증번호 문자 다듬기
-                .content(randomNumber)
+                .content(getRandomNumberMessage(randomNumber))
                 .build();
 
         smsService.sendSmsMessage(message);
         return ApiResponse.ok("인증번호가 전송되었습니다.");
+    }
+
+    private String getRandomNumberMessage(String randomNumber) {
+        return "[키핑]\n" +
+                "본인 인증 번호\n"
+                + "[" + randomNumber + "]";
     }
 
     private String makeUserPhone(String phoneString) {

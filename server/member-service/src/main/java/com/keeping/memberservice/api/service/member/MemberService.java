@@ -1,5 +1,6 @@
 package com.keeping.memberservice.api.service.member;
 
+import com.keeping.memberservice.api.controller.response.LoginMember;
 import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.dto.AddMemberDto;
 import com.keeping.memberservice.domain.Child;
@@ -18,12 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -37,24 +33,59 @@ public class MemberService implements UserDetailsService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthService authService;
 
-    @Override
-    public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
-
-        if (findMember.isEmpty()) {
-            throw new UsernameNotFoundException("등록되지 않는 사용자입니다.");
-        }
-
-        Member member = findMember.get();
-        return new User(member.getLoginId(), member.getEncryptionPw(),
-                true, true, true, true,
-                new ArrayList<>()); //권한
+    /**
+     * 부모인지, 자녀인지 확인
+     *
+     * @param memberKey
+     * @return true = 부모
+     */
+    public boolean isParent(String memberKey) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
+                new NoSuchElementException("등록되지 않은 사용자입니다."));
+        Optional<Parent> parent = parentRepository.findByMember(member);
+        return parent.isPresent();
     }
 
-    public Member getUserDetailsByLoginId(String loginId) {
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new NoSuchElementException("등록되지 않은 사용자입니다."));
+    /**
+     * 로그인 후 정보요청
+     *
+     * @param memberKey 로그인한 멤버 키
+     * @return 로그인 유저 정보
+     */
+    public LoginMember getLoginUser(String memberKey) {
+        Member findMember = memberRepository.findByMemberKey(memberKey).orElseThrow(() -> new NoSuchElementException("등록되지 않은 사용자입니다."));
+        Optional<Parent> findParent = parentRepository.findByMember(findMember);
+        boolean isParent = findParent.isPresent();
+        LoginMember loginMember = null;
+        if (isParent) {
+            // 부모일 때
+            // TODO: 2023-09-22 자녀 가져오기
+//            List<ChildrenResponse> list =
+            // TODO: 2023-09-22 자녀 연결 해야함
+            loginMember = LoginMember.builder()
+                    .isParent(true)
+                    .name(findMember.getName())
+                    .profileImage(findMember.getProfileImage())
+//                .childrenList(list)
+                    .build();
+        } else {
+            // 자녀일 때
+            loginMember = getChildResponse(findMember);
+        }
 
-        return member;
+
+        return loginMember;
+    }
+
+    /**
+     * @param loginId 로그인 아이디
+     * @return 아이디 중복체크 결과(true = 사용 가능)
+     */
+    public boolean idDuplicateCheck(String loginId) {
+        // 아이디 중복 검사
+        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
+
+        return findMember.isEmpty();
     }
 
     public String addChild(AddMemberDto dto, String parentPhone) {
@@ -117,5 +148,33 @@ public class MemberService implements UserDetailsService {
         String[] phone = phoneString.split("-");
 
         return phone[0] + phone[1] + phone[2];
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
+        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
+
+        if (findMember.isEmpty()) {
+            throw new UsernameNotFoundException("등록되지 않는 사용자입니다.");
+        }
+
+        Member member = findMember.get();
+        return new User(member.getLoginId(), member.getEncryptionPw(),
+                true, true, true, true,
+                new ArrayList<>()); //권한
+    }
+
+    public Member getUserDetailsByLoginId(String loginId) {
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new NoSuchElementException("등록되지 않은 사용자입니다."));
+
+        return member;
+    }
+
+    private LoginMember getChildResponse(Member findMember) {
+        return LoginMember.builder()
+                .isParent(false)
+                .name(findMember.getName())
+                .profileImage(findMember.getProfileImage())
+                .build();
     }
 }

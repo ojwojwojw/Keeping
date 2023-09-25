@@ -2,10 +2,9 @@ package com.keeping.bankservice.api.controller.piggy;
 
 import com.keeping.bankservice.api.ApiResponse;
 import com.keeping.bankservice.api.controller.piggy.request.AddPiggyRequest;
-import com.keeping.bankservice.api.controller.piggy.response.ShowPiggyHistoryResponse;
+import com.keeping.bankservice.api.controller.piggy_history.response.ShowPiggyHistoryResponse;
 import com.keeping.bankservice.api.controller.piggy.response.ShowPiggyResponse;
 import com.keeping.bankservice.api.controller.piggy.request.SavingPiggyRequest;
-import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.SavingPiggyDto;
 import com.keeping.bankservice.api.service.piggy.PiggyService;
 import com.keeping.bankservice.api.service.piggy.dto.AddPiggyDto;
@@ -23,7 +22,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/bank-service/piggy")
+@RequestMapping("/bank-service/api/piggy")
 public class PiggyApiController {
 
     private final PiggyService piggyService;
@@ -37,11 +36,9 @@ public class PiggyApiController {
 
         try {
             Long piggyId = piggyService.addPiggy(memberKey, dto);
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "저금통 개설 과정 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
-        }
-        catch(NotFoundException e) {
+        } catch (NotFoundException e) {
             return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
         }
 
@@ -68,8 +65,7 @@ public class PiggyApiController {
 
         try {
             piggyService.savingPiggy(memberKey, dto);
-        }
-        catch(NotFoundException | NoAuthorizationException e) {
+        } catch (NotFoundException | NoAuthorizationException e) {
             return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
         }
         return null;

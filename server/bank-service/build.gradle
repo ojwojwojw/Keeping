@@ -13,7 +13,7 @@ plugins {
 }
 
 group = 'com.keeping'
-version = '0.0.1-SNAPSHOT'
+version = '1.0'
 
 java {
 	sourceCompatibility = '11'
@@ -38,7 +38,6 @@ dependencies {
 	//spring boot
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -57,7 +56,6 @@ dependencies {
 
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
 
 	//cloud config
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
@@ -81,6 +79,8 @@ dependencies {
 
 	// sms
 	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+
+	runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 dependencyManagement {
@@ -97,6 +97,12 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
+}
+
+bootJar{
+	archivesBaseName = 'bank-service-1.0'
+	archiveFileName = 'bank-service-1.0.jar'
+	archiveVersion = "0.0.0"
 }
 
 def querydslDir = "$buildDir/generated/querydsl"

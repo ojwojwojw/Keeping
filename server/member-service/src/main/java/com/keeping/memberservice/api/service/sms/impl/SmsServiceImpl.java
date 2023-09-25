@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -30,18 +31,23 @@ import java.util.List;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 @Transactional
 public class SmsServiceImpl implements SmsService {
 
-    @Value("${sms.accessKey}")
     private String accessKey;
-    @Value("${sms.secretKey}")
     private String secretKey;
-    @Value("${sms.serviceId}")
     private String serviceId;
-    @Value("${sms.senderPhone}")
     private String phone;
+
+    private final Environment env;
+
+    public SmsServiceImpl(Environment env) {
+        this.env = env;
+        this.accessKey = this.env.getProperty("sms.accessKey");
+        this.secretKey = this.env.getProperty("sms.secretKey");
+        this.serviceId = this.env.getProperty("sms.serviceId");
+        this.phone = this.env.getProperty("sms.senderPhone");
+    }
 
 
     public String makeSignature(Long time) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {

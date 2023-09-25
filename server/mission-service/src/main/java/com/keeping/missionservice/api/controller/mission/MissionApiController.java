@@ -1,14 +1,14 @@
 package com.keeping.missionservice.api.controller.mission;
 
 import com.keeping.missionservice.api.ApiResponse;
-import com.keeping.missionservice.api.controller.mission.request.AddMissionRequest;
-import com.keeping.missionservice.api.controller.mission.request.CommentRequest;
-import com.keeping.missionservice.api.controller.mission.request.EditCompleteRequest;
-import com.keeping.missionservice.api.controller.mission.request.EditMissionRequest;
+import com.keeping.missionservice.api.controller.mission.request.*;
 import com.keeping.missionservice.api.controller.mission.response.MissionResponse;
 import com.keeping.missionservice.api.service.mission.MissionService;
+import com.keeping.missionservice.api.service.mission.dto.AddCommentDto;
 import com.keeping.missionservice.api.service.mission.dto.AddMissionDto;
+import com.keeping.missionservice.api.service.mission.dto.EditCompleteDto;
 import com.keeping.missionservice.api.service.mission.dto.EditMissionDto;
+import com.keeping.missionservice.global.exception.AlreadyExistException;
 import com.keeping.missionservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/mission-service")
+@RequestMapping("/mission-service/api/{member_key}")
 @Slf4j
 public class MissionApiController {
 
@@ -34,90 +34,92 @@ public class MissionApiController {
      */
     @PostMapping
     public ApiResponse<Long> addMission(
+            @PathVariable(name = "member_key") String memberKey,
             @Valid @RequestBody AddMissionRequest request
     ) {
-        // 사용자 정보 가져오기
-        String memberId = "";
-
         log.debug("addMission :: request={}", request);
         log.info("addMission :: request={}", request);
 
         AddMissionDto dto = AddMissionDto.toDto(request);
 
         try {
-            Long missionId = missionService.addMission(memberId, dto);
+            Long missionId = missionService.addMission(memberKey, dto);
             return ApiResponse.ok(missionId);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
         }
     }
 
-    @PutMapping
-    public ApiResponse<Long> editMission(
-            @Valid @RequestBody EditMissionRequest request
-    ) {
-        // 사용자 정보 가져오기
-        String memberId = null;
-
-        try {
-            Long missionId = missionService.editMission(memberId, EditMissionDto.toDto(request));
-            return ApiResponse.ok(missionId);
-        } catch (NotFoundException e) {
-            return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
-        }
-    }
-
-    @GetMapping("/{member_key}")
+    @GetMapping
     public ApiResponse<List<MissionResponse>> showMission(
             @PathVariable("member_key") String memberKey
     ) {
-        String memberId = null;
-
-        try {
-            List<MissionResponse> missionResponses = missionService.showMission(memberId);
-            return ApiResponse.ok(missionResponses);
-        } catch (NotFoundException e) {
-            return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
-        }
-
+        List<MissionResponse> missionResponses = missionService.showMission(memberKey);
+        return ApiResponse.ok(missionResponses);
     }
 
-    @GetMapping("/{member_key}/{mission_id}")
+    @GetMapping("/{mission_id}")
     public ApiResponse<MissionResponse> showDetailMission(
             @PathVariable("member_key") String memberKey,
             @PathVariable("mission_id") Long missionId
     ) {
-        String memberId = null;
-
         try {
-            MissionResponse response = missionService.showDetailMission(memberId, missionId);
+            MissionResponse response = missionService.showDetailMission(memberKey, missionId);
             return ApiResponse.ok(response);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
         }
     }
 
-    @PostMapping("/comment")
-    public ApiResponse<Long> addComment(
-            @Valid @RequestBody CommentRequest request
+    @PatchMapping
+    public ApiResponse<Long> editMission(
+            @PathVariable(name = "member_key") String memberKey,
+            @Valid @RequestBody EditMissionRequest request
     ) {
         try {
-            Long missionId = missionService.addComment(request.getMemberKey(), request.getMissionId()); 
+            Long missionId = missionService.editMission(memberKey, EditMissionDto.toDto(request));
             return ApiResponse.ok(missionId);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
         }
     }
 
-    @PostMapping("/complete")
-    public ApiResponse<Long> editComplete(
-        @Valid @RequestBody EditCompleteRequest request    
-    ) {
+    @PatchMapping("/comment")
+    public ApiResponse<Long> addComment(
+            @PathVariable(name = "member_key") String memberKey,
+            @Valid @RequestBody AddCommentRequest request
+            ) {
         try {
-            Long missionId = missionService.editCompleted(request.getMemberKey(), request.getMissionId(), request.getCompleted());
+            Long missionId = missionService.addComment(memberKey, AddCommentDto.toDto(request));
             return ApiResponse.ok(missionId);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
         }
-    } 
+    }
+
+    @PatchMapping("/complete")
+    public ApiResponse<Long> editComplete(
+            @PathVariable(name = "member_key") String memberKey,
+            @Valid @RequestBody EditCompleteRequest request
+    ) {
+        try {
+            Long missionId = missionService.editCompleted(memberKey, EditCompleteDto.toDto(request));
+            return ApiResponse.ok(missionId);
+        } catch (NotFoundException | AlreadyExistException e) {
+            return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
+        }
+    }
+
+    @DeleteMapping("/{mission_id}")
+    public ApiResponse<Long> removeMission(
+            @PathVariable(name = "member_key") String memberKey,
+            @PathVariable(name = "mission_id") Long missionId
+    ) {
+        try {
+            missionService.removeMission(memberKey, missionId);
+            return ApiResponse.ok(missionId);
+        } catch (NotFoundException e) {
+            return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
+        }
+    }
 }
