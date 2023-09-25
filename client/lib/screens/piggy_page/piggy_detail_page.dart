@@ -111,6 +111,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
                                     storeName: e['name'], 
                                     money: e['money'], 
                                     balance: e['balance'],
+                                    accountHistoryId: e['id'],
                                     onlyTime: false,
                                   )
                                 ).toList(),

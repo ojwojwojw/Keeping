@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_detail_create_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
+import 'package:provider/provider.dart';
 
 class MoneyRecord extends StatefulWidget {
   // 카테고리 따라 사진 다르게 설정, 지출 입금 따라 -/+ 기호 추가
   final DateTime date;
   final String storeName;
-  final num money;
-  final num balance;
+  final int money;
+  final int balance;
+  final int accountHistoryId;
   final Map<String, dynamic>? detail;
   final bool onlyTime;
 
@@ -19,6 +22,7 @@ class MoneyRecord extends StatefulWidget {
     required this.storeName,
     required this.money,
     required this.balance,
+    required this.accountHistoryId,
     this.detail,
     this.onlyTime = true,
   });
@@ -27,9 +31,14 @@ class MoneyRecord extends StatefulWidget {
   State<MoneyRecord> createState() => _MoneyRecordState();
 }
 
-const String type = 'PARENT';
-
 class _MoneyRecordState extends State<MoneyRecord> {
+  String? type;
+
+  @override
+  void initState() {
+    super.initState();
+    type = context.read<UserInfoProvider>().type;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +48,7 @@ class _MoneyRecordState extends State<MoneyRecord> {
           context: context,
           title: '상세 내역 쓰기',
           content: moneyRecordModalContent(widget.date, widget.storeName, widget.money),
-          button: moneyRecordModalBtns(context, widget.date, widget.storeName, widget.money, widget.balance),
+          button: moneyRecordModalBtns(context, widget.date, widget.storeName, widget.money, widget.balance, widget.accountHistoryId),
         );
       },
       child: Padding(
@@ -149,7 +158,7 @@ Widget moneyRecordModalContent(DateTime date, String storeName, num money) {
 
 // 용돈기입장 내역 클릭시 나오는 모달에 들어갈 버튼(2개)
 Row moneyRecordModalBtns(
-  BuildContext context, DateTime date, String storeName, num money, num balance
+  BuildContext context, DateTime date, String storeName, int money, int balance, int accountHistoryId
 ) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -158,12 +167,12 @@ Row moneyRecordModalBtns(
         Icons.receipt_long, 
         '영수증 찍기', 
         context, 
-        AllowanceLedgerDetailCreatePage(date: date, storeName: storeName, money: money, balance: balance,)),
+        AllowanceLedgerDetailCreatePage(date: date, storeName: storeName, money: money, balance: balance, accountHistoryId: accountHistoryId,)),
       moneyRecordModalBtn(
         Icons.create, 
         '직접 쓰기', 
         context, 
-        AllowanceLedgerDetailCreatePage(date: date, storeName: storeName, money: money, balance: balance,))
+        AllowanceLedgerDetailCreatePage(date: date, storeName: storeName, money: money, balance: balance, accountHistoryId: accountHistoryId,))
     ],
   );
 }

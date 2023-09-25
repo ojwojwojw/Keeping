@@ -87,7 +87,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
         elementColor: Colors.white,
       ),
       body: FutureBuilder(
-        future: accessToken == null && memberKey == null && accountNumber == null ? null :
+        future: accessToken == null || memberKey == null || accountNumber == null ? null :
           getAccountList(accessToken: accessToken!, memberKey: memberKey!, accountNumber: accountNumber!),
         builder: (context, snapshot) {
           return Column(
@@ -107,7 +107,8 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                               date: DateTime.parse(e['date']), 
                               storeName: e['store_name'], 
                               money: e['money'], 
-                              balance: e['balance']
+                              balance: e['balance'],
+                              accountHistoryId: e['id'],
                             )
                           :
                             MoneyRecordWithDetail(

@@ -24,7 +24,7 @@ Future<dynamic> createAccountDetail({
   try {
     final response = await dioPost(
       accessToken: accessToken,
-      url: '/bank-service/account-detail/$memberKey',
+      url: '/bank-service/api/$memberKey/account-detail',
       data: {
         "accountHistoryId": accountHistoryId,
         "content": content,
@@ -32,7 +32,7 @@ Future<dynamic> createAccountDetail({
       }
     );
     print('거래 상세 내용 입력 응답 $response');
-    return response;
+    return response['resultStatus']['successCode'];
   } catch (e) {
     print('거래 상세 내용 입력 에러 $e');
   }
