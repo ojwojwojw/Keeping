@@ -5,12 +5,14 @@ import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/child_tag.dart';
 import 'package:provider/provider.dart';
-
-const String type = 'PARENT';
+import 'package:text_scroll/text_scroll.dart';
 
 class PiggyDetailInfo extends StatefulWidget {
+  String? type;
+
   PiggyDetailInfo({
     super.key,
+    required this.type,
   });
 
   @override
@@ -18,6 +20,7 @@ class PiggyDetailInfo extends StatefulWidget {
 }
 
 class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,18 +32,11 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Padding(
-            //   padding: const EdgeInsets.only(top: 40, bottom: 20),
-            //   child: Text(
-            //     context.watch<PiggyDetailProvider>().content!,
-            //     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
-            //   ),
-            // ),
             Padding(
               padding: const EdgeInsets.only(top: 30),
               child: Column(
                 children: [
-                  if (type == 'PARENT') ChildTag(childName: '김첫째', text: '저금통',),
+                  if (widget.type == 'PARENT') ChildTag(childName: '김첫째', text: '저금통',),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -49,11 +45,13 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
                         children: [
                           SizedBox(
                             width: 200,
-                            child: Text(
-                              context.watch<PiggyDetailProvider>().content!,
-                              softWrap: true,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                            child: Flexible(
+                              child: TextScroll(
+                                context.watch<PiggyDetailProvider>().content!,
+                                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                                intervalSpaces: 10,
+                                velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
+                              ),
                             ),
                           ),
                           Text(formattedMoney(context.watch<PiggyDetailProvider>().balance), style: TextStyle(fontSize: 40, color: Colors.white),),

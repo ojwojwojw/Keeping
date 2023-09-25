@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/piggy_provider.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
-import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
 import 'package:keeping/screens/piggy_page/piggy_saving_page.dart';
 import 'package:keeping/screens/piggy_page/utils/piggy_future_methods.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_detail_info.dart';
@@ -10,8 +10,6 @@ import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
-
-const String type = 'PARENT';
 
 class PiggyDetailPage extends StatefulWidget {
   final String piggyAccountNumber;
@@ -26,6 +24,10 @@ class PiggyDetailPage extends StatefulWidget {
 }
 
 class _PiggyDetailPageState extends State<PiggyDetailPage> {
+  String? type;
+  String? accessToken;
+  String? memberKey;
+
   dynamic piggyResponse;
   Map<String, dynamic>? _response;
 
@@ -34,6 +36,9 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
     super.initState();
     context.read<PiggyDetailProvider>().removePiggyDetail();
     initPiggyDetail();
+    type = context.read<UserInfoProvider>().type;
+    // accessToken = context.read<UserInfoProvider>().accessToken;
+    // memberKey = context.read<UserInfoProvider>().memberKey;
   }
 
   initPiggyDetail() async {
@@ -78,9 +83,10 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
       ),
       body: Column(
         children: [
-          PiggyDetailInfo(),
+          PiggyDetailInfo(type: type),
           FutureBuilder(
-            future: getPiggyDetailList(accessToken: 'accessToken', memberKey: 'memberKey', piggyAccountNumber: widget.piggyAccountNumber),
+            future: accessToken != null && memberKey != null ? 
+              getPiggyDetailList(accessToken: 'accessToken', memberKey: 'memberKey', piggyAccountNumber: widget.piggyAccountNumber) : null,
             builder: (context, snapshot) {
               // if (snapshot.connectionState == ConnectionState.waiting) {
               //   return const Text('로딩중');
@@ -98,16 +104,16 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
-                                MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
-                                // ..._response!['saving']!.map((e) =>
-                                //   MoneyRecord(
-                                //     date: DateTime.parse(e['date']), 
-                                //     storeName: e['store_name'], 
-                                //     money: e['money'], 
-                                //     balance: e['balance']
-                                //   )
-                                // ).toList(),
-                                Text(context.watch<PiggyProvider>().piggyInfos.toString())
+                                SizedBox(height: 10,),
+                                ..._response!['saving']!.map((e) =>
+                                  MoneyRecord(
+                                    date: DateTime.parse(e['createdDate']), 
+                                    storeName: e['name'], 
+                                    money: e['money'], 
+                                    balance: e['balance'],
+                                    onlyTime: false,
+                                  )
+                                ).toList(),
                               ]
                             ),
                           )
