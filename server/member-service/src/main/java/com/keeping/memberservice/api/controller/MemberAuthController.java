@@ -30,6 +30,12 @@ public class MemberAuthController {
                                                 @PathVariable String type,
                                                 @RequestBody @Valid @NotBlank String linkcode) {
         // TODO: 2023-09-14 연결
+        String result = authService.link(linkcode, memberKey, type);
+        if(response==null){
+            return ApiResponse.of()
+        }
+
+        response.getPartner()
         return ApiResponse.ok(LinkResultResponse.builder().build());
     }
 
