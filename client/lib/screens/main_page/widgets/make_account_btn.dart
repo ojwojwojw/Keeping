@@ -4,16 +4,13 @@ import 'package:keeping/screens/make_account_page/make_account_page.dart';
 class MakeAccountBtn extends StatelessWidget {
   MakeAccountBtn({
     super.key,
-    this.makeAccount
   });
-  final makeAccount;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        makeAccount();
-        // Navigator.push(context, MaterialPageRoute(builder: (_) => MakeAccountPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => MakeAccountPage()));
       },
       child: SizedBox(
         width: 350,
