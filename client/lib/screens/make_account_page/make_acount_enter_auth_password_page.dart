@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/piggy_provider.dart';
+import 'package:keeping/screens/main_page/child_main_page.dart';
+import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/make_account_page/utils/make_account_future_methods.dart';
 import 'package:keeping/screens/my_page/phonenum_edit_page.dart';
 import 'package:keeping/screens/piggy_page/enter_auth_password_page.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/completed_page.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/password_keyboard.dart';
 import 'package:keeping/widgets/rounded_modal.dart';
@@ -21,6 +24,7 @@ class MakeAccountEnterAuthPasswordPage extends StatefulWidget {
 }
 
 class _MakeAccountEnterAuthPasswordPageState extends State<MakeAccountEnterAuthPasswordPage> {
+  String? type;
   String? accessToken;
   String? memberKey;
   String? _authPassword;
@@ -65,6 +69,7 @@ class _MakeAccountEnterAuthPasswordPageState extends State<MakeAccountEnterAuthP
   @override
   void initState() {
     super.initState();
+    // type
     accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NGFiMjY2MS00N2EyLTQ4NmMtOWY3Zi1mOGNkNTkwMGRiMTAiLCJleHAiOjE2OTU3MDM4NzZ9.Pmks2T9tCqjazb4IUgx1GVUCbtOz97DsBBGKrwkGd5c';
     memberKey = '84ab2661-47a2-486c-9f7f-f8cd5900db10';
   }
@@ -106,7 +111,12 @@ class _MakeAccountEnterAuthPasswordPageState extends State<MakeAccountEnterAuthP
             authPassword: _authPassword!
           );
           if (response == 0) {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(text: '계좌가\n개설되었습니다.',)));
+            Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(
+              text: '계좌가\n개설되었습니다.',
+              button: ConfirmBtn(
+                action: type == 'PARENT' ? ParentMainPage() : ChildMainPage(),
+              ),
+            )));
 
           } else if (response == 1) {
             roundedModal(context: context, title: '핸드폰 번호가 인증되지 않았습니다.');
