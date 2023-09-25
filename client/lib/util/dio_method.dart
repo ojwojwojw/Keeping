@@ -8,9 +8,9 @@ Future<dynamic> dioPost({
   try {
     dio.options.baseUrl = dotenv.env['BASE_URL']!;
     dio.options.contentType = contentType;
-    dio.options.maxRedirects.isFinite;
-    dio.options.connectTimeout = Duration(seconds: 5);
-    dio.options.receiveTimeout = Duration(seconds: 3);
+    // dio.options.maxRedirects.isFinite;
+    // dio.options.connectTimeout = Duration(seconds: 5);
+    // dio.options.receiveTimeout = Duration(seconds: 3);
 
     dio.options.headers = {
       'Authorization': 'Bearer $accessToken',
@@ -33,9 +33,9 @@ Future<dynamic> dioGet({
   var dio = Dio();
   try {
     dio.options.baseUrl = dotenv.env['BASE_URL']!;
-    dio.options.maxRedirects.isFinite;
-    dio.options.connectTimeout = Duration(seconds: 5);
-    dio.options.receiveTimeout = Duration(seconds: 3);
+    // dio.options.maxRedirects.isFinite;
+    // dio.options.connectTimeout = Duration(seconds: 5);
+    // dio.options.receiveTimeout = Duration(seconds: 3);
 
     dio.options.headers = {
       'Authorization': 'Bearer $accessToken',
