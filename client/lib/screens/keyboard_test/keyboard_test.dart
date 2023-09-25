@@ -22,6 +22,7 @@ class KeyboardTest extends StatelessWidget {
       ),
       bottomNavigationBar: BottomBtn(
         text: '확인',
+        isDisabled: false,
       ),
     );
   }
