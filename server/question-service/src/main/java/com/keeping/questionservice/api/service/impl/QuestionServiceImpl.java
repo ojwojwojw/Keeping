@@ -33,7 +33,6 @@ import java.util.Optional;
 public class QuestionServiceImpl implements QuestionService {
 
     private MemberFeignClient memberFeignClient;
-    private OpenaiFeignClient openaiFeignClient;
     private final QuestionRepository questionRepository;
     private final QuestionQueryRepository questionQueryRepository;
     private final CommentRepository commentRepository;
@@ -162,31 +161,5 @@ public class QuestionServiceImpl implements QuestionService {
                 .orElseThrow(() -> new NotFoundException("400", HttpStatus.BAD_REQUEST, "해당하는 댓글이 없습니다."));
 
         comment.deleteComment();
-    }
-
-    @Scheduled(cron = "0 0 0 * * ?")
-    private void createQuestion() {
-        // 질문 생성하기
-        ApiResponse<QuestionAiResponseList> questionAiResponseList = openaiFeignClient.createQuestion();
-        List<QuestionAiResponse> questionAiResponses = questionAiResponseList.getResultBody().getQuestionAiResponses();
-        
-        List<Question> questions = new ArrayList<>();
-
-        for (QuestionAiResponse questionAiResponse : questionAiResponses) {
-            String parentMemberKey = questionAiResponse.getParentMemberKey();
-            String childMemberKey = questionAiResponse.getChildMemberKey();
-            
-            // 이미 오늘 날짜로 질문이 등록되어 있다면 패쓰
-            LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
-            Optional<QuestionResponse> checkQuestionAdded = questionQueryRepository.findByChildKeyAndCreatedDateAtNow(childMemberKey, now);
-            if (!checkQuestionAdded.isPresent()) {
-                // 질문 등록 시간 넣기
-                ApiResponse<MemberTimeResponse> memberTime = memberFeignClient.getMemberTime(parentMemberKey);
-                LocalTime registrationTime = memberTime.getResultBody().getRegistrationTime();
-
-                questions.add(Question.toQuestion(parentMemberKey, childMemberKey, questionAiResponse.getAnswer(), false, registrationTime));
-            }
-        }
-        questionRepository.saveAll(questions);
     }
 }
