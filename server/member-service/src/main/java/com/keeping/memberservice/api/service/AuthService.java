@@ -28,14 +28,13 @@ public class AuthService {
         ValueOperations<String, String> redisString = redisTemplate.opsForValue();
 
         String linkCode = createRandomNumCode();
-        String code = insertLinkCode(type, linkCode);
-        redisString.append(code, memberKey);
-        redisTemplate.expire(code, ONE_DAY, TimeUnit.SECONDS);
+        String linkCodeKey = createLinkCodeKey(type, linkCode);
+        String linkCodeMemberKey = createLinkCodeKey(type, memberKey);
+        redisString.append(linkCodeKey, memberKey);
+        redisString.append(linkCodeMemberKey, linkCode);
+        redisTemplate.expire(linkCodeKey, ONE_DAY, TimeUnit.SECONDS);
+        redisTemplate.expire(linkCodeMemberKey, ONE_DAY, TimeUnit.SECONDS);
         return linkCode;
-    }
-
-    private static String insertLinkCode(String type, String linkCode) {
-        return "LINKCODE_" + type + "_" + linkCode;
     }
 
     /**
@@ -101,5 +100,9 @@ public class AuthService {
         }
 
         return numStr.toString();
+    }
+
+    private String createLinkCodeKey(String type, String key) {
+        return "LINKCODE_" + type + "_" + key;
     }
 }
