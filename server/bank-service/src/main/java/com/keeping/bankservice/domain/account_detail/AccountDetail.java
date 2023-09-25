@@ -33,8 +33,8 @@ public class AccountDetail extends TimeBaseEntity {
     private Long money;
 
     @Enumerated(STRING)
-    @Column(nullable = false)
-    @ColumnDefault("'ETC")
+    @Column(name = "small_category", nullable = false)
+    @ColumnDefault("'ETC'")
     private SmallCategory smallCategory;
 
 
