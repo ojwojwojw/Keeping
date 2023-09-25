@@ -18,7 +18,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/auth/{memberKey}")
+@RequestMapping("/auth/api/{memberKey}")
 @Slf4j
 public class MemberAuthController {
 
@@ -36,8 +36,11 @@ public class MemberAuthController {
     @GetMapping("/{type}/linkcode")
     public ApiResponse<LinkcodeResponse> getLinkcode(@PathVariable String memberKey,
                                                      @PathVariable String type) {
-        // TODO: 2023-09-14 만료시간 요청
-        return ApiResponse.ok(LinkcodeResponse.builder().build());
+        LinkcodeResponse response = authService.getLinkCode(memberKey, type);
+        if (response == null) {
+            return ApiResponse.of(1, HttpStatus.NOT_FOUND, "생성된 인증번호가 없습니다.");
+        }
+        return ApiResponse.ok(response);
     }
 
     @PostMapping("/{type}/linkcode")
