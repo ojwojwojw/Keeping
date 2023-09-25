@@ -4,10 +4,12 @@ import 'package:keeping/widgets/child_tag.dart';
 
 class AccountInfo extends StatefulWidget {
   final String? type;
+  final int? balance;
 
   AccountInfo({
     super.key,
     required this.type,
+    required this.balance,
   });
 
   @override
@@ -29,7 +31,7 @@ class _AccountInfoState extends State<AccountInfo> {
           children: [
             if (widget.type == 'PARENT') ChildTag(childName: '김첫째', text: '용돈 잔액'),
             Text(
-              '50,000원',
+              widget.balance == null ? '0원' : formattedMoney(widget.balance),
               style: TextStyle(
                 fontSize: 40,
                 color: Colors.white

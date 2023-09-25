@@ -64,6 +64,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
   String? accessToken;
   String? memberKey;
   String? accountNumber;
+  int? balance;
 
   @override
   void initState() {
@@ -72,6 +73,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
     // accessToken = context.read<UserInfoProvider>().accessToken;
     // memberKey = context.read<UserInfoProvider>().memberKey;
     // accountNumber = context.read<UserInfoProvider>().accountNumber;
+    // balance = context.read<UserInfoProvider>().balance;
   }
   
   @override
@@ -88,7 +90,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
         builder: (context, snapshot) {
           return Column(
             children: [
-              AccountInfo(type: type,),
+              AccountInfo(type: type, balance: balance,),
               Expanded(
                 child: Container(
                   decoration: lightGreyBgStyle(),
