@@ -1,67 +1,38 @@
-// import 'package:flutter/material.dart';
-// import 'package:gallery_saver/gallery_saver.dart';
-// import 'package:image_picker/image_picker.dart';
-
-// class ReceiptCameraPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('카메라 앱')),
-//       body: Center(
-//         child: ElevatedButton(
-//           onPressed: () {
-//             // 버튼이 눌릴 때 TakePictureScreen으로 이동합니다.
-//             _takePhoto();
-//           },
-//           child: Text('카메라 열기'),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// void _takePhoto() async {
-//   ImagePicker().pickImage(source: ImageSource.camera).then((value) {
-//     if (value != null && value.path != null) {
-//       print("저장경로 : ${value.path}");
-
-//       GallerySaver.saveImage(value.path).then((value) {
-//         print("사진이 저장되었습니다");
-//       });
-//     }
-//   });
-// }
-
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
+
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
-class ReceiptCameraPage extends StatelessWidget {
-  const ReceiptCameraPage({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-          highlightColor: const Color(0xFFD0996F),
+          primarySwatch: Colors.blue,
+          highlightColor: const Color(0xFFEA6357),
+          backgroundColor: const Color(0xFFFDF5EC),
           canvasColor: const Color(0xFFFDF5EC),
           textTheme: TextTheme(
-            headlineSmall: ThemeData.light()
+            headline5: ThemeData.light()
                 .textTheme
-                .headlineSmall!
-                .copyWith(color: const Color(0xFFBC764A)),
+                .headline5!
+                .copyWith(color: const Color(0xFFEA6357)),
           ),
           iconTheme: IconThemeData(
             color: Colors.grey[600],
           ),
           appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFFBC764A),
+            backgroundColor: Color(0xFFEA6357),
             centerTitle: false,
             foregroundColor: Colors.white,
             actionsIconTheme: IconThemeData(color: Colors.white),
@@ -69,21 +40,19 @@ class ReceiptCameraPage extends StatelessWidget {
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
               backgroundColor: MaterialStateColor.resolveWith(
-                  (states) => const Color(0xFFBC764A)),
+                  (states) => const Color(0xFFEA6357)),
             ),
           ),
           outlinedButtonTheme: OutlinedButtonThemeData(
             style: ButtonStyle(
               foregroundColor: MaterialStateColor.resolveWith(
-                (states) => const Color(0xFFBC764A),
+                (states) => const Color(0xFFEA6357),
               ),
               side: MaterialStateBorderSide.resolveWith(
-                  (states) => const BorderSide(color: Color(0xFFBC764A))),
+                  (states) => const BorderSide(color: Color(0xFFEA6357))),
             ),
-          ),
-          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
-              .copyWith(background: const Color(0xFFFDF5EC))),
-      home: const HomePage(title: 'Image Cropper Demo'),
+          )),
+      home: const HomePage(title: 'Image Cropping'),
     );
   }
 }
@@ -107,61 +76,55 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: !kIsWeb ? AppBar(title: Text(widget.title)) : null,
+      appBar: AppBar(title: Text(widget.title)),
       body: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (kIsWeb)
-            Padding(
-              padding: const EdgeInsets.all(kIsWeb ? 24.0 : 16.0),
-              child: Text(
-                widget.title,
-                style: Theme.of(context)
-                    .textTheme
-                    .displayMedium!
-                    .copyWith(color: Theme.of(context).highlightColor),
-              ),
-            ),
-          Expanded(child: _body()),
+          Expanded(child: BodyWidget()),
         ],
       ),
     );
   }
 
-  Widget _body() {
+  Widget BodyWidget() {
     if (_croppedFile != null || _pickedFile != null) {
-      return _imageCard();
+      return ImageCardWiget();
     } else {
-      return _uploaderCard();
+      return UploaderCardWidget();
     }
   }
 
-  Widget _imageCard() {
+  /**
+   * ImageCard Widget
+   */
+  Widget ImageCardWiget() {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: kIsWeb ? 24.0 : 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Card(
               elevation: 4.0,
               child: Padding(
-                padding: const EdgeInsets.all(kIsWeb ? 24.0 : 16.0),
-                child: _image(),
+                padding: const EdgeInsets.all(16.0),
+                child: ImageWidget(),
               ),
             ),
           ),
           const SizedBox(height: 24.0),
-          _menu(),
+          MenuWidget(),
         ],
       ),
     );
   }
 
-  Widget _image() {
+  /**
+   * 실제 이미지 Widget
+   */
+  Widget ImageWidget() {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     if (_croppedFile != null) {
@@ -171,7 +134,7 @@ class _HomePageState extends State<HomePage> {
           maxWidth: 0.8 * screenWidth,
           maxHeight: 0.7 * screenHeight,
         ),
-        child: kIsWeb ? Image.network(path) : Image.file(File(path)),
+        child: Image.file(File(path)),
       );
     } else if (_pickedFile != null) {
       final path = _pickedFile!.path;
@@ -180,20 +143,23 @@ class _HomePageState extends State<HomePage> {
           maxWidth: 0.8 * screenWidth,
           maxHeight: 0.7 * screenHeight,
         ),
-        child: kIsWeb ? Image.network(path) : Image.file(File(path)),
+        child: Image.file(File(path)),
       );
     } else {
       return const SizedBox.shrink();
     }
   }
 
-  Widget _menu() {
+  /**
+   * 이미지 카드 위젯 내 버튼
+   */
+  Widget MenuWidget() {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         FloatingActionButton(
           onPressed: () {
-            _clear();
+            fn_clear();
           },
           backgroundColor: Colors.redAccent,
           tooltip: 'Delete',
@@ -204,9 +170,9 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.only(left: 32.0),
             child: FloatingActionButton(
               onPressed: () {
-                _cropImage();
+                fn_cropImage();
               },
-              backgroundColor: const Color(0xFFBC764A),
+              backgroundColor: const Color(0xFFEA6357),
               tooltip: 'Crop',
               child: const Icon(Icons.crop),
             ),
@@ -215,7 +181,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _uploaderCard() {
+  /*
+  * Image Upload Widget
+  * */
+  Widget UploaderCardWidget() {
     return Center(
       child: Card(
         elevation: 4.0,
@@ -223,7 +192,7 @@ class _HomePageState extends State<HomePage> {
           borderRadius: BorderRadius.circular(16.0),
         ),
         child: SizedBox(
-          width: kIsWeb ? 380.0 : 320.0,
+          width: 320.0,
           height: 300.0,
           child: Column(
             mainAxisSize: MainAxisSize.max,
@@ -251,18 +220,11 @@ class _HomePageState extends State<HomePage> {
                           const SizedBox(height: 24.0),
                           Text(
                             'Upload an image to start',
-                            style: kIsWeb
-                                ? Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(
-                                        color: Theme.of(context).highlightColor)
-                                : Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color:
-                                            Theme.of(context).highlightColor),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2!
+                                .copyWith(
+                                    color: Theme.of(context).highlightColor),
                           )
                         ],
                       ),
@@ -274,7 +236,7 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(vertical: 24.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    _uploadImage();
+                    fn_uploadImage();
                   },
                   child: const Text('Upload'),
                 ),
@@ -286,7 +248,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> _cropImage() async {
+/**
+ * 수정된 이미지를 받아서 기존 변수 _croppedFile에 수정된 이미지로 덮어씌움.
+ */
+  Future<void> fn_cropImage() async {
     if (_pickedFile != null) {
       final croppedFile = await ImageCropper().cropImage(
         sourcePath: _pickedFile!.path,
@@ -294,26 +259,11 @@ class _HomePageState extends State<HomePage> {
         compressQuality: 100,
         uiSettings: [
           AndroidUiSettings(
-              toolbarTitle: 'Cropper',
-              toolbarColor: Colors.deepOrange,
-              toolbarWidgetColor: Colors.white,
-              initAspectRatio: CropAspectRatioPreset.original,
-              lockAspectRatio: false),
-          IOSUiSettings(
-            title: 'Cropper',
-          ),
-          WebUiSettings(
-            context: context,
-            presentStyle: CropperPresentStyle.dialog,
-            boundary: const CroppieBoundary(
-              width: 520,
-              height: 520,
-            ),
-            viewPort:
-                const CroppieViewPort(width: 480, height: 480, type: 'circle'),
-            enableExif: true,
-            enableZoom: true,
-            showZoomer: true,
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false,
           ),
         ],
       );
@@ -321,11 +271,27 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           _croppedFile = croppedFile;
         });
+
+        final temporaryDirectory = await getTemporaryDirectory();
+        final temporaryFilePath =
+            '${temporaryDirectory.path}/cropped_image.jpg';
+
+        // croppedFile을 복사하여 temporaryFile을 생성
+        await File(croppedFile.path).copy(temporaryFilePath);
+
+        // 일시적인 파일을 갤러리에 저장
+        await GallerySaver.saveImage(temporaryFilePath);
+
+        // 일시적인 파일을 삭제 (선택 사항)
+        File(temporaryFilePath).delete();
       }
     }
   }
 
-  Future<void> _uploadImage() async {
+  /**
+   * 이미지 업로드 함수
+   */
+  Future<void> fn_uploadImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -335,7 +301,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _clear() {
+  void fn_clear() {
     setState(() {
       _pickedFile = null;
       _croppedFile = null;
