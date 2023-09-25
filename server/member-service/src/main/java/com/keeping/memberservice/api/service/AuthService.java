@@ -33,7 +33,7 @@ public class AuthService {
     public LinkcodeResponse getLinkCode(String memberKey, String type) {
         String key = createLinkCodeKey(type, memberKey);
         Long expire = redisTemplate.getExpire(key);
-        if (expire == null) {
+        if (expire == null || expire < 0) {
             return null;
         }
         String linkCode = redisTemplate.opsForValue().get(key);
