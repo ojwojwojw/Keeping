@@ -1,5 +1,6 @@
 package com.keeping.memberservice.api.service;
 
+import com.keeping.memberservice.api.controller.response.LinkcodeResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,9 +20,45 @@ public class AuthService {
     private final RedisTemplate<String, String> redisTemplate;
     private static final String CERTIFICATION_REQUEST = "certification_request";
     private static final long CERTIFICATION_NUMBER_EXPIRE = 200;
+    private static final long ONE_DAY = 86400;
     private static final String VERIFIED_NUMBER = "verified_number_";
 
-//    public String getLinkCode(String memberKey, String )
+    /**
+     * 연결코드+만료시간 반환
+     *
+     * @param memberKey
+     * @param type
+     * @return
+     */
+    public LinkcodeResponse getLinkCode(String memberKey, String type) {
+        String key = createLinkCodeKey(type, memberKey);
+        Long expire = redisTemplate.getExpire(key);
+        if (expire == null || expire < 0) {
+            return null;
+        }
+        String linkCode = redisTemplate.opsForValue().get(key);
+        return createLinkCodeResponse(expire, linkCode);
+    }
+
+    /**
+     * 연결코드 생성
+     *
+     * @param type      부모/자녀
+     * @param memberKey 식별
+     * @return 연결코드
+     */
+    public String createLinkCode(String type, String memberKey) {
+        ValueOperations<String, String> redisString = redisTemplate.opsForValue();
+
+        String linkCode = createRandomNumCode();
+        String linkCodeKey = createLinkCodeKey(type, linkCode);
+        String linkCodeMemberKey = createLinkCodeKey(type, memberKey);
+        redisString.append(linkCodeKey, memberKey);
+        redisString.append(linkCodeMemberKey, linkCode);
+        redisTemplate.expire(linkCodeKey, ONE_DAY, TimeUnit.SECONDS);
+        redisTemplate.expire(linkCodeMemberKey, ONE_DAY, TimeUnit.SECONDS);
+        return linkCode;
+    }
 
     /**
      * 번호인증이 되었는지 확인하는 함수
@@ -86,5 +123,16 @@ public class AuthService {
         }
 
         return numStr.toString();
+    }
+
+    private String createLinkCodeKey(String type, String key) {
+        return "LINKCODE_" + type + "_" + key;
+    }
+
+    private LinkcodeResponse createLinkCodeResponse(Long expire, String linkCode) {
+        return LinkcodeResponse.builder()
+                .expire(expire.intValue())
+                .linkcode(linkCode)
+                .build();
     }
 }

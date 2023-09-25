@@ -34,6 +34,19 @@ public class MemberService implements UserDetailsService {
     private final AuthService authService;
 
     /**
+     * 부모인지, 자녀인지 확인
+     *
+     * @param memberKey
+     * @return true = 부모
+     */
+    public boolean isParent(String memberKey) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
+                new NoSuchElementException("등록되지 않은 사용자입니다."));
+        Optional<Parent> parent = parentRepository.findByMember(member);
+        return parent.isPresent();
+    }
+
+    /**
      * 로그인 후 정보요청
      *
      * @param memberKey 로그인한 멤버 키
