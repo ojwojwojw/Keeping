@@ -11,16 +11,16 @@ import static lombok.AccessLevel.PROTECTED;
 public class WithdrawMoneyDto {
 
     private String accountNumber;
-    private int money;
+    private Long money;
 
 
     @Builder
-    private WithdrawMoneyDto(String accountNumber, int money) {
+    private WithdrawMoneyDto(String accountNumber, Long money) {
         this.accountNumber = accountNumber;
         this.money = money;
     }
 
-    public static WithdrawMoneyDto toDto(String accountNumber, int money) {
+    public static WithdrawMoneyDto toDto(String accountNumber, Long money) {
         return WithdrawMoneyDto.builder()
                 .accountNumber(accountNumber)
                 .money(money)

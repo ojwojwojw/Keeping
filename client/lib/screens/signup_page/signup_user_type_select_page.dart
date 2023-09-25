@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/widgets/header.dart';
-import 'widgets/select_kid_btn.dart';
+import 'widgets/select_child_btn.dart';
 import 'widgets/select_parent_btn.dart';
-import 'signup_kid_page.dart';
+import 'signup_child_page.dart';
 import 'signup_parent_page.dart';
 
 class SignUpPage extends StatelessWidget {
@@ -22,7 +22,11 @@ class SignUpPage extends StatelessWidget {
           selectText(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬 추가
-            children: [typeKidBtn(context), typeParentBtn(context)],
+            children: [
+              typeChildBtn(context),
+              typeParentBtn(context),
+              // testBtn(context)
+            ],
           ),
         ],
       ),
@@ -49,17 +53,17 @@ Widget typeParentBtn(BuildContext context) {
   );
 }
 
-Widget typeKidBtn(BuildContext context) {
+Widget typeChildBtn(BuildContext context) {
   return ElevatedButton(
-    onPressed: () => _navigateToSignUpKidPage(context),
-    child: SelectKidBtn(),
+    onPressed: () => _navigateToSignUpChildPage(context),
+    child: SelectChildBtn(),
   );
 }
 
-void _navigateToSignUpKidPage(BuildContext context) {
+void _navigateToSignUpChildPage(BuildContext context) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => SignUpKidPage()),
+    MaterialPageRoute(builder: (context) => SignUpChildPage()),
   );
 }
 

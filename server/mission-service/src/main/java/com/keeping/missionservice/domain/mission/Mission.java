@@ -1,6 +1,7 @@
 package com.keeping.missionservice.domain.mission;
 
-import com.completionism.keeping.global.common.TimeBaseEntity;
+import com.keeping.missionservice.api.service.mission.dto.EditMissionDto;
+import com.keeping.missionservice.global.common.TimeBaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +19,8 @@ public class Mission extends TimeBaseEntity {
     @Column(name = "mission_id")
     private Long id;
     
-    // TODO: 회원 연관관계
-    @ManyToOne
-    @Column(name = "child_id")
-    private Child child;
+    @Column(name = "child_key")
+    private String childKey;
 
     @Column
     private MissionType type;
@@ -46,11 +45,11 @@ public class Mission extends TimeBaseEntity {
     
     @Column
     private Completed completed;
-    
+
     @Builder
-    public Mission(Long id, Child child, MissionType type, String todo, int money, String cheeringMessage, String childComment, LocalDate startDate, LocalDate endDate, Completed completed) {
+    public Mission(Long id, String childKey, MissionType type, String todo, int money, String cheeringMessage, String childComment, LocalDate startDate, LocalDate endDate, Completed completed) {
         this.id = id;
-        this.child = child;
+        this.childKey = childKey;
         this.type = type;
         this.todo = todo;
         this.money = money;
@@ -60,10 +59,11 @@ public class Mission extends TimeBaseEntity {
         this.endDate = endDate;
         this.completed = completed;
     }
-
-    public static Mission toMission(Child child, MissionType type, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate, Completed completed) {
+    
+    
+    public static Mission toMission(String childKey, MissionType type, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate, Completed completed) {
         return Mission.builder()
-                .child(child)
+                .childKey(childKey)
                 .type(type)
                 .todo(todo)
                 .money(money)
@@ -73,5 +73,28 @@ public class Mission extends TimeBaseEntity {
                 .completed(completed)
                 .build();
     }
-    
+
+    public void updateCheeringMessage(String cheeringMessage) {
+        this.cheeringMessage = cheeringMessage;
+    }
+
+    public void updateCompleted(Completed completed) {
+        this.completed = completed;
+    }
+
+    public void updateComment(String comment) {
+        this.childComment = comment;
+    }
+
+    public void updateMission(String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
+        this.todo = todo;
+        this.money = money;
+        this.cheeringMessage = cheeringMessage;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public void deleteMission() {
+        this.completed = Completed.DISABLED;
+    }
 }

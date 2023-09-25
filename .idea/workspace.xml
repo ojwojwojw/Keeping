@@ -4,38 +4,60 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7fccdb9f-86db-4292-98a5-77434ea3e57d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/client/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/client/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/android/app/src/main/kotlin/com/example/flutter_application_1/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/app/src/main/kotlin/com/example/flutter_application_1/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ios/Runner/AppDelegate.swift" beforeDir="false" afterPath="$PROJECT_DIR$/client/ios/Runner/AppDelegate.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ios/Runner/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/client/ios/Runner/Info.plist" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/lib/screens/page1/page1.dart" beforeDir="false" afterPath="$PROJECT_DIR$/client/lib/screens/page1/page1.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/lib/widgets/floating_btn.dart" beforeDir="false" afterPath="$PROJECT_DIR$/client/lib/widgets/floating_btn.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/linux/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/client/linux/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/linux/my_application.cc" beforeDir="false" afterPath="$PROJECT_DIR$/client/linux/my_application.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/client/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/macos/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/client/macos/Runner.xcodeproj/project.pbxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/macos/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme" beforeDir="false" afterPath="$PROJECT_DIR$/client/macos/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/macos/Runner/Configs/AppInfo.xcconfig" beforeDir="false" afterPath="$PROJECT_DIR$/client/macos/Runner/Configs/AppInfo.xcconfig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/client/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/client/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/web/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/web/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/web/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/web/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/windows/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/client/windows/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/client/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/client/windows/flutter/generated_plugins.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/windows/runner/Runner.rc" beforeDir="false" afterPath="$PROJECT_DIR$/client/windows/runner/Runner.rc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/windows/runner/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/client/windows/runner/main.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="6d17731c-f778-47d2-a326-fe836046c25d" name="Changes" comment="chore: settings" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/client/android">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitToolBoxStore">
+    <option name="projectConfigVersion" value="5" />
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="develop" />
+                    <option name="lastUsedInstant" value="1695154869" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="master" />
+                    <option name="lastUsedInstant" value="1695154868" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2VEM1wlYEcQcvdu4gZhyOPZmhM9" />
   <component name="ProjectViewState">
@@ -47,25 +69,33 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "last_opened_file_path": "C:/Users/SSAFY/Desktop/S09P22C207/client/android",
+    "last_opened_file_path": "/Users/haribo/haribo/workspace/00.KeePing_MSA/S09P22C207",
     "project.structure.last.edited": "SDKs",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
-    "show.migrate.to.gradle.popup": "false"
+    "show.migrate.to.gradle.popup": "false",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="7fccdb9f-86db-4292-98a5-77434ea3e57d" name="Changes" comment="" />
+      <changelist id="6d17731c-f778-47d2-a326-fe836046c25d" name="Changes" comment="chore: settings" />
       <created>1694396574595</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1694396574595</updated>
+      <workItem from="1695296110943" duration="17000" />
     </task>
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="chore: settings" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: settings" />
   </component>
 </project>

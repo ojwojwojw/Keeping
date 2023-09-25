@@ -25,12 +25,12 @@ import java.security.NoSuchAlgorithmException;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/bank-service/account")
+@RequestMapping("/bank-service/api/{member-key}/account")
 public class AccountApiController {
 
     private final AccountService accountService;
 
-    @PostMapping("/{member-key}")
+    @PostMapping()
     public ApiResponse<Void> addAccount(@PathVariable("member-key") String memberKey, @RequestBody AddAccountRequest request) {
         log.debug("AddAccountRequest={}", request);
 
@@ -48,7 +48,7 @@ public class AccountApiController {
         }
     }
 
-    @PostMapping("/phone-check/{member-key}")
+    @PostMapping("/phone-check")
     public ApiResponse<Void> checkPhone(@PathVariable("member-key") String memberKey, @RequestBody CheckPhoneRequest request) {
         log.debug("CheckPhoneRequest={}", request);
 
@@ -62,7 +62,7 @@ public class AccountApiController {
         return ApiResponse.ok(null);
     }
 
-    @PostMapping("/phone-auth/{member-key}")
+    @PostMapping("/phone-auth")
     public ApiResponse<Void> authPhone(@PathVariable("member-key") String memberKey, @RequestBody AuthPhoneRequest request) {
         log.debug("AuthPhoneRequest={}", request);
 
@@ -80,21 +80,21 @@ public class AccountApiController {
         }
     }
 
-    @DeleteMapping("/{member-key}/{account-number}")
+    @DeleteMapping("/{account-number}")
     public ApiResponse<Void> removeAccount(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
         log.debug("RemoveAccount={}, {}", memberKey, accountNumber);
 
         return null;
     }
 
-    @PostMapping("/allowance/{member-key}")
+    @PostMapping("/allowance")
     public ApiResponse<Void> depositAllowance(@RequestBody DepositAllowanceRequest request) {
         log.debug("DepositAllowanceRequest={}", request);
 
         return null;
     }
 
-    @PostMapping("/allowance/sub/{member-key}")
+    @PostMapping("/allowance/sub")
     public ApiResponse<Void> depositAllowanceSub(@RequestBody DepositAllowanceRequest request) {
         log.debug("DepositAllowanceSubRequest={}", request);
 

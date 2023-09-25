@@ -19,8 +19,6 @@ public class AddMissionRequest {
     private MissionType type; // 부모가 아이에게, 아이가 부모에게
     
     @NotNull
-    @Size(max = 10)
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(\\d*)[a-zA-Z\\d]{5,10}$")
     private String to; // 어떤 아이한테 보내야하는지
 
     @NotBlank

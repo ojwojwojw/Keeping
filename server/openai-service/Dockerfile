@@ -1,15 +1,7 @@
-FROM openjdk:17
+FROM openjdk:17-ea-11-jdk-slim
 
-COPY gradlew .
-COPY gradle gradle
-COPY build.gradle
-COPY settings.gradle .
-COPY src src
+VOLUME /tmp
 
-RUN chome +x ./gradlew
-RUN ./gradlew bootjar
+COPY build/libs/openai-service-1.0.jar OpenaiServer.jar
 
-FROM openjdk:17
-COPY --from=builder build/libs/*.jar app.jar
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "OpenaiServer.jar"]
