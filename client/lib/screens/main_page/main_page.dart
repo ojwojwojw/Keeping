@@ -10,6 +10,7 @@ import '../login_page/login_page.dart';
 import '../user_link_page/before_user_link_page.dart';
 import '../my_page/my_page.dart';
 import '../diary_page/child_diary_page.dart';
+import '../receipt_ocr_page/receipt_ocr_page.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -85,6 +86,17 @@ class MainPage extends StatelessWidget {
               );
             },
             child: Text('일기페이지'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ReceiptCameraPage(),
+                ),
+              );
+            },
+            child: Text('영수증 OCR 페이지'),
           ),
         ],
       )),
