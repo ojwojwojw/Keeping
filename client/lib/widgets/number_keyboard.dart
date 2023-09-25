@@ -5,12 +5,8 @@ class NumberKeyboard extends StatefulWidget {
   final onNumberPress;
   final onBackspacePress;
 
-  NumberKeyboard({
-    super.key,
-    this.onNumberPress,
-    this.onBackspacePress
-  });
-  
+  NumberKeyboard({super.key, this.onNumberPress, this.onBackspacePress});
+
   @override
   State<NumberKeyboard> createState() => _NumberKeyboardState();
 }
@@ -53,33 +49,33 @@ class _NumberKeyboardState extends State<NumberKeyboard> {
 
   renderNumberKeyboard() {
     return keys
-      .map((key) => Row(
-        children: key.map((k) {
-          return Expanded(
-            child: NumberKeyboardKey(
-              label: k, 
-              onTap: (val) {
-                if (val is Widget) {
-                  widget.onBackspacePress();
-                } else {
-                  widget.onNumberPress(val);
-                }
-              },
-              value: k,
-            ),
-          );
-        }).toList(),
-      ),).toList();
+        .map(
+          (key) => Row(
+            children: key.map((k) {
+              return Expanded(
+                child: NumberKeyboardKey(
+                  label: k,
+                  onTap: (val) {
+                    if (val is Widget) {
+                      widget.onBackspacePress();
+                    } else {
+                      widget.onNumberPress(val);
+                    }
+                  },
+                  value: k,
+                ),
+              );
+            }).toList(),
+          ),
+        )
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        ...renderNumberKeyboard(),
-      ]
-    );
+    return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+      ...renderNumberKeyboard(),
+    ]);
   }
 }

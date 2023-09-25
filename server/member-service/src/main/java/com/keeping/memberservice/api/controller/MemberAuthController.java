@@ -18,7 +18,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/member-service/auth/{memberKey}")
+@RequestMapping("/auth/{memberKey}")
 @Slf4j
 public class MemberAuthController {
 

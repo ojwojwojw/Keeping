@@ -15,43 +15,41 @@ Padding renderTextFormField({
   double width = 340,
 }) {
   return Padding(
-    padding: EdgeInsets.symmetric(vertical: 20),
-    child: Center(
-      child: SizedBox(
-        width: width,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  label,
-                  style: labelStyle(),
-                )
-              ],
-            ),
-            TextFormField(
-              onSaved: onSaved,
-              validator: validator,
-              onChanged: onChange,
-              textInputAction: TextInputAction.next,
-              controller: controller,
-              keyboardType: isNumber ? TextInputType.number : null,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              cursorColor: Color(0xFF8320E7),
-              decoration: InputDecoration(
-                hintText: hintText,
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFF8320E7)),
-                ),
-              ),
-              obscureText: isPassword,
-              inputFormatters: isNumber ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))] : null
-            )
-          ],
-        )
-      )
-    )
-  );
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Center(
+          child: SizedBox(
+              width: width,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        label,
+                        style: labelStyle(),
+                      )
+                    ],
+                  ),
+                  TextFormField(
+                      onSaved: onSaved,
+                      validator: validator,
+                      onChanged: onChange,
+                      textInputAction: TextInputAction.next,
+                      controller: controller,
+                      keyboardType: isNumber ? TextInputType.number : null,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      cursorColor: Color(0xFF8320E7),
+                      decoration: InputDecoration(
+                        hintText: hintText,
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF8320E7)),
+                        ),
+                      ),
+                      obscureText: isPassword,
+                      inputFormatters: isNumber
+                          ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))]
+                          : null)
+                ],
+              ))));
 }
 
 Padding renderBoxFormField({
@@ -64,52 +62,51 @@ Padding renderBoxFormField({
   double width = 340,
 }) {
   return Padding(
-    padding: EdgeInsets.symmetric(vertical: 20),
-    child: Center(
-      child: SizedBox(
-        width: width,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  label,
-                  style: labelStyle(),
-                )
-              ],
-            ),
-            SizedBox(height: 10,),
-            Container(
-              width: 340,
-              decoration: roundedBoxWithShadowStyle(
-                bgColor: Color(0xFFF0F0F0),
-                shadow: false,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 15),
-                child: TextFormField(
-                  onSaved: onSaved,
-                  validator: validator, 
-                  onChanged: onChange,
-                  textInputAction: TextInputAction.next,
-                  controller: controller,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  maxLines: 3,
-                  style: TextStyle(height: 1.5),
-                  cursorColor: Color(0xFF8320E7),
-                  decoration: InputDecoration(
-                    hintText: hintText,
-                    hintStyle: TextStyle(),
-                    border: InputBorder.none,
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Center(
+          child: SizedBox(
+              width: width,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        label,
+                        style: labelStyle(),
+                      )
+                    ],
                   ),
-                ),
-              )
-            )
-          ],
-        )
-      )
-    )
-  );
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                      width: 340,
+                      decoration: roundedBoxWithShadowStyle(
+                        bgColor: Color(0xFFF0F0F0),
+                        shadow: false,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 3, horizontal: 15),
+                        child: TextFormField(
+                          onSaved: onSaved,
+                          validator: validator,
+                          onChanged: onChange,
+                          textInputAction: TextInputAction.next,
+                          controller: controller,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          maxLines: 3,
+                          style: TextStyle(height: 1.5),
+                          cursorColor: Color(0xFF8320E7),
+                          decoration: InputDecoration(
+                            hintText: hintText,
+                            hintStyle: TextStyle(),
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ))
+                ],
+              ))));
 }
 
 Padding renderPhoneNumberFormField({
@@ -122,46 +119,42 @@ Padding renderPhoneNumberFormField({
   double width = 340,
 }) {
   return Padding(
-    padding: EdgeInsets.symmetric(vertical: 20),
-    child: Center(
-      child: SizedBox(
-        width: width,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  label,
-                  style: labelStyle(),
-                )
-              ],
-            ),
-            TextFormField(
-              onSaved: onSaved,
-              validator: validator,
-              onChanged: onChange,
-              textInputAction: TextInputAction.next,
-              controller: controller,
-              keyboardType: TextInputType.number,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              cursorColor: Color(0xFF8320E7),
-              decoration: InputDecoration(
-                hintText: hintText,
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFF8320E7)),
-                ),
-              ),
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly, // 숫자만
-                NumberFormatter(), // 자동하이픈
-                LengthLimitingTextInputFormatter(13)
-              ]
-            )
-          ],
-        )
-      )
-    )
-  );
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Center(
+          child: SizedBox(
+              width: width,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        label,
+                        style: labelStyle(),
+                      )
+                    ],
+                  ),
+                  TextFormField(
+                      onSaved: onSaved,
+                      validator: validator,
+                      onChanged: onChange,
+                      textInputAction: TextInputAction.next,
+                      controller: controller,
+                      keyboardType: TextInputType.number,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      cursorColor: Color(0xFF8320E7),
+                      decoration: InputDecoration(
+                        hintText: hintText,
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF8320E7)),
+                        ),
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly, // 숫자만
+                        NumberFormatter(), // 자동하이픈
+                        LengthLimitingTextInputFormatter(13)
+                      ])
+                ],
+              ))));
 }
 
 Padding renderBirthdayFormField({
@@ -174,73 +167,70 @@ Padding renderBirthdayFormField({
   double width = 340,
 }) {
   return Padding(
-    padding: EdgeInsets.symmetric(vertical: 20),
-    child: Center(
-      child: SizedBox(
-        width: width,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  label,
-                  style: labelStyle(),
-                )
-              ],
-            ),
-            TextFormField(
-              onSaved: onSaved,
-              validator: validator,
-              onChanged: onChange,
-              textInputAction: TextInputAction.next,
-              controller: controller,
-              keyboardType: TextInputType.number,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              cursorColor: Color(0xFF8320E7),
-              decoration: InputDecoration(
-                hintText: hintText,
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFF8320E7)),
-                ),
-              ),
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly, // 숫자만
-                BirthdayFormatter(), // 자동하이픈
-                LengthLimitingTextInputFormatter(10)
-              ]
-            )
-          ],
-        )
-      )
-    )
-  );
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Center(
+          child: SizedBox(
+              width: width,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        label,
+                        style: labelStyle(),
+                      )
+                    ],
+                  ),
+                  TextFormField(
+                      onSaved: onSaved,
+                      validator: validator,
+                      onChanged: onChange,
+                      textInputAction: TextInputAction.next,
+                      controller: controller,
+                      keyboardType: TextInputType.number,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      cursorColor: Color(0xFF8320E7),
+                      decoration: InputDecoration(
+                        hintText: hintText,
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF8320E7)),
+                        ),
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly, // 숫자만
+                        BirthdayFormatter(), // 자동하이픈
+                        LengthLimitingTextInputFormatter(10)
+                      ])
+                ],
+              ))));
 }
 
-Padding renderCategoryField(Function selectCategory, String selectedCategory, {double width = 340}) {
+Padding renderCategoryField(Function selectCategory, String selectedCategory,
+    {double width = 340}) {
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 20),
     child: Center(
-      child: SizedBox(
-        width: width,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  '어떤 종류인가요?',
-                  style: labelStyle(),
-                )
-              ],
-            ),
-            SizedBox(height: 20,),
-            CategoryDropdownBtn(
+        child: SizedBox(
+      width: width,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text(
+                '어떤 종류인가요?',
+                style: labelStyle(),
+              )
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          CategoryDropdownBtn(
               selectedCategory: selectedCategory,
-              selectCategory: selectCategory
-            )
-          ],
-        ),
-      )
-    ),
+              selectCategory: selectCategory)
+        ],
+      ),
+    )),
   );
 }
 
@@ -273,8 +263,8 @@ class NumberFormatter extends TextInputFormatter {
 
     var string = buffer.toString();
     return newValue.copyWith(
-      text: string,
-      selection: TextSelection.collapsed(offset: string.length));
+        text: string,
+        selection: TextSelection.collapsed(offset: string.length));
   }
 }
 
@@ -307,7 +297,7 @@ class BirthdayFormatter extends TextInputFormatter {
 
     var string = buffer.toString();
     return newValue.copyWith(
-      text: string,
-      selection: TextSelection.collapsed(offset: string.length));
+        text: string,
+        selection: TextSelection.collapsed(offset: string.length));
   }
 }

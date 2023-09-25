@@ -16,7 +16,10 @@ Widget BuildTextFormField({
         obscureText: obscureText,
         validator: validator,
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(labelText: labelText, hintText: hintText),
+        decoration: InputDecoration(
+          labelText: labelText,
+          hintText: hintText,
+        ),
       ),
       SizedBox(
         height: 16.0,

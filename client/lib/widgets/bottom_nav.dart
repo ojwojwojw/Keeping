@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:keeping/screens/keyboard_test/keyboard_test.dart';
 import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
+import 'package:keeping/screens/push_notification_page.dart/child_push_notification_page.dart';
 
 // 하단 내비게이션 클래스
 class BottomNav extends StatelessWidget {
@@ -29,7 +30,8 @@ class BottomNav extends StatelessWidget {
 Widget notificationBtn(BuildContext context) {
   return IconButton(
     onPressed: () {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => KeyboardTest()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => ChildPushNotificationPage()));
     },
     icon: Icon(Icons.notifications),
     color: Colors.black,
@@ -41,7 +43,8 @@ Widget notificationBtn(BuildContext context) {
 Widget homeBtn(BuildContext context) {
   return IconButton(
     onPressed: () {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMainPage()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (_) => ChildMainPage()));
     },
     icon: Icon(Icons.home),
     color: Colors.black,
@@ -53,7 +56,8 @@ Widget homeBtn(BuildContext context) {
 Widget myPageBtn(BuildContext context) {
   return IconButton(
     onPressed: () {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => ParentMainPage()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (_) => ParentMainPage()));
     },
     icon: Icon(Icons.person),
     color: Colors.black,

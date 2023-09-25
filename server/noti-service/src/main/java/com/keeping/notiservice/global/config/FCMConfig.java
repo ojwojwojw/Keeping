@@ -7,6 +7,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -16,9 +17,14 @@ import java.util.List;
 @Configuration
 public class FCMConfig {
     
-    @Value("${fcm.file.name}")
     private String fileName;
-    
+    private final Environment env;
+
+    public FCMConfig(Environment env) {
+        this.env = env;
+        this.fileName = this.env.getProperty("fcm.file.name");
+    }
+
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
         ClassPathResource resource = new ClassPathResource("firebase/" + fileName);

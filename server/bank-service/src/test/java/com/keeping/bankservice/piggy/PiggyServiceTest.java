@@ -4,7 +4,6 @@ import com.keeping.bankservice.api.controller.piggy.request.AddPiggyRequest;
 import com.keeping.bankservice.api.controller.piggy.response.ShowPiggyResponse;
 import com.keeping.bankservice.api.service.piggy.PiggyService;
 import com.keeping.bankservice.api.service.piggy.dto.AddPiggyDto;
-import com.keeping.bankservice.domain.piggy.Piggy;
 import com.keeping.bankservice.domain.piggy.repository.PiggyRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,7 @@ public class PiggyServiceTest {
         // given
         String memberKey = "0986724";
 
-        String fileName = "짱구"; // 파일명
+        String fileName = "짱구1"; // 파일명
         String contentType = "jpg"; // 파일타입
         String filePath = "src/test/resources/testImage/"+fileName+"."+contentType; // 파일 경로
         FileInputStream fileInputStream = new FileInputStream(filePath);

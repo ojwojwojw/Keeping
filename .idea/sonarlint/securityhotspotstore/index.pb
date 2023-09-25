@@ -53,3 +53,5 @@ S
 Q.idea/sonarlint/securityhotspotstore/a/e/ae4b963d0dd6f112d63895c3dfaf29c69b79ad3f,0\a\0aa8b72a033706096beef5140b91abb396de2b16
 Å
 Q.idea/sonarlint/securityhotspotstore/a/1/a174750247cb9badc1c0abc768112832b9a84d28,b\c\bcc34244b2d941bf3b11f6dba8cc2b567020e81d
+N
+client/android/settings.gradle,c/a/ca6a73e144dce2a0288fcd9db1af03977d445202

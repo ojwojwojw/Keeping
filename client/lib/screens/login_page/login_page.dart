@@ -1,15 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
+import 'package:keeping/util/render_field.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/util/build_text_form_field.dart';
 
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();
+Dio dio = Dio();
 final _loginKey = GlobalKey<FormState>();
 
 class LoginPage extends StatefulWidget {
@@ -20,9 +24,27 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String loginResult = '로그인 안 된 상태';
-  String userId = _userId.text;
-  String userPw = _userPw.text;
+  String _loginResult = '로그인 안 된 상태';
+  String _loginId = '';
+  String _loginPw = '';
+
+  void handleUserId(data) {
+    setState(() {
+      _loginId = data;
+    });
+  }
+
+  void handleUserPw(data) {
+    setState(() {
+      _loginPw = data;
+    });
+  }
+
+  handleLogin(result) {
+    setState(() {
+      _loginResult = result;
+    });
+  }
 
   @override
   //페이지를 초기에 접속하면 input 받는 컨트롤러 초기화
@@ -33,18 +55,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // 페이지가 파기될 때 컨트롤러를 해제
-
   @override
   void dispose() {
     _userId.dispose();
     _userPw.dispose();
     super.dispose();
-  }
-
-  handleLogin(result) {
-    setState(() {
-      loginResult = result;
-    });
   }
 
   @override
@@ -66,7 +81,47 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [userIdField(), userPwField(), Text(loginResult)],
+                  children: [
+                    Container(
+                      height: 20,
+                    ),
+                    renderTextFormField(
+                      label: '아이디',
+                      onChange: (val) {
+                        String userId = val;
+                        handleUserId(userId);
+                      },
+                      validator: (val) {
+                        if (val.length < 1) {
+                          return '아이디를 입력해주세요';
+                        }
+                        return null;
+                      },
+                      controller: _userId,
+                    ),
+                    Container(
+                      height: 20,
+                    ),
+                    renderTextFormField(
+                      label: '비밀번호',
+                      onChange: (val) {
+                        String userPw = val;
+                        handleUserPw(userPw);
+                      },
+                      validator: (val) {
+                        if (val.length < 1) {
+                          return '비밀번호를 입력해주세요';
+                        }
+                        return null;
+                      },
+                      controller: _userPw,
+                      isPassword: true,
+                    ),
+                    Container(
+                      height: 20,
+                    ),
+                    Text(_loginResult),
+                  ],
                 ),
               ),
 
@@ -77,7 +132,9 @@ class _LoginPageState extends State<LoginPage> {
                   login(context, handleLogin);
                 },
               ),
-
+              Container(
+                height: 20,
+              ),
               //회원가입 버튼
               ConfirmBtn(
                 text: '회원가입',
@@ -91,67 +148,36 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-}
 
-Future<void> login(BuildContext context, Function handleLogin) async {
-  String userId = _userId.text;
-  String userPw = _userPw.text;
-  final response = await httpPost(
-    '/member-service/login',
-    null,
-    {'loginId': userId, 'loginPw': userPw},
-  );
-  if (response != null) {
-    handleLogin('성공');
-  } else {
-    handleLogin('실패');
-  }
-  print('로그인 시도');
-}
-
-Widget userIdField() {
-  return BuildTextFormField(
-    controller: _userId,
-    labelText: '아이디',
-    hintText: '아이디를 입력해주세요',
-    validator: (value) {
-      if (value == null || value.isEmpty) {
-        return '필수 항목입니다';
+  Future<void> login(context, Function handleLogin) async {
+    final data = {
+      'loginId': _loginId,
+      'loginPw': _loginPw,
+    };
+    try {
+      var response = await dio.post(
+        'http://j9c207.p.ssafy.io:8000/member-service/login',
+        data: data,
+      );
+      if (response.statusCode == 200) {
+        print('로그인에 성공했어요!');
+        handleLogin('로그인 성공');
+        // final userData = json.decode(response.data.toString());
+        // print(userData);
+        // context.read<UserInfoProvider>().login(userData);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainPage(),
+          ),
+        );
+      } else {
+        print('로그인에 실패!');
+        handleLogin('아이디 및 비밀번호를 확인해주세요.');
       }
-      return null;
-    },
-  );
-}
-
-Widget userPwField() {
-  return BuildTextFormField(
-    controller: _userPw,
-    labelText: '비밀번호',
-    hintText: '비밀번호를 입력해주세요',
-    obscureText: true,
-    validator: (value) {
-      if (value == null || value.isEmpty) {
-        return '필수 항목입니다';
-      }
-      return null;
-    },
-  );
-}
-
-Future<dynamic> httpPost(
-    String url, Map<String, String>? headers, Map<String, dynamic> body) async {
-  try {
-    var response = await http.post(Uri.parse(url),
-        headers: headers, body: json.encode(body));
-    if (response.statusCode == 200) {
-      var result = jsonDecode(response.body);
-      return result;
-    } else {
-      print('HTTP Request Failed with status code: ${response.statusCode}');
-      return null;
+    } catch (err) {
+      print(err);
+      handleLogin('아이디 및 비밀번호를 확인해주세요.');
     }
-  } catch (e) {
-    print('Error during HTTP request: $e');
-    return null;
   }
 }
