@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/account_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
@@ -9,6 +10,7 @@ import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:provider/provider.dart';
 
 class AllowanceLedgerPage extends StatefulWidget {
   const AllowanceLedgerPage({super.key});
@@ -57,6 +59,22 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
       'detail': []
     },
   ];
+
+  String? type;
+  String? accessToken;
+  String? memberKey;
+  String? accountNumber;
+  int? balance;
+
+  @override
+  void initState() {
+    super.initState();
+    type = context.read<UserInfoProvider>().type;
+    // accessToken = context.read<UserInfoProvider>().accessToken;
+    // memberKey = context.read<UserInfoProvider>().memberKey;
+    // accountNumber = context.read<UserInfoProvider>().accountNumber;
+    // balance = context.read<UserInfoProvider>().balance;
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -67,11 +85,12 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
         elementColor: Colors.white,
       ),
       body: FutureBuilder(
-        future: getAccountList(accessToken: 'accessToken', memberKey: 'memberKey', accountNumber: 'accountNumber'),
+        future: accessToken == null && memberKey == null && accountNumber == null ? null :
+          getAccountList(accessToken: accessToken!, memberKey: memberKey!, accountNumber: accountNumber!),
         builder: (context, snapshot) {
           return Column(
             children: [
-              AccountInfo(),
+              AccountInfo(type: type, balance: balance,),
               Expanded(
                 child: Container(
                   decoration: lightGreyBgStyle(),

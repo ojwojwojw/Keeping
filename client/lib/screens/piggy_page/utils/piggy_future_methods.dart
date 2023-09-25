@@ -11,7 +11,7 @@ Future<dynamic> getPiggyList({
     );
     return response;
   } catch (e) {
-    rethrow;
+    print(e);
   }
 
   // // 이후 처리는 나중에..

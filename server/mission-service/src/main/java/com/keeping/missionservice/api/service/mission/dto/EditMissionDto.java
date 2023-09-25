@@ -10,8 +10,6 @@ import java.time.LocalDate;
 @Data
 public class EditMissionDto {
 
-    private String memberKey;
-
     private Long missionId;
 
     private String todo; // 미션 내용
@@ -25,8 +23,7 @@ public class EditMissionDto {
     private LocalDate endDate; // 미션 마감일
 
     @Builder
-    public EditMissionDto(String memberKey, Long missionId, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
-        this.memberKey = memberKey;
+    public EditMissionDto(Long missionId, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
         this.missionId = missionId;
         this.todo = todo;
         this.money = money;
@@ -38,7 +35,6 @@ public class EditMissionDto {
     // Dto 객체로 변환
     public static EditMissionDto toDto(EditMissionRequest request) {
         return EditMissionDto.builder()
-                .memberKey(request.getMemberKey())
                 .missionId(request.getMissionId())
                 .todo(request.getTodo())
                 .money(request.getMoney())

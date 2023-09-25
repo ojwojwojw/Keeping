@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/piggy_page/make_piggy_page.dart';
 import 'package:keeping/screens/piggy_page/piggy_detail_page.dart';
 import 'package:keeping/screens/piggy_page/utils/piggy_future_methods.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_info.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_info_card.dart';
 import 'package:keeping/styles.dart';
-import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:provider/provider.dart';
 
 final List<Map<String, dynamic>> tempData = [
   {
@@ -37,8 +38,25 @@ final List<Map<String, dynamic>> tempData = [
 
 const String type = 'PARENT';
 
-class PiggyPage extends StatelessWidget {
+class PiggyPage extends StatefulWidget {
   PiggyPage({super.key});
+
+  @override
+  State<PiggyPage> createState() => _PiggyPageState();
+}
+
+class _PiggyPageState extends State<PiggyPage> {
+  String? type;
+  String? accessToken;
+  String? memberKey;
+
+  @override
+  void initState() {
+    super.initState();
+    type = context.read<UserInfoProvider>().type;
+    // accessToken = context.read<UserInfoProvider>().accessToken;
+    // memberKey = context.read<UserInfoProvider>().memberKey;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +67,7 @@ class PiggyPage extends StatelessWidget {
         elementColor: Colors.white,
       ),
       body: FutureBuilder(
-        future: getPiggyList(accessToken: 'accessToken', memberKey: 'memberKey'),
+        future: (accessToken != null && memberKey != null) ? getPiggyList(accessToken: accessToken!, memberKey: memberKey!) : null,
         builder: (context, snapshot) {
           print('스냅샷스냅샷스냅샷 ${snapshot.toString()}');
           // if (snapshot.connectionState == ConnectionState.waiting) {

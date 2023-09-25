@@ -11,6 +11,7 @@ class MoneyRecord extends StatefulWidget {
   final num money;
   final num balance;
   final Map<String, dynamic>? detail;
+  final bool onlyTime;
 
   MoneyRecord({
     super.key,
@@ -18,7 +19,8 @@ class MoneyRecord extends StatefulWidget {
     required this.storeName,
     required this.money,
     required this.balance,
-    this.detail
+    this.detail,
+    this.onlyTime = true,
   });
 
   @override
@@ -66,7 +68,7 @@ class _MoneyRecordState extends State<MoneyRecord> {
                         style: bigStyle(),
                       ),
                       Text(
-                        formattedTime(widget.date),
+                        widget.onlyTime ? formattedTime(widget.date) : formattedFullDate(widget.date),
                       )
                     ],
                   ),

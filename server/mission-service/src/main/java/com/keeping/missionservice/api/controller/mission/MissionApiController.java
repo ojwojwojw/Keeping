@@ -20,7 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/mission-service")
+@RequestMapping("/mission-service/api/{member_key}")
 @Slf4j
 public class MissionApiController {
 
@@ -34,6 +34,7 @@ public class MissionApiController {
      */
     @PostMapping
     public ApiResponse<Long> addMission(
+            @PathVariable(name = "member_key") String memberKey,
             @Valid @RequestBody AddMissionRequest request
     ) {
         log.debug("addMission :: request={}", request);
@@ -42,14 +43,14 @@ public class MissionApiController {
         AddMissionDto dto = AddMissionDto.toDto(request);
 
         try {
-            Long missionId = missionService.addMission(dto);
+            Long missionId = missionService.addMission(memberKey, dto);
             return ApiResponse.ok(missionId);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
         }
     }
 
-    @GetMapping("/{member_key}")
+    @GetMapping
     public ApiResponse<List<MissionResponse>> showMission(
             @PathVariable("member_key") String memberKey
     ) {
@@ -57,7 +58,7 @@ public class MissionApiController {
         return ApiResponse.ok(missionResponses);
     }
 
-    @GetMapping("/{member_key}/{mission_id}")
+    @GetMapping("/{mission_id}")
     public ApiResponse<MissionResponse> showDetailMission(
             @PathVariable("member_key") String memberKey,
             @PathVariable("mission_id") Long missionId
@@ -72,10 +73,11 @@ public class MissionApiController {
 
     @PatchMapping
     public ApiResponse<Long> editMission(
+            @PathVariable(name = "member_key") String memberKey,
             @Valid @RequestBody EditMissionRequest request
     ) {
         try {
-            Long missionId = missionService.editMission(EditMissionDto.toDto(request));
+            Long missionId = missionService.editMission(memberKey, EditMissionDto.toDto(request));
             return ApiResponse.ok(missionId);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
@@ -84,10 +86,11 @@ public class MissionApiController {
 
     @PatchMapping("/comment")
     public ApiResponse<Long> addComment(
+            @PathVariable(name = "member_key") String memberKey,
             @Valid @RequestBody AddCommentRequest request
             ) {
         try {
-            Long missionId = missionService.addComment(AddCommentDto.toDto(request));
+            Long missionId = missionService.addComment(memberKey, AddCommentDto.toDto(request));
             return ApiResponse.ok(missionId);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
@@ -96,17 +99,18 @@ public class MissionApiController {
 
     @PatchMapping("/complete")
     public ApiResponse<Long> editComplete(
-        @Valid @RequestBody EditCompleteRequest request    
+            @PathVariable(name = "member_key") String memberKey,
+            @Valid @RequestBody EditCompleteRequest request
     ) {
         try {
-            Long missionId = missionService.editCompleted(EditCompleteDto.toDto(request));
+            Long missionId = missionService.editCompleted(memberKey, EditCompleteDto.toDto(request));
             return ApiResponse.ok(missionId);
         } catch (NotFoundException | AlreadyExistException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
         }
     }
 
-    @DeleteMapping("/{member_key}/{mission_id}")
+    @DeleteMapping("/{mission_id}")
     public ApiResponse<Long> removeMission(
             @PathVariable(name = "member_key") String memberKey,
             @PathVariable(name = "mission_id") Long missionId

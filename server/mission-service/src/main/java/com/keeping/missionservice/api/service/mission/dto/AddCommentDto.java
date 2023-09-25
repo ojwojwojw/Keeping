@@ -9,22 +9,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AddCommentDto {
 
-    private String memberKey;
-
     private Long missionId;
 
     private String comment;
 
     @Builder
-    public AddCommentDto(String memberKey, Long missionId, String comment) {
-        this.memberKey = memberKey;
+    public AddCommentDto(Long missionId, String comment) {
         this.missionId = missionId;
         this.comment = comment;
     }
 
     public static AddCommentDto toDto(AddCommentRequest request) {
         return AddCommentDto.builder()
-                .memberKey(request.getMemberKey())
                 .missionId(request.getMissionId())
                 .comment(request.getComment())
                 .build();

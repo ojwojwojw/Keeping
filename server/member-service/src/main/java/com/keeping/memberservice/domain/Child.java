@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.time.LocalTime;
+
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -18,13 +20,17 @@ public class Child extends TimeBaseEntity {
     @Column(name = "child_id")
     private Long id;
 
+    private LocalTime questionTime;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
+
     @Builder
-    private Child(Long id, Member member) {
+    public Child(Long id, LocalTime questionTime, Member member) {
         this.id = id;
+        this.questionTime = questionTime;
         this.member = member;
     }
 }
