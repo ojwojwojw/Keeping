@@ -60,6 +60,7 @@ class ParentMyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(text: '마이페이지', elementColor: Colors.black),
+      // appBar: MyHeader(text: '마이페이지', elementColor: Colors.black),
       body: Center(
         child: Container(
           width: 300,

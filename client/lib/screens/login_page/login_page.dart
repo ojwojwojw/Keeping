@@ -64,18 +64,18 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: MyHeader(
+        text: '로그인',
+        elementColor: Colors.black,
+        icon: Icon(Icons.arrow_circle_up),
+        path: LoginPage(),
+      ),
       body: SingleChildScrollView(
         child: Form(
           key: _loginKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MyHeader(
-                text: '로그인',
-                elementColor: Colors.black,
-                icon: Icon(Icons.arrow_circle_up),
-                path: LoginPage(),
-              ),
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Column(
