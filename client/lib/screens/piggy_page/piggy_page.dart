@@ -36,8 +36,6 @@ final List<Map<String, dynamic>> tempData = [
   }
 ];
 
-const String type = 'PARENT';
-
 class PiggyPage extends StatefulWidget {
   PiggyPage({super.key});
 
