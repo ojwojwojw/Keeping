@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/main_page/main_page.dart';
-import 'package:keeping/util/build_phone_number_form_field.dart';
-import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
-import 'package:keeping/util/build_text_form_field.dart';
 // import 'package:keeping/util/build_phone_number_form_field.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:keeping/util/render_field.dart';
+import 'package:keeping/widgets/render_field.dart';
 
 Dio dio = Dio();
 
