@@ -43,7 +43,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Long addQuestion(String memberKey, AddQuestionDto dto) {
 
-        // 이미 오늘 날짜로 질문이 등록되어 있다면 에러 발생
+        // 이미 내일 날짜로 질문이 등록되어 있다면 에러 발생
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         Optional<QuestionResponse> checkQuestionAdded = questionQueryRepository.findByChildKeyAndCreatedDate(dto.getChildMemberKey(), now);
         if (checkQuestionAdded.isPresent()) {
@@ -176,18 +176,16 @@ public class QuestionServiceImpl implements QuestionService {
             String parentMemberKey = questionAiResponse.getParentMemberKey();
             String childMemberKey = questionAiResponse.getChildMemberKey();
             
-            // 이미 오늘 날짜로 질문이 등록되어 있다면 에러 발생
+            // 이미 오늘 날짜로 질문이 등록되어 있다면 패쓰
             LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
-            Optional<QuestionResponse> checkQuestionAdded = questionQueryRepository.findByChildKeyAndCreatedDate(childMemberKey, now);
-            if (checkQuestionAdded.isPresent()) {
-                throw new AlreadyExistException("409", HttpStatus.CONFLICT, "이미 해당 날짜에 질문이 존재합니다.");
-            }
-    
-            // 질문 등록 시간 넣기
-            ApiResponse<MemberTimeResponse> memberTime = memberFeignClient.getMemberTime(parentMemberKey);
-            LocalTime registrationTime = memberTime.getResultBody().getRegistrationTime();
+            Optional<QuestionResponse> checkQuestionAdded = questionQueryRepository.findByChildKeyAndCreatedDateAtNow(childMemberKey, now);
+            if (!checkQuestionAdded.isPresent()) {
+                // 질문 등록 시간 넣기
+                ApiResponse<MemberTimeResponse> memberTime = memberFeignClient.getMemberTime(parentMemberKey);
+                LocalTime registrationTime = memberTime.getResultBody().getRegistrationTime();
 
-            questions.add(Question.toQuestion(parentMemberKey, childMemberKey, questionAiResponse.getAnswer(), false, registrationTime));
+                questions.add(Question.toQuestion(parentMemberKey, childMemberKey, questionAiResponse.getAnswer(), false, registrationTime));
+            }
         }
         questionRepository.saveAll(questions);
     }
