@@ -27,6 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -50,7 +54,7 @@ public class PiggyServiceImpl implements PiggyService {
     private final RedisUtils redisUtils;
 
     @Override
-    public Long addPiggy(String memberKey, AddPiggyDto dto) throws IOException {
+    public Long addPiggy(String memberKey, AddPiggyDto dto) throws JsonProcessingException {
         String piggyAccountNumber = createNewPiggyAccountNumber();
 
         if (dto.getUploadImage() == null) {
@@ -70,13 +74,46 @@ public class PiggyServiceImpl implements PiggyService {
             folder.mkdirs();
         }
 
+        System.out.println(", 저장 위치: " + folder.getAbsolutePath());
+
         MultipartFile file = dto.getUploadImage();
         String originalFileName = file.getOriginalFilename();
 
         if (!originalFileName.isEmpty()) {
             String saveFileName = UUID.randomUUID().toString() + originalFileName.substring(originalFileName.lastIndexOf("."));
 
-            file.transferTo(new File(folder, saveFileName));
+            System.out.println("파일 이름: " + saveFileName);
+
+            try {
+                if(os.contains("win")) {
+                    file.transferTo(new File(folder, saveFileName));
+                }
+                else {
+//                    Path filepath = Paths.get(piggyLinuxPath, saveFileName);
+//
+//                    try (OutputStream outputStream = Files.newOutputStream(filepath)) {
+//                        outputStream.write(file.getBytes());
+//                    }
+
+//                Path copyOfLocation = Paths.get(folder + saveFileName);
+//                Files.copy(file.getInputStream(), copyOfLocation, StandardCopyOption.REPLACE_EXISTING);
+
+                File destFile = new File(folder, saveFileName);
+
+                // 파일 권한 적용
+                Runtime.getRuntime().exec("sudo chown ubuntu " + destFile);
+                Runtime.getRuntime().exec("sudo chmod 777 " + destFile);
+                destFile.setWritable(true); // 쓰기 가능 설정
+                destFile.setReadable(true);	// 읽기 가능 설정
+                destFile.setExecutable(true); // 실행 가능 설정
+
+                file.transferTo(destFile);
+                }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+
 
 //            Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), passwordEncoder.encode(dto.getAuthPassword()), originalFileName, saveFileName);
             Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), originalFileName, saveFileName);
