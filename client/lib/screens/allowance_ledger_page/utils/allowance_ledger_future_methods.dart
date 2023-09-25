@@ -4,16 +4,15 @@ import 'package:keeping/util/dio_method.dart';
 Future<dynamic> getAccountList({
   required String accessToken, required String memberKey, required String accountNumber
 }) async {
-  final response = await dioGet(
-    accessToken: accessToken,
-    url: '/bank-service/account-history/$memberKey/$accountNumber',
-  );
-
-  // 이후 처리는 나중에..
-  if (response != null) {
+  try {
+    final response = await dioGet(
+      accessToken: accessToken,
+      url: '/bank-service/api/$memberKey/account-history/$accountNumber',
+    );
+    print('계좌의 상세 내역 포함한 거래 내역 조회 응답 $response');
     return response;
-  } else {
-    return null;
+  } catch (e) {
+    print('계좌의 상세 내역 포함한 거래 내역 조회 에러 $e');
   }
 }
 
@@ -22,21 +21,20 @@ Future<dynamic> createAccountDetail({
   required String accessToken, required String memberKey,
   required int accountHistoryId, required String content, required int money
 }) async {
-  final response = await dioPost(
-    accessToken: accessToken,
-    url: '/bank-service/account-detail/$memberKey',
-    data: {
-      "accountHistoryId": accountHistoryId,
-      "content": content,
-      "money": money
-    }
-  );
-
-  // 이후 처리는 나중에..
-  if (response != null) {
+  try {
+    final response = await dioPost(
+      accessToken: accessToken,
+      url: '/bank-service/account-detail/$memberKey',
+      data: {
+        "accountHistoryId": accountHistoryId,
+        "content": content,
+        "money": money
+      }
+    );
+    print('거래 상세 내용 입력 응답 $response');
     return response;
-  } else {
-    return null;
+  } catch (e) {
+    print('거래 상세 내용 입력 에러 $e');
   }
 }
 
@@ -44,15 +42,14 @@ Future<dynamic> createAccountDetail({
 Future<dynamic> getAccountListByDate({
   required String accessToken, required String memberKey, required String accountNumber, required String date,
 }) async {
-  final response = await dioGet(
-    accessToken: accessToken,
-    url: '/bank-service/account-history/$memberKey/$accountNumber/$date',
-  );
-
-  // 이후 처리는 나중에..
-  if (response != null) {
+  try {
+    final response = await dioGet(
+      accessToken: accessToken,
+      url: '/bank-service/api/$memberKey/account-history/$accountNumber/$date',
+    );
+    print('날짜별로 거래 내역 반환 응답 $response');
     return response;
-  } else {
-    return null;
+  } catch (e) {
+    print('날짜별로 거래 내역 반환 에러 $e');
   }
 }
