@@ -3,6 +3,7 @@ package com.keeping.memberservice.api.service.member;
 import com.keeping.memberservice.api.controller.response.ChildrenResponse;
 import com.keeping.memberservice.api.controller.response.LinkResultResponse;
 import com.keeping.memberservice.api.controller.response.LoginMember;
+import com.keeping.memberservice.api.controller.response.RelationshipCheckResponse;
 import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.dto.AddMemberDto;
 import com.keeping.memberservice.domain.Child;
@@ -36,6 +37,25 @@ public class MemberService implements UserDetailsService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthService authService;
+
+    /**
+     * 부모 자녀 관계인지 확인
+     *
+     * @return
+     */
+    public RelationshipCheckResponse relationCheck(String parentKey, String childKey) {
+        Member parentMember = memberRepository.findByMemberKey(parentKey).orElseThrow(() -> new NoSuchElementException("잘못된 회원키입니다."));
+        Member childMember = memberRepository.findByMemberKey(childKey).orElseThrow(() -> new NoSuchElementException("잘못된 회원키입니다."));
+
+        Parent parent = parentRepository.findByMember(parentMember).orElseThrow(() -> new NoSuchElementException("잘못된 회원키입니다."));
+        Child child = childRepository.findByMember(childMember).orElseThrow(() -> new NoSuchElementException("잘못된 회원키입니다."));
+
+        Optional<Link> findLink = linkRepository.findByParentAndChild(parent, child);
+
+        return RelationshipCheckResponse.builder()
+                .isParentialRelationship(findLink.isPresent())
+                .build();
+    }
 
     /**
      * 부모인지, 자녀인지 확인

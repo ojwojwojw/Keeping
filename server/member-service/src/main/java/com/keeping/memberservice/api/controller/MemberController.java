@@ -3,6 +3,7 @@ package com.keeping.memberservice.api.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keeping.memberservice.api.ApiResponse;
 import com.keeping.memberservice.api.controller.request.*;
+import com.keeping.memberservice.api.controller.response.RelationshipCheckResponse;
 import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.MemberService;
 import com.keeping.memberservice.api.service.member.dto.AddMemberDto;
@@ -29,6 +30,11 @@ public class MemberController {
     private final SmsService smsService;
     private final MemberService memberService;
 
+    @PostMapping("/relationship")
+    public ApiResponse<RelationshipCheckResponse> isParentialRelationship(RelationshipCheckRequest request) {
+        RelationshipCheckResponse response = memberService.relationCheck(request.getParentKey(), request.getChildKey());
+        return ApiResponse.ok(response);
+    }
 
     @PostMapping("/password")
     public ApiResponse<String> getNewPassword(@RequestBody GetNewPasswordRequest request) {
