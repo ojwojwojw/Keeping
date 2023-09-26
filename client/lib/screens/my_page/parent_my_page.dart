@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/my_page/util/handle_logout.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/screens/my_page/select_theme_page.dart';
 import 'package:keeping/screens/my_page/password_edit_page.dart';
@@ -7,6 +8,9 @@ import 'package:keeping/screens/my_page/child_management_page.dart';
 
 import 'package:keeping/widgets/bottom_modal.dart';
 import 'package:path/path.dart';
+import 'package:dio/dio.dart';
+
+Dio dio = Dio();
 
 class ParentMyPage extends StatelessWidget {
   const ParentMyPage({Key? key}) : super(key: key);
@@ -60,6 +64,7 @@ class ParentMyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(text: '마이페이지', elementColor: Colors.black),
+      // appBar: MyHeader(text: '마이페이지', elementColor: Colors.black),
       body: Center(
         child: Container(
           width: 300,
@@ -148,16 +153,23 @@ class ParentMyPage extends StatelessWidget {
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
-            print('로그아웃 중');
+            handlelogout();
+            // handlelogout();
           },
-          child: Text('확인'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF8320E7), // 배경색 설정
+          ),
+          child: Text('네'),
         ),
         SizedBox(width: 20),
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('취소'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF8320E7),
+          ),
+          child: Text('아니오'),
         ),
       ],
     );
@@ -199,7 +211,6 @@ class ParentMyPage extends StatelessWidget {
             // 예를 들어, 서버에 회원 탈퇴 요청을 보내는 등의 작업
             // 작업이 성공하면 앱을 종료하거나 로그인 페이지로 이동할 수 있습니다.
             Navigator.of(context).pop();
-            // Navigator.of(context).pop();
           },
           child: Text('확인'),
         ),

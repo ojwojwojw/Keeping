@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
+import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 
@@ -64,18 +65,18 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: MyHeader(
+        text: '로그인',
+        elementColor: Colors.black,
+        icon: Icon(Icons.arrow_circle_up),
+        path: LoginPage(),
+      ),
       body: SingleChildScrollView(
         child: Form(
           key: _loginKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MyHeader(
-                text: '로그인',
-                elementColor: Colors.black,
-                icon: Icon(Icons.arrow_circle_up),
-                path: LoginPage(),
-              ),
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Column(
@@ -153,30 +154,54 @@ class _LoginPageState extends State<LoginPage> {
       'loginId': _loginId,
       'loginPw': _loginPw,
     };
+
     try {
       var response = await dio.post(
         'http://j9c207.p.ssafy.io:8000/member-service/login',
         data: data,
       );
+
       if (response.statusCode == 200) {
+        // 로그인에 성공한 경우
         print('로그인에 성공했어요!');
+
+        // 응답 헤더에서 'token' 및 'memberKey' 값을 추출
+        String? token = response.headers.value('token');
+        String? memberKey = response.headers.value('memberKey');
+
+        // token 및 memberKey를 출력
+        print('Token: $token');
+        print('MemberKey: $memberKey');
+
+        // 나머지 처리 코드 추가
         handleLogin('로그인 성공');
-        // final userData = json.decode(response.data.toString());
-        // print(userData);
-        // context.read<UserInfoProvider>().login(userData);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MainPage(),
-          ),
-        );
+        requestUserInfo(memberKey, token);
       } else {
+        // 로그인에 실패한 경우
         print('로그인에 실패!');
         handleLogin('아이디 및 비밀번호를 확인해주세요.');
       }
     } catch (err) {
       print(err);
       handleLogin('아이디 및 비밀번호를 확인해주세요.');
+    }
+  }
+
+  void requestUserInfo(memberKey, accessToken) async {
+    Options options = Options(
+      headers: {
+        'Authorization': 'Bearer $accessToken', // 토큰 추가
+      },
+    );
+    print(memberKey);
+    try {
+      var response = await dio.get(
+        'http://j9c207.p.ssafy.io:8000/member-service/auth/api/$memberKey/login-check',
+        options: options,
+      );
+      print(response);
+    } catch (err) {
+      print(err);
     }
   }
 }
