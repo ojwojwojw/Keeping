@@ -112,7 +112,6 @@ class _PhonenumEditPageState extends State<PhonenumEditPage> {
       'loginPw': _curUserPw.text,
     };
 
-    // `_curUserPw` 컨트롤러는 이미 해제되었으므로 `handleEditDisable()` 메서드를 호출할 필요가 없습니다.
     print(data);
     print('휴대폰 번호 수정');
   }
