@@ -101,7 +101,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
               : getAccountList(accessToken: _accessToken, memberKey: _memberKey, accountNumber: _accountNumber, targetKey: _memberKey),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                print('스냅샷스냅샷스냅샷 ${snapshot.data}');
+                print('용돈기입장 페이지 ${snapshot.data}');
                 var response = snapshot.data;
                 if (response['resultBody'].isEmpty) {
                   return Text('거래내역이 없습니다.');
