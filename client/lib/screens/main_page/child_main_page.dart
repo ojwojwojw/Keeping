@@ -57,27 +57,18 @@ class _ChildMainPageState extends State<ChildMainPage> {
                 FutureBuilder(
                   future: getAccountInfo(accessToken: _accessToken, memberKey: _memberKey, targetKey: _targetKey ?? _memberKey), 
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Text('로딩중');
-                    } else if (snapshot.connectionState == ConnectionState.done) {
-                      print(snapshot.data);
-                      if (snapshot.hasError) {
-                        return const Text('에러');
-                      } else if (snapshot.hasData) {
-                        var response = snapshot.data;
-                        if (response['resultStatus']['resultCode'] == '404') {
-                          return MakeAccountBtn();
-                        } else {
-                          Provider.of<AccountInfoProvider>(context, listen: false).setAccountInfo(response['resultBody']);
-                          return AccountInfo(
-                            balance: response['resultBody']['balance'],
-                          );
-                        }
+                    if (snapshot.hasData) {
+                      var response = snapshot.data;
+                      if (response['resultStatus']['resultCode'] == '404') {
+                        return MakeAccountBtn();
                       } else {
-                        return const Text('스냅샷 데이터 없음');
-                      }
+                        Provider.of<AccountInfoProvider>(context, listen: false).setAccountInfo(response['resultBody']);
+                        return AccountInfo(
+                          balance: response['resultBody']['balance'],
+                        );
+                        }
                     } else {
-                      return Text('퓨처 객체 null');
+                      return Text('로딩중');
                     }
                   },
                 ),

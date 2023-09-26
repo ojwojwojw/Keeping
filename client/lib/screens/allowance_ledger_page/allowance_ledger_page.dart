@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/account_info.dart';
@@ -69,11 +70,11 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
   @override
   void initState() {
     super.initState();
-    _parent = context.read<UserInfoProvider>().parent;
+    // _parent = context.read<UserInfoProvider>().parent;
     // _accessToken = context.read<UserInfoProvider>().accessToken;
     // _memberKey = context.read<UserInfoProvider>().memberKey;
     // _accountNumber = '171-682675-422-27';
-    // _accountNumber = context.read<UserInfoProvider>().accountNumber;
+    _accountNumber = context.read<AccountInfoProvider>().accountNumber;
     // _balance = context.read<UserInfoProvider>().balance;
     _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjk3ZGQzYi1iNDlkLTQ0MTgtYTdmNy1iNmZkNzNiNjMzYzMiLCJleHAiOjE2OTU4MTU0NjJ9.FedPJTdtFy4nJqCi1Ayhtm4798HXfg3CAj-nJM_cYaE';
     _memberKey = 'f297dd3b-b49d-4418-a7f7-b6fd73b633c3';
@@ -89,73 +90,66 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
       ),
       body: Column(
         children: [
-          AccountInfo(parent: _parent, balance: _balance,),
+          AccountInfo(
+            accessToken: _accessToken,
+            memberKey: _memberKey,
+            parent: _parent, 
+            balance: _balance,
+          ),
           FutureBuilder(
-            future: _parent != null && _parent! ? getAccountList(accessToken: _accessToken, memberKey: _memberKey, accountNumber: _accountNumber, targetKey: 'd')
+            future: _parent != null && _parent! == true ? getAccountList(accessToken: _accessToken, memberKey: _memberKey, accountNumber: _accountNumber, targetKey: 'd')
               : getAccountList(accessToken: _accessToken, memberKey: _memberKey, accountNumber: _accountNumber, targetKey: _memberKey),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Text('로딩중');
-              } else if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError) {
-                  return const Text('에러');
-                } else if (snapshot.hasData) {
-              // List<Post> _posts = snapshot.data as List<Post>; 이런 식으로 정의하기
-              // return Column(
-              //   children: [
-                  print('스냅샷스냅샷스냅샷 ${snapshot.data}');
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: lightGreyBgStyle(),
-                          width: double.infinity,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
-                                // ..._tempData.map((e) => 
-                                //   e['detail'].isEmpty ? 
-                                //     MoneyRecord(
-                                //       date: DateTime.parse(e['date']), 
-                                //       storeName: e['store_name'], 
-                                //       money: e['money'], 
-                                //       balance: e['balance'],
-                                //       accountHistoryId: e['id'],
-                                //     )
-                                //   :
-                                //     MoneyRecordWithDetail(
-                                //       date: DateTime.parse(e['date']), 
-                                //       storeName: e['store_name'], 
-                                //       money: e['money'], 
-                                //       balance: e['balance'],
-                                //       detail: e['detail'],
-                                //     )
-                                // ).toList(),
-                              ]
-                            ),
-                          )
-                        )
-                      )
-                    ],
-                  );
-
-                } else {
-                  return const Text('스냅샷 데이터 없음');
+              if (snapshot.hasData) {
+                print('스냅샷스냅샷스냅샷 ${snapshot.data}');
+                var response = snapshot.data;
+                if (response['resultBody'].isEmpty) {
+                  return Text('거래내역이 없습니다.');
                 }
+                return Expanded(
+                  child: Container(
+                    decoration: lightGreyBgStyle(),
+                    width: double.infinity,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
+                          // ..._tempData.map((e) => 
+                          //   e['detail'].isEmpty ? 
+                          //     MoneyRecord(
+                          //       date: DateTime.parse(e['date']), 
+                          //       storeName: e['store_name'], 
+                          //       money: e['money'], 
+                          //       balance: e['balance'],
+                          //       accountHistoryId: e['id'],
+                          //     )
+                          //   :
+                          //     MoneyRecordWithDetail(
+                          //       date: DateTime.parse(e['date']), 
+                          //       storeName: e['store_name'], 
+                          //       money: e['money'], 
+                          //       balance: e['balance'],
+                          //       detail: e['detail'],
+                          //     )
+                          // ).toList(),
+                        ]
+                      ),
+                    )
+                  )
+                );
               } else {
-                return Text('퓨처 객체 null');
+                return const Text('로딩중');
               }
             }
           ),
         ],
       ),   
-      // floatingActionButton: FloatingBtn(
-      //   text: '소비지도',
-      //   icon: Icon(Icons.map),
-      //   path: ChildSpendingRoutePage(),
-      // ),
-      // bottomNavigationBar: BottomNav(),
+      floatingActionButton: FloatingBtn(
+        text: '소비지도',
+        icon: Icon(Icons.map),
+        path: ChildSpendingRoutePage(),
+      ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 }

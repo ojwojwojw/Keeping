@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/fcmSetting.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/online_payment_request_provider.dart';
 import 'package:keeping/provider/piggy_provider.dart';
 
@@ -73,6 +74,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => AddPiggyProvider()),
     ChangeNotifierProvider(create: (_) => OnlinePaymentRequestFormProvider()),
     ChangeNotifierProvider(create: (_) => UserInfoProvider()),
+    ChangeNotifierProvider(create: (_) => AccountInfoProvider()),
   ], child: const MaterialApp(home: MainPage())));
 }
 

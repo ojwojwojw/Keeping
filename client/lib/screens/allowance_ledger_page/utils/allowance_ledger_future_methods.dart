@@ -7,16 +7,16 @@ Future<dynamic> getAccountList({
   required String? accessToken, required String? memberKey, required String? accountNumber, required String? targetKey
 }) async {
   if (accessToken != null && memberKey != null && accountNumber != null && targetKey != null) {
-    // try {
+    try {
       final response = await dioGet(
         accessToken: accessToken,
         url: '/bank-service/api/$memberKey/account-history/$targetKey/$accountNumber',
       );
       print('계좌의 상세 내역 포함한 거래 내역 조회 응답 $response');
       return response;
-    // } catch (e) {
-      // print('계좌의 상세 내역 포함한 거래 내역 조회 에러 $e');
-    // }
+    } catch (e) {
+      print('계좌의 상세 내역 포함한 거래 내역 조회 에러 $e');
+    }
   } else {
     return;
   }
@@ -86,6 +86,26 @@ Future<dynamic> getAccountInfo({
       }
     } catch (e) {
       print('계좌 정보 반환 에러 $e');
+    }
+  } else {
+    return;
+  }
+}
+
+// 월 지출 총액
+Future<dynamic> getMonthTotalExpense({
+  required String? accessToken, required String? memberKey, required String? targetKey, required String? date,
+}) async {
+  if (accessToken != null && memberKey != null && targetKey != null && date != null) {
+    try {
+      print(date);
+      final response = await dioGet(
+        accessToken: accessToken, 
+        url: '/bank-service/api/$memberKey/account-history/$targetKey/expense/$date'
+      );
+      print('월 지출 총액 응답 $response');
+    } catch (e) {
+      print('월 지출 총액 에러 $e');
     }
   } else {
     return;

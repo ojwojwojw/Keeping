@@ -45,19 +45,18 @@ class AccountInfo extends StatelessWidget {
                           fontSize: 30
                         ),
                       ),
-                      Text('8월 총 지출액: 120,000원')
                     ],
                   )
                 ],
               ),
               SizedBox(height: 20,),
-              ElevatedButton(
-                onPressed: () {
+              // ElevatedButton(
+              //   onPressed: () {
                   
-                },
-                style: accountInfoRoundedBtn(300, 50),
-                child: Text('용돈 조르기'),
-              )
+              //   },
+              //   style: accountInfoRoundedBtn(300, 50),
+              //   child: Text('용돈 조르기'),
+              // )
             ],
           ),
         ),
