@@ -32,6 +32,21 @@ public class QuestionQueryRepository {
                         question.createdDate))
                 .from(question)
                 .where(question.childKey.eq(childKey),
+                        question.createdDate.between(createdDate.plusDays(1).atStartOfDay(), createdDate.plusDays(2).atStartOfDay()))
+                .fetchOne());
+    }
+
+    public Optional<QuestionResponse> findByChildKeyAndCreatedDateAtNow(String childKey, LocalDate createdDate) {
+        return Optional.ofNullable(queryFactory
+                .select(constructor(QuestionResponse.class,
+                        question.id,
+                        question.content,
+                        question.parentAnswer,
+                        question.childKey,
+                        question.isCreated,
+                        question.createdDate))
+                .from(question)
+                .where(question.childKey.eq(childKey),
                         question.createdDate.between(createdDate.atStartOfDay(), createdDate.plusDays(1).atStartOfDay()))
                 .fetchOne());
     }

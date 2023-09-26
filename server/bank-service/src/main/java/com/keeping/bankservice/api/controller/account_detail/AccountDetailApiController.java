@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/bank-service/api/account-detail")
+@RequestMapping("/bank-service/api/{member-key}/account-detail")
 public class AccountDetailApiController {
 
     private final AccountDetailService accountDetailService;
 
-    @PostMapping("/{member-key}")
+    @PostMapping
     public ApiResponse<Void> addAccountDetail(@PathVariable("member-key") String memberKey, @RequestBody AddAccountDetailRequest request) {
         log.debug("AddAccountDetailRequest={}", request);
 
