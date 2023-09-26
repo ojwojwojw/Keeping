@@ -28,6 +28,8 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -121,13 +123,23 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ShowAccountResponse showAccount(String memberKey) {
-        ShowAccountResponse result = accountQueryRepository.showAccount(memberKey);
+    public ShowAccountResponse showAccount(String memberKey, String targetKey) {
+        // TODO: 두 고유 번호가 부모-자녀 관계인지 확인하는 부분 필요
+
+        ShowAccountResponse result = accountQueryRepository.showAccount(targetKey);
 
         // TODO: id가 null로 나오는 거 잡아야 함
         System.out.println("검색: " + result.toString());
 
         return result;
+    }
+
+    @Override
+    public Long showBalance(String memberKey) {
+        List<Account> accountList = accountRepository.findByMemberKey(memberKey)
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 계좌가 존재하지 않습니다."));
+
+        return accountList.get(0).getBalance();
     }
 
     private String createNewAccountNumber() throws JsonProcessingException {
