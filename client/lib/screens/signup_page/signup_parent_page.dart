@@ -138,6 +138,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                     Text(_idDupRes),
                     renderTextFormField(
                       label: '비밀번호',
+                      hintText: '비밀번호를 입력해주세요.',
                       onChange: handleSignupDisable(),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -146,6 +147,13 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                           return '비밀번호는 5자 이상이 되어야 합니다.';
                         } else if (value.length > 25) {
                           return '비밀번호는 25자 이하가 되어야 합니다.';
+                        } else if (!value.contains(RegExp(r'[A-Za-z]'))) {
+                          return '비밀번호에는 영문자가 포함되어야 합니다.';
+                        } else if (!value.contains(RegExp(r'[0-9]'))) {
+                          return '비밀번호에는 숫자가 포함되어야 합니다.';
+                        } else if (!value
+                            .contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>]'))) {
+                          return '비밀번호에는 특수 문자가 포함되어야 합니다.';
                         }
                         return null;
                       },
@@ -153,13 +161,14 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                       isPassword: true,
                     ),
                     renderTextFormField(
-                      label: '비밀번호확인',
+                      label: '비밀번호 확인',
+                      hintText: '비밀번호를 한 번 더 입력해주세요.',
                       onChange: handleSignupDisable(),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '필수 항목입니다';
                         } else if (value.length < 5) {
-                          return '비밀번호는 5자 이상이 되어야 합니다';
+                          return '비밀번호는 5자 이상이 되어야 합니다.';
                         } else if (value.length > 25) {
                           return '비밀번호는 25자 이하가 되어야 합니다.';
                         } else if (value != _userPw.text) {
@@ -172,6 +181,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                     ),
                     renderTextFormField(
                         label: '이름',
+                        hintText: '이름을 입력해주세요.',
                         onChange: handleSignupDisable(),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -182,10 +192,13 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                         controller: _userName),
                     renderBirthdayFormField(
                       label: '생년월일',
+                      hintText: '생년월일을 입력해주세요.',
                       onChange: handleSignupDisable(),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '필수 항목입니다';
+                        } else if (value.length != 10) {
+                          return '생년월일을 정확히 입력해주세요.';
                         }
                         return null;
                       },
@@ -195,10 +208,13 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                       children: [
                         renderPhoneNumberFormField(
                             label: '휴대폰 번호',
+                            hintText: '휴대폰 번호를 입력해주세요.',
                             onChange: handleSignupDisable(),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return '필수 항목입니다';
+                              } else if (value.length != 13) {
+                                return '휴대폰 번호를 정확히 입력해주세요.';
                               }
                               return null;
                             },
@@ -216,15 +232,19 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                       children: [
                         renderTextFormField(
                           label: '인증번호 입력',
+                          hintText: '인증번호를 입력해주세요.',
                           onChange: handleSignupDisable(),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return '필수 항목입니다';
+                            } else if (value.length != 6) {
+                              return '인증번호는 정확히 6글자여야 합니다.';
                             }
                             return null;
                           },
                           width: 220,
                           controller: _userVerificationNumber,
+                          isNumber: true,
                         ),
                         //인증번호 넣어주는 로직 - certification
                         _authenticationBtn(context, '인증번호 확인', () {
