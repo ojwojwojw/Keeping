@@ -45,6 +45,7 @@ public class OnlineServiceImpl implements OnlineService {
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 온라인 결제 조르기가 존재하지 않습니다."));
 
         online.updateApproveStatus(dto.getApprove());
+        online.updateComment(dto.getComment());
 
         if(dto.getApprove() == APPROVE) {
             // TODO: 부모님한테서 출금하는 것 필요
