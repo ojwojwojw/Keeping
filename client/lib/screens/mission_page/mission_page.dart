@@ -123,7 +123,7 @@ class _MissonPageState extends State<MissionPage> {
                     })),
             //이하 테스트 요소들///
             // cameraButton(context),
-            // ocrButton(context),
+            ocrButton(context),
             // prividerBtn(context),
             // arrayProviderBtn(context),
           ],

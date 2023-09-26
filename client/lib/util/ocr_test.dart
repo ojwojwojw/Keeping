@@ -42,10 +42,10 @@ class _OcrTestState extends State<OcrTest> {
                       parsedText.images[imageIndex].fields[fieldIndex];
                   return Column(
                     children: [
-                      Text('Value Type: ${field.valueType}'),
-                      Text('Infer Text: ${field.inferText}'),
-                      Text(
-                          'Infer Confidence: ${field.inferConfidence.toStringAsFixed(2)}'),
+                      // Text('Value Type: ${field.valueType}'),
+                      Text('${field.inferText}'),
+                      // Text(
+                      //     'Infer Confidence: ${field.inferConfidence.toStringAsFixed(2)}'),
                     ],
                   );
                 },
