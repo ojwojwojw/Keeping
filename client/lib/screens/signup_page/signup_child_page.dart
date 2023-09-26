@@ -330,8 +330,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
 
   Future<void> idDupliCheck(
       BuildContext context, Function handledupCheck) async {
-    final id = _userId;
-    print(id);
+    final id = _userId.text;
     try {
       var response = await dio.get(
         'http://j9c207.p.ssafy.io:8000/member-service/api/id/${id}',

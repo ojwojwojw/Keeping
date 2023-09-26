@@ -6,12 +6,16 @@ class UserInfoProvider with ChangeNotifier {
   String _childrenList = '';
   bool _parent = true;
   String _fcmToken = '';
+  String _accessToken = '';
+  String _memberKey = '';
 
   String get name => _name;
   String get profileImage => _profileImage;
   String get childrenList => _childrenList;
   bool get parent => _parent;
   String get fcmToken => _fcmToken;
+  String get accessToken => _accessToken;
+  String get memberkey => _memberKey;
 
   void updateUserInfo({
     String? name,
@@ -31,6 +35,32 @@ class UserInfoProvider with ChangeNotifier {
     }
     if (parent != null) {
       _parent = parent;
+    }
+    notifyListeners();
+  }
+
+  void updateFcmToken({
+    String? fcmToken,
+  }) {
+    print('$fcmToken 하이하이');
+
+    if (fcmToken != null) {
+      _fcmToken = fcmToken;
+    }
+    // print(_fcmToken);
+    // print('토큰 변경 완');
+    notifyListeners();
+  }
+
+  void updateTokenMemberKey({
+    String? accessToken,
+    String? memberKey,
+  }) {
+    if (accessToken != null) {
+      _accessToken = accessToken;
+    }
+    if (memberKey != null) {
+      _memberKey = memberKey;
     }
     notifyListeners();
   }

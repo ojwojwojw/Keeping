@@ -77,7 +77,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
     _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NGFiMjY2MS00N2EyLTQ4NmMtOWY3Zi1mOGNkNTkwMGRiMTAiLCJleHAiOjE2OTU3MDM4NzZ9.Pmks2T9tCqjazb4IUgx1GVUCbtOz97DsBBGKrwkGd5c';
     _memberKey = '84ab2661-47a2-486c-9f7f-f8cd5900db10';
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

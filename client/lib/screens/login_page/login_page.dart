@@ -10,6 +10,7 @@ import 'package:keeping/widgets/confirm_btn.dart';
 
 import 'package:dio/dio.dart';
 import 'package:keeping/widgets/render_field.dart';
+import 'package:provider/provider.dart';
 
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();
@@ -165,17 +166,18 @@ class _LoginPageState extends State<LoginPage> {
         // 로그인에 성공한 경우
         print('로그인에 성공했어요!');
 
-        // 응답 헤더에서 'token' 및 'memberKey' 값을 추출
         String? token = response.headers.value('token');
         String? memberKey = response.headers.value('memberKey');
-
-        // token 및 memberKey를 출력
-        print('Token: $token');
-        print('MemberKey: $memberKey');
+        print(memberKey);
 
         // 나머지 처리 코드 추가
         handleLogin('로그인 성공');
         requestUserInfo(memberKey, token);
+        Provider.of<UserInfoProvider>(context, listen: false)
+            .updateTokenMemberKey(
+          accessToken: token,
+          memberKey: memberKey,
+        );
       } else {
         // 로그인에 실패한 경우
         print('로그인에 실패!');
@@ -199,7 +201,19 @@ class _LoginPageState extends State<LoginPage> {
         'http://j9c207.p.ssafy.io:8000/member-service/auth/api/$memberKey/login-check',
         options: options,
       );
-      print(response);
+      Map<String, dynamic> jsonResponse = json.decode(response.toString());
+      String? _name = jsonResponse['resultBody']['name'];
+      String? _profileImage = jsonResponse['resultBody']['profileImage'];
+      String? _childrenList = jsonResponse['resultBody']['childrenList'];
+      bool? _parent = jsonResponse['resultBody']['parent'];
+      print('$_name, $_profileImage, $_childrenList, $_parent');
+
+      Provider.of<UserInfoProvider>(context, listen: false).updateUserInfo(
+        name: _name,
+        profileImage: _profileImage,
+        childrenList: _childrenList,
+        parent: _parent,
+      );
     } catch (err) {
       print(err);
     }

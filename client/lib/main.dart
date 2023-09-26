@@ -63,8 +63,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 //여기에 프로바이더를 추가해
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  String? firebaseToken = await fcmSetting();
   await dotenv.load(fileName: "lib/.env");
+  UserInfoProvider userInfoProvider = UserInfoProvider();
+  String? firebaseToken = await fcmSetting(userInfoProvider);
+  print(firebaseToken);
+  print('여기지롱');
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => Counts()), //Counts 인스턴스 추가
