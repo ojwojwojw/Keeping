@@ -60,15 +60,4 @@ class UserInfoProvider with ChangeNotifier {
     }
     notifyListeners();
   }
-
-  void updateFcmToken({String? fcmToken}) {
-    print('$fcmToken 하이하이');
-
-    if (fcmToken != null) {
-      _fcmToken = fcmToken;
-    }
-    // print(_fcmToken);
-    // print('토큰 변경 완');
-    notifyListeners();
-  }
 }
