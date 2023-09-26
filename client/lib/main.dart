@@ -76,7 +76,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => PiggyDetailProvider()),
     ChangeNotifierProvider(create: (_) => AddPiggyProvider()),
     ChangeNotifierProvider(create: (_) => OnlinePaymentRequestFormProvider()),
-    ChangeNotifierProvider(create: (_) => UserInfoProvider()),
+    // ChangeNotifierProvider(create: (_) => UserInfoProvider()),
     ChangeNotifierProvider.value(
         value: userInfoProvider), // UserInfoProvider 제공
   ], child: const MaterialApp(home: MainPage())));
