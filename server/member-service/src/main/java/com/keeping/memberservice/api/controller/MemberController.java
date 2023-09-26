@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keeping.memberservice.api.ApiResponse;
 import com.keeping.memberservice.api.controller.request.*;
 import com.keeping.memberservice.api.controller.response.RelationshipCheckResponse;
+import com.keeping.memberservice.api.controller.response.TypeCheckResult;
 import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.MemberService;
 import com.keeping.memberservice.api.service.member.dto.AddMemberDto;
@@ -29,6 +30,12 @@ public class MemberController {
     private final AuthService authService;
     private final SmsService smsService;
     private final MemberService memberService;
+
+    @PostMapping("/type-check")
+    public ApiResponse<TypeCheckResult> typeCheck(TypeCheckRequest request) {
+        boolean result = memberService.typeCheck(request.getMemberKey(), request.getType());
+        return ApiResponse.ok(TypeCheckResult.builder().isTypeRight(result).build());
+    }
 
     @PostMapping("/relationship")
     public ApiResponse<RelationshipCheckResponse> isParentialRelationship(RelationshipCheckRequest request) {
