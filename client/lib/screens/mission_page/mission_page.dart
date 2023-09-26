@@ -109,32 +109,16 @@ class _MissonPageState extends State<MissionPage> {
             FilteringBar(),
             SizedBox(
               height: 10,
-            ),
-            Expanded(
-                child: ListView.builder(
-                    itemCount: missions.length,
-                    itemBuilder: (context, index) {
-                      final mission = missions[index];
-                      // return (Text('test'));
-                      return Column(children: [
-                        Text('미션명 들어갈 곳'),
-                        MissionBox(mission: mission)
-                      ]);
-                    })),
+            )
             //이하 테스트 요소들///
             // cameraButton(context),
-            ocrButton(context),
+            // ocrButton(context),
             // prividerBtn(context),
             // arrayProviderBtn(context),
           ],
         )));
   }
 }
-
-//미션 박스들을 ListView로 출력하는 위젯//
-// Widget missionBoxs() {
-//   return
-// }
 
 // 미션을 생성페이지로 이동하는 박스//
 class CreateMissonBox extends StatelessWidget {
