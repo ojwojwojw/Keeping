@@ -157,7 +157,11 @@ class _AllowanceLedgerDetailCreatePageState
               ),
             ),
             Column(
-              children: [Text(content), Text(money.toString()), Text(category)],
+              children: [
+                Text(_content),
+                Text(_money.toString()),
+                Text(_category)
+              ],
             )
           ],
         ),
