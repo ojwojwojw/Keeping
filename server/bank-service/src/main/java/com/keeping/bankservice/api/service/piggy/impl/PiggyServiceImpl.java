@@ -97,8 +97,10 @@ public class PiggyServiceImpl implements PiggyService {
     }
 
     @Override
-    public List<ShowPiggyResponse> showPiggy(String memberKey) throws IOException {
-        List<ShowPiggyDto> result = piggyQueryRepository.showPiggy(memberKey);
+    public List<ShowPiggyResponse> showPiggy(String memberKey, String targetKey) throws IOException {
+        // 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
+
+        List<ShowPiggyDto> result = piggyQueryRepository.showPiggy(targetKey);
 
         List<ShowPiggyResponse> response = new ArrayList<>();
 
