@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -69,8 +70,11 @@ public class PiggyApiController {
             piggyService.savingPiggy(memberKey, dto);
         } catch (NotFoundException | NoAuthorizationException e) {
             return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
+        } catch (URISyntaxException e) {
+            log.debug("예외 발생 : {}", e.toString());
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "저금통에 저금하는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
         }
-        return null;
+        return ApiResponse.ok(null);
     }
 
     @DeleteMapping("/{account-number}")

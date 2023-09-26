@@ -80,26 +80,31 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
             account = accountService.withdrawMoney(memberKey, withdrawMoneyDto);
         }
 
-        // 장소의 위도, 경도, 카테고리 가져오기
-        Map keywordResponse = useKakaoLocalApi(true, dto.getStoreName());
-        Map addressResponse = useKakaoLocalApi(false, dto.getAddress());
-
         LargeCategory largeCategory = ETC;
         String categoryType = null;
-        try {
-            categoryType = ((LinkedHashMap) ((ArrayList) keywordResponse.get("documents")).get(0)).get("category_group_code").toString();
-            largeCategory = mappingCategory(categoryType);
-        } catch (NullPointerException e) {
-            categoryType = "ETC";
+
+        if(dto.getStoreName() != null && !dto.getStoreName().equals("저금통 저금")) {
+            // 장소의 위도, 경도, 카테고리 가져오기
+            Map keywordResponse = useKakaoLocalApi(true, dto.getStoreName());
+            try {
+                categoryType = ((LinkedHashMap) ((ArrayList) keywordResponse.get("documents")).get(0)).get("category_group_code").toString();
+                largeCategory = mappingCategory(categoryType);
+            } catch (NullPointerException e) {
+                categoryType = "ETC";
+            }
         }
 
         Double latitude = null, longitude = null;
-        try {
-            latitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("y"));
-            longitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("x"));
-        } catch (NullPointerException e) {
-            latitude = null;
-            longitude = null;
+
+        if(dto.getAddress() != null && !dto.getAddress().equals("")) {
+            Map addressResponse = useKakaoLocalApi(false, dto.getAddress());
+            try {
+                latitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("y"));
+                longitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("x"));
+            } catch (NullPointerException e) {
+                latitude = null;
+                longitude = null;
+            }
         }
 
         // 새로운 거래 내역 등록

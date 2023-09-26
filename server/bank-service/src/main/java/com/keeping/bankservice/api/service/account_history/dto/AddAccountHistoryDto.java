@@ -37,4 +37,14 @@ public class AddAccountHistoryDto {
                 .build();
     }
 
+    public static AddAccountHistoryDto toDto(String accountNumber, String storeName, boolean type, Long money, String address) {
+        return AddAccountHistoryDto.builder()
+                .accountNumber(accountNumber)
+                .storeName(storeName)
+                .type(type)
+                .money(money)
+                .address(address)
+                .build();
+    }
+
 }

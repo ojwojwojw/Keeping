@@ -14,12 +14,12 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/bank-service/api/piggy-history")
+@RequestMapping("/bank-service/api/{member-key}/piggy-history")
 public class PiggyHistoryApiController {
 
     private final PiggyHistoryService piggyHistoryService;
 
-    @GetMapping("/{member-key}/{piggy-id}")
+    @GetMapping("/{piggy-id}")
     public ApiResponse<List<ShowPiggyHistoryResponse>> showPiggyHistory(@PathVariable("member-key") String memberKey, @PathVariable("piggy-id") Long piggyId) {
         log.debug("ShowPiggyHistory");
 
