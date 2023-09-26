@@ -168,7 +168,6 @@ class _LoginPageState extends State<LoginPage> {
 
         String? token = response.headers.value('token');
         String? memberKey = response.headers.value('memberKey');
-        print(memberKey);
 
         // 나머지 처리 코드 추가
         handleLogin('로그인 성공');
