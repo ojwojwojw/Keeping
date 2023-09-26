@@ -39,9 +39,9 @@ import java.util.Optional;
 @Slf4j
 public class MissionServiceImpl implements MissionService {
     
-    private MemberFeignClient memberFeignClient;
-    private BankFeignClient bankFeignClient;
-    private NotiFeignClient notiFeignClient;
+    private final MemberFeignClient memberFeignClient;
+    private final BankFeignClient bankFeignClient;
+    private final NotiFeignClient notiFeignClient;
     private final MissionQueryRepository missionQueryRepository;
     private final MissionRepository missionRepository;
     
@@ -68,8 +68,9 @@ public class MissionServiceImpl implements MissionService {
             }
 
             // 부모의 계좌에 들어있는 금액 한도 내에서 가능
-            ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
-            int limitAmount = accountBalanceFromParent.getResultBody().getBalance();
+//            ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
+            ApiResponse<Long> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
+            Long limitAmount = accountBalanceFromParent.getResultBody();
 
             // 현재 완료하지 않은 미션 총액
             Optional<Integer> missionTotalMoney = missionQueryRepository.countMoney(dto.getTo());
@@ -174,9 +175,10 @@ public class MissionServiceImpl implements MissionService {
                     && dto.getCompleted().equals(Completed.YET)) {
 
                 // 부모 통장의 잔액과 미션 총액을 비교
-                ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
-                int limitAmount = accountBalanceFromParent.getResultBody().getBalance();
-                int totalMissionMoney = 0;
+//                ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
+                ApiResponse<Long> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
+                Long limitAmount = accountBalanceFromParent.getResultBody();
+                Long totalMissionMoney = 0l;
 
                 // 아이들 목록 불러오기
                 ChildResponseList children = memberFeignClient.getChildren(memberKey).getResultBody();
@@ -236,9 +238,10 @@ public class MissionServiceImpl implements MissionService {
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
 
         // 부모 통장의 잔액과 미션 총액을 비교
-        ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
-        int limitAmount = accountBalanceFromParent.getResultBody().getBalance();
-        int totalMissionMoney = 0;
+//        ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
+        ApiResponse<Long> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
+        Long limitAmount = accountBalanceFromParent.getResultBody();
+        Long totalMissionMoney = 0l;
 
         // 아이들 목록 불러오기
         ChildResponseList children = memberFeignClient.getChildren(memberKey).getResultBody();
@@ -273,13 +276,13 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
-    public Integer testBalance(String memberKey) {
+    public Long testBalance(String memberKey) {
         
         log.debug("mission-test : {" + memberKey + "}");
-        ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
+        ApiResponse<Long> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
         
         log.debug("bank-feign-client");
-        int limitAmount = accountBalanceFromParent.getResultBody().getBalance();
+        Long limitAmount = accountBalanceFromParent.getResultBody();
         
         log.debug("limitAmount: {" + limitAmount + "}");
         

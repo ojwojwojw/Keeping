@@ -15,20 +15,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "/member-service/api/{member_key}")
+@FeignClient(name = "member-service")
 public interface MemberFeignClient {
 
-    @PostMapping("/relationship")
-    ApiResponse<MemberRelationshipResponse> getMemberRelationship(
-            @PathVariable(name = "member_key") String memberKey,
-            @RequestBody MemberRelationshipRequest request);
+    @PostMapping("/member-service/api/{member-key}/relationship")
+    ApiResponse<MemberRelationshipResponse> getMemberRelationship(@PathVariable(name = "member-key") String memberKey, @RequestBody MemberRelationshipRequest request);
 
-    @PostMapping("/type-check")
-    ApiResponse<MemberTypeResponse> getMemberType(
-            @PathVariable(name = "member_key") String memberKey,
-            @RequestBody MemberTypeRequest request);
+    @PostMapping("/member-service/api/{member-key}/type-check")
+    ApiResponse<MemberTypeResponse> getMemberType(@PathVariable(name = "member-key") String memberKey, @RequestBody MemberTypeRequest request);
 
-    @GetMapping("/children")
-    ApiResponse<ChildResponseList> getChildren(@PathVariable(name = "member_key") String memberKey);
+    @GetMapping("/member-service/api/{member-key}/children")
+    ApiResponse<ChildResponseList> getChildren(@PathVariable(name = "member-key") String memberKey);
     
 }

@@ -31,13 +31,13 @@ public class MissionApiController {
      * bank 테스트
      */
     @GetMapping("/test")
-    public ApiResponse<Integer> testBalance(
+    public ApiResponse<Long> testBalance(
             @PathVariable(name = "member_key") String memberKey
     ) {
         log.debug("[ mission ]");
 
-        Integer integer = missionService.testBalance(memberKey);
-        return ApiResponse.ok(integer);
+        Long balance = missionService.testBalance(memberKey);
+        return ApiResponse.ok(balance);
     }
 
     /**

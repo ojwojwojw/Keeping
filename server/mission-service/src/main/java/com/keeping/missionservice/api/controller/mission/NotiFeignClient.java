@@ -7,9 +7,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "/noti-service")
+@FeignClient(name = "noti-service")
 public interface NotiFeignClient {
 
-    @PostMapping("/send")
+    @PostMapping("/noti-service/send")
     ApiResponse<NotiResponse> sendNoti(@RequestBody SendNotiRequest request);
 }

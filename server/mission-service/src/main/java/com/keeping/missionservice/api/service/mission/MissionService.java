@@ -26,5 +26,5 @@ public interface MissionService {
     public Long removeMission(String memberKey, Long missionId);
 
 
-    public Integer testBalance(String memberKey);
+    public Long testBalance(String memberKey);
 }
