@@ -114,16 +114,16 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: MyHeader(
+        text: '회원가입',
+        elementColor: Colors.black,
+        icon: Icon(Icons.arrow_circle_up),
+      ),
       body: SingleChildScrollView(
         child: Form(
           key: _signupKey,
           child: Column(
             children: [
-              MyHeader(
-                text: '회원가입',
-                elementColor: Colors.black,
-                icon: Icon(Icons.arrow_circle_up),
-              ),
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Column(
@@ -433,7 +433,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
     print(data);
     try {
       var response = await dio.post(
-        'http://j9c207.p.ssafy.io:8000/member-service/api/join/parent',
+        'http://j9c207.p.ssafy.io:8000/member-service/api/join/child',
         data: data,
       );
       final jsonResponse = json.decode(response.toString());
