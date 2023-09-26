@@ -7,7 +7,7 @@ server:
 logging:
   level:
     org.hibernate: debug
-    com.keeping.memberservice: debug
+    com.keeping.missionservice: debug
 
 ---
 # MSA setting
@@ -23,7 +23,7 @@ eureka:
 #spring default setting
 spring:
   application:
-    name: member-service
+    name: mission-service
   rabbitmq:
     #    host: 127.0.0.1
     host: rabbitmq

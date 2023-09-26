@@ -3,13 +3,16 @@ import 'package:keeping/provider/piggy_provider.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_detail_chart.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
+import 'package:keeping/widgets/child_tag.dart';
 import 'package:provider/provider.dart';
-
-const String type = 'PARENT';
+import 'package:text_scroll/text_scroll.dart';
 
 class PiggyDetailInfo extends StatefulWidget {
+  final String? type;
+
   PiggyDetailInfo({
     super.key,
+    required this.type,
   });
 
   @override
@@ -17,6 +20,7 @@ class PiggyDetailInfo extends StatefulWidget {
 }
 
 class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,18 +32,11 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Padding(
-            //   padding: const EdgeInsets.only(top: 40, bottom: 20),
-            //   child: Text(
-            //     context.watch<PiggyDetailProvider>().content!,
-            //     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
-            //   ),
-            // ),
             Padding(
               padding: const EdgeInsets.only(top: 30),
               child: Column(
                 children: [
-                  if (type == 'PARENT') _childTag(childName: '김첫째'),
+                  if (widget.type == 'PARENT') ChildTag(childName: '김첫째', text: '저금통',),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -48,11 +45,13 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
                         children: [
                           SizedBox(
                             width: 200,
-                            child: Text(
-                              context.watch<PiggyDetailProvider>().content!,
-                              softWrap: true,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                            child: Flexible(
+                              child: TextScroll(
+                                context.watch<PiggyDetailProvider>().content!,
+                                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                                intervalSpaces: 10,
+                                velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
+                              ),
                             ),
                           ),
                           Text(formattedMoney(context.watch<PiggyDetailProvider>().balance), style: TextStyle(fontSize: 40, color: Colors.white),),
@@ -69,27 +68,4 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
       ),
     );
   }
-}
-
-Widget _childTag({required String childName}) {
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 10),
-    child: Container(
-      decoration: _childTagStyle(),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        child: Text('$childName 저금통', style: TextStyle(fontSize: 18, color: Colors.white),),
-      )
-    ),
-  );
-}
-
-BoxDecoration _childTagStyle() {
-  return BoxDecoration(
-    borderRadius: BorderRadius.circular(50.0), // 둥근 테두리 반경 설정
-    border: Border.all(
-      color: Colors.white, // 테두리 색상 설정
-      width: 1.0, // 테두리 두께 설정
-    ),
-  );
 }

@@ -100,12 +100,17 @@ public class MemberController {
 
         MessageDto message = MessageDto.builder()
                 .to(phone)
-                // TODO: 2023-09-12 예리 - 인증번호 문자 다듬기
-                .content(randomNumber)
+                .content(getRandomNumberMessage(randomNumber))
                 .build();
 
         smsService.sendSmsMessage(message);
         return ApiResponse.ok("인증번호가 전송되었습니다.");
+    }
+
+    private String getRandomNumberMessage(String randomNumber) {
+        return "[키핑]\n" +
+                "본인 인증 번호\n"
+                + "[" + randomNumber + "]";
     }
 
     private String makeUserPhone(String phoneString) {

@@ -4,7 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:keeping/firebase_options.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
 }
 
 Future<String?> fcmSetting() async {
@@ -13,13 +13,14 @@ Future<String?> fcmSetting() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-  await messaging.setForegroundNotificationPresentationOptions(
-    alert: true,
+//iOS
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true, // Required to display a heads up notification
     badge: true,
     sound: true,
   );
-
-  NotificationSettings settings = await messaging.requestPermission(
+//Android
+  await FirebaseMessaging.instance.requestPermission(
     alert: true,
     announcement: true,
     badge: true,
@@ -28,37 +29,49 @@ Future<String?> fcmSetting() async {
     provisional: true,
     sound: true,
   );
-  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+  // Android용 새 Notification Channel
+
+  const AndroidNotificationChannel androidNotificationChannel =
+      AndroidNotificationChannel(
     'keeping_notification',
     'keeping_notification',
     description: '키핑 알림',
     importance: Importance.max,
   );
-//forground 푸시 알림 설정
+
+  // Notification Channel을 디바이스에 생성
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+      ?.createNotificationChannel(androidNotificationChannel);
+
+  await flutterLocalNotificationsPlugin.initialize(
+      InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      ),
+      onDidReceiveNotificationResponse:
+          (NotificationResponse response) async {});
 
 // foreground 푸시 알림 핸들링
-  FirebaseMessaging.onMessageOpenedApp.listen(
+  FirebaseMessaging.onMessage.listen(
     (RemoteMessage message) {
+      print(message);
+      print('포그라운드 수신');
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
 
-      if (message.notification != null && android != null) {
+      if (notification != null && android != null) {
         flutterLocalNotificationsPlugin.show(
-          notification.hashCode,
-          notification?.title,
-          notification?.body,
+          0,
+          notification.title!,
+          notification.body!,
           NotificationDetails(
             android: AndroidNotificationDetails(
-              channel.id,
-              channel.name,
-              channelDescription: channel.description,
+              'keeping_notification',
+              'keeping_notification',
+              channelDescription: androidNotificationChannel.description,
               icon: android.smallIcon,
             ),
           ),
@@ -66,7 +79,8 @@ Future<String?> fcmSetting() async {
       }
     },
   );
+
   String? firebaseToken = await messaging.getToken();
-  print('firebase_token : ${firebaseToken}');
+  print('firebase_token : $firebaseToken');
   return firebaseToken;
 }

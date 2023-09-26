@@ -12,42 +12,48 @@ class MoneyRecord extends StatefulWidget {
   final num money;
   final num balance;
   final Map<String, dynamic>? detail;
+  final bool onlyTime;
 
-  MoneyRecord(
-      {super.key,
-      required this.date,
-      required this.storeName,
-      required this.money,
-      required this.balance,
-      this.detail});
+  MoneyRecord({
+    super.key,
+    required this.date,
+    required this.storeName,
+    required this.money,
+    required this.balance,
+    this.detail,
+    this.onlyTime = true,
+  });
 
   @override
   State<MoneyRecord> createState() => _MoneyRecordState();
 }
 
+const String type = 'PARENT';
+
 class _MoneyRecordState extends State<MoneyRecord> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onLongPress: () {
-          bottomModal(
-            context: context,
-            title: '상세 내역 쓰기',
-            content: moneyRecordModalContent(
-                widget.date, widget.storeName, widget.money),
-            button: moneyRecordModalBtns(context, widget.date, widget.storeName,
-                widget.money, widget.balance),
-          );
-        },
-        child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 5),
-            child: Container(
-              width: 360,
-              height: 90,
-              alignment: Alignment.center,
-              decoration: roundedBoxWithShadowStyle(),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      onLongPress: type == 'PARENT' ? null : () {
+        bottomModal(
+          context: context,
+          title: '상세 내역 쓰기',
+          content: moneyRecordModalContent(widget.date, widget.storeName, widget.money),
+          button: moneyRecordModalBtns(context, widget.date, widget.storeName, widget.money, widget.balance),
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 5),
+        child: Container(
+          width: 360,
+          height: 90,
+          alignment: Alignment.center,
+          decoration: roundedBoxWithShadowStyle(),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -69,6 +75,9 @@ class _MoneyRecordState extends State<MoneyRecord> {
                           )
                         ],
                       ),
+                      Text(
+                        widget.onlyTime ? formattedTime(widget.date) : formattedFullDate(widget.date),
+                      )
                     ],
                   ),
                   Padding(

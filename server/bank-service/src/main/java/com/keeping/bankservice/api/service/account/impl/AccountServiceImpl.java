@@ -8,6 +8,7 @@ import com.keeping.bankservice.api.service.sms.dto.MessageDto;
 import com.keeping.bankservice.api.service.sms.dto.SmsResponseDto;
 import com.keeping.bankservice.domain.account.Account;
 import com.keeping.bankservice.domain.account.repository.AccountRepository;
+import com.keeping.bankservice.global.exception.InvalidRequestException;
 import com.keeping.bankservice.global.exception.NoAuthorizationException;
 import com.keeping.bankservice.global.exception.NotFoundException;
 import com.keeping.bankservice.global.utils.RedisUtils;
@@ -30,7 +31,7 @@ import java.util.Random;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
     private final RedisUtils redisUtils;
     private final ValidationUtils validationUtils;
     private final SmsService smsService;
@@ -45,7 +46,8 @@ public class AccountServiceImpl implements AccountService {
 
         String accountNumber = createNewAccountNumber();
 
-        Account account = Account.toAccount(memberKey, accountNumber, passwordEncoder.encode(dto.getAuthPassword()));
+//        Account account = Account.toAccount(memberKey, accountNumber, passwordEncoder.encode(dto.getAuthPassword()));
+        Account account = Account.toAccount(memberKey, accountNumber, dto.getAuthPassword());
         Account saveAccount = accountRepository.save(account);
 
         return saveAccount.getId();
@@ -80,6 +82,7 @@ public class AccountServiceImpl implements AccountService {
         redisUtils.setRedisValue("AccountAuth_" + memberKey, "true", 210l);
     }
 
+    // TODO: 계좌 잔액이 부족할 때 발생시킬 에러 수정
     @Override
     public Account withdrawMoney(String memberKey, WithdrawMoneyDto dto) {
         Account account = accountRepository.findByAccountNumber(dto.getAccountNumber())
@@ -89,7 +92,7 @@ public class AccountServiceImpl implements AccountService {
             throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
         }
         else if(account.getBalance() < dto.getMoney()) {
-            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "계좌 잔액이 부족합니다.");
+            throw new InvalidRequestException("400", HttpStatus.BAD_REQUEST, "계좌 잔액이 부족합니다.");
         }
 
         account.updateBalance(dto.getMoney(), false);

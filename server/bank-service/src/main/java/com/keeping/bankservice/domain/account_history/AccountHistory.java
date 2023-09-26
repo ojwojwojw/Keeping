@@ -42,9 +42,9 @@ public class AccountHistory extends TimeBaseEntity {
     private Long remain;
 
     @Enumerated(STRING)
-    @Column(nullable = false)
+    @Column(name = "large_category", nullable = false)
     @ColumnDefault("'ETC'")
-    private Category category;
+    private LargeCategory largeCategory;
 
     @Column(nullable = false)
     private boolean detailed;
@@ -60,7 +60,7 @@ public class AccountHistory extends TimeBaseEntity {
 
 
     @Builder
-    private AccountHistory(Long id, Account account, String storeName, boolean type, Long money, Long balance, Long remain, Category category, boolean detailed, String address, Double latitude, Double longitude) {
+    private AccountHistory(Long id, Account account, String storeName, boolean type, Long money, Long balance, Long remain, LargeCategory largeCategory, boolean detailed, String address, Double latitude, Double longitude) {
         this.id = id;
         this.account = account;
         this.storeName = storeName;
@@ -68,14 +68,14 @@ public class AccountHistory extends TimeBaseEntity {
         this.money = money;
         this.balance = balance;
         this.remain = remain;
-        this.category = category;
+        this.largeCategory = largeCategory;
         this.detailed = detailed;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public static AccountHistory toAccountHistory(Account account, String storeName, boolean type, Long money, Long balance, Long remain, Category category, boolean detailed, String address, Double latitude, Double longitude) {
+    public static AccountHistory toAccountHistory(Account account, String storeName, boolean type, Long money, Long balance, Long remain, LargeCategory largeCategory, boolean detailed, String address, Double latitude, Double longitude) {
         return AccountHistory.builder()
                 .account(account)
                 .storeName(storeName)
@@ -83,11 +83,16 @@ public class AccountHistory extends TimeBaseEntity {
                 .money(money)
                 .balance(balance)
                 .remain(remain)
-                .category(category)
+                .largeCategory(largeCategory)
                 .detailed(detailed)
                 .address(address)
                 .latitude(latitude)
                 .longitude(longitude)
                 .build();
+    }
+
+    public void addAccountDetail(Long money) {
+        this.remain -= money;
+        this.detailed = true;
     }
 }

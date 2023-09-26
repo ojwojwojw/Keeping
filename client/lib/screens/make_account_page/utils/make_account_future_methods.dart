@@ -4,19 +4,18 @@ import 'package:keeping/util/dio_method.dart';
 Future<dynamic> phoneCheck({
   required String accessToken, required String memberKey, required String phone
 }) async {
-  final response = await dioPost(
-    accessToken: accessToken,
-    url: '/bank-service/account/phone-check/$memberKey',
-    data: {
-      "phone": phone
-    }
-  );
-
-  // 이후 처리는 나중에..
-  if (response != null) {
+  try {
+    final response = await dioPost(
+      accessToken: accessToken,
+      url: '/bank-service/api/$memberKey/account/phone-check',
+      data: {
+        "phone": phone
+      }
+    );
+    print('계좌 개설을 위한 인증번호 요청 응답 $response');
     return response;
-  } else {
-    return null;
+  } catch (e) {
+    print('계좌 개설을 위한 인증번호 요청 에러 $e');
   }
 }
 
@@ -24,38 +23,37 @@ Future<dynamic> phoneCheck({
 Future<dynamic> phoneAuth({
   required String accessToken, required String memberKey, required String code
 }) async {
-  final response = await dioPost(
-    accessToken: accessToken,
-    url: '/bank-service/account/phone-auth/$memberKey',
-    data: {
-      "code": code
-    }
-  );
-
-  // 이후 처리는 나중에..
-  if (response != null) {
+  try {
+    final response = await dioPost(
+      accessToken: accessToken,
+      url: '/bank-service/api/$memberKey/account/phone-auth',
+      data: {
+        "code": code
+      }
+    );
+    print('계좌 개설을 위한 인증번호 확인 응답 $response');
     return response;
-  } else {
-    return null;
+  } catch (e) {
+    print('계좌 개설을 위한 인증번호 확인 에러 $e');
   }
 }
 
 // 계좌 개설
 Future<dynamic> makeAccount({
-  required String accessToken, required String memberKey, required List<String> authPassword
+  required String accessToken, required String memberKey, required String authPassword
+  // required String accessToken, required String memberKey, required List<String> authPassword
 }) async {
-  final response = await dioPost(
-    accessToken: accessToken,
-    url: '/bank-service/account/$memberKey',
-    data: {
-      "authPassword": authPassword
-    }
-  );
-
-  // 이후 처리는 나중에..
-  if (response != null) {
-    return response;
-  } else {
-    return null;
+  try {
+    final response = await dioPost(
+      accessToken: accessToken,
+      url: '/bank-service/api/$memberKey/account',
+      data: {
+        "authPassword": authPassword
+      }
+    );
+    print('계좌 개설 응답 $response ${response['resultStatus']['successCode'].runtimeType}');
+    return response['resultStatus']['successCode'];
+  } catch (e) {
+    print('계좌 개설 에러 $e');
   }
 }
