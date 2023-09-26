@@ -22,7 +22,7 @@ public class AccountHistoryQueryRepository {
         List<ShowAccountHistoryDto> result = queryFactory
                 .select(Projections.fields(ShowAccountHistoryDto.class,
                         accountHistory.id,
-                        accountHistory.account,
+//                        accountHistory.account,
                         accountHistory.storeName,
                         accountHistory.type,
                         accountHistory.money,
@@ -32,7 +32,8 @@ public class AccountHistoryQueryRepository {
                         accountHistory.detailed,
                         accountHistory.address,
                         accountHistory.latitude,
-                        accountHistory.longitude))
+                        accountHistory.longitude,
+                        accountHistory.createdDate))
                 .from(accountHistory)
                 .where(accountHistory.account.accountNumber.eq(accountNumber), accountHistory.account.memberKey.eq(memberKey))
                 .orderBy(accountHistory.createdDate.desc())

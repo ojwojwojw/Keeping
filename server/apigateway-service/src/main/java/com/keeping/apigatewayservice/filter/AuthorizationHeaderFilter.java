@@ -79,9 +79,11 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             returnValue = false;
         }
 
+        log.debug("[토큰 유효성 검사] = {}", returnValue);
         log.debug("[멤버키] subject = {}", subject);
 
         if (!subject.equals(memberKey)) {
+            log.debug("[멤버키] 불일치");
             returnValue = false;
         }
 
@@ -90,8 +92,9 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
     private String getMemberKey(ServerWebExchange exchange) {
         String uri = exchange.getRequest().getURI().toString();
+        log.debug("[멤버키] uri = {}", uri);
         String[] splitUri = uri.split("/");
-        log.debug("[멤버키] uri에서 뽑은 멤버키 = {}", splitUri[4]);
-        return splitUri[4];
+        log.debug("[멤버키] uri에서 뽑은 멤버키 = {}", splitUri[5]);
+        return splitUri[5];
     }
 }

@@ -20,7 +20,7 @@ class MyPage extends StatelessWidget {
           passwordEditBtn(context),
           phonenumEditBtn(context),
           childManageBtn(context),
-          logoutBtn(context)
+          logoutBtnModal(context)
         ],
       ),
     );
@@ -63,42 +63,38 @@ Widget childManageBtn(BuildContext context) {
       child: Text('자녀 관리'));
 }
 
-Widget logoutBtn(BuildContext context) {
+Widget logoutBtnModal(BuildContext context) {
   return ElevatedButton(
       onPressed: () {
-        pressLogoutBtn(context);
+        bottomModal(
+          context: context,
+          title: '로그아웃',
+          content: logoutDescription(),
+          button: logoutBtn(context),
+        );
       },
       child: Text('로그아웃'));
 }
 
-void pressLogoutBtn(BuildContext context) {
+Row logoutBtn(BuildContext context) {
   print('로그아웃 중');
-  showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) {
-      return BottomModal(
-        title: '로그아웃',
-        content: logoutDescription(),
-        button: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('확인'),
-            ),
-            SizedBox(width: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('취소'),
-            ),
-          ],
-        ),
-      );
-    },
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      ElevatedButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: Text('확인'),
+      ),
+      SizedBox(width: 20),
+      ElevatedButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: Text('취소'),
+      ),
+    ],
   );
 }
 
