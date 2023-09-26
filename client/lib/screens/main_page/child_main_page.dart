@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/main_page/widgets/account_info.dart';
 import 'package:keeping/screens/main_page/widgets/gradient_btn.dart';
@@ -18,12 +19,23 @@ class ChildMainPage extends StatefulWidget {
 }
 
 class _ChildMainPageState extends State<ChildMainPage> {
+  String? _accessToken;
+  String? _memberKey;
+  String? _targetKey;
+
   bool account = false;
 
   makeAccount() {
     setState(() {
       account = !account;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjk3ZGQzYi1iNDlkLTQ0MTgtYTdmNy1iNmZkNzNiNjMzYzMiLCJleHAiOjE2OTU4MTU0NjJ9.FedPJTdtFy4nJqCi1Ayhtm4798HXfg3CAj-nJM_cYaE';
+    _memberKey = 'f297dd3b-b49d-4418-a7f7-b6fd73b633c3';
   }
 
   @override
@@ -40,7 +52,29 @@ class _ChildMainPageState extends State<ChildMainPage> {
                 SizedBox(
                   height: 100,
                 ),
-                account ? AccountInfo() : MakeAccountBtn(),
+                FutureBuilder(
+                  future: getAccountInfo(accessToken: _accessToken, memberKey: _memberKey, targetKey: _targetKey ?? _memberKey), 
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Text('로딩중');
+                    } else if (snapshot.connectionState == ConnectionState.done) {
+                      print(snapshot.data);
+                      if (snapshot.hasError) {
+                        return const Text('에러');
+                      } else if (snapshot.hasData) {
+                        if (snapshot.data['resultStatus']['resultCode'] == '404') {
+                          return MakeAccountBtn();
+                        } else {
+                          return AccountInfo();
+                        }
+                      } else {
+                        return const Text('스냅샷 데이터 없음');
+                      }
+                    } else {
+                      return Text('퓨처 객체 null');
+                    }
+                  },
+                ),
                 SizedBox(height: 10),
                 SizedBox(
                   width: 350,

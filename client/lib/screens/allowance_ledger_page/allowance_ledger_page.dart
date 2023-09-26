@@ -72,11 +72,11 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
     _parent = context.read<UserInfoProvider>().parent;
     // _accessToken = context.read<UserInfoProvider>().accessToken;
     // _memberKey = context.read<UserInfoProvider>().memberKey;
-    _accountNumber = '171-682675-422-27';
+    // _accountNumber = '171-682675-422-27';
     // _accountNumber = context.read<UserInfoProvider>().accountNumber;
     // _balance = context.read<UserInfoProvider>().balance;
-    _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1OTVkOTUyYy0xNmVkLTQwOGUtYmE2My1lZjk4OGQ2MjRmYTUiLCJleHAiOjE2OTU4MDQ4NTh9.fddpAvh-i63SvuXF0DVHj480lduLnnZz0qgNaVVMfI4';
-    _memberKey = '595d952c-16ed-408e-ba63-ef988d624fa5';
+    _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjk3ZGQzYi1iNDlkLTQ0MTgtYTdmNy1iNmZkNzNiNjMzYzMiLCJleHAiOjE2OTU4MTU0NjJ9.FedPJTdtFy4nJqCi1Ayhtm4798HXfg3CAj-nJM_cYaE';
+    _memberKey = 'f297dd3b-b49d-4418-a7f7-b6fd73b633c3';
   }
 
   @override
