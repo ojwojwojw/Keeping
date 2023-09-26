@@ -104,7 +104,11 @@ class _MoneyRecordState extends State<MoneyRecord> {
                       )),
                 ],
               ),
-            )));
+            ]
+          )
+        )
+      )
+    );
   }
 }
 
