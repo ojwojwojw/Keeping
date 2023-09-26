@@ -74,6 +74,8 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
     // memberKey = context.read<UserInfoProvider>().memberKey;
     // accountNumber = context.read<UserInfoProvider>().accountNumber;
     // balance = context.read<UserInfoProvider>().balance;
+    accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NGFiMjY2MS00N2EyLTQ4NmMtOWY3Zi1mOGNkNTkwMGRiMTAiLCJleHAiOjE2OTU3MDM4NzZ9.Pmks2T9tCqjazb4IUgx1GVUCbtOz97DsBBGKrwkGd5c';
+    memberKey = '84ab2661-47a2-486c-9f7f-f8cd5900db10';
   }
   
   @override
@@ -85,7 +87,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
         elementColor: Colors.white,
       ),
       body: FutureBuilder(
-        future: accessToken == null && memberKey == null && accountNumber == null ? null :
+        future: accessToken == null || memberKey == null || accountNumber == null ? null :
           getAccountList(accessToken: accessToken!, memberKey: memberKey!, accountNumber: accountNumber!),
         builder: (context, snapshot) {
           return Column(
@@ -105,7 +107,8 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                               date: DateTime.parse(e['date']), 
                               storeName: e['store_name'], 
                               money: e['money'], 
-                              balance: e['balance']
+                              balance: e['balance'],
+                              accountHistoryId: e['id'],
                             )
                           :
                             MoneyRecordWithDetail(
