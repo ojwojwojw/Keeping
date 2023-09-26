@@ -34,14 +34,8 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
       'money': 5000,
       'balance': 53000,
       'detail': [
-        {
-          'content': '클렌징티슈',
-          'money': 3000
-        },
-        {
-          'content': '초콜릿',
-          'money': 2000
-        },
+        {'content': '클렌징티슈', 'money': 3000},
+        {'content': '초콜릿', 'money': 2000},
       ]
     },
     {
@@ -69,13 +63,13 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
   @override
   void initState() {
     super.initState();
-    type = context.read<UserInfoProvider>().type;
+    // type = context.read<UserInfoProvider>().type;
     // accessToken = context.read<UserInfoProvider>().accessToken;
     // memberKey = context.read<UserInfoProvider>().memberKey;
     // accountNumber = context.read<UserInfoProvider>().accountNumber;
     // balance = context.read<UserInfoProvider>().balance;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,46 +79,49 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
         elementColor: Colors.white,
       ),
       body: FutureBuilder(
-        future: accessToken == null && memberKey == null && accountNumber == null ? null :
-          getAccountList(accessToken: accessToken!, memberKey: memberKey!, accountNumber: accountNumber!),
-        builder: (context, snapshot) {
-          return Column(
-            children: [
-              AccountInfo(type: type, balance: balance,),
-              Expanded(
-                child: Container(
-                  decoration: lightGreyBgStyle(),
-                  width: double.infinity,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
-                        ..._tempData.map((e) => 
-                          e['detail'].isEmpty ? 
-                            MoneyRecord(
-                              date: DateTime.parse(e['date']), 
-                              storeName: e['store_name'], 
-                              money: e['money'], 
-                              balance: e['balance']
-                            )
-                          :
-                            MoneyRecordWithDetail(
-                              date: DateTime.parse(e['date']), 
-                              storeName: e['store_name'], 
-                              money: e['money'], 
-                              balance: e['balance'],
-                              detail: e['detail'],
-                            )
-                        ).toList(),
-                      ]
-                    ),
-                  )
-                )
-              )
-            ],
-          );
-        }
-      ),
+          future:
+              accessToken == null && memberKey == null && accountNumber == null
+                  ? null
+                  : getAccountList(
+                      accessToken: accessToken!,
+                      memberKey: memberKey!,
+                      accountNumber: accountNumber!),
+          builder: (context, snapshot) {
+            return Column(
+              children: [
+                AccountInfo(
+                  type: type,
+                  balance: balance,
+                ),
+                Expanded(
+                    child: Container(
+                        decoration: lightGreyBgStyle(),
+                        width: double.infinity,
+                        child: SingleChildScrollView(
+                          child: Column(children: [
+                            MoneyRecordsDate(
+                                date: DateTime.parse(
+                                    '2020-10-10T14:58:04+09:00')),
+                            ..._tempData
+                                .map((e) => e['detail'].isEmpty
+                                    ? MoneyRecord(
+                                        date: DateTime.parse(e['date']),
+                                        storeName: e['store_name'],
+                                        money: e['money'],
+                                        balance: e['balance'])
+                                    : MoneyRecordWithDetail(
+                                        date: DateTime.parse(e['date']),
+                                        storeName: e['store_name'],
+                                        money: e['money'],
+                                        balance: e['balance'],
+                                        detail: e['detail'],
+                                      ))
+                                .toList(),
+                          ]),
+                        )))
+              ],
+            );
+          }),
       floatingActionButton: FloatingBtn(
         text: '소비지도',
         icon: Icon(Icons.map),
