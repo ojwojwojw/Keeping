@@ -6,7 +6,7 @@ import com.keeping.bankservice.api.controller.account.request.AddAccountRequest;
 import com.keeping.bankservice.api.controller.account.request.AuthPhoneRequest;
 import com.keeping.bankservice.api.controller.account.request.CheckPhoneRequest;
 import com.keeping.bankservice.api.controller.account.request.DepositAllowanceRequest;
-import com.keeping.bankservice.api.controller.account_history.response.ShowAccountHistoryResponse;
+import com.keeping.bankservice.api.controller.account.response.ShowAccountResponse;
 import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.AddAccountDto;
 import com.keeping.bankservice.api.service.account.dto.AuthPhoneDto;
@@ -77,6 +77,20 @@ public class AccountApiController {
         }
         catch(JsonProcessingException e) {
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "인증 번호를 전송하는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
+        }
+    }
+
+    @GetMapping
+    public ApiResponse<ShowAccountResponse> showAccount(@PathVariable("member-key") String memberKey) {
+        log.debug("ShowAccount");
+
+        try {
+            ShowAccountResponse response = accountService.showAccount(memberKey);
+            return ApiResponse.ok(response);
+        }
+        catch (Exception e) {
+            log.debug("에러 발생 : {}", e.toString());
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "계좌 정보를 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
         }
     }
 

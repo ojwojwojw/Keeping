@@ -14,15 +14,13 @@ public class AddPiggyDto {
 
     private String content;
     private int goalMoney;
-    private String authPassword;
     private MultipartFile uploadImage;
 
 
     @Builder
-    private AddPiggyDto(String content, int goalMoney, String authPassword, MultipartFile uploadImage) {
+    private AddPiggyDto(String content, int goalMoney, MultipartFile uploadImage) {
         this.content = content;
         this.goalMoney = goalMoney;
-        this.authPassword = authPassword;
         this.uploadImage = uploadImage;
     }
 
@@ -30,7 +28,6 @@ public class AddPiggyDto {
         return AddPiggyDto.builder()
                 .content(request.getContent())
                 .goalMoney(request.getGoalMoney())
-                .authPassword(request.getAuthPassword())
                 .uploadImage(request.getUploadImage())
                 .build();
     }
