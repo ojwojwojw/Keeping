@@ -3,7 +3,7 @@ import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 
-//질문 페이지
+//오늘의 질문 페이지
 class QuestionPage extends StatefulWidget {
   const QuestionPage({super.key});
 

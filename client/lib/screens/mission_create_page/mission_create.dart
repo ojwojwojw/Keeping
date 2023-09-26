@@ -23,14 +23,20 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFF8320E7),
-      appBar: MyHeader(text: '미션생성'),
+      appBar: MyHeader(
+        text: '미션생성',
+        elementColor: Colors.white,
+      ),
       body: Center(
         child: Column(children: [
           SizedBox(
             height: 50,
           ),
 
-          Text('아이에게 어떤 미션을 줘볼까요?'),
+          Text(
+            '아이에게 어떤 미션을 줘볼까요?',
+            style: TextStyle(color: Colors.white),
+          ),
 
           // 입력 폼
           renderTextFormField(label: '미션제목을 입력해주세요'),
@@ -40,7 +46,7 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
           ),
 
           //달력 들어갈곳
-          Text('미션 마감일을 정해줘요.'),
+          Text('미션 마감일을 정해줘요.', style: TextStyle(color: Colors.white)),
           ElevatedButton(onPressed: datePicker, child: Text('누르면 달력나와요')),
 
           // 다음 페이지로 가는 버튼
