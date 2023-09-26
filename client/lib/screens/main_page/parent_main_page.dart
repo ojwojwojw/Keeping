@@ -18,7 +18,8 @@ class ParentMainPage extends StatefulWidget {
   State<ParentMainPage> createState() => _ParentMainPageState();
 }
 
-class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStateMixin {
+class _ParentMainPageState extends State<ParentMainPage>
+    with TickerProviderStateMixin {
   bool account = false;
   late final TabController _tabController;
 
@@ -31,7 +32,7 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -44,10 +45,11 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: bgStyle(),
-        child: Column(
-          children: [
-            SizedBox(height: 50,),
+          decoration: bgStyle(),
+          child: Column(children: [
+            SizedBox(
+              height: 50,
+            ),
             TabBar(
               controller: _tabController,
               isScrollable: true,
@@ -62,13 +64,13 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                 ),
               ),
               tabs: <Widget>[
-                Tab(
-                  height: 110,
-                  child: TabProfile(
-                    imgPath: 'assets/image/temp_image.jpg',
-                    name: '나',
-                  ),
-                ),
+                // Tab(
+                //   height: 110,
+                //   child: TabProfile(
+                //     imgPath: 'assets/image/temp_image.jpg',
+                //     name: '나',
+                //   ),
+                // ),
                 Tab(
                   height: 110,
                   child: TabProfile(
@@ -85,27 +87,27 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                 ),
               ],
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Expanded(
               child: TabBarView(
                 controller: _tabController,
                 children: <Widget>[
-                  me(context, account, makeAccount),
+                  // me(context, account, makeAccount),
                   myChild(context, account, makeAccount),
                   Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMainPage()));
-                      },
-                      child: Text('자식 계정 전환'),
-                    )
-                  ),
+                      child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => ChildMainPage()));
+                    },
+                    child: Text('자식 계정 전환'),
+                  )),
                 ],
               ),
-            ), 
-          ]
-        )
-      ),
+            ),
+          ])),
       bottomNavigationBar: BottomNav(),
     );
   }
@@ -113,68 +115,68 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
 
 Widget myChild(BuildContext context, bool account, Function makeAccount) {
   return SizedBox(
-    width: 350,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        account ? AccountInfo() : MakeAccountBtn(),
-        SizedBox(height: 10),
-        SizedBox(
-          width: 350,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GradientBtn(
-                path: PiggyPage(),
-                text: '저금통',
-                beginColor: Color(0xFF9271C8),
-                endColor: Color(0xFF6E2FD5),
-              ),
-              GradientBtn(
-                path: OnlinePaymentRequestPage(),
-                text: '온라인 결제\n부탁 목록',
-                beginColor: Color(0xFFFF7595),
-                endColor: Color(0xFFFA3B68),
-                fontSize: 26,
-              ),
-            ],
-          )
-        ),
-        SizedBox(height: 8),
-        SizedBox(
-          width: 350,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GradientBtn(
-                path: MissionPage(),
-                text: '미션',
-                beginColor: Color(0xFF07B399),
-                endColor: Color(0xFF068572),
-              ),
-              GradientBtn(
-                path: QuestionPage(),
-                text: '질문',
-                beginColor: Color(0xFFFFCE72),
-                endColor: Color(0xFFFFBC3F),
-              ),
-            ],
+      width: 350,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          account ? AccountInfo() : MakeAccountBtn(),
+          SizedBox(height: 10),
+          SizedBox(
+              width: 350,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GradientBtn(
+                    path: PiggyPage(),
+                    text: '저금통',
+                    beginColor: Color(0xFF9271C8),
+                    endColor: Color(0xFF6E2FD5),
+                  ),
+                  GradientBtn(
+                    path: OnlinePaymentRequestPage(),
+                    text: '온라인 결제\n부탁 목록',
+                    beginColor: Color(0xFFFF7595),
+                    endColor: Color(0xFFFA3B68),
+                    fontSize: 26,
+                  ),
+                ],
+              )),
+          SizedBox(height: 8),
+          SizedBox(
+            width: 350,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GradientBtn(
+                  path: MissionPage(),
+                  text: '미션',
+                  beginColor: Color(0xFF07B399),
+                  endColor: Color(0xFF068572),
+                ),
+                GradientBtn(
+                  path: QuestionPage(),
+                  text: '질문',
+                  beginColor: Color(0xFFFFCE72),
+                  endColor: Color(0xFFFFBC3F),
+                ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(height: 20,),
-      ],
-    )
-  );
+          SizedBox(
+            height: 20,
+          ),
+        ],
+      ));
 }
 
-Widget me(BuildContext context, bool account, Function makeAccount) {
-  return SizedBox(
-    width: 350,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        account ? AccountInfo() : MakeAccountBtn(),
-      ],
-    )
-  );
-}
+// Widget me(BuildContext context, bool account, Function makeAccount) {
+//   return SizedBox(
+//     width: 350,
+//     child: Column(
+//       crossAxisAlignment: CrossAxisAlignment.center,
+//       children: [
+//         account ? AccountInfo() : MakeAccountBtn(),
+//       ],
+//     )
+//   );
+// }

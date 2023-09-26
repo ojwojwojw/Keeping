@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
 import 'package:keeping/styles.dart';
-
-final formattedMoney = NumberFormat('#,##0');
-final formattedTime = DateFormat('HH:mm');
+import 'package:keeping/util/display_format.dart';
 
 class MoneyRecordWithDetail extends StatefulWidget {
   // 카테고리 따라 사진 다르게 설정, 지출 입금 따라 -/+ 기호 추가
@@ -81,7 +78,7 @@ Widget _mainMoneyRecord(String storeName, DateTime date, num money, num balance)
                   style: bigStyle(),
                 ),
                 Text(
-                  formattedTime.format(date),
+                  formattedTime(date),
                 )
               ],
             ),
@@ -93,8 +90,8 @@ Widget _mainMoneyRecord(String storeName, DateTime date, num money, num balance)
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text('-${formattedMoney.format(money)}원', style: bigStyle(),),
-              Text('${formattedMoney.format(balance)}원')
+              Text('-${formattedMoney(money)}', style: bigStyle(),),
+              Text(formattedMoney(balance))
             ],
           )
         ),
@@ -152,7 +149,7 @@ Widget _detailMoneyRecord(String content, num money) {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('-${formattedMoney.format(money)}원', style: bigStyle(),),
+                Text('-${formattedMoney(money)}', style: bigStyle(),),
               ],
             )
           ),

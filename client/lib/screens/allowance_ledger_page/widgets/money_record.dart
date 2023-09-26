@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_detail_create_page.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
 
 class MoneyRecord extends StatefulWidget {
@@ -11,6 +11,7 @@ class MoneyRecord extends StatefulWidget {
   final num money;
   final num balance;
   final Map<String, dynamic>? detail;
+  final bool onlyTime;
 
   MoneyRecord({
     super.key,
@@ -18,21 +19,22 @@ class MoneyRecord extends StatefulWidget {
     required this.storeName,
     required this.money,
     required this.balance,
-    this.detail
+    this.detail,
+    this.onlyTime = true,
   });
 
   @override
   State<MoneyRecord> createState() => _MoneyRecordState();
 }
 
+const String type = 'PARENT';
+
 class _MoneyRecordState extends State<MoneyRecord> {
-  final formattedMoney = NumberFormat('#,##0');
-  final formattedTime = DateFormat('HH:mm');
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onLongPress: () {
+      onLongPress: type == 'PARENT' ? null : () {
         bottomModal(
           context: context,
           title: '상세 내역 쓰기',
@@ -66,7 +68,7 @@ class _MoneyRecordState extends State<MoneyRecord> {
                         style: bigStyle(),
                       ),
                       Text(
-                        formattedTime.format(widget.date),
+                        widget.onlyTime ? formattedTime(widget.date) : formattedFullDate(widget.date),
                       )
                     ],
                   ),
@@ -78,8 +80,8 @@ class _MoneyRecordState extends State<MoneyRecord> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text('-${formattedMoney.format(widget.money)}원', style: bigStyle(),),
-                    Text('${formattedMoney.format(widget.balance)}원')
+                    Text('-${formattedMoney(widget.money)}', style: bigStyle(),),
+                    Text(formattedMoney(widget.balance))
                   ],
                 )
               ),
@@ -128,7 +130,7 @@ Widget moneyRecordModalContent(DateTime date, String storeName, num money) {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(DateFormat('M월 d일').format(date).toString()),
+              Text(formattedMDDate(date)),
             ]
           ),
           SizedBox(height: 7,),
@@ -136,7 +138,7 @@ Widget moneyRecordModalContent(DateTime date, String storeName, num money) {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(storeName, style: bigStyle(),),
-              Text('${NumberFormat('#,##0').format(money).toString()}원', style: bigStyle(),)
+              Text(formattedMoney(money).toString(), style: bigStyle(),)
             ],
           )
         ],

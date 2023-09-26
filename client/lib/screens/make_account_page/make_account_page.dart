@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/make_account_page/make_acount_enter_auth_password_page.dart';
+import 'package:keeping/screens/make_account_page/utils/make_account_future_methods.dart';
 import 'package:keeping/util/dio_method.dart';
-import 'package:keeping/util/render_field.dart';
+import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/rounded_modal.dart';
-
-// 임시 통신 주소 로그인 키
-const accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ5ZWppIiwiYXV0aCI6IlVTRVIiLCJuYW1lIjoi7JiI7KeAIiwicGhvbmUiOiIwMTAtMDAwMC0wMDAwIiwiZXhwIjoxNjk1ODgyMDcxfQ.XgYC2up60frNzdg8TMJ3nC3JRRwFFZiBFXTE0XRTmS4';
 
 // 계좌 만들기 첫 페이지
 class MakeAccountPage extends StatelessWidget {
@@ -78,22 +76,32 @@ class PhoneVerificationPage extends StatefulWidget {
 }
 
 class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
-  bool? _phoneAuthenticationResult;
-  bool? _verificationResult;
+  bool _phoneAuthenticationResult = false;
+  bool _verificationResult = false;
 
-  void successPhoneAuth() {
+  String? accessToken;
+  String? memberKey;
+  // String? phone;
+
+  void _successPhoneAuth() {
     setState(() {
       _phoneAuthenticationResult = true;
     });
   }
 
-  void failPhoneAuth() {
+  void _failPhoneAuth() {
     setState(() {
       _phoneAuthenticationResult = false;
     });
   }
 
-  void failVerification() {
+  void _successVerification() {
+    setState(() {
+      _verificationResult = true;
+    });
+  }
+
+  void _failVerification() {
     setState(() {
       _verificationResult = false;
     });
@@ -101,6 +109,13 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
 
   final _phoneController = TextEditingController();
   final _verificationController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NGFiMjY2MS00N2EyLTQ4NmMtOWY3Zi1mOGNkNTkwMGRiMTAiLCJleHAiOjE2OTU3MDM4NzZ9.Pmks2T9tCqjazb4IUgx1GVUCbtOz97DsBBGKrwkGd5c';
+    memberKey = '84ab2661-47a2-486c-9f7f-f8cd5900db10';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,19 +136,19 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                       Expanded(
                         child: Form(
                           key: widget._phonAuthFormKey,
-                          child: renderTextFormField(
+                          child: renderPhoneNumberFormField(
                             label: '전화번호', 
                             onSaved: (val) async {
-                              var formattedPhone = val.replaceAllMapped(RegExp(r'(\d{3})(\d{3,4})(\d{4})'), (m) => '${m[1]}-${m[2]}-${m[3]}');
-                              final response = await dioPost(
-                                accessToken: accessToken,
-                                url: '/bank-service/account/phone-check/yoonyeji',
-                                data: {'phone': formattedPhone}
+                              print('핸드폰번호 입력 => accessToken: $accessToken, memberKey: $memberKey, phone: $val');
+                              final response = await phoneCheck(
+                                accessToken: accessToken!, 
+                                memberKey: memberKey!, 
+                                phone: val
                               );
                               if (response != null) {
-                                successPhoneAuth();
+                                _successPhoneAuth();
                               } else {
-                                failPhoneAuth();
+                                _failPhoneAuth();
                                 roundedModal(context: context, title: '다시 입력해주세요');
                               }
                             }, 
@@ -160,15 +175,15 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                           child: renderTextFormField(
                             label: '인증번호', 
                             onSaved: (val) async {
-                              final response = await dioPost(
-                                accessToken: accessToken, 
-                                url: '/bank-service/account/phone-auth/yoonyeji',
-                                data: {'code': val}
+                              final response = await phoneAuth(
+                                accessToken: accessToken!, 
+                                memberKey: memberKey!, 
+                                code: val
                               );
                               if (response != null) {
                                 Navigator.push(context, MaterialPageRoute(builder: (_) => MakeAccountEnterAuthPasswordPage()));
                               } else {
-                                failVerification();
+                                _failVerification();
                                 roundedModal(context: context, title: '인증번호가 틀렸습니다.');
                               }
                             }, 
@@ -177,7 +192,14 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                                 return '인증번호를 제대로 입력해주세요';
                               }
                               return null;
-                            }, 
+                            },
+                            onChange: (val) {
+                              if (val != null && val.length == 6) {
+                                _successVerification();
+                              } else {
+                                _failVerification();
+                              }
+                            },
                             controller: _verificationController,
                             isNumber: true
                           )
@@ -202,8 +224,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
             roundedModal(context: context, title: '다시 입력해주세요');
           }
         },
-        isDisabled: _phoneAuthenticationResult == true && _verificationController.text.length == 6
-          ? false : true,
+        isDisabled: _phoneAuthenticationResult && _verificationResult ? false : true,
       ),
     );
   }

@@ -1,13 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/piggy_provider.dart';
-import 'package:keeping/screens/allowance_ledger_page/widgets/allow_search_bar.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
-import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
-import 'package:keeping/screens/piggy_page/make_piggy_test.dart';
 import 'package:keeping/screens/piggy_page/piggy_saving_page.dart';
-import 'package:keeping/screens/piggy_page/widgets/chart_sample.dart';
+import 'package:keeping/screens/piggy_page/utils/piggy_future_methods.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_detail_info.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
@@ -28,21 +24,29 @@ class PiggyDetailPage extends StatefulWidget {
 }
 
 class _PiggyDetailPageState extends State<PiggyDetailPage> {
+  String? type;
+  String? accessToken;
+  String? memberKey;
+
   dynamic piggyResponse;
+  Map<String, dynamic>? _response;
 
   @override
   void initState() {
     super.initState();
     context.read<PiggyDetailProvider>().removePiggyDetail();
     initPiggyDetail();
+    type = context.read<UserInfoProvider>().type;
+    // accessToken = context.read<UserInfoProvider>().accessToken;
+    // memberKey = context.read<UserInfoProvider>().memberKey;
   }
 
   initPiggyDetail() async {
-    final _response = {
+    _response = {
       "piggy": {
         "id": 3,
         "piggyAccountNumber": "1",
-        "content": "아디다스 삼바",
+        "content": "아디다스 삼바 살거야",
         "goalMoney": 140000,
         "balance": 70000,
         "uploadImage": "produce1.png",
@@ -64,10 +68,10 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
         }
       ]
     };
-    await context.read<PiggyDetailProvider>().initPiggyDetail(_response['piggy']);
+    await context.read<PiggyDetailProvider>().initPiggyDetail(_response!['piggy']);
+    if (!mounted) return;
+    await context.read<PiggyProvider>().initPiggy(_response!['saving']);
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -79,37 +83,59 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
       ),
       body: Column(
         children: [
-          PiggyDetailInfo(),
-          AllowSearchBar(),
-          Expanded(
-            child: Container(
-              decoration: lightGreyBgStyle(),
-              width: double.infinity,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
-                    // ..._response['saving']?.map((e) =>
-                    //   MoneyRecord(
-                    //     date: DateTime.parse(e['date']), 
-                    //     storeName: e['store_name'], 
-                    //     money: e['money'], 
-                    //     balance: e['balance']
+          PiggyDetailInfo(type: type),
+          FutureBuilder(
+            future: accessToken != null && memberKey != null ? 
+              getPiggyDetailList(accessToken: 'accessToken', memberKey: 'memberKey', piggyAccountNumber: widget.piggyAccountNumber) : null,
+            builder: (context, snapshot) {
+              // if (snapshot.connectionState == ConnectionState.waiting) {
+              //   return const Text('로딩중');
+              // } else if (snapshot.connectionState == ConnectionState.done) {
+              //   if (snapshot.hasError) {
+              //     return const Text('에러');
+              //   } else if (snapshot.hasData) {
+                  // List<Post> _posts = snapshot.data as List<Post>; 이런 식으로 정의하기
+                  // return Column(
+                  //   children: [
+                      return Expanded(
+                        child: Container(
+                          decoration: lightGreyBgStyle(),
+                          width: double.infinity,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                SizedBox(height: 10,),
+                                ..._response!['saving']!.map((e) =>
+                                  MoneyRecord(
+                                    date: DateTime.parse(e['createdDate']), 
+                                    storeName: e['name'], 
+                                    money: e['money'], 
+                                    balance: e['balance'],
+                                    onlyTime: false,
+                                  )
+                                ).toList(),
+                              ]
+                            ),
+                          )
+                        )
                     //   )
-                    // ).toList(),
-                  ]
-                ),
-              )
-            )
-          )
-          // ChartSample(),
+                    // ],
+                  );
+              //   } else {
+              //     return const Text('스냅샷 데이터 없음');
+              //   }
+              // } else {
+              //   return Text('퓨처 객체 null');
+              // }
+            },
+          ),
         ],
       ),
-      floatingActionButton: FloatingBtn(
+      floatingActionButton: type != 'PARENT' ? FloatingBtn(
         text: '저금하기',
         icon: Icon(Icons.savings_rounded),
         path: PiggySavingPage(),
-      ),
+      ) : null,
       bottomNavigationBar: BottomNav(),
     );
   }

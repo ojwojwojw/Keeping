@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/mission_page/widgets/mission_box.dart';
-import 'widgets/filtering_bar.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/screens/mission_create_page/mission_create.dart';
 
-// import '../../util/axios_test.dart';
-// import 'package:keeping/util/camera_test2.dart';
-// import 'package:keeping/util/ocr_test.dart';
-// import 'package:keeping/util/ocr_test2.dart';
+import 'package:keeping/util/camera_test2.dart';
+import 'package:keeping/util/ocr_test.dart';
+
 import 'package:keeping/provider/counter_test.dart';
 import 'package:keeping/provider/array_test.dart';
 
@@ -27,7 +25,7 @@ final List<Map<String, dynamic>> missions = [
     "money": 3500,
     "type": "PARENT",
     "deadline": "23.09.08",
-    "completed": "YET"
+    "completed": "COMPLETE"
   },
   {
     "id": 25,
@@ -35,7 +33,7 @@ final List<Map<String, dynamic>> missions = [
     "money": 2000,
     "type": "PARENT",
     "deadline": "23.09.09",
-    "completed": "YET"
+    "completed": "LOADING"
   },
   {
     "id": 26,
@@ -100,35 +98,43 @@ class _MissonPageState extends State<MissionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: MyHeader(text: '미션페이지!', elementColor: Colors.black),
+        appBar: MyHeader(text: '용돈 미션', elementColor: Colors.black),
         body: SizedBox(
             child: Column(
           children: [
             CreateMissonBox(),
+            SizedBox(
+              height: 10,
+            ),
             FilteringBar(),
-            missionBoxs(),
+            SizedBox(
+              height: 10,
+            ),
+            Expanded(
+                child: ListView.builder(
+                    itemCount: missions.length,
+                    itemBuilder: (context, index) {
+                      final mission = missions[index];
+                      // return (Text('test'));
+                      return Column(children: [
+                        Text('미션명 들어갈 곳'),
+                        MissionBox(mission: mission)
+                      ]);
+                    })),
             //이하 테스트 요소들///
-            // axiosButton(context),
             // cameraButton(context),
             // ocrButton(context),
-            // ocrButtonML(context),
-            prividerBtn(context),
-            arrayProviderBtn(context),
+            // prividerBtn(context),
+            // arrayProviderBtn(context),
           ],
         )));
   }
 }
 
 //미션 박스들을 ListView로 출력하는 위젯//
-Widget missionBoxs() {
-  return Expanded(
-      child: ListView.builder(
-          itemCount: missions.length,
-          itemBuilder: (context, index) {
-            final mission = missions[index];
-            return MissionBox(mission: mission);
-          }));
-}
+// Widget missionBoxs() {
+//   return
+// }
 
 // 미션을 생성페이지로 이동하는 박스//
 class CreateMissonBox extends StatelessWidget {
@@ -137,6 +143,10 @@ class CreateMissonBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      style: ButtonStyle(
+        fixedSize: MaterialStateProperty.all(Size(350.0, 150.0)),
+        backgroundColor: MaterialStateProperty.all(Color(0xFF8320E7)),
+      ),
       onPressed: () async {
         Navigator.push(
           context,
@@ -145,69 +155,43 @@ class CreateMissonBox extends StatelessWidget {
           ),
         );
       },
-      child: Container(
-          margin: EdgeInsets.all(20),
-          width: 400,
-          height: 200,
-          color: Colors.blue,
-          child: (Center(child: Text('미션생성하기')))),
+      child:
+          (Center(child: Text('새로운 미션 만들기', style: TextStyle(fontSize: 20)))),
     );
   }
 }
 
-
-
-
-
-
-
-
 // /////////////////Test//////////////////////
 
-// // Camera 테스트로 이동하는 버튼
-// Widget cameraButton(BuildContext context) {
-//   return ElevatedButton(
-//     onPressed: () async {
-//       Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//           builder: (context) => CameraTest(),
-//         ),
-//       );
-//     },
-//     child: const Text('cameraTest?'),
-//   );
-// }
+// Camera 테스트로 이동하는 버튼
+Widget cameraButton(BuildContext context) {
+  return ElevatedButton(
+    onPressed: () async {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CameraTest(),
+        ),
+      );
+    },
+    child: const Text('cameraTest?'),
+  );
+}
 
-// // ocr test로 이동하는 버튼
-// Widget ocrButton(BuildContext context) {
-//   return ElevatedButton(
-//     onPressed: () async {
-//       Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//           builder: (context) => OcrTest(),
-//         ),
-//       );
-//     },
-//     child: const Text('ocrTest?'),
-//   );
-// }
-
-// // 구글 ML kit를 이용한 ocr test로 이동하는 버튼
-// Widget ocrButtonML(BuildContext context) {
-//   return ElevatedButton(
-//     onPressed: () async {
-//       Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//           builder: (context) => MainScreen(),
-//         ),
-//       );
-//     },
-//     child: const Text('ocrTest using ML_kit'),
-//   );
-// }
+// ocr test로 이동하는 버튼
+Widget ocrButton(BuildContext context) {
+  return ElevatedButton(
+    onPressed: () async {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OcrTest(),
+        ),
+      );
+    },
+    child: const Text('ocrTest?'),
+  );
+}
 
 // 프로바이더(카운터) 테스트로 이동할 버튼 //
 Widget prividerBtn(BuildContext context) {
@@ -237,4 +221,20 @@ Widget arrayProviderBtn(BuildContext context) {
     },
     child: const Text('provider(array) test'),
   );
+}
+
+//필터링 바//
+class FilteringBar extends StatelessWidget {
+  const FilteringBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: 350,
+        height: 20,
+        color: Colors.purple,
+        child: (Column(children: [
+          Text('필터링 바', style: TextStyle(color: Colors.white, fontSize: 10)),
+        ])));
+  }
 }
