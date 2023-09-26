@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -42,6 +41,7 @@ public class MemberAuthController {
 
     @GetMapping("/link")
     public ApiResponse<String> whoLinkMe(@PathVariable String memberKey) {
+        // TODO: 2023-09-26 해야함
         return ApiResponse.ok("김부모");
     }
 
@@ -114,8 +114,9 @@ public class MemberAuthController {
         return ApiResponse.ok("");
     }
 
-    @GetMapping("/login-check")
-    public ApiResponse<LoginMember> getLoginMember(@PathVariable String memberKey) {
+    @GetMapping("/login-check/{fcmToken}")
+    public ApiResponse<LoginMember> getLoginMember(@PathVariable String memberKey, @PathVariable String fcmToken) {
+        memberService.setFcmToken(memberKey,fcmToken);
         LoginMember loginUser = memberService.getLoginUser(memberKey);
         return ApiResponse.ok(loginUser);
     }

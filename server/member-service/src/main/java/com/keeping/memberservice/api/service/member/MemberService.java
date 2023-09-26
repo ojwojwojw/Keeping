@@ -1,5 +1,6 @@
 package com.keeping.memberservice.api.service.member;
 
+import com.keeping.memberservice.api.controller.response.ChildrenResponse;
 import com.keeping.memberservice.api.controller.response.LinkResultResponse;
 import com.keeping.memberservice.api.controller.response.LoginMember;
 import com.keeping.memberservice.api.service.AuthService;
@@ -8,10 +9,7 @@ import com.keeping.memberservice.domain.Child;
 import com.keeping.memberservice.domain.Link;
 import com.keeping.memberservice.domain.Member;
 import com.keeping.memberservice.domain.Parent;
-import com.keeping.memberservice.domain.repository.ChildRepository;
-import com.keeping.memberservice.domain.repository.LinkRepository;
-import com.keeping.memberservice.domain.repository.MemberRepository;
-import com.keeping.memberservice.domain.repository.ParentRepository;
+import com.keeping.memberservice.domain.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
@@ -34,6 +32,7 @@ public class MemberService implements UserDetailsService {
     private final ChildRepository childRepository;
     private final MemberRepository memberRepository;
     private final LinkRepository linkRepository;
+    private final LinkQueryRepository linkQueryRepository;
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthService authService;
@@ -65,20 +64,18 @@ public class MemberService implements UserDetailsService {
         if (isParent) {
             // 부모일 때
             // TODO: 2023-09-22 자녀 가져오기
-//            List<ChildrenResponse> list =
-            // TODO: 2023-09-22 자녀 연결 해야함
+            Parent parent = findParent.get();
+            List<ChildrenResponse> childList = linkQueryRepository.getChildList(parent);
             loginMember = LoginMember.builder()
                     .isParent(true)
                     .name(findMember.getName())
                     .profileImage(findMember.getProfileImage())
-//                .childrenList(list)
+                    .childrenList(childList)
                     .build();
         } else {
             // 자녀일 때
             loginMember = getChildResponse(findMember);
         }
-
-
         return loginMember;
     }
 
@@ -203,5 +200,10 @@ public class MemberService implements UserDetailsService {
                 .partner(yourMember.getName())
                 .relation(relation)
                 .build();
+    }
+
+    public void setFcmToken(String memberKey, String fcmToken) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() -> new NoSuchElementException("없는 회원입니다."));
+        member.setFcmToken(fcmToken);
     }
 }
