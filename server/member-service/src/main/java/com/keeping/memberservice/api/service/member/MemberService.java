@@ -1,12 +1,15 @@
 package com.keeping.memberservice.api.service.member;
 
+import com.keeping.memberservice.api.controller.response.LinkResultResponse;
 import com.keeping.memberservice.api.controller.response.LoginMember;
 import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.dto.AddMemberDto;
 import com.keeping.memberservice.domain.Child;
+import com.keeping.memberservice.domain.Link;
 import com.keeping.memberservice.domain.Member;
 import com.keeping.memberservice.domain.Parent;
 import com.keeping.memberservice.domain.repository.ChildRepository;
+import com.keeping.memberservice.domain.repository.LinkRepository;
 import com.keeping.memberservice.domain.repository.MemberRepository;
 import com.keeping.memberservice.domain.repository.ParentRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,8 @@ public class MemberService implements UserDetailsService {
     private final ParentRepository parentRepository;
     private final ChildRepository childRepository;
     private final MemberRepository memberRepository;
+    private final LinkRepository linkRepository;
+
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthService authService;
 
@@ -175,6 +180,28 @@ public class MemberService implements UserDetailsService {
                 .isParent(false)
                 .name(findMember.getName())
                 .profileImage(findMember.getProfileImage())
+                .build();
+    }
+
+    public LinkResultResponse linkMember(String memberKey, String partner, String relation) {
+        Member myMember = memberRepository.findByMemberKey(memberKey).orElseThrow(() -> new NoSuchElementException("잘못된 요청입니다."));
+        Member yourMember = memberRepository.findByMemberKey(partner).orElseThrow(() -> new NoSuchElementException("잘못된 요청입니다."));
+        Parent parent = null;
+        Child child = null;
+        if (relation.equals("parent")) {
+            parent = parentRepository.findByMember(yourMember).orElseThrow(() -> new NoSuchElementException("잘못된 요청입니다."));
+            child = childRepository.findByMember(myMember).orElseThrow(() -> new NoSuchElementException("잘못된 요청입니다."));
+        } else {
+            parent = parentRepository.findByMember(myMember).orElseThrow(() -> new NoSuchElementException("잘못된 요청입니다."));
+            child = childRepository.findByMember(yourMember).orElseThrow(() -> new NoSuchElementException("잘못된 요청입니다."));
+        }
+
+        Link newLink = Link.builder().parent(parent).child(child).build();
+        Link savedLink = linkRepository.save(newLink);
+
+        return LinkResultResponse.builder()
+                .partner(yourMember.getName())
+                .relation(relation)
                 .build();
     }
 }
