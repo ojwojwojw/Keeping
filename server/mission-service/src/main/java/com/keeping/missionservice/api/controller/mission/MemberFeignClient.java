@@ -1,5 +1,6 @@
 package com.keeping.missionservice.api.controller.mission;
 
+import com.keeping.missionservice.api.ApiResponse;
 import com.keeping.missionservice.api.controller.mission.request.MemberRelationshipRequest;
 import com.keeping.missionservice.api.controller.mission.request.MemberTypeRequest;
 import com.keeping.missionservice.api.controller.mission.response.ChildResponse;
@@ -18,12 +19,12 @@ import java.util.List;
 public interface MemberFeignClient {
 
     @PostMapping("/relationship")
-    MemberRelationshipResponse getMemberRelationship(@RequestBody MemberRelationshipRequest request);
+    ApiResponse<MemberRelationshipResponse> getMemberRelationship(@RequestBody MemberRelationshipRequest request);
 
     @PostMapping("/type-check")
-    MemberTypeResponse getMemberType(@RequestBody MemberTypeRequest request);
+    ApiResponse<MemberTypeResponse> getMemberType(@RequestBody MemberTypeRequest request);
 
-    @GetMapping("/children/{member_key}")
-    ChildResponseList getChildren(@PathVariable(name = "member_key") String memberKey);
+    @GetMapping("/{member_key}/children")
+    ApiResponse<ChildResponseList> getChildren(@PathVariable(name = "member_key") String memberKey);
     
 }

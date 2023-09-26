@@ -1,5 +1,6 @@
 package com.keeping.missionservice.api.controller.mission;
 
+import com.keeping.missionservice.api.ApiResponse;
 import com.keeping.missionservice.api.controller.mission.request.SendNotiRequest;
 import com.keeping.missionservice.api.controller.mission.response.NotiResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -10,5 +11,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface NotiFeignClient {
 
     @PostMapping("/send")
-    NotiResponse sendNoti(@RequestBody SendNotiRequest request);
+    ApiResponse<NotiResponse> sendNoti(@RequestBody SendNotiRequest request);
 }

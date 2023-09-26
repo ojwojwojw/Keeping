@@ -52,9 +52,10 @@ public class MissionServiceImpl implements MissionService {
         if (dto.getType().equals(MissionType.PARENT)) {
             // 해당 자녀가 있는지 확인
             MemberRelationshipResponse memberRelationship = memberFeignClient.getMemberRelationship(MemberRelationshipRequest.builder()
-                    .parentKey(memberKey)
-                    .childKey(dto.getTo())
-                    .build());
+                            .parentKey(memberKey)
+                            .childKey(dto.getTo())
+                            .build())
+                    .getResultBody();
 
             if (!memberRelationship.isParentialRelationship()) {
                 throw new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 회원을 찾을 수 없습니다.");
@@ -97,7 +98,8 @@ public class MissionServiceImpl implements MissionService {
             MemberRelationshipResponse memberRelationship = memberFeignClient.getMemberRelationship(MemberRelationshipRequest.builder()
                     .parentKey(dto.getTo())
                     .childKey(memberKey)
-                    .build());
+                    .build())
+                    .getResultBody();
 
             if (!memberRelationship.isParentialRelationship()) {
                 throw new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 회원을 찾을 수 없습니다.");
@@ -147,7 +149,8 @@ public class MissionServiceImpl implements MissionService {
         MemberTypeResponse memberType = memberFeignClient.getMemberType(MemberTypeRequest.builder()
                 .memberKey(memberKey)
                 .type(dto.getType())
-                .build());
+                .build())
+                .getResultBody();
 
         // 맞지 않는 멤버와 타입일 떄
         if (!memberType.isTypeRight()) {
@@ -171,7 +174,7 @@ public class MissionServiceImpl implements MissionService {
                 int totalMissionMoney = 0;
 
                 // 아이들 목록 불러오기
-                ChildResponseList children = memberFeignClient.getChildren(memberKey);
+                ChildResponseList children = memberFeignClient.getChildren(memberKey).getResultBody();
                 for (ChildResponse child : children.getChildResponseList()) {
                     // 현재 완료하지 않은 미션 총액
                     Optional<Integer> missionMoney = missionQueryRepository.countMoney(child.getChildKey());
@@ -233,7 +236,7 @@ public class MissionServiceImpl implements MissionService {
         int totalMissionMoney = 0;
 
         // 아이들 목록 불러오기
-        ChildResponseList children = memberFeignClient.getChildren(memberKey);
+        ChildResponseList children = memberFeignClient.getChildren(memberKey).getResultBody();
         for (ChildResponse child : children.getChildResponseList()) {
             // 현재 완료하지 않은 미션 총액
             Optional<Integer> missionMoney = missionQueryRepository.countMoney(child.getChildKey());
