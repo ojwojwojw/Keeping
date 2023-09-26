@@ -10,6 +10,7 @@ import com.keeping.bankservice.api.service.account_history.dto.AddAccountDetailV
 import com.keeping.bankservice.api.service.account_history.dto.AddAccountHistoryDto;
 import com.keeping.bankservice.api.service.account_history.dto.ShowAccountHistoryDto;
 import com.keeping.bankservice.domain.account.Account;
+import com.keeping.bankservice.domain.account.repository.AccountRepository;
 import com.keeping.bankservice.domain.account_detail.SmallCategory;
 import com.keeping.bankservice.domain.account_detail.repository.AccountDetailQueryRepository;
 import com.keeping.bankservice.domain.account_history.AccountHistory;
@@ -42,14 +43,16 @@ import static com.keeping.bankservice.domain.account_history.LargeCategory.*;
 public class AccountHistoryServiceImpl implements AccountHistoryService {
 
     private final AccountService accountService;
+    private final AccountRepository accountRepository;
     private final AccountHistoryRepository accountHistoryRepository;
     private final AccountHistoryQueryRepository accountHistoryQueryRepository;
     private final AccountDetailQueryRepository accountDetailQueryRepository;
     private final Environment env;
     private String kakaoAk;
 
-    public AccountHistoryServiceImpl(AccountService accountService, AccountHistoryRepository accountHistoryRepository, AccountHistoryQueryRepository accountHistoryQueryRepository, AccountDetailQueryRepository accountDetailQueryRepository, Environment env) {
+    public AccountHistoryServiceImpl(AccountService accountService, AccountRepository accountRepository, AccountHistoryRepository accountHistoryRepository, AccountHistoryQueryRepository accountHistoryQueryRepository, AccountDetailQueryRepository accountDetailQueryRepository, Environment env) {
         this.accountService = accountService;
+        this.accountRepository = accountRepository;
         this.accountHistoryRepository = accountHistoryRepository;
         this.accountHistoryQueryRepository = accountHistoryQueryRepository;
         this.accountDetailQueryRepository = accountDetailQueryRepository;
@@ -77,26 +80,31 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
             account = accountService.withdrawMoney(memberKey, withdrawMoneyDto);
         }
 
-        // 장소의 위도, 경도, 카테고리 가져오기
-        Map keywordResponse = useKakaoLocalApi(true, dto.getStoreName());
-        Map addressResponse = useKakaoLocalApi(false, dto.getAddress());
-
         LargeCategory largeCategory = ETC;
         String categoryType = null;
-        try {
-            categoryType = ((LinkedHashMap) ((ArrayList) keywordResponse.get("documents")).get(0)).get("category_group_code").toString();
-            largeCategory = mappingCategory(categoryType);
-        } catch (NullPointerException e) {
-            categoryType = "ETC";
+
+        if(dto.getStoreName() != null && !dto.getStoreName().equals("저금통 저금")) {
+            // 장소의 위도, 경도, 카테고리 가져오기
+            Map keywordResponse = useKakaoLocalApi(true, dto.getStoreName());
+            try {
+                categoryType = ((LinkedHashMap) ((ArrayList) keywordResponse.get("documents")).get(0)).get("category_group_code").toString();
+                largeCategory = mappingCategory(categoryType);
+            } catch (NullPointerException e) {
+                categoryType = "ETC";
+            }
         }
 
         Double latitude = null, longitude = null;
-        try {
-            latitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("y"));
-            longitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("x"));
-        } catch (NullPointerException e) {
-            latitude = null;
-            longitude = null;
+
+        if(dto.getAddress() != null && !dto.getAddress().equals("")) {
+            Map addressResponse = useKakaoLocalApi(false, dto.getAddress());
+            try {
+                latitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("y"));
+                longitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("x"));
+            } catch (NullPointerException e) {
+                latitude = null;
+                longitude = null;
+            }
         }
 
         // 새로운 거래 내역 등록
@@ -199,6 +207,29 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         }
 
         return response;
+    }
+
+    @Override
+    public Long countMonthExpense(String memberKey, String date) {
+        Optional<List<Account>> accountList = accountRepository.findByMemberKey(memberKey);
+
+        if(accountList.isEmpty()) {
+            return 0l;
+        }
+
+        List<Account> accounts = accountList.get();
+
+        LocalDate startDate = LocalDate.parse(date + "-01", DateTimeFormatter.ISO_DATE);
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = startDate.plusMonths(1).atStartOfDay().minusSeconds(1);
+
+        Long total = 0l;
+        for(Account account: accounts) {
+            Long result = accountHistoryQueryRepository.countMonthExpense(account, startDateTime, endDateTime);
+            total += result;
+        }
+
+        return total;
     }
 
     private Map useKakaoLocalApi(boolean flag, String value) {

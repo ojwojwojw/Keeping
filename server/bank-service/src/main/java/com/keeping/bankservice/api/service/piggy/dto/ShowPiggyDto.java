@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 public class ShowPiggyDto {
@@ -17,10 +19,11 @@ public class ShowPiggyDto {
     private int balance;
     private String savedImage;
     private Completed completed;
+    private LocalDateTime createdDate;
 
 
     @Builder
-    private ShowPiggyDto(Long id, String childKey, String accountNumber, String content, int goalMoney, int balance, String savedImage, Completed completed) {
+    private ShowPiggyDto(Long id, String childKey, String accountNumber, String content, int goalMoney, int balance, String savedImage, Completed completed, LocalDateTime createdDate) {
         this.id = id;
         this.childKey = childKey;
         this.accountNumber = accountNumber;
@@ -29,5 +32,6 @@ public class ShowPiggyDto {
         this.balance = balance;
         this.savedImage = savedImage;
         this.completed = completed;
+        this.createdDate = createdDate;
     }
 }

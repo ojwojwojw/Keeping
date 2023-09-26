@@ -5,6 +5,8 @@ import com.keeping.bankservice.api.controller.piggy.response.ShowPiggyResponse;
 import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.SavingPiggyDto;
 import com.keeping.bankservice.api.service.account.dto.WithdrawMoneyDto;
+import com.keeping.bankservice.api.service.account_history.AccountHistoryService;
+import com.keeping.bankservice.api.service.account_history.dto.AddAccountHistoryDto;
 import com.keeping.bankservice.api.service.piggy.PiggyService;
 import com.keeping.bankservice.api.service.piggy.dto.AddPiggyDto;
 import com.keeping.bankservice.api.service.piggy.dto.ShowPiggyDto;
@@ -27,6 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -45,6 +52,7 @@ public class PiggyServiceImpl implements PiggyService {
     private final PiggyRepository piggyRepository;
     private final PiggyQueryRepository piggyQueryRepository;
     private final AccountService accountService;
+    private final AccountHistoryService accountHistoryService;
     private final PiggyHistoryService piggyHistoryService;
     //    private final PasswordEncoder passwordEncoder;
     private final RedisUtils redisUtils;
@@ -79,7 +87,7 @@ public class PiggyServiceImpl implements PiggyService {
             file.transferTo(new File(folder, saveFileName));
 
 //            Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), passwordEncoder.encode(dto.getAuthPassword()), originalFileName, saveFileName);
-            Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), dto.getAuthPassword(), originalFileName, saveFileName);
+            Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), originalFileName, saveFileName);
             Piggy savePiggy = piggyRepository.save(piggy);
 
             return savePiggy.getId();
@@ -101,7 +109,7 @@ public class PiggyServiceImpl implements PiggyService {
             if (os.contains("win")) {
                 file = new File(piggyWindowPath + "\\" + dto.getSavedImage());
             } else {
-                file = new File(piggyLinuxPath + "\\" + dto.getSavedImage());
+                file = new File(piggyLinuxPath + "/" + dto.getSavedImage());
 
             }
 
@@ -118,7 +126,7 @@ public class PiggyServiceImpl implements PiggyService {
     }
 
     @Override
-    public void savingPiggy(String memberKey, SavingPiggyDto dto) {
+    public void savingPiggy(String memberKey, SavingPiggyDto dto) throws URISyntaxException {
         Piggy piggy = piggyRepository.findByAccountNumber(dto.getPiggyAccountNumber())
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 저금통이 존재하지 않습니다."));
 
@@ -126,18 +134,23 @@ public class PiggyServiceImpl implements PiggyService {
             throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
         }
 
-        WithdrawMoneyDto withdrawMoneyDto = WithdrawMoneyDto.toDto(dto.getAccountNumber(), Long.valueOf(dto.getMoney()));
-        accountService.withdrawMoney(memberKey, withdrawMoneyDto);
+        // TODO: authPassword 일치하는지 확인하는 부분 필요
+        // TODO: WithdrawMoney service 제거
 
-        // TODO: 출금 거래내역을 등록하는 코드 필요!!
+        // 출금 거래내역을 등록하는 코드
+        AddAccountHistoryDto addAccountHistoryDto = AddAccountHistoryDto.toDto(dto.getAccountNumber(), "저금통 저금", false, Long.valueOf(dto.getMoney()), "");
+        accountHistoryService.addAccountHistory(memberKey, addAccountHistoryDto);
 
+        // 저금통 잔액 갱신 코드
         int balance = piggy.getBalance() + dto.getMoney();
         piggy.updateBalance(dto.getMoney());
 
+        // 저금통 저금 내역을 등록하는 코드
         AddPiggyHistoryDto addPiggyHistoryDto = AddPiggyHistoryDto.toDto(piggy, dto.getMoney(), balance);
         piggyHistoryService.addPiggyHistory(memberKey, addPiggyHistoryDto);
     }
 
+    // TODO: 없애기
     @Override
     public Piggy isValidPiggy(String memberKey, Long piggyId) {
         Piggy piggy = piggyRepository.findById(piggyId)

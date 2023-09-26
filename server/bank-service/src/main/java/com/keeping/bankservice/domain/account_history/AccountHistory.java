@@ -49,10 +49,10 @@ public class AccountHistory extends TimeBaseEntity {
     @Column(nullable = false)
     private boolean detailed;
 
-    @Column(nullable = false)
+    @Column
     private String address;
 
-    @Column()
+    @Column
     private Double latitude;
 
     @Column

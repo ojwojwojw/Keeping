@@ -1,6 +1,7 @@
 package com.keeping.bankservice.api.service.account;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.keeping.bankservice.api.controller.account.response.ShowAccountResponse;
 import com.keeping.bankservice.api.service.account.dto.*;
 import com.keeping.bankservice.domain.account.Account;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,4 +18,5 @@ public interface AccountService {
     void authPhone(String memberKey, AuthPhoneDto dto) throws JsonProcessingException;
     Account withdrawMoney(String memberKey, WithdrawMoneyDto dto);
     Account depositMoney(String memberKey, DepositMoneyDto dto);
+    ShowAccountResponse showAccount(String memberKey);
 }

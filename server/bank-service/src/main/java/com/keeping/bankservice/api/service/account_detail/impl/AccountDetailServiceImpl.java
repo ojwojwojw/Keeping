@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AccountDetailServiceImpl implements AccountDetailService {
 
-    private AccountHistoryService accountHistoryService;
-    private AccountDetailRepository accountDetailRepository;
+    private final AccountHistoryService accountHistoryService;
+    private final AccountDetailRepository accountDetailRepository;
 
     @Override
     public Long addAccountDetail(String memberKey, AddAccountDetailDto dto) {
