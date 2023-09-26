@@ -1,9 +1,6 @@
 package com.keeping.memberservice.api.service.member;
 
-import com.keeping.memberservice.api.controller.response.ChildrenResponse;
-import com.keeping.memberservice.api.controller.response.LinkResultResponse;
-import com.keeping.memberservice.api.controller.response.LoginMember;
-import com.keeping.memberservice.api.controller.response.RelationshipCheckResponse;
+import com.keeping.memberservice.api.controller.response.*;
 import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.dto.AddMemberDto;
 import com.keeping.memberservice.domain.Child;
@@ -28,8 +25,8 @@ import java.util.*;
 @Transactional
 @Slf4j
 public class MemberService implements UserDetailsService {
-
     private final ParentRepository parentRepository;
+
     private final ChildRepository childRepository;
     private final MemberRepository memberRepository;
     private final LinkRepository linkRepository;
@@ -37,6 +34,23 @@ public class MemberService implements UserDetailsService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthService authService;
+
+    /**
+     * 타입 체크
+     *
+     * @param memberKey
+     * @param type
+     * @return
+     */
+    public boolean typeCheck(String memberKey, String type) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
+                new NoSuchElementException("등록되지 않은 사용자입니다."));
+        if (type.equals("PARENT")) {
+            return parentRepository.findByMember(member).isPresent();
+        } else {
+            return childRepository.findByMember(member).isPresent();
+        }
+    }
 
     /**
      * 부모 자녀 관계인지 확인
