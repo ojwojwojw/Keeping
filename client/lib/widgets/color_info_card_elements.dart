@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/display_format.dart';
 
 Widget colorInfoCardStatus(double width, String status) {
   return Container(
@@ -38,7 +39,7 @@ Widget colorInfoDetailCardHeader(DateTime date, String name) {
 
 Widget colorInfoDetailDate(DateTime date) {
   return Text(
-    DateFormat('yyyy년 M월 d일').format(date)
+    formattedYMDDate(date)
   );
 }
 

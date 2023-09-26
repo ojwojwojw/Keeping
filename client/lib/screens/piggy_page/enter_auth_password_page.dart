@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/piggy_provider.dart';
 import 'package:keeping/screens/my_page/phonenum_edit_page.dart';
+import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
+import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/password_keyboard.dart';
+import 'package:keeping/widgets/rounded_modal.dart';
 import 'package:provider/provider.dart';
 
 // 임시
@@ -88,12 +91,19 @@ class _EnterAuthPasswordPageState extends State<EnterAuthPasswordPage> {
       ),
       bottomNavigationBar: BottomBtn(
         text: '만들기',
-        action: () {_makePiggy(
-          context.watch<AddPiggyProvider>().content, 
-          context.watch<AddPiggyProvider>().goalMoney,
-          authPassword,
-          context.watch<AddPiggyProvider>().imgPath!,
-        );},
+        action: () async {
+          final response = _makePiggy(
+            Provider.of<AddPiggyProvider>(context, listen: false).content, 
+            Provider.of<AddPiggyProvider>(context, listen: false).goalMoney,
+            authPassword,
+            Provider.of<AddPiggyProvider>(context, listen: false).imgPath ?? Provider.of<AddPiggyProvider>(context, listen: false).imgPath!,
+          );
+          if (response != null) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => CompletedPage(text: response.toString())));
+          } else {
+            roundedModal(context: context, title: '다시 시도해주세요.');
+          }
+        },
         isDisabled: (authPassword != null && authPassword!.length == 6) ? false : true,
       ),
     );
@@ -101,24 +111,17 @@ class _EnterAuthPasswordPageState extends State<EnterAuthPasswordPage> {
 }
 
 Future<dynamic> _makePiggy(content, goalMoney, authPassword, imgPath) async {
-  final response = await httpPost(
-    'https://e8aa-121-178-98-20.ngrok-free.app/bank-service/piggy/yoonyeji',
-    {
-      'Authorization': 'Bearer $accessToken',
-      'Content-Type': 'multipart/form-data'
-    },
-    {
+  final response = await dioPost(
+    accessToken: 'accessToken', 
+    url: '/bank-service/piggy/yoonyeji',
+    data: {
       "content": content,
       "goalMoney": goalMoney,
       "authPassword": authPassword,
       "uploadImage": imgPath
     }
   );
-  if (response != null) {
-    return response;
-  } else {
-    return null;
-  }
+  return response;
 }
 
 Widget passwordCircles(int inputLen) {

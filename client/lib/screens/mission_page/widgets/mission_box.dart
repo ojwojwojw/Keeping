@@ -13,35 +13,46 @@ class MissionBox extends StatefulWidget {
 class _MissionBoxState extends State<MissionBox> {
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    MissionDetailPage(mission: widget.mission)));
-      },
-      child: Material(
-        child: missionBox(widget.mission),
+    return Center(
+      child: ElevatedButton(
+        style: ButtonStyle(
+          fixedSize: MaterialStateProperty.all(Size(350.0, 100.0)),
+          // backgroundColor: MaterialStateProperty.all(Color(0xFF8320E7)),
+          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+            if (widget.mission["completed"] == "YET") {
+              return Color(0xFF8320E7);
+            } else if (widget.mission["completed"] == "LOADING") {
+              return Colors.red;
+            } else if (widget.mission["completed"] == "COMPLETE") {
+              return Colors.green;
+            } else {
+              return Colors.grey; // 기본값 설정
+            }
+          }),
+        ),
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      MissionDetailPage(mission: widget.mission)));
+        },
+        child: Row(
+          children: [
+            Text(widget.mission["id"].toString() + "|",
+                style: TextStyle(color: Colors.white, fontSize: 10)),
+            Text(widget.mission["todo"] + "|",
+                style: TextStyle(color: Colors.white, fontSize: 10)),
+            Text(widget.mission["money"].toString() + "|",
+                style: TextStyle(color: Colors.white, fontSize: 10)),
+            Text(widget.mission["deadline"] + "|",
+                style: TextStyle(color: Colors.white, fontSize: 10)),
+            Text(widget.mission["completed"] + "|",
+                style: TextStyle(color: Colors.white, fontSize: 10)),
+          ],
+        ),
       ),
     );
   }
-}
-
-// 미션박스 하나를 보여주는 위젯
-Widget missionBox(Map<String, dynamic> mission) {
-  return Container(
-      margin: EdgeInsets.all(20),
-      width: 500,
-      height: 100,
-      color: Colors.blue,
-      child: (Row(
-        children: [
-          Text(mission["id"].toString()),
-          Text(mission["todo"]),
-          Text(mission["money"].toString()),
-          Text(mission["deadline"]),
-          Text(mission["completed"]),
-        ],
-      )));
 }

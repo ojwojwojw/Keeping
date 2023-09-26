@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/number_keyboard.dart';
-import 'package:intl/intl.dart';
 
 class KeyboardTest extends StatelessWidget {
   const KeyboardTest({super.key});
@@ -37,9 +37,7 @@ Widget renderText(String amount) {
   );
 
   if (amount.isNotEmpty) {
-    NumberFormat f = NumberFormat('#,###');
-
-    display = '${f.format(int.parse(amount))}원';
+    display = formattedMoney(int.parse(amount));
     style = style.copyWith(
       color: Colors.black
     );

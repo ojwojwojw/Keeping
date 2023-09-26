@@ -45,6 +45,20 @@ ClipOval categoryImg(String imgPath) {
   );
 }
 
+// 둥근 에셋 이미지(프로젝트 파일 안에 저장된 이미지)
+ClipOval roundedAssetImg({required String imgPath, double size = 60}) {
+  return ClipOval(
+    child: SizedBox(
+      width: size,
+      height: size,
+      child: Image.asset(
+        imgPath,
+        fit: BoxFit.cover,
+      ),
+    ),
+  );
+}
+
 // 텍스트 필드 라벨 스타일 (ex. 무엇을 구매했나요?)
 TextStyle labelStyle() {
   return TextStyle(
