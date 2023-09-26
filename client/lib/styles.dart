@@ -32,11 +32,11 @@ BoxDecoration roundedBoxWithShadowStyle({
 }
 
 // 둥근 카테고리 이미지
-ClipOval categoryImg(String imgPath) {
+ClipOval categoryImg(String imgPath, {double size = 60}) {
   return ClipOval(
     child: SizedBox(
-      width: 60,
-      height: 60,
+      width: size,
+      height: size,
       child: Image.asset(
         imgPath,
         fit: BoxFit.cover
