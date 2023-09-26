@@ -47,12 +47,12 @@ public class PiggyApiController {
         return ApiResponse.ok(null);
     }
 
-    @GetMapping
-    public ApiResponse<List<ShowPiggyResponse>> showPiggy(@PathVariable("member-key") String memberKey) {
+    @GetMapping("/{target-key}")
+    public ApiResponse<List<ShowPiggyResponse>> showPiggy(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey) {
         log.debug("showPiggy");
 
         try {
-            List<ShowPiggyResponse> response = piggyService.showPiggy(memberKey);
+            List<ShowPiggyResponse> response = piggyService.showPiggy(memberKey, targetKey);
             return ApiResponse.ok(response);
         } catch (IOException e) {
             log.debug("예외 발생 : {}", e.toString());
@@ -91,10 +91,10 @@ public class PiggyApiController {
         return null;
     }
 
-    @GetMapping("/{account-number}")
-    public ApiResponse<ShowPiggyHistoryResponse> showPiggyHistory(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
-        log.debug("ShowPiggyHistory={}, {}", memberKey, accountNumber);
-
-        return null;
-    }
+//    @GetMapping("/{account-number}")
+//    public ApiResponse<ShowPiggyHistoryResponse> showPiggyHistory(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
+//        log.debug("ShowPiggyHistory={}, {}", memberKey, accountNumber);
+//
+//        return null;
+//    }
 }

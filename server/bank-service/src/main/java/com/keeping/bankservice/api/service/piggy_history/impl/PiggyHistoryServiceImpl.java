@@ -46,14 +46,13 @@ public class PiggyHistoryServiceImpl implements PiggyHistoryService {
     }
 
     @Override
-    public List<ShowPiggyHistoryResponse> showPiggyHistory(String memberKey, Long piggyId) {
+    public List<ShowPiggyHistoryResponse> showPiggyHistory(String memberKey, String targetKey, Long piggyId) {
         Piggy piggy = piggyRepository.findById(piggyId)
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 저금통이 존재하지 않습니다."));
 
-        if (!piggy.getChildKey().equals(memberKey)) {
+        if (!piggy.getChildKey().equals(targetKey)) {
             throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
         }
-
 
         List<ShowPiggyHistoryResponse> showPiggyHistory = piggyHistoryQueryRepository.showPiggyHistory(piggyId);
 

@@ -18,5 +18,6 @@ public interface AccountService {
     void authPhone(String memberKey, AuthPhoneDto dto) throws JsonProcessingException;
     Account withdrawMoney(String memberKey, WithdrawMoneyDto dto);
     Account depositMoney(String memberKey, DepositMoneyDto dto);
-    ShowAccountResponse showAccount(String memberKey);
+    ShowAccountResponse showAccount(String memberKey, String targetKey);
+    Long showBalance(String memberKey);
 }

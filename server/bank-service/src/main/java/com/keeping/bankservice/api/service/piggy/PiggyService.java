@@ -13,7 +13,7 @@ import java.util.List;
 @Transactional
 public interface PiggyService {
     Long addPiggy(String memberKey, AddPiggyDto dto) throws IOException;
-    List<ShowPiggyResponse> showPiggy(String memberKey) throws IOException;
+    List<ShowPiggyResponse> showPiggy(String memberKey, String targetKey) throws IOException;
     void savingPiggy(String memberKey, SavingPiggyDto dto) throws URISyntaxException;
     Piggy isValidPiggy(String memberKey, Long piggyId);
 }
