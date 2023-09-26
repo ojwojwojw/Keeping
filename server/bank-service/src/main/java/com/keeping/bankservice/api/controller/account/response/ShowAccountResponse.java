@@ -10,15 +10,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor()
 public class ShowAccountResponse {
 
-    private Long accountId;
+    private Long id;
     private String accountNumber;
     private Long balance;
     private LocalDateTime createdDate;
 
 
     @Builder
-    public ShowAccountResponse(Long accountId, String accountNumber, Long balance, LocalDateTime createdDate) {
-        this.accountId = accountId;
+    public ShowAccountResponse(Long id, String accountNumber, Long balance, LocalDateTime createdDate) {
+        this.id = id;
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.createdDate = createdDate;

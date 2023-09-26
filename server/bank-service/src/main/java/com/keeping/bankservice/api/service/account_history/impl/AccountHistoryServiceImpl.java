@@ -84,7 +84,9 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         LargeCategory largeCategory = ETC;
         String categoryType = null;
 
-        if(dto.getStoreName() != null && !dto.getStoreName().equals("저금통 저금")) {
+        if (dto.getStoreName().equals("저금통 저금") || dto.getStoreName().equals("용돈 지급") || dto.getStoreName().equals("용돈")) {
+            largeCategory = BANK;
+        } else if (dto.getStoreName() != null) {
             // 장소의 위도, 경도, 카테고리 가져오기
             Map keywordResponse = useKakaoLocalApi(true, dto.getStoreName());
             try {
@@ -97,7 +99,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
         Double latitude = null, longitude = null;
 
-        if(dto.getAddress() != null && !dto.getAddress().equals("")) {
+        if (dto.getAddress() != null && !dto.getAddress().equals("")) {
             Map addressResponse = useKakaoLocalApi(false, dto.getAddress());
             try {
                 latitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("y"));
@@ -216,7 +218,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
         Optional<List<Account>> accountList = accountRepository.findByMemberKey(targetKey);
 
-        if(accountList.isEmpty()) {
+        if (accountList.isEmpty()) {
             return 0l;
         }
 
@@ -227,7 +229,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         LocalDateTime endDateTime = startDate.plusMonths(1).atStartOfDay().minusSeconds(1);
 
         Long total = 0l;
-        for(Account account: accounts) {
+        for (Account account : accounts) {
             Long result = accountHistoryQueryRepository.countMonthExpense(account, startDateTime, endDateTime);
             total += result;
         }
@@ -240,20 +242,20 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         // TODO: 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
 
         // 부모 계좌에서 출금
-        Account parentAccount = accountRepository.findByMemberKey(memberKey)
-                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당 회원의 계좌가 존재하지 않습니다.")).get(0);
+        List<Account> parentAccountList = accountRepository.findByMemberKey(memberKey)
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당 회원의 계좌가 존재하지 않습니다."));
 
+        Account parentAccount = parentAccountList.get(0);
         AddAccountHistoryDto parentAccountHistoryDto = AddAccountHistoryDto.toDto(parentAccount.getAccountNumber(), "용돈 지급", false, Long.valueOf(dto.getMoney()), "");
         addAccountHistory(memberKey, parentAccountHistoryDto);
 
-
         // 자식 계좌로 입금
-        Account childAccount = accountRepository.findByMemberKey(dto.getChildKey())
-                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당 회원의 계좌가 존재하지 않습니다.")).get(0);
+        List<Account> childAccountList = accountRepository.findByMemberKey(dto.getChildKey())
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당 회원의 계좌가 존재하지 않습니다."));
 
+        Account childAccount = childAccountList.get(0);
         AddAccountHistoryDto childAccountHistoryDto = AddAccountHistoryDto.toDto(childAccount.getAccountNumber(), "용돈", true, Long.valueOf(dto.getMoney()), "");
         addAccountHistory(dto.getChildKey(), childAccountHistoryDto);
-
     }
 
     private Map useKakaoLocalApi(boolean flag, String value) {

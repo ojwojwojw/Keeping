@@ -86,6 +86,9 @@ public class AccountApiController {
             ShowAccountResponse response = accountService.showAccount(memberKey, targetKey);
             return ApiResponse.ok(response);
         }
+        catch (NotFoundException e) {
+            return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
+        }
         catch (Exception e) {
             log.debug("에러 발생 : {}", e.toString());
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "계좌 정보를 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);

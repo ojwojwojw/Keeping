@@ -128,8 +128,9 @@ public class AccountServiceImpl implements AccountService {
 
         ShowAccountResponse result = accountQueryRepository.showAccount(targetKey);
 
-        // TODO: id가 null로 나오는 거 잡아야 함
-        System.out.println("검색: " + result.toString());
+        if(result == null) {
+            throw new NotFoundException("404", HttpStatus.NOT_FOUND, "해당 회원은 계좌가 없습니다.");
+        }
 
         return result;
     }

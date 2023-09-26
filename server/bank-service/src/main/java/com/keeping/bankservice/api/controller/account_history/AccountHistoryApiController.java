@@ -89,7 +89,7 @@ public class AccountHistoryApiController {
     }
 
     @PostMapping("/transfer")
-    public ApiResponse<Void> transferMoney(@PathVariable("member-key") String memberKey, TransferMoneyRequest request) {
+    public ApiResponse<Void> transferMoney(@PathVariable("member-key") String memberKey, @RequestBody TransferMoneyRequest request) {
         log.debug("TransferMoney={}", request);
 
         TransferMoneyDto dto = TransferMoneyDto.toDto(request);
