@@ -1,4 +1,4 @@
-package com.keeping.openaiservice.api.controller.response;
+package com.keeping.questionservice.api.controller.response;
 
 import lombok.Builder;
 import lombok.Data;

@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SendNotiRequest {
     private String memberKey;
-
-    private String receptionkey;
-
-    private String sentKey;
-
+    
+    private String fcmToken;
+    
     private String title;
 
     private String content;
@@ -21,10 +19,9 @@ public class SendNotiRequest {
     private Type type;
 
     @Builder
-    public SendNotiRequest(String memberKey, String receptionkey, String sentKey, String title, String content, Type type) {
+    public SendNotiRequest(String memberKey, String fcmToken, String title, String content, Type type) {
         this.memberKey = memberKey;
-        this.receptionkey = receptionkey;
-        this.sentKey = sentKey;
+        this.fcmToken = fcmToken;
         this.title = title;
         this.content = content;
         this.type = type;

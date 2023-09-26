@@ -8,10 +8,6 @@ import lombok.Data;
 public class NotiResponse {
     
     private Long notiId;
-    
-    private String receptionkey;
-
-    private String sentKey;
 
     private String title;
 
@@ -20,10 +16,8 @@ public class NotiResponse {
     private Type type;
 
     @Builder
-    public NotiResponse(Long notiId, String receptionkey, String sentKey, String title, String content, Type type) {
+    public NotiResponse(Long notiId, String title, String content, Type type) {
         this.notiId = notiId;
-        this.receptionkey = receptionkey;
-        this.sentKey = sentKey;
         this.title = title;
         this.content = content;
         this.type = type;
