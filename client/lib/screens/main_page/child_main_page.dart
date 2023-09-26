@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/main_page/widgets/account_info.dart';
@@ -11,6 +12,7 @@ import 'package:keeping/screens/piggy_page/piggy_page.dart';
 import 'package:keeping/screens/question_page/question_page.dart';
 import 'package:keeping/screens/request_pocket_money_page/child_request_money_page.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
+import 'package:provider/provider.dart';
 
 class ChildMainPage extends StatefulWidget {
   ChildMainPage({super.key});
@@ -62,10 +64,14 @@ class _ChildMainPageState extends State<ChildMainPage> {
                       if (snapshot.hasError) {
                         return const Text('에러');
                       } else if (snapshot.hasData) {
-                        if (snapshot.data['resultStatus']['resultCode'] == '404') {
+                        var response = snapshot.data;
+                        if (response['resultStatus']['resultCode'] == '404') {
                           return MakeAccountBtn();
                         } else {
-                          return AccountInfo();
+                          Provider.of<AccountInfoProvider>(context, listen: false).setAccountInfo(response['resultBody']);
+                          return AccountInfo(
+                            balance: response['resultBody']['balance'],
+                          );
                         }
                       } else {
                         return const Text('스냅샷 데이터 없음');
