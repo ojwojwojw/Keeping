@@ -29,7 +29,8 @@ public class PiggyQueryRepository {
                         piggy.goalMoney,
                         piggy.balance,
                         piggy.savedImage,
-                        piggy.completed))
+                        piggy.completed,
+                        piggy.createdDate))
                 .from(piggy)
                 .where(piggy.childKey.eq(memberKey), piggy.active.isTrue())
                 .fetch();
