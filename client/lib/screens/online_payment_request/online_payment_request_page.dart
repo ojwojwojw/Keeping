@@ -87,7 +87,7 @@ class OnlinePaymentRequestPage extends StatefulWidget {
 }
 
 class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
-  String? type;
+  bool? parent;
   String? accessToken;
   String? memberKey;
   String? childKey;
@@ -98,7 +98,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
   void initState() {
     super.initState();
     _response = _tempData['online'] ?? [];
-    type = context.read<UserInfoProvider>().type;
+    parent = context.read<UserInfoProvider>().parent;
     // accessToken = context.read<UserInfoProvider>().accessToken;
     // memberKey = context.read<UserInfoProvider>().memberKey;
   }
@@ -117,7 +117,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
           OnlinePaymentRequestFilters(),
           FutureBuilder(
             future: accessToken == null && memberKey == null ? null :
-              type == 'PARENT' ? 
+              parent != null && parent! ? 
               getOnlinePaymentRequestListForParent(accessToken: accessToken!, memberKey: memberKey!, childKey: childKey!)
               : getOnlinePaymentRequestListForChild(accessToken: accessToken!, memberKey: memberKey!),
             builder: (context, snapshot) {
@@ -163,7 +163,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
           ),
         ],
       ),
-      floatingActionButton: type == 'PARENT' ? null : FloatingBtn(
+      floatingActionButton: parent != null && parent! ? null : FloatingBtn(
         text: '부탁하기',
         icon: Icon(Icons.face),
         path: MakeOnlinePaymentRequestFirstPage(),

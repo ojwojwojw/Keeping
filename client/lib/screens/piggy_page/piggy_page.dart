@@ -44,14 +44,14 @@ class PiggyPage extends StatefulWidget {
 }
 
 class _PiggyPageState extends State<PiggyPage> {
-  String? type;
+  bool? parent;
   String? accessToken;
   String? memberKey;
 
   @override
   void initState() {
     super.initState();
-    type = context.read<UserInfoProvider>().type;
+    parent = context.read<UserInfoProvider>().parent;
     // accessToken = context.read<UserInfoProvider>().accessToken;
     // memberKey = context.read<UserInfoProvider>().memberKey;
   }
@@ -114,7 +114,7 @@ class _PiggyPageState extends State<PiggyPage> {
           // }
         }
       ),
-      floatingActionButton: type != 'PARENT' ? FloatingBtn(
+      floatingActionButton: parent != null && !parent! ? FloatingBtn(
         text: '만들기',
         icon: Icon(Icons.savings_rounded),
         path: MakePiggyPage(),

@@ -8,11 +8,11 @@ import 'package:provider/provider.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class PiggyDetailInfo extends StatefulWidget {
-  final String? type;
+  final bool? parent;
 
   PiggyDetailInfo({
     super.key,
-    required this.type,
+    required this.parent,
   });
 
   @override
@@ -36,7 +36,7 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
               padding: const EdgeInsets.only(top: 30),
               child: Column(
                 children: [
-                  if (widget.type == 'PARENT') ChildTag(childName: '김첫째', text: '저금통',),
+                  if (widget.parent != null && widget.parent!) ChildTag(childName: '김첫째', text: '저금통',),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

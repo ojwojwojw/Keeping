@@ -3,12 +3,12 @@ import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/child_tag.dart';
 
 class AccountInfo extends StatefulWidget {
-  final String? type;
+  final bool? parent;
   final int? balance;
 
   AccountInfo({
     super.key,
-    required this.type,
+    required this.parent,
     required this.balance,
   });
 
@@ -29,7 +29,7 @@ class _AccountInfoState extends State<AccountInfo> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (widget.type == 'PARENT') ChildTag(childName: '김첫째', text: '용돈 잔액'),
+            if (widget.parent != null && widget.parent!) ChildTag(childName: '김첫째', text: '용돈 잔액'),
             Text(
               widget.balance == null ? '0원' : formattedMoney(widget.balance),
               style: TextStyle(

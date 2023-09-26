@@ -24,7 +24,7 @@ class PiggyDetailPage extends StatefulWidget {
 }
 
 class _PiggyDetailPageState extends State<PiggyDetailPage> {
-  String? type;
+  bool? parent;
   String? accessToken;
   String? memberKey;
 
@@ -36,7 +36,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
     super.initState();
     context.read<PiggyDetailProvider>().removePiggyDetail();
     initPiggyDetail();
-    type = context.read<UserInfoProvider>().type;
+    parent = context.read<UserInfoProvider>().parent;
     // accessToken = context.read<UserInfoProvider>().accessToken;
     // memberKey = context.read<UserInfoProvider>().memberKey;
   }
@@ -83,7 +83,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
       ),
       body: Column(
         children: [
-          PiggyDetailInfo(type: type),
+          PiggyDetailInfo(parent: parent),
           FutureBuilder(
             future: accessToken != null && memberKey != null ? 
               getPiggyDetailList(accessToken: 'accessToken', memberKey: 'memberKey', piggyAccountNumber: widget.piggyAccountNumber) : null,
@@ -132,7 +132,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
           ),
         ],
       ),
-      floatingActionButton: type != 'PARENT' ? FloatingBtn(
+      floatingActionButton: parent != null && !parent! ? FloatingBtn(
         text: '저금하기',
         icon: Icon(Icons.savings_rounded),
         path: PiggySavingPage(),

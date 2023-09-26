@@ -20,62 +20,62 @@ class AllowanceLedgerPage extends StatefulWidget {
 }
 
 class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
-  final List<Map<String, dynamic>> _tempData = [
-    {
-      'date': '2020-10-10T14:58:04+09:00',
-      'store_name': '달콤왕가탕후루 전대',
-      'money': 3000,
-      'balance': 50000,
-      'detail': []
-    },
-    {
-      'date': '2020-10-10T14:58:04+09:00',
-      'store_name': '올리브영 전대',
-      'money': 5000,
-      'balance': 53000,
-      'detail': [
-        {
-          'content': '클렌징티슈',
-          'money': 3000
-        },
-        {
-          'content': '초콜릿',
-          'money': 2000
-        },
-      ]
-    },
-    {
-      'date': '2020-10-10T14:58:04+09:00',
-      'store_name': '달콤왕가탕후루 전대',
-      'money': 3000,
-      'balance': 58000,
-      'detail': []
-    },
-    {
-      'date': '2020-10-10T14:58:04+09:00',
-      'store_name': '달콤왕가탕후루 전대',
-      'money': 3000,
-      'balance': 61000,
-      'detail': []
-    },
-  ];
+  // final List<Map<String, dynamic>> _tempData = [
+  //   {
+  //     'date': '2020-10-10T14:58:04+09:00',
+  //     'store_name': '달콤왕가탕후루 전대',
+  //     'money': 3000,
+  //     'balance': 50000,
+  //     'detail': []
+  //   },
+  //   {
+  //     'date': '2020-10-10T14:58:04+09:00',
+  //     'store_name': '올리브영 전대',
+  //     'money': 5000,
+  //     'balance': 53000,
+  //     'detail': [
+  //       {
+  //         'content': '클렌징티슈',
+  //         'money': 3000
+  //       },
+  //       {
+  //         'content': '초콜릿',
+  //         'money': 2000
+  //       },
+  //     ]
+  //   },
+  //   {
+  //     'date': '2020-10-10T14:58:04+09:00',
+  //     'store_name': '달콤왕가탕후루 전대',
+  //     'money': 3000,
+  //     'balance': 58000,
+  //     'detail': []
+  //   },
+  //   {
+  //     'date': '2020-10-10T14:58:04+09:00',
+  //     'store_name': '달콤왕가탕후루 전대',
+  //     'money': 3000,
+  //     'balance': 61000,
+  //     'detail': []
+  //   },
+  // ];
 
-  String? type;
-  String? accessToken;
-  String? memberKey;
-  String? accountNumber;
-  int? balance;
+  bool? _parent;
+  String? _accessToken;
+  String? _memberKey;
+  String? _accountNumber;
+  int? _balance;
 
   @override
   void initState() {
     super.initState();
-    type = context.read<UserInfoProvider>().type;
-    // accessToken = context.read<UserInfoProvider>().accessToken;
-    // memberKey = context.read<UserInfoProvider>().memberKey;
-    // accountNumber = context.read<UserInfoProvider>().accountNumber;
-    // balance = context.read<UserInfoProvider>().balance;
-    accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NGFiMjY2MS00N2EyLTQ4NmMtOWY3Zi1mOGNkNTkwMGRiMTAiLCJleHAiOjE2OTU3MDM4NzZ9.Pmks2T9tCqjazb4IUgx1GVUCbtOz97DsBBGKrwkGd5c';
-    memberKey = '84ab2661-47a2-486c-9f7f-f8cd5900db10';
+    _parent = context.read<UserInfoProvider>().parent;
+    // _accessToken = context.read<UserInfoProvider>().accessToken;
+    // _memberKey = context.read<UserInfoProvider>().memberKey;
+    // _accountNumber = context.read<UserInfoProvider>().accountNumber;
+    // _balance = context.read<UserInfoProvider>().balance;
+    _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NGFiMjY2MS00N2EyLTQ4NmMtOWY3Zi1mOGNkNTkwMGRiMTAiLCJleHAiOjE2OTU3MDM4NzZ9.Pmks2T9tCqjazb4IUgx1GVUCbtOz97DsBBGKrwkGd5c';
+    _memberKey = '84ab2661-47a2-486c-9f7f-f8cd5900db10';
   }
   
   @override
@@ -87,12 +87,12 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
         elementColor: Colors.white,
       ),
       body: FutureBuilder(
-        future: accessToken == null || memberKey == null || accountNumber == null ? null :
-          getAccountList(accessToken: accessToken!, memberKey: memberKey!, accountNumber: accountNumber!),
+        future: _accessToken == null || _memberKey == null || _accountNumber == null ? null :
+          getAccountList(accessToken: _accessToken!, memberKey: _memberKey!, accountNumber: _accountNumber!),
         builder: (context, snapshot) {
           return Column(
             children: [
-              AccountInfo(type: type, balance: balance,),
+              AccountInfo(parent: _parent, balance: _balance,),
               Expanded(
                 child: Container(
                   decoration: lightGreyBgStyle(),
@@ -101,24 +101,24 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                     child: Column(
                       children: [
                         MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
-                        ..._tempData.map((e) => 
-                          e['detail'].isEmpty ? 
-                            MoneyRecord(
-                              date: DateTime.parse(e['date']), 
-                              storeName: e['store_name'], 
-                              money: e['money'], 
-                              balance: e['balance'],
-                              accountHistoryId: e['id'],
-                            )
-                          :
-                            MoneyRecordWithDetail(
-                              date: DateTime.parse(e['date']), 
-                              storeName: e['store_name'], 
-                              money: e['money'], 
-                              balance: e['balance'],
-                              detail: e['detail'],
-                            )
-                        ).toList(),
+                        // ..._tempData.map((e) => 
+                        //   e['detail'].isEmpty ? 
+                        //     MoneyRecord(
+                        //       date: DateTime.parse(e['date']), 
+                        //       storeName: e['store_name'], 
+                        //       money: e['money'], 
+                        //       balance: e['balance'],
+                        //       accountHistoryId: e['id'],
+                        //     )
+                        //   :
+                        //     MoneyRecordWithDetail(
+                        //       date: DateTime.parse(e['date']), 
+                        //       storeName: e['store_name'], 
+                        //       money: e['money'], 
+                        //       balance: e['balance'],
+                        //       detail: e['detail'],
+                        //     )
+                        // ).toList(),
                       ]
                     ),
                   )
