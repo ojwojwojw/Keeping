@@ -1,12 +1,14 @@
 package com.keeping.bankservice.api.service.account.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.keeping.bankservice.api.controller.account.response.ShowAccountResponse;
 import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.*;
 import com.keeping.bankservice.api.service.sms.SmsService;
 import com.keeping.bankservice.api.service.sms.dto.MessageDto;
 import com.keeping.bankservice.api.service.sms.dto.SmsResponseDto;
 import com.keeping.bankservice.domain.account.Account;
+import com.keeping.bankservice.domain.account.repository.AccountQueryRepository;
 import com.keeping.bankservice.domain.account.repository.AccountRepository;
 import com.keeping.bankservice.global.exception.InvalidRequestException;
 import com.keeping.bankservice.global.exception.NoAuthorizationException;
@@ -23,6 +25,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 @Service
@@ -31,6 +36,7 @@ import java.util.Random;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+    private final AccountQueryRepository accountQueryRepository;
 //    private final PasswordEncoder passwordEncoder;
     private final RedisUtils redisUtils;
     private final ValidationUtils validationUtils;
@@ -40,9 +46,9 @@ public class AccountServiceImpl implements AccountService {
     public Long addAccount(String memberKey, AddAccountDto dto) throws JsonProcessingException {
         String key = "AccountAuth_" + memberKey;
 
-//        if(redisUtils.getRedisValue(key, String.class) == null) {
-//            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "핸드폰 번호가 인증되지 않았습니다.");
-//        }
+        if(redisUtils.getRedisValue(key, String.class) == null) {
+            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "핸드폰 번호가 인증되지 않았습니다.");
+        }
 
         String accountNumber = createNewAccountNumber();
 
@@ -112,6 +118,16 @@ public class AccountServiceImpl implements AccountService {
         account.updateBalance(dto.getMoney(), true);
 
         return account;
+    }
+
+    @Override
+    public ShowAccountResponse showAccount(String memberKey) {
+        ShowAccountResponse result = accountQueryRepository.showAccount(memberKey);
+
+        // TODO: id가 null로 나오는 거 잡아야 함
+        System.out.println("검색: " + result.toString());
+
+        return result;
     }
 
     private String createNewAccountNumber() throws JsonProcessingException {

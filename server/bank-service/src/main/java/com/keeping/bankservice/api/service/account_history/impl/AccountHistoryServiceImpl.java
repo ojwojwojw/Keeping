@@ -10,6 +10,7 @@ import com.keeping.bankservice.api.service.account_history.dto.AddAccountDetailV
 import com.keeping.bankservice.api.service.account_history.dto.AddAccountHistoryDto;
 import com.keeping.bankservice.api.service.account_history.dto.ShowAccountHistoryDto;
 import com.keeping.bankservice.domain.account.Account;
+import com.keeping.bankservice.domain.account.repository.AccountRepository;
 import com.keeping.bankservice.domain.account_detail.SmallCategory;
 import com.keeping.bankservice.domain.account_detail.repository.AccountDetailQueryRepository;
 import com.keeping.bankservice.domain.account_history.AccountHistory;
@@ -42,14 +43,16 @@ import static com.keeping.bankservice.domain.account_history.LargeCategory.*;
 public class AccountHistoryServiceImpl implements AccountHistoryService {
 
     private final AccountService accountService;
+    private final AccountRepository accountRepository;
     private final AccountHistoryRepository accountHistoryRepository;
     private final AccountHistoryQueryRepository accountHistoryQueryRepository;
     private final AccountDetailQueryRepository accountDetailQueryRepository;
     private final Environment env;
     private String kakaoAk;
 
-    public AccountHistoryServiceImpl(AccountService accountService, AccountHistoryRepository accountHistoryRepository, AccountHistoryQueryRepository accountHistoryQueryRepository, AccountDetailQueryRepository accountDetailQueryRepository, Environment env) {
+    public AccountHistoryServiceImpl(AccountService accountService, AccountRepository accountRepository, AccountHistoryRepository accountHistoryRepository, AccountHistoryQueryRepository accountHistoryQueryRepository, AccountDetailQueryRepository accountDetailQueryRepository, Environment env) {
         this.accountService = accountService;
+        this.accountRepository = accountRepository;
         this.accountHistoryRepository = accountHistoryRepository;
         this.accountHistoryQueryRepository = accountHistoryQueryRepository;
         this.accountDetailQueryRepository = accountDetailQueryRepository;
@@ -199,6 +202,29 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         }
 
         return response;
+    }
+
+    @Override
+    public Long countMonthExpense(String memberKey, String date) {
+        Optional<List<Account>> accountList = accountRepository.findByMemberKey(memberKey);
+
+        if(accountList.isEmpty()) {
+            return 0l;
+        }
+
+        List<Account> accounts = accountList.get();
+
+        LocalDate startDate = LocalDate.parse(date + "-01", DateTimeFormatter.ISO_DATE);
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = startDate.plusMonths(1).atStartOfDay().minusSeconds(1);
+
+        Long total = 0l;
+        for(Account account: accounts) {
+            Long result = accountHistoryQueryRepository.countMonthExpense(account, startDateTime, endDateTime);
+            total += result;
+        }
+
+        return total;
     }
 
     private Map useKakaoLocalApi(boolean flag, String value) {

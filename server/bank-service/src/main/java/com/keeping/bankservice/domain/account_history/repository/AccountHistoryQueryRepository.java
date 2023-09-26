@@ -1,6 +1,7 @@
 package com.keeping.bankservice.domain.account_history.repository;
 
 import com.keeping.bankservice.api.service.account_history.dto.ShowAccountHistoryDto;
+import com.keeping.bankservice.domain.account.Account;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
@@ -61,6 +62,16 @@ public class AccountHistoryQueryRepository {
                 .where(accountHistory.account.accountNumber.eq(accountNumber), accountHistory.account.memberKey.eq(memberKey), accountHistory.createdDate.between(startDateTime, endDateTime))
                 .orderBy(accountHistory.createdDate.desc())
                 .fetch();
+
+        return result;
+    }
+
+    public Long countMonthExpense(Account account, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        Long result = queryFactory
+                .select(accountHistory.money.sum())
+                .from(accountHistory)
+                .where(accountHistory.account.eq(account), accountHistory.type.isFalse(), accountHistory.createdDate.between(startDateTime, endDateTime))
+                .fetchOne();
 
         return result;
     }

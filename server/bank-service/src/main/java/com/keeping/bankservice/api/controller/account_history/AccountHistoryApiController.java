@@ -70,4 +70,18 @@ public class AccountHistoryApiController {
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "거래 내역을 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
         }
     }
+
+    @GetMapping("/expense/{date}")
+    public ApiResponse<Long> countMonthExpense(@PathVariable("member-key") String memberKey, @PathVariable("date") String date) {
+        log.debug("CountMonthExpense");
+
+        try {
+            Long totalExpense = accountHistoryService.countMonthExpense(memberKey, date);
+            return ApiResponse.ok(totalExpense);
+        }
+        catch (Exception e) {
+            log.debug("에러 발생 : {}", e.toString());
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "월별 지출 총합을 계산하는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
+        }
+    }
 }
