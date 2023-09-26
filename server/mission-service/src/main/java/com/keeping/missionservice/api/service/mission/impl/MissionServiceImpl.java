@@ -21,7 +21,11 @@ import com.keeping.missionservice.domain.mission.repository.MissionQueryReposito
 import com.keeping.missionservice.domain.mission.repository.MissionRepository;
 import com.keeping.missionservice.global.exception.AlreadyExistException;
 import com.keeping.missionservice.global.exception.NotFoundException;
+import com.netflix.discovery.converters.Auto;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +36,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MissionServiceImpl implements MissionService {
     
     private MemberFeignClient memberFeignClient;
@@ -39,6 +44,7 @@ public class MissionServiceImpl implements MissionService {
     private NotiFeignClient notiFeignClient;
     private final MissionQueryRepository missionQueryRepository;
     private final MissionRepository missionRepository;
+    
 
     /**
      *  미션 등록
@@ -51,7 +57,7 @@ public class MissionServiceImpl implements MissionService {
         // 부모가 자녀에게 미션을 주는 거라면 Completed(완성여부)를 YET으로 설정
         if (dto.getType().equals(MissionType.PARENT)) {
             // 해당 자녀가 있는지 확인
-            MemberRelationshipResponse memberRelationship = memberFeignClient.getMemberRelationship(MemberRelationshipRequest.builder()
+            MemberRelationshipResponse memberRelationship = memberFeignClient.getMemberRelationship(memberKey, MemberRelationshipRequest.builder()
                             .parentKey(memberKey)
                             .childKey(dto.getTo())
                             .build())
@@ -95,7 +101,7 @@ public class MissionServiceImpl implements MissionService {
         // 자녀가 부모에게 미션을 주는 거라면 Completed(완성여부)를 CREATE_WAIT으로 설정
         else if (dto.getType().equals(MissionType.CHILD)) {
             // 해당 자녀가 있는지 확인
-            MemberRelationshipResponse memberRelationship = memberFeignClient.getMemberRelationship(MemberRelationshipRequest.builder()
+            MemberRelationshipResponse memberRelationship = memberFeignClient.getMemberRelationship(memberKey, MemberRelationshipRequest.builder()
                     .parentKey(dto.getTo())
                     .childKey(memberKey)
                     .build())
@@ -146,8 +152,7 @@ public class MissionServiceImpl implements MissionService {
 
     @Override
     public Long editCompleted(String memberKey, EditCompleteDto dto) {
-        MemberTypeResponse memberType = memberFeignClient.getMemberType(MemberTypeRequest.builder()
-                .memberKey(memberKey)
+        MemberTypeResponse memberType = memberFeignClient.getMemberType(memberKey, MemberTypeRequest.builder()
                 .type(dto.getType())
                 .build())
                 .getResultBody();
@@ -265,5 +270,19 @@ public class MissionServiceImpl implements MissionService {
         mission.deleteMission();
 
         return missionId;
+    }
+
+    @Override
+    public Integer testBalance(String memberKey) {
+        
+        log.debug("mission-test : {" + memberKey + "}");
+        ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
+        
+        log.debug("bank-feign-client");
+        int limitAmount = accountBalanceFromParent.getResultBody().getBalance();
+        
+        log.debug("limitAmount: {" + limitAmount + "}");
+        
+        return limitAmount;
     }
 }

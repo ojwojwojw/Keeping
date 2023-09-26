@@ -26,6 +26,20 @@ public class MissionApiController {
 
     private final MissionService missionService;
 
+
+    /**
+     * bank 테스트
+     */
+    @GetMapping("/test")
+    public ApiResponse<Integer> testBalance(
+            @PathVariable(name = "member_key") String memberKey
+    ) {
+        log.debug("[ mission ]");
+
+        Integer integer = missionService.testBalance(memberKey);
+        return ApiResponse.ok(integer);
+    }
+
     /**
      * 미션 등록
      *
