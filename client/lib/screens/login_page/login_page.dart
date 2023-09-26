@@ -175,13 +175,7 @@ class _LoginPageState extends State<LoginPage> {
 
         // 나머지 처리 코드 추가
         handleLogin('로그인 성공');
-        requestUserInfo(memberKey);
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => MainPage(),
-        //   ),
-        // );
+        requestUserInfo(memberKey, token);
       } else {
         // 로그인에 실패한 경우
         print('로그인에 실패!');
@@ -193,11 +187,18 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void requestUserInfo(memberKey) async {
+  void requestUserInfo(memberKey, accessToken) async {
+    Options options = Options(
+      headers: {
+        'Authorization': 'Bearer $accessToken', // 토큰 추가
+      },
+    );
     print(memberKey);
     try {
       var response = await dio.get(
-          'http://j9c207.p.ssafy.io:8000/member-service/auth/api/$memberKey/login-check');
+        'http://j9c207.p.ssafy.io:8000/member-service/auth/api/$memberKey/login-check',
+        options: options,
+      );
       print(response);
     } catch (err) {
       print(err);
