@@ -65,9 +65,11 @@ class _PiggyPageState extends State<PiggyPage> {
         elementColor: Colors.white,
       ),
       body: FutureBuilder(
-          future: (accessToken != null && memberKey != null)
-              ? getPiggyList(accessToken: accessToken!, memberKey: memberKey!)
-              : null,
+          future: getPiggyList(
+            accessToken: accessToken, 
+            memberKey: memberKey,
+            targetKey: parent != null && parent == true ? null : memberKey,
+          ),
           builder: (context, snapshot) {
             print('스냅샷스냅샷스냅샷 ${snapshot.toString()}');
             // if (snapshot.connectionState == ConnectionState.waiting) {
