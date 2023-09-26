@@ -109,8 +109,9 @@ class _PiggyPageState extends State<PiggyPage> {
                       ]),
                     ),
                   )
-                ],
-              );
+                )
+              ],
+            );
           //   } else {
           //     return const Text('스냅샷 데이터 없음');
           //   }

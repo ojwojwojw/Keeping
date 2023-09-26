@@ -15,7 +15,7 @@ class UserInfoProvider with ChangeNotifier {
   bool get parent => _parent;
   String get fcmToken => _fcmToken;
   String get accessToken => _accessToken;
-  String get memberkey => _memberKey;
+  String get memberKey => _memberKey;
 
   void updateUserInfo({
     String? name,

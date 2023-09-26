@@ -72,10 +72,11 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
     _parent = context.read<UserInfoProvider>().parent;
     // _accessToken = context.read<UserInfoProvider>().accessToken;
     // _memberKey = context.read<UserInfoProvider>().memberKey;
+    _accountNumber = '171-682675-422-27';
     // _accountNumber = context.read<UserInfoProvider>().accountNumber;
     // _balance = context.read<UserInfoProvider>().balance;
-    _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NGFiMjY2MS00N2EyLTQ4NmMtOWY3Zi1mOGNkNTkwMGRiMTAiLCJleHAiOjE2OTU3MDM4NzZ9.Pmks2T9tCqjazb4IUgx1GVUCbtOz97DsBBGKrwkGd5c';
-    _memberKey = '84ab2661-47a2-486c-9f7f-f8cd5900db10';
+    _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1OTVkOTUyYy0xNmVkLTQwOGUtYmE2My1lZjk4OGQ2MjRmYTUiLCJleHAiOjE2OTU4MDQ4NTh9.fddpAvh-i63SvuXF0DVHj480lduLnnZz0qgNaVVMfI4';
+    _memberKey = '595d952c-16ed-408e-ba63-ef988d624fa5';
   }
 
   @override
@@ -86,54 +87,75 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
         bgColor: const Color(0xFF8320E7),
         elementColor: Colors.white,
       ),
-      body: FutureBuilder(
-        future: _accessToken == null || _memberKey == null || _accountNumber == null ? null :
-          getAccountList(accessToken: _accessToken!, memberKey: _memberKey!, accountNumber: _accountNumber!),
-        builder: (context, snapshot) {
-          return Column(
-            children: [
-              AccountInfo(parent: _parent, balance: _balance,),
-              Expanded(
-                child: Container(
-                  decoration: lightGreyBgStyle(),
-                  width: double.infinity,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
-                        // ..._tempData.map((e) => 
-                        //   e['detail'].isEmpty ? 
-                        //     MoneyRecord(
-                        //       date: DateTime.parse(e['date']), 
-                        //       storeName: e['store_name'], 
-                        //       money: e['money'], 
-                        //       balance: e['balance'],
-                        //       accountHistoryId: e['id'],
-                        //     )
-                        //   :
-                        //     MoneyRecordWithDetail(
-                        //       date: DateTime.parse(e['date']), 
-                        //       storeName: e['store_name'], 
-                        //       money: e['money'], 
-                        //       balance: e['balance'],
-                        //       detail: e['detail'],
-                        //     )
-                        // ).toList(),
-                      ]
-                    ),
-                  )
-                )
-              )
-            ],
-          );
-        }
-      ),
-      floatingActionButton: FloatingBtn(
-        text: '소비지도',
-        icon: Icon(Icons.map),
-        path: ChildSpendingRoutePage(),
-      ),
-      bottomNavigationBar: BottomNav(),
+      body: Column(
+        children: [
+          AccountInfo(parent: _parent, balance: _balance,),
+          FutureBuilder(
+            future: _parent != null && _parent! ? getAccountList(accessToken: _accessToken, memberKey: _memberKey, accountNumber: _accountNumber, targetKey: 'd')
+              : getAccountList(accessToken: _accessToken, memberKey: _memberKey, accountNumber: _accountNumber, targetKey: _memberKey),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Text('로딩중');
+              } else if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return const Text('에러');
+                } else if (snapshot.hasData) {
+              // List<Post> _posts = snapshot.data as List<Post>; 이런 식으로 정의하기
+              // return Column(
+              //   children: [
+                  print('스냅샷스냅샷스냅샷 ${snapshot.data}');
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: lightGreyBgStyle(),
+                          width: double.infinity,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
+                                // ..._tempData.map((e) => 
+                                //   e['detail'].isEmpty ? 
+                                //     MoneyRecord(
+                                //       date: DateTime.parse(e['date']), 
+                                //       storeName: e['store_name'], 
+                                //       money: e['money'], 
+                                //       balance: e['balance'],
+                                //       accountHistoryId: e['id'],
+                                //     )
+                                //   :
+                                //     MoneyRecordWithDetail(
+                                //       date: DateTime.parse(e['date']), 
+                                //       storeName: e['store_name'], 
+                                //       money: e['money'], 
+                                //       balance: e['balance'],
+                                //       detail: e['detail'],
+                                //     )
+                                // ).toList(),
+                              ]
+                            ),
+                          )
+                        )
+                      )
+                    ],
+                  );
+
+                } else {
+                  return const Text('스냅샷 데이터 없음');
+                }
+              } else {
+                return Text('퓨처 객체 null');
+              }
+            }
+          ),
+        ],
+      ),   
+      // floatingActionButton: FloatingBtn(
+      //   text: '소비지도',
+      //   icon: Icon(Icons.map),
+      //   path: ChildSpendingRoutePage(),
+      // ),
+      // bottomNavigationBar: BottomNav(),
     );
   }
 }
