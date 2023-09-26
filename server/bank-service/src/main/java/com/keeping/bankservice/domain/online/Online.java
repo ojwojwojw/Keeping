@@ -76,4 +76,8 @@ public class Online extends TimeBaseEntity {
     public void updateApproveStatus(Approve approve) {
         this.approve = approve;
     }
+
+    public void updateComment(String comment) {
+        this.comment = comment;
+    }
 }
