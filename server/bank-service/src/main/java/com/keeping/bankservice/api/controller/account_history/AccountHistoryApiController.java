@@ -19,13 +19,12 @@ import java.util.Map;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/bank-service/api/account-history")
+@RequestMapping("/bank-service/api/{member-key}/account-history")
 public class AccountHistoryApiController {
 
     private final AccountHistoryService accountHistoryService;
 
-    // TODO: service단에 memberKey 넘겨서 검증하는 과정 필요
-    @PostMapping("/{member-key}")
+    @PostMapping
     public ApiResponse<Void> addAccountHistory(@PathVariable("member-key") String memberKey, @RequestBody AddAccountHistoryRequest request) {
         log.debug("AddAccountHistory={}", request);
 
@@ -44,7 +43,7 @@ public class AccountHistoryApiController {
         return null;
     }
 
-    @GetMapping("/{member-key}/{account-number}")
+    @GetMapping("/{account-number}")
     public ApiResponse<Map<String, List<ShowAccountHistoryResponse>>> showAccountHistory(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
         log.debug("ShowAccountHistory");
 
@@ -53,11 +52,12 @@ public class AccountHistoryApiController {
             return ApiResponse.ok(response);
         }
         catch(Exception e) {
+            log.debug("에러 발생 : {}", e.toString());
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "거래 내역을 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
         }
     }
 
-    @GetMapping("/{member-key}/{account-number}/{date}")
+    @GetMapping("/{account-number}/{date}")
     public ApiResponse<Map<String, List<ShowAccountHistoryResponse>>> showAccountDailyHistory(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber, @PathVariable("date") String date) {
         log.debug("ShowAccountDailyHistory");
 
@@ -66,6 +66,7 @@ public class AccountHistoryApiController {
             return ApiResponse.ok(response);
         }
         catch(Exception e) {
+            log.debug("에러 발생 : {}", e.toString());
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "거래 내역을 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
         }
     }

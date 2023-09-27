@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
+import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
+import 'package:keeping/widgets/completed_page.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:keeping/widgets/rounded_modal.dart';
 
 class AllowanceLedgerDetailCreatePage extends StatefulWidget {
   // 카테고리 따라 사진 다르게 설정, 지출 입금 따라 -/+ 기호 추가
   final DateTime date;
   final String storeName;
-  final num money;
-  final num balance;
+  final int money;
+  final int balance;
+  final int accountHistoryId;
   final Map<String, dynamic>? detail;
 
   AllowanceLedgerDetailCreatePage({
@@ -19,6 +25,7 @@ class AllowanceLedgerDetailCreatePage extends StatefulWidget {
     required this.storeName,
     required this.money,
     required this.balance,
+    required this.accountHistoryId,
     this.detail
   });
 
@@ -27,21 +34,67 @@ class AllowanceLedgerDetailCreatePage extends StatefulWidget {
 }
 
 class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailCreatePage> {
+  String? type;
+  String? accessToken;
+  String? memberKey;
+
   TextEditingController contentControlloer = TextEditingController();
   TextEditingController moneyControlloer = TextEditingController();
   TextEditingController categoryIdxControlloer = TextEditingController();
 
-  String content = '';
-  num money = 0;
-  String category = '';
+  String _content = '';
+  int _money = 0;
+  String _category = '';
 
-  selectCategory(String selectedCategory) {
-    setState(() {
-      category = selectedCategory;
-    });
+  bool _contentResult = false;
+  bool _moneyResult = false;
+  bool _categoryResult = true;
+
+  void _setContent(String val) {
+    if (val.isNotEmpty) {
+      setState(() {
+        _content = val;
+      });
+    }
+  }
+
+  void _setMoney(String val) {
+    if (val.isNotEmpty) {
+      setState(() {
+        _money = int.parse(val);
+      });
+    }
+  }
+
+  void _setCategory(String selectedCategory) {
+    if (selectedCategory.isNotEmpty) {
+      setState(() {
+        _category = selectedCategory;
+      });
+    }
+  }
+
+  void setContentResult(bool val) {
+    _contentResult = val;
+  }
+
+  void setMoneyResult(bool val) {
+    _moneyResult = val;
+  }
+
+  void setCategoryResult(bool val) {
+    _categoryResult = val;
   }
 
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    // type
+    accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NGFiMjY2MS00N2EyLTQ4NmMtOWY3Zi1mOGNkNTkwMGRiMTAiLCJleHAiOjE2OTU3MDM4NzZ9.Pmks2T9tCqjazb4IUgx1GVUCbtOz97DsBBGKrwkGd5c';
+    memberKey = '84ab2661-47a2-486c-9f7f-f8cd5900db10';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +108,7 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
             Column(
               children: [
                 MoneyRecordsDate(date: widget.date,),
-                MoneyRecord(date: widget.date, storeName: widget.storeName, money: widget.money, balance: widget.balance)
+                MoneyRecord(date: widget.date, storeName: widget.storeName, money: widget.money, balance: widget.balance, accountHistoryId: widget.accountHistoryId,)
               ],
             ),
             Form(
@@ -63,33 +116,31 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
               child: Column(
                 children: [
                   renderTextFormField(
-                    label: '무엇을 구매했나요?', 
-                    onSaved: (val) {
-                      setState(() {
-                        content = val;
-                      });
-                    }, 
+                    label: '무엇을 구매했나요?',
                     validator: (val) {
                       if (val.length < 1) {
                         return '물품명을 입력해주세요.';
                       }
                       return null;
                     },
+                    onChange: (val) {
+                      _setContent(val);
+                    },
                     controller: contentControlloer
                   ),
-                  renderCategoryField(selectCategory, category),
+                  renderCategoryField(_setCategory, _category),
                   renderTextFormField(
-                    label: '얼마인가요?', 
-                    onSaved: (val) {
-                      setState(() {
-                        money = num.parse(val);
-                      });
-                    }, 
+                    label: '얼마인가요?',
                     validator: (val) {
                       if (val.length < 1) {
-                        return '제대로 입력해라..';
+                        return '금액을 입력해주세요.';
+                      } else if (int.parse(val) > widget.money) {
+                        return '금액을 초과했습니다.';
                       }
                       return null;
+                    },
+                    onChange: (val) {
+                      _setMoney(val);
                     },
                     controller: moneyControlloer,
                     isNumber: true
@@ -99,9 +150,9 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
             ),
             Column(
               children: [
-                Text(content),
-                Text(money.toString()),
-                Text(category)
+                Text(_content),
+                Text(_money.toString()),
+                Text(_category)
               ],
             )
           ],
@@ -110,14 +161,25 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
       bottomNavigationBar: BottomBtn(
         text: '등록하기',
         action: () async {
-          if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-            _formKey.currentState!.save();
-            print('저장완료');
+          var response = await createAccountDetail(
+            accessToken: accessToken!, 
+            memberKey: memberKey!, 
+            accountHistoryId: widget.accountHistoryId!, 
+            content: _content, 
+            money: _money,
+          );
+          if (response == 0) {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(
+              text: '상세 내용이\n등록되었습니다.',
+              button: ConfirmBtn(
+                action: AllowanceLedgerPage(),
+              ),
+            )));
           } else {
-            print('저장실패');
+            roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
           }
         },
-        isDisabled: false,
+        isDisabled: _contentResult && _categoryResult && _moneyResult ? false : true,
       ),
     );
   }

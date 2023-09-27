@@ -1,15 +1,9 @@
 package com.keeping.bankservice.account_detail;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.keeping.bankservice.api.service.account.dto.AddAccountDto;
 import com.keeping.bankservice.api.service.account_detail.AccountDetailService;
-import com.keeping.bankservice.domain.account.Account;
 import com.keeping.bankservice.domain.account.repository.AccountRepository;
 import com.keeping.bankservice.domain.account_detail.repository.AccountDetailRepository;
-import com.keeping.bankservice.domain.account_history.AccountHistory;
 import com.keeping.bankservice.domain.account_history.repository.AccountHistoryRepository;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;

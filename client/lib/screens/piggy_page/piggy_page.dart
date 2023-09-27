@@ -36,8 +36,6 @@ final List<Map<String, dynamic>> tempData = [
   }
 ];
 
-const String type = 'PARENT';
-
 class PiggyPage extends StatefulWidget {
   PiggyPage({super.key});
 
@@ -46,14 +44,14 @@ class PiggyPage extends StatefulWidget {
 }
 
 class _PiggyPageState extends State<PiggyPage> {
-  String? type;
+  bool? parent;
   String? accessToken;
   String? memberKey;
 
   @override
   void initState() {
     super.initState();
-    // type = context.read<UserInfoProvider>().type;
+    parent = context.read<UserInfoProvider>().parent;
     // accessToken = context.read<UserInfoProvider>().accessToken;
     // memberKey = context.read<UserInfoProvider>().memberKey;
   }
@@ -110,24 +108,23 @@ class _PiggyPageState extends State<PiggyPage> {
                             .toList()
                       ]),
                     ),
-                  ),
+                  )
                 )
               ],
             );
-            //   } else {
-            //     return const Text('스냅샷 데이터 없음');
-            //   }
-            // } else {
-            //   return Text('퓨처 객체 null');
-            // }
-          }),
-      floatingActionButton: type != 'PARENT'
-          ? FloatingBtn(
-              text: '만들기',
-              icon: Icon(Icons.savings_rounded),
-              path: MakePiggyPage(),
-            )
-          : null,
+          //   } else {
+          //     return const Text('스냅샷 데이터 없음');
+          //   }
+          // } else {
+          //   return Text('퓨처 객체 null');
+          // }
+        }
+      ),
+      floatingActionButton: parent != null && !parent! ? FloatingBtn(
+        text: '만들기',
+        icon: Icon(Icons.savings_rounded),
+        path: MakePiggyPage(),
+      ) : null,
       bottomNavigationBar: BottomNav(),
     );
   }

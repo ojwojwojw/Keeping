@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:keeping/firebase_options.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:provider/provider.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // await Firebase.initializeApp();
@@ -82,7 +83,8 @@ Future<String?> fcmSetting(UserInfoProvider userInfoProvider) async {
   );
 
   String? firebaseToken = await messaging.getToken();
-  print('firebase_token : $firebaseToken');
   userInfoProvider.updateFcmToken(fcmToken: firebaseToken);
+
+  print('firebase_token : $firebaseToken');
   return firebaseToken;
 }

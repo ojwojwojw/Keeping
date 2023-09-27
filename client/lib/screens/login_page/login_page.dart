@@ -173,7 +173,8 @@ class _LoginPageState extends State<LoginPage> {
         print('$token, $memberKey');
         // 나머지 처리 코드 추가
         handleLogin('로그인 성공');
-        requestUserInfo(memberKey, token, fcmToken);
+        await requestUserInfo(memberKey, token, fcmToken,
+            Provider.of<UserInfoProvider>(context, listen: false));
         Provider.of<UserInfoProvider>(context, listen: false)
             .updateTokenMemberKey(
           accessToken: token,
@@ -190,13 +191,18 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void requestUserInfo(memberKey, accessToken, fcmToken) async {
+  Future<void> requestUserInfo(
+    memberKey,
+    accessToken,
+    fcmToken,
+    UserInfoProvider userInfoProvider,
+  ) async {
     Options options = Options(
       headers: {
         'Authorization': 'Bearer $accessToken', // 토큰 추가
       },
     );
-    print(memberKey);
+    print('멤버 키: $memberKey, fcm : $fcmToken, aT: $accessToken');
     print('토큰');
     try {
       var response = await dio.get(
@@ -207,13 +213,20 @@ class _LoginPageState extends State<LoginPage> {
       print(response);
       String? _name = jsonResponse['resultBody']['name'];
       String? _profileImage = jsonResponse['resultBody']['profileImage'];
-      List<Map<String, dynamic>> _childrenList =
-          jsonResponse['resultBody']['childrenList'];
+      dynamic childrenListData = jsonResponse['resultBody']['childrenList'];
+      List<Map<String, dynamic>> _childrenList = [];
+
+      // childrenList가 null이 아니면 파싱하여 _childrenList에 할당
+      if (childrenListData != null) {
+        if (childrenListData is List<Map<String, dynamic>>) {
+          _childrenList = List<Map<String, dynamic>>.from(childrenListData);
+        }
+      }
 
       bool? _parent = jsonResponse['resultBody']['parent'];
       print('$_name, $_profileImage, $_childrenList, $_parent');
 
-      Provider.of<UserInfoProvider>(context, listen: false).updateUserInfo(
+      userInfoProvider.updateUserInfo(
         name: _name,
         profileImage: _profileImage,
         childrenList: _childrenList,

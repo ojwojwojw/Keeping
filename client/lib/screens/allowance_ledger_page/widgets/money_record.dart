@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_detail_create_page.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/camera_test2.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
+import 'package:provider/provider.dart';
 
 class MoneyRecord extends StatefulWidget {
   // 카테고리 따라 사진 다르게 설정, 지출 입금 따라 -/+ 기호 추가
   final DateTime date;
   final String storeName;
-  final num money;
-  final num balance;
+  final int money;
+  final int balance;
+  final int accountHistoryId;
   final Map<String, dynamic>? detail;
   final bool onlyTime;
 
@@ -19,6 +23,7 @@ class MoneyRecord extends StatefulWidget {
     required this.storeName,
     required this.money,
     required this.balance,
+    required this.accountHistoryId,
     this.detail,
     this.onlyTime = true,
   });
@@ -27,19 +32,24 @@ class MoneyRecord extends StatefulWidget {
   State<MoneyRecord> createState() => _MoneyRecordState();
 }
 
-const String type = 'PARENT';
-
 class _MoneyRecordState extends State<MoneyRecord> {
+  bool? parent;
+
+  @override
+  void initState() {
+    super.initState();
+    parent = context.read<UserInfoProvider>().parent;
+  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onLongPress: type == 'PARENT' ? null : () {
+      onLongPress: parent != null && parent! ? null : () {
         bottomModal(
           context: context,
           title: '상세 내역 쓰기',
           content: moneyRecordModalContent(widget.date, widget.storeName, widget.money),
-          button: moneyRecordModalBtns(context, widget.date, widget.storeName, widget.money, widget.balance),
+          button: moneyRecordModalBtns(context, widget.date, widget.storeName, widget.money, widget.balance, widget.accountHistoryId),
         );
       },
       child: Padding(
@@ -55,38 +65,47 @@ class _MoneyRecordState extends State<MoneyRecord> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: categoryImg('assets/image/temp_image.jpg'),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        widget.storeName, 
-                        style: bigStyle(),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: categoryImg('assets/image/temp_image.jpg'),
                       ),
-                      Text(
-                        widget.onlyTime ? formattedTime(widget.date) : formattedFullDate(widget.date),
-                      )
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.storeName,
+                            style: bigStyle(),
+                          ),
+                          Text(
+                            widget.onlyTime
+                                ? formattedTime(widget.date)
+                                : formattedFullDate(widget.date),
+                          )
+                        ],
+                      ),
                     ],
                   ),
+                  Padding(
+                      padding: EdgeInsets.only(right: 15),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '-${formattedMoney(widget.money)}',
+                            style: bigStyle(),
+                          ),
+                          Text(formattedMoney(widget.balance))
+                        ],
+                      )),
                 ],
               ),
-              Padding(
-                padding: EdgeInsets.only(right: 15),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('-${formattedMoney(widget.money)}', style: bigStyle(),),
-                    Text(formattedMoney(widget.balance))
-                  ],
-                )
-              ),
-            ],
-          ),
+            ]
+          )
         )
       )
     );
@@ -95,99 +114,104 @@ class _MoneyRecordState extends State<MoneyRecord> {
 
 // 용돈기입장 내역 큰 글씨
 TextStyle bigStyle() {
-  return TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.w600
-  );
+  return TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
 }
 
 // 용돈기입장 내역 작고 옅은 글씨
 TextStyle smallStyle() {
-  return TextStyle(
-    color: const Color(0xFF696969)
-  );
+  return TextStyle(color: const Color(0xFF696969));
 }
 
 // 용돈기입장 내역 클릭시 나오는 모달에 들어갈 내용
 Widget moneyRecordModalContent(DateTime date, String storeName, num money) {
   return Container(
-    decoration: BoxDecoration(
-      border: Border(
-        top: BorderSide(
-          color: Color.fromARGB(255, 236, 236, 236), // 위쪽 테두리 색상
-          width: 2.0, // 위쪽 테두리 두께
-        ),
-        bottom: BorderSide(
-          color: Color.fromARGB(255, 236, 236, 236), // 아래쪽 테두리 색상
-          width: 2.0, // 아래쪽 테두리 두께
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: Color.fromARGB(255, 236, 236, 236), // 위쪽 테두리 색상
+            width: 2.0, // 위쪽 테두리 두께
+          ),
+          bottom: BorderSide(
+            color: Color.fromARGB(255, 236, 236, 236), // 아래쪽 테두리 색상
+            width: 2.0, // 아래쪽 테두리 두께
+          ),
         ),
       ),
-    ),
-    child: Padding(
-      padding: EdgeInsets.symmetric(vertical: 15),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+      child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 15),
+          child: Column(
             children: [
-              Text(formattedMDDate(date)),
-            ]
-          ),
-          SizedBox(height: 7,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(storeName, style: bigStyle(),),
-              Text(formattedMoney(money).toString(), style: bigStyle(),)
+              Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Text(formattedMDDate(date)),
+              ]),
+              SizedBox(
+                height: 7,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    storeName,
+                    style: bigStyle(),
+                  ),
+                  Text(
+                    formattedMoney(money).toString(),
+                    style: bigStyle(),
+                  )
+                ],
+              )
             ],
-          )
-        ],
-      )
-    )
-  );
+          )));
 }
 
 // 용돈기입장 내역 클릭시 나오는 모달에 들어갈 버튼(2개)
-Row moneyRecordModalBtns(
-  BuildContext context, DateTime date, String storeName, num money, num balance
-) {
+Row moneyRecordModalBtns(BuildContext context, DateTime date, String storeName,
+    int money, int balance, int accountHistoryId) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
+      moneyRecordModalBtn(Icons.receipt_long, '영수증 찍기', context, CameraTest()),
       moneyRecordModalBtn(
-        Icons.receipt_long, 
-        '영수증 찍기', 
-        context, 
-        AllowanceLedgerDetailCreatePage(date: date, storeName: storeName, money: money, balance: balance,)),
-      moneyRecordModalBtn(
-        Icons.create, 
-        '직접 쓰기', 
-        context, 
-        AllowanceLedgerDetailCreatePage(date: date, storeName: storeName, money: money, balance: balance,))
+          Icons.create,
+          '직접 쓰기',
+          context,
+          AllowanceLedgerDetailCreatePage(
+            date: date,
+            storeName: storeName,
+            money: money,
+            balance: balance,
+            accountHistoryId: accountHistoryId,
+          ))
     ],
   );
 }
 
 // 용돈기입장 내역 클릭시 나오는 모달에 들어가는 버튼 한 개
-InkWell moneyRecordModalBtn(IconData icon, String text, BuildContext context, Widget path) {
+InkWell moneyRecordModalBtn(
+    IconData icon, String text, BuildContext context, Widget path) {
   return InkWell(
-    onTap: () {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => path));
-    },
-    child: Container(
-      width: 150,
-      height: 150,
-      decoration: _moneyRecordModalBtnStyle(),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(icon, size: 50,),
-          Text(text, style: TextStyle(fontSize: 20),)
-        ],
-      ),
-    )
-  );
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => path));
+      },
+      child: Container(
+        width: 150,
+        height: 150,
+        decoration: _moneyRecordModalBtnStyle(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 50,
+            ),
+            Text(
+              text,
+              style: TextStyle(fontSize: 20),
+            )
+          ],
+        ),
+      ));
 }
 
 // 용돈기입장 내역 클릭시 나오는 모달 버튼 스타일
