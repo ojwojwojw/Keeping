@@ -1,12 +1,7 @@
 package com.keeping.memberservice.api.service;
 
-import com.keeping.memberservice.api.controller.response.LinkResultResponse;
 import com.keeping.memberservice.api.controller.response.LinkcodeResponse;
 import com.keeping.memberservice.api.service.member.dto.LinkResultDto;
-import com.keeping.memberservice.domain.Link;
-import com.keeping.memberservice.domain.repository.ChildRepository;
-import com.keeping.memberservice.domain.repository.LinkRepository;
-import com.keeping.memberservice.domain.repository.ParentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -30,6 +25,17 @@ public class AuthService {
     private static final String VERIFIED_NUMBER = "verified_number_";
     private static final String WFC = "WAITING_FOR_CONNECTION_";
 
+    /**
+     * 누가 나를 링크했나
+     *
+     * @param memberKey
+     * @param linkCode
+     * @return
+     */
+    public String whoLinkMe(String memberKey, String linkCode) {
+        return redisTemplate.opsForValue().get(WFC + linkCode);
+    }
+
 
     /**
      * 연결하기
@@ -40,7 +46,7 @@ public class AuthService {
      * @return 결과
      */
     public LinkResultDto link(String yourLinkCode, String myMemberKey, String myType) {
-        // TODO: 2023-09-26 인증번호 유효한지 확인 
+        // 인증번호 유효한지 확인
         String yourType = myType.equals("parent") ? "child" : "parent";
         String yourKeyWithCode = createLinkCodeKey(yourType, yourLinkCode);
         if (Boolean.FALSE.equals(redisTemplate.hasKey(yourKeyWithCode))) {
@@ -51,7 +57,7 @@ public class AuthService {
                     .build();
         }
 
-        // TODO: 2023-09-26 상대 연결 코드가 사용 가능한지 확인
+        // 상대 연결 코드가 사용 가능한지 확인
         String yourOpponentMemberKey = redisTemplate.opsForValue().get(WFC + yourLinkCode);
         if (yourOpponentMemberKey != null && !yourOpponentMemberKey.equals(myMemberKey)) {
             return LinkResultDto.builder()
@@ -82,7 +88,7 @@ public class AuthService {
             redisStringInsert(linkKey, "ok", ONE_DAY);
             String key = createLinkCodeKey(myType, myMemberKey);
             Long expire = redisTemplate.getExpire(key);
-            // TODO: 2023-09-26 연결 대기중 키 넣기
+            // 연결 대기중 키 넣기
             String myCode = redisTemplate.opsForValue().get(createLinkCodeKey(myType, myMemberKey));
             redisStringInsert(WFC + myCode, yourMemberKey, ONE_DAY);
             redisStringInsert(WFC + yourLinkCode, myMemberKey, ONE_DAY);
