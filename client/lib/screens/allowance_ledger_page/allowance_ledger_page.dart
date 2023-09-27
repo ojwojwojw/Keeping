@@ -76,7 +76,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
     // _accountNumber = '171-682675-422-27';
     _accountNumber = context.read<AccountInfoProvider>().accountNumber;
     // _balance = context.read<UserInfoProvider>().balance;
-    _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjk3ZGQzYi1iNDlkLTQ0MTgtYTdmNy1iNmZkNzNiNjMzYzMiLCJleHAiOjE2OTU4MTU0NjJ9.FedPJTdtFy4nJqCi1Ayhtm4798HXfg3CAj-nJM_cYaE';
+    _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjk3ZGQzYi1iNDlkLTQ0MTgtYTdmNy1iNmZkNzNiNjMzYzMiLCJleHAiOjE2OTU4NjA1ODV9.cSexxvGP1PisJ-6DuHd30nzcrpwfan216IZr64ejttg';
     _memberKey = 'f297dd3b-b49d-4418-a7f7-b6fd73b633c3';
   }
 

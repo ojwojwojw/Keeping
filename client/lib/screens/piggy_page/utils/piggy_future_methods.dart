@@ -22,7 +22,7 @@ Future<dynamic> getPiggyList({
 
 // 저금통 상세 조회
 Future<dynamic> getPiggyDetailList({
-  required String? accessToken, required String? memberKey, required String? targetKey, required String? piggyId,
+  required String? accessToken, required String? memberKey, required String? targetKey, required int? piggyId,
 }) async {
   if (accessToken != null && memberKey != null && targetKey != null && piggyId != null) {
     try {

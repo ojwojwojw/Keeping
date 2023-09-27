@@ -12,11 +12,11 @@ import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
 
 class PiggyDetailPage extends StatefulWidget {
-  final String piggyAccountNumber;
+  final int piggyId;
 
   PiggyDetailPage({
     super.key,
-    required this.piggyAccountNumber,
+    required this.piggyId,
   });
 
   @override
@@ -91,7 +91,9 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
                 ? getPiggyDetailList(
                     accessToken: 'accessToken',
                     memberKey: 'memberKey',
-                    piggyAccountNumber: widget.piggyAccountNumber)
+                    piggyId: widget.piggyId,
+                    targetKey: parent != null && parent == true ? null : memberKey,
+                  )
                 : null,
             builder: (context, snapshot) {
               // if (snapshot.connectionState == ConnectionState.waiting) {
