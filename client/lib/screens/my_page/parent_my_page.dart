@@ -207,9 +207,6 @@ class ParentMyPage extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: () {
-            // 회원 탈퇴 로직을 여기에 추가
-            // 예를 들어, 서버에 회원 탈퇴 요청을 보내는 등의 작업
-            // 작업이 성공하면 앱을 종료하거나 로그인 페이지로 이동할 수 있습니다.
             Navigator.of(context).pop();
           },
           child: Text('확인'),

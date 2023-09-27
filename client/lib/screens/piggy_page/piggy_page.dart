@@ -14,9 +14,9 @@ import 'package:provider/provider.dart';
 final List<Map<String, dynamic>> tempData = [
   {
     "id": 3,
-    "childKey" :"0986724",
+    "childKey": "0986724",
     "accountNumber": "172-123456-707-27",
-    "piggyAccountNumber" : "1",
+    "piggyAccountNumber": "1",
     "content": "아디다스 삼바",
     "goalMoney": 140000,
     "balance": 70000,
@@ -25,9 +25,9 @@ final List<Map<String, dynamic>> tempData = [
   },
   {
     "id": 7,
-    "childKey" :"0986724",
+    "childKey": "0986724",
     "accountNumber": "172-234567-707-27",
-    "piggyAccountNumber" : "2",
+    "piggyAccountNumber": "2",
     "content": "후드티 갖고 싶다",
     "goalMoney": 140000,
     "balance": 70000,
@@ -44,14 +44,14 @@ class PiggyPage extends StatefulWidget {
 }
 
 class _PiggyPageState extends State<PiggyPage> {
-  String? type;
+  bool? parent;
   String? accessToken;
   String? memberKey;
 
   @override
   void initState() {
     super.initState();
-    type = context.read<UserInfoProvider>().type;
+    parent = context.read<UserInfoProvider>().parent;
     // accessToken = context.read<UserInfoProvider>().accessToken;
     // memberKey = context.read<UserInfoProvider>().memberKey;
   }
@@ -65,47 +65,53 @@ class _PiggyPageState extends State<PiggyPage> {
         elementColor: Colors.white,
       ),
       body: FutureBuilder(
-        future: (accessToken != null && memberKey != null) ? getPiggyList(accessToken: accessToken!, memberKey: memberKey!) : null,
-        builder: (context, snapshot) {
-          print('스냅샷스냅샷스냅샷 ${snapshot.toString()}');
-          // if (snapshot.connectionState == ConnectionState.waiting) {
-          //   return const Text('로딩중');
-          // } else if (snapshot.connectionState == ConnectionState.done) {
-          //   if (snapshot.hasError) {
-          //     return const Text('스냅샷에 에러 발생');
-          //   } else if (snapshot.hasData) {
-              return Column(
-                children: [
-                  PiggyInfo(),
-                  // PiggyFilters(),
-                  Expanded(
-                    child: Container(
-                      decoration: lightGreyBgStyle(),
-                      width: double.infinity,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            SizedBox(height: 10,),
-                            ...tempData.map((e) => 
-                              InkWell(
+          future: (accessToken != null && memberKey != null)
+              ? getPiggyList(accessToken: accessToken!, memberKey: memberKey!)
+              : null,
+          builder: (context, snapshot) {
+            print('스냅샷스냅샷스냅샷 ${snapshot.toString()}');
+            // if (snapshot.connectionState == ConnectionState.waiting) {
+            //   return const Text('로딩중');
+            // } else if (snapshot.connectionState == ConnectionState.done) {
+            //   if (snapshot.hasError) {
+            //     return const Text('스냅샷에 에러 발생');
+            //   } else if (snapshot.hasData) {
+            return Column(
+              children: [
+                PiggyInfo(),
+                // PiggyFilters(),
+                Expanded(
+                  child: Container(
+                    decoration: lightGreyBgStyle(),
+                    width: double.infinity,
+                    child: SingleChildScrollView(
+                      child: Column(children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        ...tempData
+                            .map((e) => InkWell(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PiggyDetailPage(piggyAccountNumber: e['piggyAccountNumber'])));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PiggyDetailPage(
+                                              piggyAccountNumber:
+                                                  e['piggyAccountNumber'])));
                                 },
                                 child: PiggyInfoCard(
-                                  content: e['content'], 
-                                  balance: e['balance'], 
+                                  content: e['content'],
+                                  balance: e['balance'],
                                   goalMoney: e['goalMoney'],
                                   // img: Base64Decoder().convert(e['savedImage']),
-                                )
-                              )
-                            ).toList()
-                          ]
-                        ),
-                      ),
+                                )))
+                            .toList()
+                      ]),
                     ),
                   )
-                ],
-              );
+                )
+              ],
+            );
           //   } else {
           //     return const Text('스냅샷 데이터 없음');
           //   }
@@ -114,7 +120,7 @@ class _PiggyPageState extends State<PiggyPage> {
           // }
         }
       ),
-      floatingActionButton: type != 'PARENT' ? FloatingBtn(
+      floatingActionButton: parent != null && !parent! ? FloatingBtn(
         text: '만들기',
         icon: Icon(Icons.savings_rounded),
         path: MakePiggyPage(),

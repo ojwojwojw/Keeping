@@ -33,43 +33,37 @@ class MoneyRecord extends StatefulWidget {
 }
 
 class _MoneyRecordState extends State<MoneyRecord> {
-  String? type;
+  bool? parent;
 
   @override
   void initState() {
     super.initState();
-    type = context.read<UserInfoProvider>().type;
+    parent = context.read<UserInfoProvider>().parent;
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onLongPress: type == 'PARENT'
-            ? null
-            : () {
-                bottomModal(
-                  context: context,
-                  title: '상세 내역 쓰기',
-                  content: moneyRecordModalContent(
-                      widget.date, widget.storeName, widget.money),
-                  button: moneyRecordModalBtns(
-                      context,
-                      widget.date,
-                      widget.storeName,
-                      widget.money,
-                      widget.balance,
-                      widget.accountHistoryId),
-                );
-              },
-        child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 5),
-            child: Container(
-              width: 360,
-              height: 90,
-              alignment: Alignment.center,
-              decoration: roundedBoxWithShadowStyle(),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      onLongPress: parent != null && parent! ? null : () {
+        bottomModal(
+          context: context,
+          title: '상세 내역 쓰기',
+          content: moneyRecordModalContent(widget.date, widget.storeName, widget.money),
+          button: moneyRecordModalBtns(context, widget.date, widget.storeName, widget.money, widget.balance, widget.accountHistoryId),
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 5),
+        child: Container(
+          width: 360,
+          height: 90,
+          alignment: Alignment.center,
+          decoration: roundedBoxWithShadowStyle(),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -110,7 +104,11 @@ class _MoneyRecordState extends State<MoneyRecord> {
                       )),
                 ],
               ),
-            )));
+            ]
+          )
+        )
+      )
+    );
   }
 }
 

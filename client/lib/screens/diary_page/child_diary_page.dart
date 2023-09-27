@@ -60,6 +60,51 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
       "createdDate": "2023-02-17 08:15:33",
       "comments": null
     },
+    {
+      "id": 0,
+      "content": "만원이 있다면 뭘 하고 싶나요?",
+      "parentAnswer": "부모대답1",
+      "childAnswer": "자식대답1",
+      "isCreated": false,
+      "createdDate": "2023-02-17 08:15:33",
+      "comments": null
+    },
+    {
+      "id": 1,
+      "content": "내가 성공할 수 있는 사업이 있다면",
+      "parentAnswer": "부모대답2",
+      "childAnswer": "자식대답2",
+      "isCreated": false,
+      "createdDate": "2023-02-17 08:15:33",
+      "comments": null
+    },
+    {
+      "id": 2,
+      "content": "대출에 대해서 어떻게 생각하세요?",
+      "parentAnswer": "test_f801c7f4f8fa",
+      "childAnswer": "test_def51ba140c7",
+      "isCreated": false,
+      "createdDate": "2023-02-17 08:15:33",
+      "comments": null
+    },
+    {
+      "id": 3,
+      "content": "적금은 얼마나 드는게 좋을까요? ",
+      "parentAnswer": "test_f801c7f4f8fa",
+      "childAnswer": "test_def51ba140c7",
+      "isCreated": false,
+      "createdDate": "2023-02-17 08:15:33",
+      "comments": null
+    },
+    {
+      "id": 4,
+      "content": "은행하면 가장 먼저 떠오르는 것은?",
+      "parentAnswer": "test_f801c7f4f8fa",
+      "childAnswer": "test_def51ba140c7",
+      "isCreated": false,
+      "createdDate": "2023-02-17 08:15:33",
+      "comments": null
+    },
   ];
 
   @override

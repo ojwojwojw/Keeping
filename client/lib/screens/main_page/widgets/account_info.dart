@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
 import 'package:keeping/screens/make_account_page/widgets/styles.dart';
+import 'package:keeping/util/display_format.dart';
 
 class AccountInfo extends StatelessWidget {
+  final int balance;
   
   AccountInfo({
     super.key,
+    required this.balance,
   });
 
   @override
@@ -29,7 +32,7 @@ class AccountInfo extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   // Image(image: image),
                   Icon(Icons.money_rounded, size: 70,),
                   Column(
@@ -37,24 +40,23 @@ class AccountInfo extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        '50,000원',
+                        formattedMoney(balance),
                         style: TextStyle(
                           fontSize: 30
                         ),
                       ),
-                      Text('8월 총 지출액: 120,000원')
                     ],
                   )
                 ],
               ),
               SizedBox(height: 20,),
-              ElevatedButton(
-                onPressed: () {
+              // ElevatedButton(
+              //   onPressed: () {
                   
-                },
-                style: accountInfoRoundedBtn(300, 50),
-                child: Text('용돈 조르기'),
-              )
+              //   },
+              //   style: accountInfoRoundedBtn(300, 50),
+              //   child: Text('용돈 조르기'),
+              // )
             ],
           ),
         ),

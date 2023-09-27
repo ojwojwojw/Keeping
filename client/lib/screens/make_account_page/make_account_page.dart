@@ -160,8 +160,8 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
   void initState() {
     super.initState();
     accessToken =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NGFiMjY2MS00N2EyLTQ4NmMtOWY3Zi1mOGNkNTkwMGRiMTAiLCJleHAiOjE2OTU3MDM4NzZ9.Pmks2T9tCqjazb4IUgx1GVUCbtOz97DsBBGKrwkGd5c';
-    memberKey = '84ab2661-47a2-486c-9f7f-f8cd5900db10';
+        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjk3ZGQzYi1iNDlkLTQ0MTgtYTdmNy1iNmZkNzNiNjMzYzMiLCJleHAiOjE2OTU4MTU0NjJ9.FedPJTdtFy4nJqCi1Ayhtm4798HXfg3CAj-nJM_cYaE';
+    memberKey = 'f297dd3b-b49d-4418-a7f7-b6fd73b633c3';
   }
 
   @override

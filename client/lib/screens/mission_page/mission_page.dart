@@ -10,7 +10,7 @@ import 'package:keeping/screens/mission_create_page/mission_create.dart';
 // import 'package:keeping/provider/array_test.dart';
 import 'package:dio/dio.dart';
 
-// 미션페이지 클래스
+// 미션페이지 //
 class MissionPage extends StatefulWidget {
   const MissionPage({Key? key}) : super(key: key);
 
@@ -18,7 +18,6 @@ class MissionPage extends StatefulWidget {
   State<MissionPage> createState() => _MissonPageState();
 }
 
-//미션페이지 스테이트 클래스
 class _MissonPageState extends State<MissionPage> {
   List<Map<String, dynamic>> data = [
     {
@@ -45,6 +44,45 @@ class _MissonPageState extends State<MissionPage> {
       "startDate": "2023-09-25",
       "endDate": "2023-09-25",
       "completed": "CREATE_WAIT",
+      "createdDate": "2023-09-25 10:22:04"
+    },
+    {
+      "childKey": "childKey_70a7ad5dfa4c",
+      "id": 2,
+      "type": "PARENT",
+      "todo": "밥 하기",
+      "money": 2500,
+      "cheeringMessage": "오늘도 화이팅!",
+      "childComment": "형! 저 이 미션이 너무 하고싶어요!",
+      "startDate": "2023-09-25",
+      "endDate": "2023-09-25",
+      "completed": "temp",
+      "createdDate": "2023-09-25 10:22:04"
+    },
+    {
+      "childKey": "childKey_70a7ad5dfa4c",
+      "id": 0,
+      "type": "PARENT",
+      "todo": "설거지 하기",
+      "money": 1500,
+      "cheeringMessage": "오늘도 화이팅!",
+      "childComment": "엄마 저 이 미션이 너무 하고싶어요!",
+      "startDate": "2023-09-25",
+      "endDate": "2023-09-25",
+      "completed": "CREATE_WAIT",
+      "createdDate": "2023-09-25 10:22:04"
+    },
+    {
+      "childKey": "childKey_70a7ad5dfa4c",
+      "id": 1,
+      "type": "PARENT",
+      "todo": "숙제 하기",
+      "money": 2000,
+      "cheeringMessage": "오늘도 화이팅!",
+      "childComment": "아빠 저 이 미션이 너무 하고싶어요!",
+      "startDate": "2023-09-25",
+      "endDate": "2023-09-25",
+      "completed": "temp",
       "createdDate": "2023-09-25 10:22:04"
     },
     {
@@ -112,11 +150,13 @@ class _MissonPageState extends State<MissionPage> {
             );
           },
           child: Container(
-            padding: EdgeInsets.all(16.0), // 여백 추가
+            padding: EdgeInsets.symmetric(horizontal: 10.0),
             margin: EdgeInsets.symmetric(vertical: 2.0), // 위 아래 여백 추가
             decoration: BoxDecoration(
-              color: Color(0xE7E7E7), // 하얀색 배경
-              borderRadius: BorderRadius.circular(10.0), // 모서리 둥글게 만들기
+              color: item["completed"] == "CREATE_WAIT"
+                  ? Color.fromRGBO(255, 170, 170, 1) // 연한 초록색, 채도 255
+                  : Color.fromRGBO(170, 255, 170, 1), // 더 진한 초록색, 채도 255
+              borderRadius: BorderRadius.circular(10.0),
             ),
             child: Column(
               children: [
@@ -133,7 +173,7 @@ class _MissonPageState extends State<MissionPage> {
                   item["startDate"],
                   style: TextStyle(
                     fontSize: 8.0, // 텍스트 크기 변경
-                    color: Colors.grey, // 텍스트 색상 변경
+                    color: Colors.black, // 텍스트 색상 변경
                   ),
                 ),
               ],
@@ -173,7 +213,7 @@ class _MissonPageState extends State<MissionPage> {
   }
 }
 
-// 새로운 미션 생성 페이지//
+// 새로운 미션 생성 버튼//
 class CreateMissonBox extends StatelessWidget {
   const CreateMissonBox({super.key});
 
@@ -181,7 +221,7 @@ class CreateMissonBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
-        fixedSize: MaterialStateProperty.all(Size(350.0, 150.0)),
+        fixedSize: MaterialStateProperty.all(Size(400.0, 150.0)),
         backgroundColor: MaterialStateProperty.all(Color(0xFF8320E7)),
       ),
       onPressed: () async {
@@ -331,7 +371,7 @@ class FilteringBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 350,
+        width: 400,
         height: 20,
         color: Colors.purple,
         child: (Column(children: [

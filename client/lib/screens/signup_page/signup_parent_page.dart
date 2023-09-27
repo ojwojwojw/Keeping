@@ -256,8 +256,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
 
   Future<void> idDupliCheck(
       BuildContext context, Function handledupCheck) async {
-    final id = _userId;
-    print(id);
+    final id = _userId.text;
     try {
       var response = await dio.get(
         'http://j9c207.p.ssafy.io:8000/member-service/api/id/${id}',
@@ -281,12 +280,9 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
 // 인증 번호 받기 로직
   Future<void> checkVerification(
       phone, Function handleCheckVerification) async {
-    print(phone.text);
     final data = {
       'phone': phone.text,
     };
-    print(data);
-    print(phone);
     try {
       var response = await dio.post(
         'http://j9c207.p.ssafy.io:8000/member-service/api/phone',
