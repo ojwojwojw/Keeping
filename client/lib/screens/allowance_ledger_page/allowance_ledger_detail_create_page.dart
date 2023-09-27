@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
@@ -63,13 +62,8 @@ class AllowanceLedgerDetailCreatePage extends StatefulWidget {
 }
 
 class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailCreatePage> {
-  bool? _parent;
   String? _accessToken;
   String? _memberKey;
-
-  TextEditingController contentControlloer = TextEditingController();
-  TextEditingController moneyControlloer = TextEditingController();
-  TextEditingController categoryIdxControlloer = TextEditingController();
 
   String _content = '';
   int _money = 0;
@@ -77,7 +71,6 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
 
   bool _contentResult = false;
   bool _moneyResult = false;
-  bool _categoryResult = true;
 
   void _setContent(String val) {
     if (val.isNotEmpty) {
@@ -111,16 +104,11 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
     _moneyResult = val;
   }
 
-  void setCategoryResult(bool val) {
-    _categoryResult = val;
-  }
-
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    _parent = context.read<UserInfoProvider>().parent;
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
     _category = widget.largeCategory;
@@ -154,9 +142,13 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
                       return null;
                     },
                     onChange: (val) {
+                      if (val.length < 1) {
+                        setContentResult(false);
+                      } else {
+                        setContentResult(true);
+                      }
                       _setContent(val);
                     },
-                    controller: contentControlloer
                   ),
                   renderCategoryField(_setCategory, _category),
                   renderTextFormField(
@@ -170,21 +162,18 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
                       return null;
                     },
                     onChange: (val) {
+                      if (val.length < 1 || int.parse(val) > widget.money) {
+                        setMoneyResult(false);
+                      } else {
+                        setMoneyResult(true);
+                      }
                       _setMoney(val);
                     },
-                    controller: moneyControlloer,
                     isNumber: true
                   ),
                 ],
               ),
             ),
-            Column(
-              children: [
-                Text(_content),
-                Text(_money.toString()),
-                Text(_category)
-              ],
-            )
           ],
         ),
       ),
@@ -209,7 +198,7 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
             roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
           }
         },
-        isDisabled: _contentResult && _categoryResult && _moneyResult ? false : true,
+        isDisabled: _contentResult && _moneyResult ? false : true,
       ),
     );
   }
