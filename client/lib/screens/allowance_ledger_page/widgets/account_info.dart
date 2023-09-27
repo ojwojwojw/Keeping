@@ -49,7 +49,7 @@ class _AccountInfoState extends State<AccountInfo> {
                 accessToken: widget.accessToken,
                 memberKey: widget.memberKey,
                 targetKey: widget.parent != null && widget.parent! ? null : widget.memberKey,
-                date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                date: DateFormat('yyyy-MM').format(DateTime.now()),
               ), 
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
