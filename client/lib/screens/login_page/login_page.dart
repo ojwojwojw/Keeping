@@ -2,16 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
-import 'package:keeping/screens/main_page/main_page.dart';
+import 'package:keeping/screens/main_page/child_main_page.dart';
+import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
-import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 
 import 'package:dio/dio.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+final _baseUrl = dotenv.env['BASE_URL'];
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();
 Dio dio = Dio();
@@ -157,10 +159,14 @@ class _LoginPageState extends State<LoginPage> {
     };
 
     try {
+      print(data);
       var response = await dio.post(
-        'http://j9c207.p.ssafy.io:8000/member-service/login',
+        '$_baseUrl/member-service/login',
         data: data,
       );
+      String fcmToken = Provider.of<UserInfoProvider>(context, listen: false)
+          .fcmToken; // fcmToken 가져오기
+      print(fcmToken);
 
       if (response.statusCode == 200) {
         // 로그인에 성공한 경우
@@ -168,10 +174,10 @@ class _LoginPageState extends State<LoginPage> {
 
         String? token = response.headers.value('token');
         String? memberKey = response.headers.value('memberKey');
-
         // 나머지 처리 코드 추가
         handleLogin('로그인 성공');
-        requestUserInfo(memberKey, token);
+        await requestUserInfo(memberKey, token, fcmToken,
+            Provider.of<UserInfoProvider>(context, listen: false));
         Provider.of<UserInfoProvider>(context, listen: false)
             .updateTokenMemberKey(
           accessToken: token,
@@ -188,31 +194,52 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void requestUserInfo(memberKey, accessToken) async {
+  Future<void> requestUserInfo(
+    memberKey,
+    accessToken,
+    fcmToken,
+    UserInfoProvider userInfoProvider,
+  ) async {
     Options options = Options(
       headers: {
         'Authorization': 'Bearer $accessToken', // 토큰 추가
       },
     );
-    print(memberKey);
+
     try {
       var response = await dio.get(
-        'http://j9c207.p.ssafy.io:8000/member-service/auth/api/$memberKey/login-check',
+        '$_baseUrl/member-service/auth/api/$memberKey/login-check/$fcmToken', // fcmToken 사용
         options: options,
       );
       Map<String, dynamic> jsonResponse = json.decode(response.toString());
+      print(response);
       String? _name = jsonResponse['resultBody']['name'];
       String? _profileImage = jsonResponse['resultBody']['profileImage'];
-      String? _childrenList = jsonResponse['resultBody']['childrenList'];
-      bool? _parent = jsonResponse['resultBody']['parent'];
-      print('$_name, $_profileImage, $_childrenList, $_parent');
+      dynamic childrenListData = jsonResponse['resultBody']['childrenList'];
+      List<Map<String, dynamic>> _childrenList = [];
 
-      Provider.of<UserInfoProvider>(context, listen: false).updateUserInfo(
+      // childrenList가 null이 아니면 파싱하여 _childrenList에 할당
+      if (childrenListData != null) {
+        if (childrenListData is List<Map<String, dynamic>>) {
+          _childrenList = List<Map<String, dynamic>>.from(childrenListData);
+        }
+      }
+
+      bool? _parent = jsonResponse['resultBody']['parent'];
+
+      userInfoProvider.updateUserInfo(
         name: _name,
         profileImage: _profileImage,
         childrenList: _childrenList,
         parent: _parent,
       );
+      if (_parent == true) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => ParentMainPage()));
+      } else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => ChildMainPage()));
+      }
     } catch (err) {
       print(err);
     }

@@ -5,7 +5,6 @@ import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/online_payment_request_provider.dart';
 import 'package:keeping/provider/piggy_provider.dart';
 
-import 'package:keeping/fcmSetting.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'screens/main_page/main_page.dart';
 
@@ -65,7 +64,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 //여기에 프로바이더를 추가해
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  String? firebaseToken = await fcmSetting();
+  // String? firebaseToken = await fcmSetting();
+  UserInfoProvider userInfoProvider = UserInfoProvider();
+  String? firebaseToken = await fcmSetting(userInfoProvider);
+
   await dotenv.load(fileName: "lib/.env");
 
   runApp(MultiProvider(providers: [
@@ -77,6 +79,8 @@ void main() async {
     ChangeNotifierProvider(create: (_) => UserInfoProvider()),
     ChangeNotifierProvider(create: (_) => AccountInfoProvider()),
     ChangeNotifierProvider(create: (_) => MissionInfoProvider()), // 미션 관련
+    ChangeNotifierProvider.value(
+        value: userInfoProvider), // UserInfoProvider 제공
   ], child: const MaterialApp(home: MainPage())));
 }
 

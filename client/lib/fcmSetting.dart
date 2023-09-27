@@ -2,12 +2,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:keeping/firebase_options.dart';
+import 'package:keeping/provider/user_info.dart';
+import 'package:provider/provider.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // await Firebase.initializeApp();
 }
 
-Future<String?> fcmSetting() async {
+Future<String?> fcmSetting(UserInfoProvider userInfoProvider) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -81,6 +83,8 @@ Future<String?> fcmSetting() async {
   );
 
   String? firebaseToken = await messaging.getToken();
+  userInfoProvider.updateFcmToken(fcmToken: firebaseToken);
+
   print('firebase_token : $firebaseToken');
   return firebaseToken;
 }

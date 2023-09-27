@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class UserInfoProvider with ChangeNotifier {
   String _name = '';
   String _profileImage = '';
-  String _childrenList = '';
+  List<Map<String, dynamic>> _childrenList = [];
   bool _parent = true;
   String _fcmToken = '';
   String _accessToken = '';
@@ -11,7 +11,7 @@ class UserInfoProvider with ChangeNotifier {
 
   String get name => _name;
   String get profileImage => _profileImage;
-  String get childrenList => _childrenList;
+  List<Map<String, dynamic>> get childrenList => _childrenList;
   bool get parent => _parent;
   String get fcmToken => _fcmToken;
   String get accessToken => _accessToken;
@@ -20,11 +20,10 @@ class UserInfoProvider with ChangeNotifier {
   void updateUserInfo({
     String? name,
     String? profileImage,
-    String? childrenList,
+    List<Map<String, dynamic>>? childrenList,
     bool? parent,
   }) {
     if (name != null) {
-      print(name);
       _name = name;
     }
     if (profileImage != null) {
@@ -45,6 +44,7 @@ class UserInfoProvider with ChangeNotifier {
     if (fcmToken != null) {
       _fcmToken = fcmToken;
     }
+    print('여기까지 옴');
     notifyListeners();
   }
 
