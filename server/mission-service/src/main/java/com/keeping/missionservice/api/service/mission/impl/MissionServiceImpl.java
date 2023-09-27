@@ -4,7 +4,8 @@ import com.keeping.missionservice.api.ApiResponse;
 import com.keeping.missionservice.api.controller.mission.BankFeignClient;
 import com.keeping.missionservice.api.controller.mission.MemberFeignClient;
 import com.keeping.missionservice.api.controller.mission.NotiFeignClient;
-import com.keeping.missionservice.api.controller.mission.request.MemberRelationshipRequest;
+import com.keeping.missionservice.api.controller.mission.request.AddMissionRequest;
+import com.keeping.missionservice.api.controller.mission.request.RelationshipCheckRequest;
 import com.keeping.missionservice.api.controller.mission.request.MemberTypeRequest;
 import com.keeping.missionservice.api.controller.mission.request.SendNotiRequest;
 import com.keeping.missionservice.api.controller.mission.response.*;
@@ -21,11 +22,8 @@ import com.keeping.missionservice.domain.mission.repository.MissionQueryReposito
 import com.keeping.missionservice.domain.mission.repository.MissionRepository;
 import com.keeping.missionservice.global.exception.AlreadyExistException;
 import com.keeping.missionservice.global.exception.NotFoundException;
-import com.netflix.discovery.converters.Auto;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,16 +36,17 @@ import java.util.Optional;
 @Transactional
 @Slf4j
 public class MissionServiceImpl implements MissionService {
-    
+
     private final MemberFeignClient memberFeignClient;
     private final BankFeignClient bankFeignClient;
     private final NotiFeignClient notiFeignClient;
     private final MissionQueryRepository missionQueryRepository;
     private final MissionRepository missionRepository;
-    
+
 
     /**
-     *  미션 등록
+     * 미션 등록
+     *
      * @param dto 미션 등록 dto
      * @return 미션 식별키
      */
@@ -57,7 +56,7 @@ public class MissionServiceImpl implements MissionService {
         // 부모가 자녀에게 미션을 주는 거라면 Completed(완성여부)를 YET으로 설정
         if (dto.getType().equals(MissionType.PARENT)) {
             // 해당 자녀가 있는지 확인
-            MemberRelationshipResponse memberRelationship = memberFeignClient.getMemberRelationship(memberKey, MemberRelationshipRequest.builder()
+            MemberRelationshipResponse memberRelationship = memberFeignClient.getMemberRelationship(RelationshipCheckRequest.builder()
                             .parentKey(memberKey)
                             .childKey(dto.getTo())
                             .build())
@@ -67,7 +66,7 @@ public class MissionServiceImpl implements MissionService {
                 throw new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 회원을 찾을 수 없습니다.");
             }
 
-            // 부모의 계좌에 들어있는 금액 한도 내에서 가능
+            // 부모의 계좌에 들어있는 잔액
 //            ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
             ApiResponse<Long> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
             Long limitAmount = accountBalanceFromParent.getResultBody();
@@ -75,9 +74,7 @@ public class MissionServiceImpl implements MissionService {
             // 현재 완료하지 않은 미션 총액
             Optional<Integer> missionTotalMoney = missionQueryRepository.countMoney(dto.getTo());
 
-            if (missionTotalMoney.isPresent()
-                    && missionTotalMoney.get() < limitAmount) {
-
+            if (missionTotalMoney.isPresent() && missionTotalMoney.get() < limitAmount) {
                 throw new AlreadyExistException("409", HttpStatus.CONFLICT, "잔액보다 미션 총액이 많습니다.");
             }
 
@@ -86,15 +83,15 @@ public class MissionServiceImpl implements MissionService {
                 throw new NotFoundException("409", HttpStatus.CONFLICT, "해당하는 날짜를 입력할 수 없습니다.");
             }
 
-            Mission mission = Mission.toMission(dto.getTo(), dto.getType(), dto.getTodo(), dto.getMoney(), dto.getCheeringMessage(),dto.getStartDate(), dto.getEndDate(), Completed.YET);
+            Mission mission = Mission.toMission(dto.getTo(), dto.getType(), dto.getTodo(), dto.getMoney(), dto.getCheeringMessage(), dto.getStartDate(), dto.getEndDate(), Completed.YET);
             Mission savedMission = missionRepository.save(mission);
 
             // 자녀에게 알림 전송
-            notiFeignClient.sendNoti(SendNotiRequest.builder()
-                    .memberKey(dto.getTo())
-                    .title("미션 도착!! 😆")
-                    .body(dto.getTodo())
-                    .build());
+//            notiFeignClient.sendNoti(SendNotiRequest.builder()
+//                    .memberKey(dto.getTo())
+//                    .title("미션 도착!! 😆")
+//                    .body(dto.getTodo())
+//                    .build());
 
             return savedMission.getId();
         }
@@ -102,10 +99,10 @@ public class MissionServiceImpl implements MissionService {
         // 자녀가 부모에게 미션을 주는 거라면 Completed(완성여부)를 CREATE_WAIT으로 설정
         else if (dto.getType().equals(MissionType.CHILD)) {
             // 해당 자녀가 있는지 확인
-            MemberRelationshipResponse memberRelationship = memberFeignClient.getMemberRelationship(memberKey, MemberRelationshipRequest.builder()
-                    .parentKey(dto.getTo())
-                    .childKey(memberKey)
-                    .build())
+            MemberRelationshipResponse memberRelationship = memberFeignClient.getMemberRelationship(RelationshipCheckRequest.builder()
+                            .parentKey(dto.getTo())
+                            .childKey(memberKey)
+                            .build())
                     .getResultBody();
 
             if (!memberRelationship.isParentialRelationship()) {
@@ -116,11 +113,11 @@ public class MissionServiceImpl implements MissionService {
             Mission savedMission = missionRepository.save(mission);
 
             //  부모에게 알림 전송
-            notiFeignClient.sendNoti(SendNotiRequest.builder()
-                    .memberKey(dto.getTo())
-                    .title("🎁미션 요청이 도착했어요~! ")
-                    .body(dto.getTodo())
-                    .build());
+//            notiFeignClient.sendNoti(SendNotiRequest.builder()
+//                    .memberKey(dto.getTo())
+//                    .title("🎁미션 요청이 도착했어요~! ")
+//                    .body(dto.getTodo())
+//                    .build());
 
             return savedMission.getId();
         } else {
@@ -153,9 +150,10 @@ public class MissionServiceImpl implements MissionService {
 
     @Override
     public Long editCompleted(String memberKey, EditCompleteDto dto) {
-        MemberTypeResponse memberType = memberFeignClient.getMemberType(memberKey, MemberTypeRequest.builder()
-                .type(dto.getType())
-                .build())
+        MemberTypeResponse memberType = memberFeignClient.getMemberType(MemberTypeRequest.builder()
+                        .memberKey(memberKey)
+                        .type(dto.getType())
+                        .build())
                 .getResultBody();
 
         // 맞지 않는 멤버와 타입일 떄
@@ -175,10 +173,9 @@ public class MissionServiceImpl implements MissionService {
                     && dto.getCompleted().equals(Completed.YET)) {
 
                 // 부모 통장의 잔액과 미션 총액을 비교
-//                ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
                 ApiResponse<Long> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
-                Long limitAmount = accountBalanceFromParent.getResultBody();
-                Long totalMissionMoney = 0l;
+                long limitAmount = accountBalanceFromParent.getResultBody();
+                long totalMissionMoney = 0;
 
                 // 아이들 목록 불러오기
                 ChildResponseList children = memberFeignClient.getChildren(memberKey).getResultBody();
@@ -208,8 +205,7 @@ public class MissionServiceImpl implements MissionService {
                 bankFeignClient.transferMoneyForMission(memberKey, mission.getMoney());
 
                 mission.updateCompleted(dto.getCompleted());
-            }
-            else {
+            } else {
                 throw new AlreadyExistException("400", HttpStatus.BAD_REQUEST, "완성 상태를 바꿀 수 없습니다.");
             }
         }
@@ -220,8 +216,7 @@ public class MissionServiceImpl implements MissionService {
                     && dto.getCompleted().equals(Completed.FINISH_WAIT)) {
 
                 mission.updateCompleted(dto.getCompleted());
-            }
-            else {
+            } else {
                 throw new AlreadyExistException("409", HttpStatus.CONFLICT, "완성 상태를 바꿀 수 없습니다.");
             }
 
@@ -277,15 +272,29 @@ public class MissionServiceImpl implements MissionService {
 
     @Override
     public Long testBalance(String memberKey) {
-        
+
         log.debug("mission-test : {" + memberKey + "}");
         ApiResponse<Long> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
-        
+
         log.debug("bank-feign-client");
         Long limitAmount = accountBalanceFromParent.getResultBody();
-        
+
         log.debug("limitAmount: {" + limitAmount + "}");
-        
+
         return limitAmount;
+    }
+
+    @Override
+    public MemberRelationshipResponse testMember(String memberKey, AddMissionRequest request) {
+
+        log.debug("member-test");
+
+        MemberRelationshipResponse memberRelationship = memberFeignClient.getMemberRelationship(RelationshipCheckRequest.builder()
+                        .parentKey(memberKey)
+                        .childKey(request.getTo())
+                        .build())
+                .getResultBody();
+
+        return memberRelationship;
     }
 }

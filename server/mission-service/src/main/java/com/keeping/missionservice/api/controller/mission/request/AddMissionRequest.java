@@ -16,7 +16,7 @@ public class AddMissionRequest {
     @NotBlank
     @Size(min = 5, max = 6)
     @Pattern(regexp = "^(PARENT|CHILD)$")
-    private MissionType type; // 부모가 아이에게, 아이가 부모에게
+    private String type; // 부모가 아이에게, 아이가 부모에게
     
     @NotNull
     private String to; // 어떤 아이한테 보내야하는지
@@ -37,7 +37,7 @@ public class AddMissionRequest {
     private LocalDate endDate; // 미션 마감일
 
     @Builder
-    public AddMissionRequest(MissionType type, String to, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
+    public AddMissionRequest(String type, String to, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
         this.type = type;
         this.to = to;
         this.todo = todo;

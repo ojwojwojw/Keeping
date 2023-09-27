@@ -9,10 +9,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberTypeRequest {
 
+    private String memberKey;
     private MemberType type;
 
+
     @Builder
-    public MemberTypeRequest(MemberType type) {
+    public MemberTypeRequest(String memberKey, MemberType type) {
+        this.memberKey = memberKey;
         this.type = type;
     }
 }

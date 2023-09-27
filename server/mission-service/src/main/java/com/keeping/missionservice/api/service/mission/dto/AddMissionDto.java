@@ -39,7 +39,7 @@ public class AddMissionDto {
     // Dto 객체로 변환
     public static AddMissionDto toDto(AddMissionRequest request) {
         return AddMissionDto.builder()
-                .type(request.getType())
+                .type(MissionType.valueOf(request.getType()))
                 .to(request.getTo())
                 .todo(request.getTodo())
                 .money(request.getMoney())
