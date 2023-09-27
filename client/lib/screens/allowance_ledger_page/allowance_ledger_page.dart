@@ -123,6 +123,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                           money: record['money'],
                           balance: record['balance'],
                           accountHistoryId: record['id'],
+                          type: record['type'],
                         )
                     );
                   });
@@ -151,7 +152,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
         icon: Icon(Icons.map),
         path: ChildSpendingRoutePage(),
       ),
-      // bottomNavigationBar: BottomNav(),
+      bottomNavigationBar: BottomNav(),
     );
   }
 }

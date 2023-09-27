@@ -110,7 +110,7 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
             Column(
               children: [
                 MoneyRecordsDate(date: widget.date,),
-                MoneyRecord(date: widget.date, storeName: widget.storeName, money: widget.money, balance: widget.balance, accountHistoryId: widget.accountHistoryId,)
+                MoneyRecord(date: widget.date, storeName: widget.storeName, money: widget.money, balance: widget.balance, accountHistoryId: widget.accountHistoryId, type: true,)
               ],
             ),
             Form(

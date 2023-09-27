@@ -122,6 +122,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
                                     balance: e['balance'],
                                     accountHistoryId: e['id'],
                                     onlyTime: false,
+                                    type: true,
                                   ))
                               .toList(),
                         ]),
