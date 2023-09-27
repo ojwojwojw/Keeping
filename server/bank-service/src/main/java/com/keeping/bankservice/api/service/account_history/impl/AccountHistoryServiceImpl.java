@@ -143,7 +143,8 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
         List<ShowAccountHistoryDto> result = accountHistoryQueryRepository.showAccountHistories(targetKey, accountNumber);
 
-        Map<String, List<ShowAccountHistoryResponse>> response = new HashMap<>();
+        Comparator<String> comparator = Comparator.reverseOrder();
+        Map<String, List<ShowAccountHistoryResponse>> response = new TreeMap<>(comparator);
 
         for (ShowAccountHistoryDto dto : result) {
             ShowAccountHistoryResponse showAccountHistoryResponse = null;
