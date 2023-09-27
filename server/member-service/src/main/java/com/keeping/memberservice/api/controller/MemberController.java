@@ -3,6 +3,7 @@ package com.keeping.memberservice.api.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keeping.memberservice.api.ApiResponse;
 import com.keeping.memberservice.api.controller.request.*;
+import com.keeping.memberservice.api.controller.response.ChildKeyResponse;
 import com.keeping.memberservice.api.controller.response.RelationshipCheckResponse;
 import com.keeping.memberservice.api.controller.response.TypeCheckResult;
 import com.keeping.memberservice.api.service.AuthService;
@@ -20,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,6 +32,12 @@ public class MemberController {
     private final AuthService authService;
     private final SmsService smsService;
     private final MemberService memberService;
+
+    @GetMapping("/{member_key}/childeren")
+    public ApiResponse<List<ChildKeyResponse>> getChildList(@PathVariable String member_key) {
+        List<ChildKeyResponse> list = memberService.getChildKeyList(member_key);
+        return ApiResponse.ok(list);
+    }
 
     @PostMapping("/type-check")
     public ApiResponse<TypeCheckResult> typeCheck(TypeCheckRequest request) {
