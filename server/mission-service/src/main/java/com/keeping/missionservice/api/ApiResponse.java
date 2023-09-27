@@ -6,12 +6,12 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class ApiResponse<T> {
     
-    private DataHeader dataHeader;
-    private T dataBody;
+    private DataHeader resultStatus;
+    private T resultBody;
 
-    public ApiResponse(DataHeader dataHeader, T dataBody) {
-        this.dataHeader = dataHeader;
-        this.dataBody = dataBody;
+    public ApiResponse(DataHeader resultStatus, T resultBody) {
+        this.resultStatus = resultStatus;
+        this.resultBody = resultBody;
     }
 
     public static <T> ApiResponse<T> of(int successCode, HttpStatus status, String resultMessage, T data) {

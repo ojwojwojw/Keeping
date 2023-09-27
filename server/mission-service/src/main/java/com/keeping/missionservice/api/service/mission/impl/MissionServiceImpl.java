@@ -62,7 +62,7 @@ public class MissionServiceImpl implements MissionService {
 
             // 부모의 계좌에 들어있는 금액 한도 내에서 가능
             ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
-            int limitAmount = accountBalanceFromParent.getDataBody().getBalance();
+            int limitAmount = accountBalanceFromParent.getResultBody().getBalance();
 
             // 현재 완료하지 않은 미션 총액
             Optional<Integer> missionTotalMoney = missionQueryRepository.countMoney(dto.getTo());
@@ -167,7 +167,7 @@ public class MissionServiceImpl implements MissionService {
 
                 // 부모 통장의 잔액과 미션 총액을 비교
                 ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
-                int limitAmount = accountBalanceFromParent.getDataBody().getBalance();
+                int limitAmount = accountBalanceFromParent.getResultBody().getBalance();
                 int totalMissionMoney = 0;
 
                 // 아이들 목록 불러오기
@@ -229,7 +229,7 @@ public class MissionServiceImpl implements MissionService {
 
         // 부모 통장의 잔액과 미션 총액을 비교
         ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
-        int limitAmount = accountBalanceFromParent.getDataBody().getBalance();
+        int limitAmount = accountBalanceFromParent.getResultBody().getBalance();
         int totalMissionMoney = 0;
 
         // 아이들 목록 불러오기

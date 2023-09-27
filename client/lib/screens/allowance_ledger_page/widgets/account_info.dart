@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/child_tag.dart';
 
 class AccountInfo extends StatefulWidget {
-  final String? type;
+  final String? accessToken;
+  final String? memberKey;
+  final bool? parent;
   final int? balance;
 
   AccountInfo({
     super.key,
-    required this.type,
+    required this.accessToken,
+    required this.memberKey,
+    required this.parent,
     required this.balance,
   });
 
@@ -29,7 +35,7 @@ class _AccountInfoState extends State<AccountInfo> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (widget.type == 'PARENT') ChildTag(childName: '김첫째', text: '용돈 잔액'),
+            if (widget.parent != null && widget.parent! == true) ChildTag(childName: '김첫째', text: '용돈 잔액'),
             Text(
               widget.balance == null ? '0원' : formattedMoney(widget.balance),
               style: TextStyle(
@@ -38,13 +44,28 @@ class _AccountInfoState extends State<AccountInfo> {
               ),
             ),
             SizedBox(height: 10,),
-            Text(
-              '${DateTime.now().month}월 총 지출액: ${formattedMoney(10000)}',
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.white
-              ),
-            )
+            FutureBuilder(
+              future: getMonthTotalExpense(
+                accessToken: widget.accessToken,
+                memberKey: widget.memberKey,
+                targetKey: widget.parent != null && widget.parent! ? null : widget.memberKey,
+                date: DateFormat('yyyy-MM').format(DateTime.now()),
+              ), 
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  var response = snapshot.data['resultBody'];
+                  return Text(
+                    '${DateTime.now().month}월 총 지출액: ${formattedMoney(response)}',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white
+                    ),
+                  );
+                } else {
+                  return Text('로딩중');
+                }
+              },
+            ),
           ],
         ),
       ),

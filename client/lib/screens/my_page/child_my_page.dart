@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/my_page/util/handle_logout.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/screens/my_page/select_theme_page.dart';
 import 'package:keeping/screens/my_page/password_edit_page.dart';
@@ -137,16 +138,22 @@ class ChildMyPage extends StatelessWidget {
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
-            print('로그아웃 중');
+            handlelogout();
           },
-          child: Text('확인'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF8320E7), // 배경색 설정
+          ),
+          child: Text('네'),
         ),
         SizedBox(width: 20),
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('취소'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF8320E7),
+          ),
+          child: Text('아니오'),
         ),
       ],
     );

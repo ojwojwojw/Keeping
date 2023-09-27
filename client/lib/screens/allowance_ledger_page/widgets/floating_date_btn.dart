@@ -3,9 +3,12 @@ import 'package:keeping/util/display_format.dart';
 
 // 자녀 소비경로 페이지에서 날짜를 넘길 수 있는 버튼
 class FloatingDateBtn extends StatefulWidget {
+  Function setDate;
 
-
-  FloatingDateBtn({super.key});
+  FloatingDateBtn({
+    super.key,
+    required this.setDate,
+  });
 
   @override
   State<FloatingDateBtn> createState() => _FloatingDateBtnState();
@@ -52,6 +55,7 @@ class _FloatingDateBtnState extends State<FloatingDateBtn> {
                   setState(() {
                     selectedDate = newDate;
                   });
+                  widget.setDate(newDate);
                   // 새로 소비 경로 불러오는 함수 호출??
                 }
               },

@@ -2,14 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
-import 'package:keeping/screens/main_page/main_page.dart';
+import 'package:keeping/screens/main_page/child_main_page.dart';
+import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 
 import 'package:dio/dio.dart';
 import 'package:keeping/widgets/render_field.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+final _baseUrl = dotenv.env['BASE_URL'];
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();
 Dio dio = Dio();
@@ -64,18 +68,18 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: MyHeader(
+        text: '로그인',
+        elementColor: Colors.black,
+        icon: Icon(Icons.arrow_circle_up),
+        path: LoginPage(),
+      ),
       body: SingleChildScrollView(
         child: Form(
           key: _loginKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MyHeader(
-                text: '로그인',
-                elementColor: Colors.black,
-                icon: Icon(Icons.arrow_circle_up),
-                path: LoginPage(),
-              ),
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Column(
@@ -153,30 +157,92 @@ class _LoginPageState extends State<LoginPage> {
       'loginId': _loginId,
       'loginPw': _loginPw,
     };
+
     try {
+      print(data);
       var response = await dio.post(
-        'http://j9c207.p.ssafy.io:8000/member-service/login',
+        '$_baseUrl/member-service/login',
         data: data,
       );
+      String fcmToken = Provider.of<UserInfoProvider>(context, listen: false)
+          .fcmToken; // fcmToken 가져오기
+      print(fcmToken);
+
       if (response.statusCode == 200) {
+        // 로그인에 성공한 경우
         print('로그인에 성공했어요!');
+        String? token = response.headers.value('token');
+        print(token);
+        String? memberKey = response.headers.value('memberKey');
+        print(memberKey);
+        // 나머지 처리 코드 추가
         handleLogin('로그인 성공');
-        // final userData = json.decode(response.data.toString());
-        // print(userData);
-        // context.read<UserInfoProvider>().login(userData);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MainPage(),
-          ),
+        await requestUserInfo(memberKey, token, fcmToken,
+            Provider.of<UserInfoProvider>(context, listen: false));
+        Provider.of<UserInfoProvider>(context, listen: false)
+            .updateTokenMemberKey(
+          accessToken: token,
+          memberKey: memberKey,
         );
       } else {
+        // 로그인에 실패한 경우
         print('로그인에 실패!');
         handleLogin('아이디 및 비밀번호를 확인해주세요.');
       }
     } catch (err) {
       print(err);
       handleLogin('아이디 및 비밀번호를 확인해주세요.');
+    }
+  }
+
+  Future<void> requestUserInfo(
+    memberKey,
+    accessToken,
+    fcmToken,
+    UserInfoProvider userInfoProvider,
+  ) async {
+    Options options = Options(
+      headers: {
+        'Authorization': 'Bearer $accessToken', // 토큰 추가
+      },
+    );
+
+    try {
+      var response = await dio.get(
+        '$_baseUrl/member-service/auth/api/$memberKey/login-check/$fcmToken', // fcmToken 사용
+        options: options,
+      );
+      Map<String, dynamic> jsonResponse = json.decode(response.toString());
+      print(response);
+      String? _name = jsonResponse['resultBody']['name'];
+      String? _profileImage = jsonResponse['resultBody']['profileImage'];
+      dynamic childrenListData = jsonResponse['resultBody']['childrenList'];
+      List<Map<String, dynamic>> _childrenList = [];
+
+      // childrenList가 null이 아니면 파싱하여 _childrenList에 할당
+      if (childrenListData != null) {
+        if (childrenListData is List<Map<String, dynamic>>) {
+          _childrenList = List<Map<String, dynamic>>.from(childrenListData);
+        }
+      }
+
+      bool? _parent = jsonResponse['resultBody']['parent'];
+
+      userInfoProvider.updateUserInfo(
+        name: _name,
+        profileImage: _profileImage,
+        childrenList: _childrenList,
+        parent: _parent,
+      );
+      if (_parent == true) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => ParentMainPage()));
+      } else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => ChildMainPage()));
+      }
+    } catch (err) {
+      print(err);
     }
   }
 }

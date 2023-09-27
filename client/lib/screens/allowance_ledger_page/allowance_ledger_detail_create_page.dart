@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
@@ -9,6 +10,31 @@ import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/rounded_modal.dart';
+import 'package:provider/provider.dart';
+
+final Map<String, String> _categories = {
+  "MART": "마트",
+  "CONVENIENCE": "편의점",
+  "FOOD": "음식",
+  "SCHOOL": "학교",
+  "CAFE": "카페",
+  "CLOTH": "옷",
+  "CULTURE": "문화생활",
+  "PLAY": "놀이",
+  "SUBWAY": "지하철",
+  "BUS": "버스",
+  "TAXI": "택시",
+  "DIGGING": "취미",
+  "GIFT": "선물",
+  "OTT": "OTT",
+  "CONTENT": "VOD",
+  "ACADEMY": "학원",
+  "TOUR": "여행",
+  "BANK": "은행",
+  "HOSPITAL": "병원",
+  "PHARMACY": "약국",
+  "ETC": "기타",
+};
 
 class AllowanceLedgerDetailCreatePage extends StatefulWidget {
   // 카테고리 따라 사진 다르게 설정, 지출 입금 따라 -/+ 기호 추가
@@ -17,6 +43,7 @@ class AllowanceLedgerDetailCreatePage extends StatefulWidget {
   final int money;
   final int balance;
   final int accountHistoryId;
+  final String largeCategory;
   final Map<String, dynamic>? detail;
 
   AllowanceLedgerDetailCreatePage({
@@ -26,6 +53,7 @@ class AllowanceLedgerDetailCreatePage extends StatefulWidget {
     required this.money,
     required this.balance,
     required this.accountHistoryId,
+    required this.largeCategory,
     this.detail
   });
 
@@ -34,13 +62,8 @@ class AllowanceLedgerDetailCreatePage extends StatefulWidget {
 }
 
 class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailCreatePage> {
-  String? type;
-  String? accessToken;
-  String? memberKey;
-
-  TextEditingController contentControlloer = TextEditingController();
-  TextEditingController moneyControlloer = TextEditingController();
-  TextEditingController categoryIdxControlloer = TextEditingController();
+  String? _accessToken;
+  String? _memberKey;
 
   String _content = '';
   int _money = 0;
@@ -48,7 +71,6 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
 
   bool _contentResult = false;
   bool _moneyResult = false;
-  bool _categoryResult = true;
 
   void _setContent(String val) {
     if (val.isNotEmpty) {
@@ -82,18 +104,14 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
     _moneyResult = val;
   }
 
-  void setCategoryResult(bool val) {
-    _categoryResult = val;
-  }
-
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    // type
-    accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NGFiMjY2MS00N2EyLTQ4NmMtOWY3Zi1mOGNkNTkwMGRiMTAiLCJleHAiOjE2OTU3MDM4NzZ9.Pmks2T9tCqjazb4IUgx1GVUCbtOz97DsBBGKrwkGd5c';
-    memberKey = '84ab2661-47a2-486c-9f7f-f8cd5900db10';
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
+    _category = widget.largeCategory;
   }
 
   @override
@@ -108,7 +126,7 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
             Column(
               children: [
                 MoneyRecordsDate(date: widget.date,),
-                MoneyRecord(date: widget.date, storeName: widget.storeName, money: widget.money, balance: widget.balance, accountHistoryId: widget.accountHistoryId,)
+                MoneyRecord(date: widget.date, storeName: widget.storeName, money: widget.money, balance: widget.balance, accountHistoryId: widget.accountHistoryId, type: false, largeCategory: widget.largeCategory,)
               ],
             ),
             Form(
@@ -124,9 +142,13 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
                       return null;
                     },
                     onChange: (val) {
+                      if (val.length < 1) {
+                        setContentResult(false);
+                      } else {
+                        setContentResult(true);
+                      }
                       _setContent(val);
                     },
-                    controller: contentControlloer
                   ),
                   renderCategoryField(_setCategory, _category),
                   renderTextFormField(
@@ -140,21 +162,18 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
                       return null;
                     },
                     onChange: (val) {
+                      if (val.length < 1 || int.parse(val) > widget.money) {
+                        setMoneyResult(false);
+                      } else {
+                        setMoneyResult(true);
+                      }
                       _setMoney(val);
                     },
-                    controller: moneyControlloer,
                     isNumber: true
                   ),
                 ],
               ),
             ),
-            Column(
-              children: [
-                Text(_content),
-                Text(_money.toString()),
-                Text(_category)
-              ],
-            )
           ],
         ),
       ),
@@ -162,9 +181,9 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
         text: '등록하기',
         action: () async {
           var response = await createAccountDetail(
-            accessToken: accessToken!, 
-            memberKey: memberKey!, 
-            accountHistoryId: widget.accountHistoryId!, 
+            accessToken: _accessToken!, 
+            memberKey: _memberKey!, 
+            accountHistoryId: widget.accountHistoryId, 
             content: _content, 
             money: _money,
           );
@@ -179,7 +198,7 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
             roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
           }
         },
-        isDisabled: _contentResult && _categoryResult && _moneyResult ? false : true,
+        isDisabled: _contentResult && _moneyResult ? false : true,
       ),
     );
   }

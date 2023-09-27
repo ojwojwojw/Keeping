@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:keeping/provider/piggy_provider.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/make_account_page/utils/make_account_future_methods.dart';
-import 'package:keeping/screens/my_page/phonenum_edit_page.dart';
-import 'package:keeping/screens/piggy_page/enter_auth_password_page.dart';
-import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:keeping/widgets/password_circles.dart';
 import 'package:keeping/widgets/password_keyboard.dart';
 import 'package:keeping/widgets/rounded_modal.dart';
 import 'package:provider/provider.dart';
@@ -24,9 +22,9 @@ class MakeAccountEnterAuthPasswordPage extends StatefulWidget {
 }
 
 class _MakeAccountEnterAuthPasswordPageState extends State<MakeAccountEnterAuthPasswordPage> {
-  String? type;
-  String? accessToken;
-  String? memberKey;
+  bool? _parent;
+  String? _accessToken;
+  String? _memberKey;
   String? _authPassword;
 
   setAuthPassword(String value) {
@@ -69,9 +67,9 @@ class _MakeAccountEnterAuthPasswordPageState extends State<MakeAccountEnterAuthP
   @override
   void initState() {
     super.initState();
-    // type
-    accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NGFiMjY2MS00N2EyLTQ4NmMtOWY3Zi1mOGNkNTkwMGRiMTAiLCJleHAiOjE2OTU3MDM4NzZ9.Pmks2T9tCqjazb4IUgx1GVUCbtOz97DsBBGKrwkGd5c';
-    memberKey = '84ab2661-47a2-486c-9f7f-f8cd5900db10';
+    _parent = context.read<UserInfoProvider>().parent;
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
   }
 
   @override
@@ -103,18 +101,18 @@ class _MakeAccountEnterAuthPasswordPageState extends State<MakeAccountEnterAuthP
         ],
       ),
       bottomNavigationBar: BottomBtn(
-        text: '만들기',
+        text: '만들기', 
         action: () async {
           var response = await makeAccount(
-            accessToken: accessToken!, 
-            memberKey: memberKey!, 
+            accessToken: _accessToken!, 
+            memberKey: _memberKey!, 
             authPassword: _authPassword!
           );
           if (response == 0) {
             Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(
               text: '계좌가\n개설되었습니다.',
               button: ConfirmBtn(
-                action: type == 'PARENT' ? ParentMainPage() : ChildMainPage(),
+                action: _parent != null && _parent == true ? ParentMainPage() : ChildMainPage(),
               ),
             )));
 

@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
 import 'package:keeping/screens/make_account_page/widgets/styles.dart';
+import 'package:keeping/screens/request_pocket_money_page/child_request_money_page.dart';
+import 'package:keeping/util/display_format.dart';
 
 class AccountInfo extends StatelessWidget {
-  
+  final int balance;
+
   AccountInfo({
     super.key,
+    required this.balance,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => AllowanceLedgerPage()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => AllowanceLedgerPage()));
       },
       child: SizedBox(
         width: 350,
         height: 200,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30)
-          ),
+              color: Colors.white, borderRadius: BorderRadius.circular(30)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -29,28 +32,35 @@ class AccountInfo extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   // Image(image: image),
-                  Icon(Icons.money_rounded, size: 70,),
+                  Icon(
+                    Icons.money_rounded,
+                    size: 70,
+                  ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        '50,000원',
-                        style: TextStyle(
-                          fontSize: 30
-                        ),
+                        formattedMoney(balance),
+                        style: TextStyle(fontSize: 30),
                       ),
-                      Text('8월 총 지출액: 120,000원')
                     ],
                   )
                 ],
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               ElevatedButton(
                 onPressed: () {
-                  
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChildRequestMoneyPage(),
+                    ),
+                  );
                 },
                 style: accountInfoRoundedBtn(300, 50),
                 child: Text('용돈 조르기'),
