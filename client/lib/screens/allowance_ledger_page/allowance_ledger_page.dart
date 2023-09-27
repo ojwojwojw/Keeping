@@ -146,7 +146,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
         icon: Icon(Icons.map),
         path: ChildSpendingRoutePage(),
       ),
-      bottomNavigationBar: BottomNav(),
+      // bottomNavigationBar: BottomNav(),
     );
   }
 }

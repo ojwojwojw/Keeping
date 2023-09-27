@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/piggy_page/make_piggy_page.dart';
@@ -99,7 +101,7 @@ class _PiggyPageState extends State<PiggyPage> {
                               content: e['content'],
                               balance: e['balance'],
                               goalMoney: e['goalMoney'],
-                              // img: Base64Decoder().convert(e['savedImage']),
+                              img: Base64Decoder().convert(e['savedImage']),
                             )
                           )).toList()
                         ]
