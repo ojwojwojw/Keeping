@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
@@ -12,6 +13,30 @@ import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/rounded_modal.dart';
 import 'package:provider/provider.dart';
 
+final Map<String, String> _categories = {
+  "MART": "마트",
+  "CONVENIENCE": "편의점",
+  "FOOD": "음식",
+  "SCHOOL": "학교",
+  "CAFE": "카페",
+  "CLOTH": "옷",
+  "CULTURE": "문화생활",
+  "PLAY": "놀이",
+  "SUBWAY": "지하철",
+  "BUS": "버스",
+  "TAXI": "택시",
+  "DIGGING": "취미",
+  "GIFT": "선물",
+  "OTT": "OTT",
+  "CONTENT": "VOD",
+  "ACADEMY": "학원",
+  "TOUR": "여행",
+  "BANK": "은행",
+  "HOSPITAL": "병원",
+  "PHARMACY": "약국",
+  "ETC": "기타",
+};
+
 class AllowanceLedgerDetailCreatePage extends StatefulWidget {
   // 카테고리 따라 사진 다르게 설정, 지출 입금 따라 -/+ 기호 추가
   final DateTime date;
@@ -19,6 +44,7 @@ class AllowanceLedgerDetailCreatePage extends StatefulWidget {
   final int money;
   final int balance;
   final int accountHistoryId;
+  final String largeCategory;
   final Map<String, dynamic>? detail;
 
   AllowanceLedgerDetailCreatePage({
@@ -28,6 +54,7 @@ class AllowanceLedgerDetailCreatePage extends StatefulWidget {
     required this.money,
     required this.balance,
     required this.accountHistoryId,
+    required this.largeCategory,
     this.detail
   });
 
@@ -96,6 +123,7 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
     _parent = context.read<UserInfoProvider>().parent;
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
+    _category = widget.largeCategory;
   }
 
   @override
@@ -110,7 +138,7 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
             Column(
               children: [
                 MoneyRecordsDate(date: widget.date,),
-                MoneyRecord(date: widget.date, storeName: widget.storeName, money: widget.money, balance: widget.balance, accountHistoryId: widget.accountHistoryId, type: true,)
+                MoneyRecord(date: widget.date, storeName: widget.storeName, money: widget.money, balance: widget.balance, accountHistoryId: widget.accountHistoryId, type: false, largeCategory: widget.largeCategory,)
               ],
             ),
             Form(

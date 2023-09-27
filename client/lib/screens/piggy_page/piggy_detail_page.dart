@@ -123,6 +123,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
                                     accountHistoryId: e['id'],
                                     onlyTime: false,
                                     type: true,
+                                    largeCategory: e['largeCategory'],
                                   ))
                               .toList(),
                         ]),
