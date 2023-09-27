@@ -9,7 +9,7 @@ public class ChildKeyResponse {
     private String childKey;
 
     @Builder
-    private ChildKeyResponse(String childKey) {
+    public ChildKeyResponse(String childKey) {
         this.childKey = childKey;
     }
 }

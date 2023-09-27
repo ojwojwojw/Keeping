@@ -33,20 +33,21 @@ public class MemberController {
     private final SmsService smsService;
     private final MemberService memberService;
 
-    @GetMapping("/{member_key}/childeren")
+    @GetMapping("/{member_key}/children")
     public ApiResponse<List<ChildKeyResponse>> getChildList(@PathVariable String member_key) {
         List<ChildKeyResponse> list = memberService.getChildKeyList(member_key);
         return ApiResponse.ok(list);
     }
 
     @PostMapping("/type-check")
-    public ApiResponse<TypeCheckResult> typeCheck(TypeCheckRequest request) {
+    public ApiResponse<TypeCheckResult> typeCheck(@RequestBody @Valid TypeCheckRequest request) {
         boolean result = memberService.typeCheck(request.getMemberKey(), request.getType());
         return ApiResponse.ok(TypeCheckResult.builder().isTypeRight(result).build());
     }
 
     @PostMapping("/relationship")
-    public ApiResponse<RelationshipCheckResponse> isParentialRelationship(RelationshipCheckRequest request) {
+    public ApiResponse<RelationshipCheckResponse> isParentialRelationship(@RequestBody @Valid RelationshipCheckRequest request) {
+        log.debug("부모키 = {}", request.getParentKey());
         RelationshipCheckResponse response = memberService.relationCheck(request.getParentKey(), request.getChildKey());
         return ApiResponse.ok(response);
     }

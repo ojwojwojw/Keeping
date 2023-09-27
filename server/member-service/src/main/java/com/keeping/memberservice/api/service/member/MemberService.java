@@ -68,11 +68,11 @@ public class MemberService implements UserDetailsService {
      * @return
      */
     public RelationshipCheckResponse relationCheck(String parentKey, String childKey) {
-        Member parentMember = memberRepository.findByMemberKey(parentKey).orElseThrow(() -> new NoSuchElementException("잘못된 회원키입니다."));
-        Member childMember = memberRepository.findByMemberKey(childKey).orElseThrow(() -> new NoSuchElementException("잘못된 회원키입니다."));
+        Member parentMember = memberRepository.findByMemberKey(parentKey).orElseThrow(() -> new NoSuchElementException("잘못된 부모 회원키입니다."));
+        Member childMember = memberRepository.findByMemberKey(childKey).orElseThrow(() -> new NoSuchElementException("잘못된 자녀 회원키입니다."));
 
-        Parent parent = parentRepository.findByMember(parentMember).orElseThrow(() -> new NoSuchElementException("잘못된 회원키입니다."));
-        Child child = childRepository.findByMember(childMember).orElseThrow(() -> new NoSuchElementException("잘못된 회원키입니다."));
+        Parent parent = parentRepository.findByMember(parentMember).orElseThrow(() -> new NoSuchElementException("부모로 등록된 회원이 아닙니다."));
+        Child child = childRepository.findByMember(childMember).orElseThrow(() -> new NoSuchElementException("부모로 등록된 회원이 아닙니다."));
 
         Optional<Link> findLink = linkRepository.findByParentAndChild(parent, child);
 
