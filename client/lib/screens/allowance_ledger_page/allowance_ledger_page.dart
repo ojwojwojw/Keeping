@@ -70,14 +70,11 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
   @override
   void initState() {
     super.initState();
-    // _parent = context.read<UserInfoProvider>().parent;
-    // _accessToken = context.read<UserInfoProvider>().accessToken;
-    // _memberKey = context.read<UserInfoProvider>().memberKey;
-    // _accountNumber = '171-682675-422-27';
+    _parent = context.read<UserInfoProvider>().parent;
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
     _accountNumber = context.read<AccountInfoProvider>().accountNumber;
-    // _balance = context.read<UserInfoProvider>().balance;
-    _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjk3ZGQzYi1iNDlkLTQ0MTgtYTdmNy1iNmZkNzNiNjMzYzMiLCJleHAiOjE2OTU4MTU0NjJ9.FedPJTdtFy4nJqCi1Ayhtm4798HXfg3CAj-nJM_cYaE';
-    _memberKey = 'f297dd3b-b49d-4418-a7f7-b6fd73b633c3';
+    _balance = context.read<AccountInfoProvider>().balance;
   }
 
   @override
@@ -106,33 +103,39 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                 if (response['resultBody'].isEmpty) {
                   return Text('거래내역이 없습니다.');
                 }
+                List<Widget> widgetLists = [];
+                response['resultBody'].forEach((key, valueList) {
+                  widgetLists.add(MoneyRecordsDate(date: DateTime.parse(key)));
+                  valueList.forEach((record) {
+                    widgetLists.add(
+                      record['detailed'] ? 
+                        MoneyRecordWithDetail(
+                          date: DateTime.parse(record['createdDate']), 
+                          storeName: record['storeName'], 
+                          money: record['money'], 
+                          balance: record['balance'], 
+                          detail: record['detailList']
+                        )
+                      :
+                        MoneyRecord(
+                          date: DateTime.parse(record['createdDate']),
+                          storeName: record['storeName'],
+                          money: record['money'],
+                          balance: record['balance'],
+                          accountHistoryId: record['id'],
+                          type: record['type'],
+                        )
+                    );
+                  });
+                });
+                print(response['resultBody'].toString());
                 return Expanded(
                   child: Container(
                     decoration: lightGreyBgStyle(),
                     width: double.infinity,
                     child: SingleChildScrollView(
                       child: Column(
-                        children: [
-                          MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
-                          // ..._tempData.map((e) => 
-                          //   e['detail'].isEmpty ? 
-                          //     MoneyRecord(
-                          //       date: DateTime.parse(e['date']), 
-                          //       storeName: e['store_name'], 
-                          //       money: e['money'], 
-                          //       balance: e['balance'],
-                          //       accountHistoryId: e['id'],
-                          //     )
-                          //   :
-                          //     MoneyRecordWithDetail(
-                          //       date: DateTime.parse(e['date']), 
-                          //       storeName: e['store_name'], 
-                          //       money: e['money'], 
-                          //       balance: e['balance'],
-                          //       detail: e['detail'],
-                          //     )
-                          // ).toList(),
-                        ]
+                        children: widgetLists,
                       ),
                     )
                   )

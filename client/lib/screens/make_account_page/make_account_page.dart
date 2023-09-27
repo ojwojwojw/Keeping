@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/make_account_page/make_acount_enter_auth_password_page.dart';
 import 'package:keeping/screens/make_account_page/utils/make_account_future_methods.dart';
 import 'package:keeping/styles.dart';
@@ -6,6 +7,7 @@ import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/rounded_modal.dart';
+import 'package:provider/provider.dart';
 
 // 계좌 만들기 첫 페이지
 class MakeAccountPage extends StatefulWidget {
@@ -116,8 +118,8 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
   bool _phoneAuthenticationResult = false;
   bool _verificationResult = false;
 
-  String? accessToken;
-  String? memberKey;
+  String? _accessToken;
+  String? _memberKey;
   // String? phone;
 
   void _successPhoneAuth() {
@@ -150,8 +152,8 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
   @override
   void initState() {
     super.initState();
-    accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjk3ZGQzYi1iNDlkLTQ0MTgtYTdmNy1iNmZkNzNiNjMzYzMiLCJleHAiOjE2OTU4MTU0NjJ9.FedPJTdtFy4nJqCi1Ayhtm4798HXfg3CAj-nJM_cYaE';
-    memberKey = 'f297dd3b-b49d-4418-a7f7-b6fd73b633c3';
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
   }
 
   @override
@@ -176,10 +178,10 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                           child: renderPhoneNumberFormField(
                             label: '전화번호', 
                             onSaved: (val) async {
-                              print('핸드폰번호 입력 => accessToken: $accessToken, memberKey: $memberKey, phone: $val');
+                              print('핸드폰번호 입력 => accessToken: $_accessToken, memberKey: $_memberKey, phone: $val');
                               final response = await phoneCheck(
-                                accessToken: accessToken!, 
-                                memberKey: memberKey!, 
+                                accessToken: _accessToken!, 
+                                memberKey: _memberKey!, 
                                 phone: val
                               );
                               if (response != null) {
@@ -213,8 +215,8 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                             label: '인증번호', 
                             onSaved: (val) async {
                               final response = await phoneAuth(
-                                accessToken: accessToken!, 
-                                memberKey: memberKey!, 
+                                accessToken: _accessToken!, 
+                                memberKey: _memberKey!, 
                                 code: val
                               );
                               if (response != null) {

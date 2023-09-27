@@ -12,11 +12,11 @@ import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
 
 class PiggyDetailPage extends StatefulWidget {
-  final String piggyAccountNumber;
+  final int piggyId;
 
   PiggyDetailPage({
     super.key,
-    required this.piggyAccountNumber,
+    required this.piggyId,
   });
 
   @override
@@ -24,9 +24,9 @@ class PiggyDetailPage extends StatefulWidget {
 }
 
 class _PiggyDetailPageState extends State<PiggyDetailPage> {
-  bool? parent;
-  String? accessToken;
-  String? memberKey;
+  bool? _parent;
+  String? _accessToken;
+  String? _memberKey;
 
   dynamic piggyResponse;
   Map<String, dynamic>? _response;
@@ -36,9 +36,9 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
     super.initState();
     context.read<PiggyDetailProvider>().removePiggyDetail();
     initPiggyDetail();
-    parent = context.read<UserInfoProvider>().parent;
-    // accessToken = context.read<UserInfoProvider>().accessToken;
-    // memberKey = context.read<UserInfoProvider>().memberKey;
+    _parent = context.read<UserInfoProvider>().parent;
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
   }
 
   initPiggyDetail() async {
@@ -85,13 +85,15 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
       ),
       body: Column(
         children: [
-          PiggyDetailInfo(parent: parent),
+          PiggyDetailInfo(parent: _parent),
           FutureBuilder(
-            future: accessToken != null && memberKey != null
+            future: _accessToken != null && _memberKey != null
                 ? getPiggyDetailList(
                     accessToken: 'accessToken',
                     memberKey: 'memberKey',
-                    piggyAccountNumber: widget.piggyAccountNumber)
+                    piggyId: widget.piggyId,
+                    targetKey: _parent != null && _parent == true ? null : _memberKey,
+                  )
                 : null,
             builder: (context, snapshot) {
               // if (snapshot.connectionState == ConnectionState.waiting) {
@@ -120,6 +122,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
                                     balance: e['balance'],
                                     accountHistoryId: e['id'],
                                     onlyTime: false,
+                                    type: true,
                                   ))
                               .toList(),
                         ]),
@@ -137,7 +140,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
           ),
         ],
       ),
-      floatingActionButton: parent != null && !parent! ? FloatingBtn(
+      floatingActionButton: _parent != null && !_parent! ? FloatingBtn(
         text: '저금하기',
         icon: Icon(Icons.savings_rounded),
         path: PiggySavingPage(),

@@ -8,8 +8,8 @@ class PiggyInfoCard extends StatefulWidget {
   final String content;
   final num balance;
   final num goalMoney;
-  // final Uint8List img;
-  final dynamic img;
+  final Uint8List img;
+  // final dynamic img;
   final String imgPath;
 
   PiggyInfoCard({
@@ -17,8 +17,8 @@ class PiggyInfoCard extends StatefulWidget {
     required this.content,
     required this.balance,
     required this.goalMoney,
-    this.img,
-    // required this.img,
+    // this.img,
+    required this.img,
     this.imgPath = 'assets/image/temp_image.jpg',
   });
 
@@ -41,8 +41,8 @@ class _PiggyInfoCardState extends State<PiggyInfoCard> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _piggyStringImg(widget.imgPath),
-              // widget.img ? _piggyStringImg(widget.imgPath) : _piggyImg(widget.img!),
+              // _piggyStringImg(widget.imgPath),
+              _piggyImg(widget.img),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

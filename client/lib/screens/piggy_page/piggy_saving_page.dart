@@ -76,7 +76,7 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
       bottomNavigationBar: BottomBtn(
         text: '다음',
         action: () async {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => EnterAuthPasswordPage()));
+          // Navigator.push(context, MaterialPageRoute(builder: (_) => EnterAuthPasswordPage()));
         },
         isDisabled: (amount.isNotEmpty && context.watch<PiggyDetailProvider>().balance! >= int.parse(amount)) ? false : true,
       ),
