@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/main_page/child_main_page.dart';
+import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
@@ -9,7 +11,9 @@ import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:dio/dio.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+final _baseUrl = dotenv.env['BASE_URL'];
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();
 Dio dio = Dio();
@@ -157,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       print(data);
       var response = await dio.post(
-        'http://52.79.255.94:8000/member-service/login',
+        '$_baseUrl/member-service/login',
         data: data,
       );
       String fcmToken = Provider.of<UserInfoProvider>(context, listen: false)
@@ -167,10 +171,10 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         // 로그인에 성공한 경우
         print('로그인에 성공했어요!');
-
         String? token = response.headers.value('token');
+        print(token);
         String? memberKey = response.headers.value('memberKey');
-        print('$token, $memberKey');
+        print(memberKey);
         // 나머지 처리 코드 추가
         handleLogin('로그인 성공');
         await requestUserInfo(memberKey, token, fcmToken,
@@ -202,11 +206,10 @@ class _LoginPageState extends State<LoginPage> {
         'Authorization': 'Bearer $accessToken', // 토큰 추가
       },
     );
-    print('멤버 키: $memberKey, fcm : $fcmToken, aT: $accessToken');
-    print('토큰');
+
     try {
       var response = await dio.get(
-        'http://52.79.255.94:8000/member-service/auth/api/$memberKey/login-check/$fcmToken', // fcmToken 사용
+        '$_baseUrl/member-service/auth/api/$memberKey/login-check/$fcmToken', // fcmToken 사용
         options: options,
       );
       Map<String, dynamic> jsonResponse = json.decode(response.toString());
@@ -224,7 +227,6 @@ class _LoginPageState extends State<LoginPage> {
       }
 
       bool? _parent = jsonResponse['resultBody']['parent'];
-      print('$_name, $_profileImage, $_childrenList, $_parent');
 
       userInfoProvider.updateUserInfo(
         name: _name,
@@ -232,6 +234,13 @@ class _LoginPageState extends State<LoginPage> {
         childrenList: _childrenList,
         parent: _parent,
       );
+      if (_parent == true) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => ParentMainPage()));
+      } else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => ChildMainPage()));
+      }
     } catch (err) {
       print(err);
     }
