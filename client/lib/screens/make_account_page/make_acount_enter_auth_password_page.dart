@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:keeping/provider/piggy_provider.dart';
 import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/make_account_page/utils/make_account_future_methods.dart';
-import 'package:keeping/screens/my_page/phonenum_edit_page.dart';
-import 'package:keeping/screens/piggy_page/enter_auth_password_page.dart';
-import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:keeping/widgets/password_circles.dart';
 import 'package:keeping/widgets/password_keyboard.dart';
 import 'package:keeping/widgets/rounded_modal.dart';
-import 'package:provider/provider.dart';
 
 class MakeAccountEnterAuthPasswordPage extends StatefulWidget {
   MakeAccountEnterAuthPasswordPage({

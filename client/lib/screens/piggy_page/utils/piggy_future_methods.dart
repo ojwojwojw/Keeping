@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:keeping/util/dio_method.dart';
 
 // 저금통 전체 조회
@@ -47,17 +48,19 @@ Future<dynamic> makePiggy({
 }) async {
   if (accessToken != null && memberKey != null && content != null && goalMoney != null && uploadImage != null) {
     try {
+      final uploadImageFile = await MultipartFile.fromFile(uploadImage);
       final response = await dioPost(
         accessToken: accessToken,
         url: '/bank-service/api/$memberKey/piggy',
-        data: {
+        contentType: 'multipart/form-data',
+        data: FormData.fromMap({
           "content": content,
           "goalMoney": goalMoney,
-          "uploadImage": uploadImage
-        }
+          "uploadImage": uploadImageFile
+        })
       );
       print('저금통 등록 응답 $response');
-      return response;
+      return response['resultStatus']['successCode'];
     } catch (e) {
       print('저금통 등록 에러 $e');
     }

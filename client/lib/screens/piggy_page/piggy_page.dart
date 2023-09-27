@@ -69,7 +69,7 @@ class _PiggyPageState extends State<PiggyPage> {
       ),
       body: FutureBuilder(
         future: getPiggyList(
-          accessToken: accessToken, 
+          accessToken: _accessToken, 
           memberKey: _memberKey,
           targetKey: parent != null && parent == true ? null : _memberKey,
         ),
