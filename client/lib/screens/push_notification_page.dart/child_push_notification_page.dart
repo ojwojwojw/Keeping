@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:keeping/screens/push_notification_page.dart/utils/get_push_notification.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
+import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
 import 'package:keeping/provider/user_info.dart';
@@ -110,6 +111,7 @@ class _ChildPushNotificationPageState extends State<ChildPushNotificationPage> {
           ),
         ),
       ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 }
