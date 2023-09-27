@@ -44,19 +44,16 @@ class PiggyPage extends StatefulWidget {
 }
 
 class _PiggyPageState extends State<PiggyPage> {
-  bool? parent;
+  bool? _parent;
   String? _accessToken;
   String? _memberKey;
 
   @override
   void initState() {
     super.initState();
-    // parent = context.read<UserInfoProvider>().parent;
-    parent = false;
-    // accessToken = context.read<UserInfoProvider>().accessToken;
-    // memberKey = context.read<UserInfoProvider>().memberKey;
-    _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjk3ZGQzYi1iNDlkLTQ0MTgtYTdmNy1iNmZkNzNiNjMzYzMiLCJleHAiOjE2OTU4NjA1ODV9.cSexxvGP1PisJ-6DuHd30nzcrpwfan216IZr64ejttg';
-    _memberKey = 'f297dd3b-b49d-4418-a7f7-b6fd73b633c3';
+    _parent = context.read<UserInfoProvider>().parent;
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
   }
 
   @override
@@ -71,7 +68,7 @@ class _PiggyPageState extends State<PiggyPage> {
         future: getPiggyList(
           accessToken: _accessToken, 
           memberKey: _memberKey,
-          targetKey: parent != null && parent == true ? null : _memberKey,
+          targetKey: _parent != null && _parent == true ? null : _memberKey,
         ),
         builder: (context, snapshot) {
           print('저금통 페이지 ${snapshot.toString()}');
@@ -117,7 +114,7 @@ class _PiggyPageState extends State<PiggyPage> {
           }
         }
       ),
-      floatingActionButton: parent != null && parent! == true ? null : FloatingBtn(
+      floatingActionButton: _parent != null && _parent! == true ? null : FloatingBtn(
         text: '만들기',
         icon: Icon(Icons.savings_rounded),
         path: MakePiggyPage(),

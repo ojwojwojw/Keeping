@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/piggy_provider.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/piggy_page/piggy_page.dart';
 import 'package:keeping/screens/piggy_page/utils/piggy_future_methods.dart';
 import 'package:keeping/screens/piggy_page/widgets/add_piggy_img_btn.dart';
@@ -78,10 +79,8 @@ class _MakePiggyPageState extends State<MakePiggyPage> {
   void initState() {
     super.initState();
     context.read<AddPiggyProvider>().removeAddPiggyInfo();
-    // accessToken = context.read<UserInfoProvider>().accessToken;
-    // memberKey = context.read<UserInfoProvider>().memberKey;
-    _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjk3ZGQzYi1iNDlkLTQ0MTgtYTdmNy1iNmZkNzNiNjMzYzMiLCJleHAiOjE2OTU4NjA1ODV9.cSexxvGP1PisJ-6DuHd30nzcrpwfan216IZr64ejttg';
-    _memberKey = 'f297dd3b-b49d-4418-a7f7-b6fd73b633c3';
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
   }
 
   final _formKey = GlobalKey<FormState>();

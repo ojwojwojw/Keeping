@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:keeping/provider/account_info_provider.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/floating_date_btn.dart';
 import 'package:keeping/widgets/header.dart';
@@ -131,14 +132,11 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
   void initState() {
     super.initState();
     AuthRepository.initialize(appKey: dotenv.env['KAKAO_MAP_API_KEY']!);
-    // _parent = context.read<UserInfoProvider>().parent;
-    // _accessToken = context.read<UserInfoProvider>().accessToken;
-    // _memberKey = context.read<UserInfoProvider>().memberKey;
-    // _accountNumber = '171-682675-422-27';
+    _parent = context.read<UserInfoProvider>().parent;
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
     _accountNumber = context.read<AccountInfoProvider>().accountNumber;
     // _balance = context.read<UserInfoProvider>().balance;
-    _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjk3ZGQzYi1iNDlkLTQ0MTgtYTdmNy1iNmZkNzNiNjMzYzMiLCJleHAiOjE2OTU4NjA1ODV9.cSexxvGP1PisJ-6DuHd30nzcrpwfan216IZr64ejttg';
-    _memberKey = 'f297dd3b-b49d-4418-a7f7-b6fd73b633c3';
 
     // markers.addAll(
     //   _places.map(

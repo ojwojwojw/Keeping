@@ -70,14 +70,11 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
   @override
   void initState() {
     super.initState();
-    // _parent = context.read<UserInfoProvider>().parent;
-    // _accessToken = context.read<UserInfoProvider>().accessToken;
-    // _memberKey = context.read<UserInfoProvider>().memberKey;
-    // _accountNumber = '171-682675-422-27';
+    _parent = context.read<UserInfoProvider>().parent;
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
     _accountNumber = context.read<AccountInfoProvider>().accountNumber;
-    // _balance = context.read<UserInfoProvider>().balance;
-    _accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjk3ZGQzYi1iNDlkLTQ0MTgtYTdmNy1iNmZkNzNiNjMzYzMiLCJleHAiOjE2OTU4NjA1ODV9.cSexxvGP1PisJ-6DuHd30nzcrpwfan216IZr64ejttg';
-    _memberKey = 'f297dd3b-b49d-4418-a7f7-b6fd73b633c3';
+    _balance = context.read<AccountInfoProvider>().balance;
   }
 
   @override
