@@ -36,6 +36,16 @@ public class MemberService implements UserDetailsService {
     private final AuthService authService;
 
     /**
+     * 자녀 키 목록 출력
+     *
+     * @param memberKey
+     * @return
+     */
+    public List<ChildKeyResponse> getChildKeyList(String memberKey) {
+        return linkQueryRepository.getChildKeyList(memberKey);
+    }
+
+    /**
      * 타입 체크
      *
      * @param memberKey
