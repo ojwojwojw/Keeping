@@ -103,33 +103,38 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                 if (response['resultBody'].isEmpty) {
                   return Text('거래내역이 없습니다.');
                 }
+                List<Widget> widgetLists = [];
+                response['resultBody'].forEach((key, valueList) {
+                  widgetLists.add(MoneyRecordsDate(date: DateTime.parse(key)));
+                  valueList.forEach((record) {
+                    widgetLists.add(
+                      record['detailed'] ? 
+                        MoneyRecordWithDetail(
+                          date: DateTime.parse(record['createdDate']), 
+                          storeName: record['storeName'], 
+                          money: record['money'], 
+                          balance: record['balance'], 
+                          detail: record['detailList']
+                        )
+                      :
+                        MoneyRecord(
+                          date: DateTime.parse(record['createdDate']),
+                          storeName: record['storeName'],
+                          money: record['money'],
+                          balance: record['balance'],
+                          accountHistoryId: record['id'],
+                        )
+                    );
+                  });
+                });
+                print(response['resultBody'].toString());
                 return Expanded(
                   child: Container(
                     decoration: lightGreyBgStyle(),
                     width: double.infinity,
                     child: SingleChildScrollView(
                       child: Column(
-                        children: [
-                          MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
-                          // ..._tempData.map((e) => 
-                          //   e['detail'].isEmpty ? 
-                          //     MoneyRecord(
-                          //       date: DateTime.parse(e['date']), 
-                          //       storeName: e['store_name'], 
-                          //       money: e['money'], 
-                          //       balance: e['balance'],
-                          //       accountHistoryId: e['id'],
-                          //     )
-                          //   :
-                          //     MoneyRecordWithDetail(
-                          //       date: DateTime.parse(e['date']), 
-                          //       storeName: e['store_name'], 
-                          //       money: e['money'], 
-                          //       balance: e['balance'],
-                          //       detail: e['detail'],
-                          //     )
-                          // ).toList(),
-                        ]
+                        children: widgetLists,
                       ),
                     )
                   )
