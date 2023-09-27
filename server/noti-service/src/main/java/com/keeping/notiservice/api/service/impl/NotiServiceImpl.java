@@ -1,5 +1,6 @@
 package com.keeping.notiservice.api.service.impl;
 
+import com.keeping.notiservice.api.ApiResponse;
 import com.keeping.notiservice.api.controller.MemberFeignClient;
 import com.keeping.notiservice.api.controller.request.QuestionNotiRequest;
 import com.keeping.notiservice.api.controller.request.QuestionNotiRequestList;
@@ -36,20 +37,21 @@ public class NotiServiceImpl implements NotiService {
 
             fcmNotificationService.sendNotification(fcmDto);
 
-            MemberFcmResponse fcmKey = memberFeignClient.getFCMKey(request.getMemberKey());
-            addNoti(AddNotiDto.toDto(request, fcmKey.getFcmToken()));
+            ApiResponse<String> fcmKey = memberFeignClient.getFCMKey(request.getMemberKey());
+            addNoti(AddNotiDto.toDto(request, fcmKey.getResultBody()));
         }
     }
 
     @Override
-    public Long sendNoti(SendNotiDto dto) {
+    public Long sendNoti(String memberKey, SendNotiDto dto) {
 
         // FCMNotificationDto로 분류
         FCMNotificationDto fcmDto = FCMNotificationDto.toDto(dto);
 
         fcmNotificationService.sendNotification(fcmDto);
 
-        return addNoti(AddNotiDto.toDto(dto));
+        ApiResponse<String> fcmKey = memberFeignClient.getFCMKey(memberKey);
+        return addNoti(AddNotiDto.toDto(dto, fcmKey.getResultBody()));
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.keeping.notiservice.api.controller;
 
 import com.keeping.notiservice.api.ApiResponse;
 import com.keeping.notiservice.api.controller.request.QuestionNotiRequestList;
+import com.keeping.notiservice.api.controller.request.SendNotiRequest;
 import com.keeping.notiservice.api.controller.response.NotiResponse;
 import com.keeping.notiservice.api.service.NotiService;
 import com.keeping.notiservice.api.service.dto.FCMNotificationDto;
@@ -14,22 +15,23 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/noti-service/api")
+@RequestMapping("/noti-service/api/{member_key}")
 @RequiredArgsConstructor
 public class NotiApiController {
     
     private final FCMNotificationService fcmNotificationService;
     private final NotiService notiService;
 
-    @PostMapping("/question-send")
-    public ApiResponse<Void> sendQuestionNoti(
-            @RequestBody QuestionNotiRequestList requestList
+    @PostMapping
+    public ApiResponse<Long> sendNoti(
+            @Valid @PathVariable(name = "member_key") String memberKey,
+            @RequestBody SendNotiRequest request
     ) {
-        notiService.sendNotis(requestList);
-        return ApiResponse.ok(null);
+        Long notiId = notiService.sendNoti(memberKey, SendNotiDto.toDto(request));
+        return ApiResponse.ok(notiId);
     }
     
-    @GetMapping("/{member_key}")
+    @GetMapping
     public ApiResponse<List<NotiResponse>> showNoti(
             @Valid @PathVariable(name = "member_key") String memberKey
     ) {

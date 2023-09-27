@@ -67,7 +67,6 @@ public class MissionServiceImpl implements MissionService {
             }
 
             // 부모의 계좌에 들어있는 잔액
-//            ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
             ApiResponse<Long> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
             Long limitAmount = accountBalanceFromParent.getResultBody();
 
@@ -83,7 +82,7 @@ public class MissionServiceImpl implements MissionService {
                 throw new NotFoundException("409", HttpStatus.CONFLICT, "해당하는 날짜를 입력할 수 없습니다.");
             }
 
-            Mission mission = Mission.toMission(dto.getTo(), dto.getType(), dto.getTodo(), dto.getMoney(), dto.getCheeringMessage(), dto.getStartDate(), dto.getEndDate(), Completed.YET);
+            Mission mission = Mission.toMission(dto.getTo(), dto.getType(), dto.getTodo(), dto.getMoney(), dto.getCheeringMessage(), "", dto.getStartDate(), dto.getEndDate(), Completed.YET);
             Mission savedMission = missionRepository.save(mission);
 
             // 자녀에게 알림 전송
@@ -96,7 +95,7 @@ public class MissionServiceImpl implements MissionService {
             return savedMission.getId();
         }
 
-        // 자녀가 부모에게 미션을 주는 거라면 Completed(완성여부)를 CREATE_WAIT으로 설정
+        // 자녀가 부모에게 미션을 요청하는 거라면 Completed(완성여부)를 CREATE_WAIT으로 설정
         else if (dto.getType().equals(MissionType.CHILD)) {
             // 해당 자녀가 있는지 확인
             MemberRelationshipResponse memberRelationship = memberFeignClient.getMemberRelationship(RelationshipCheckRequest.builder()
@@ -109,7 +108,7 @@ public class MissionServiceImpl implements MissionService {
                 throw new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 회원을 찾을 수 없습니다.");
             }
 
-            Mission mission = Mission.toMission(memberKey, dto.getType(), dto.getTodo(), dto.getMoney(), dto.getCheeringMessage(), dto.getStartDate(), dto.getEndDate(), Completed.CREATE_WAIT);
+            Mission mission = Mission.toMission(memberKey, dto.getType(), dto.getTodo(), dto.getMoney(), "",dto.getChildRequestComment(), dto.getStartDate(), dto.getEndDate(), Completed.CREATE_WAIT);
             Mission savedMission = missionRepository.save(mission);
 
             //  부모에게 알림 전송
@@ -138,12 +137,12 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
-    public Long addComment(String memberKey, AddCommentDto dto) {
+    public Long addFinisehdComment(String memberKey, AddCommentDto dto) {
         // 미션 있는지 id로 확인
         Mission mission = missionRepository.findMissionByIdAndChildKey(dto.getMissionId(), memberKey)
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
 
-        mission.updateComment(dto.getComment());
+        mission.updateFinishedComment(dto.getComment());
 
         return dto.getMissionId();
     }
@@ -233,7 +232,6 @@ public class MissionServiceImpl implements MissionService {
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
 
         // 부모 통장의 잔액과 미션 총액을 비교
-//        ApiResponse<AccountResponse> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
         ApiResponse<Long> accountBalanceFromParent = bankFeignClient.getAccountBalanceFromParent(memberKey);
         Long limitAmount = accountBalanceFromParent.getResultBody();
         Long totalMissionMoney = 0l;
@@ -289,12 +287,10 @@ public class MissionServiceImpl implements MissionService {
 
         log.debug("member-test");
 
-        MemberRelationshipResponse memberRelationship = memberFeignClient.getMemberRelationship(RelationshipCheckRequest.builder()
+        return memberFeignClient.getMemberRelationship(RelationshipCheckRequest.builder()
                         .parentKey(memberKey)
                         .childKey(request.getTo())
                         .build())
                 .getResultBody();
-
-        return memberRelationship;
     }
 }

@@ -19,22 +19,25 @@ public class AddMissionDto {
     private int money; // 미션 보상금
 
     private String cheeringMessage; // 부모의 응원 메시지
+    
+    private String childRequestComment; // 자녀의 요청 메시지
 
     private LocalDate startDate; // 미션 시작일
 
     private LocalDate endDate; // 미션 마감일
 
+    
     @Builder
-    public AddMissionDto(MissionType type, String to, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
+    public AddMissionDto(MissionType type, String to, String todo, int money, String cheeringMessage, String childRequestComment, LocalDate startDate, LocalDate endDate) {
         this.type = type;
         this.to = to;
         this.todo = todo;
         this.money = money;
         this.cheeringMessage = cheeringMessage;
+        this.childRequestComment = childRequestComment;
         this.startDate = startDate;
         this.endDate = endDate;
     }
-
 
     // Dto 객체로 변환
     public static AddMissionDto toDto(AddMissionRequest request) {

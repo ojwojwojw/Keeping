@@ -19,7 +19,7 @@ public interface MissionService {
     
     MissionResponse showDetailMission(String memberKey, Long missionId);
 
-    Long addComment(String memberKey, AddCommentDto dto);
+    Long addFinisehdComment(String memberKey, AddCommentDto dto);
 
     Long editCompleted(String memberKey, EditCompleteDto dto);
 

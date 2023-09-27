@@ -11,7 +11,7 @@ public interface NotiService {
 
     public void sendNotis(QuestionNotiRequestList requestList);
 
-    public Long sendNoti(SendNotiDto dto);
+    public Long sendNoti(String memberKey, SendNotiDto dto);
     
     public Long addNoti(AddNotiDto dto);
 

@@ -31,18 +31,21 @@ public class AddMissionRequest {
     private int money; // 미션 보상금
     
     private String cheeringMessage; // 부모 응원 메시지
+    
+    private String childRequestMessage; // 자녀 요청 메시지
 
     private LocalDate startDate; // 미션 시작일
 
     private LocalDate endDate; // 미션 마감일
 
     @Builder
-    public AddMissionRequest(String type, String to, String todo, int money, String cheeringMessage, LocalDate startDate, LocalDate endDate) {
+    public AddMissionRequest(String type, String to, String todo, int money, String cheeringMessage, String childRequestMessage, LocalDate startDate, LocalDate endDate) {
         this.type = type;
         this.to = to;
         this.todo = todo;
         this.money = money;
         this.cheeringMessage = cheeringMessage;
+        this.childRequestMessage = childRequestMessage;
         this.startDate = startDate;
         this.endDate = endDate;
     }

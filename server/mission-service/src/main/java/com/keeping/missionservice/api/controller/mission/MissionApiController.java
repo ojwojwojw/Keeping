@@ -109,12 +109,12 @@ public class MissionApiController {
     }
 
     @PatchMapping("/comment")
-    public ApiResponse<Long> addComment(
+    public ApiResponse<Long> addFinisehdComment(
             @PathVariable(name = "member-key") String memberKey,
             @Valid @RequestBody AddCommentRequest request
     ) {
         try {
-            Long missionId = missionService.addComment(memberKey, AddCommentDto.toDto(request));
+            Long missionId = missionService.addFinisehdComment(memberKey, AddCommentDto.toDto(request));
             return ApiResponse.ok(missionId);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
