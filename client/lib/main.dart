@@ -12,6 +12,7 @@ import 'screens/main_page/main_page.dart';
 //provider관련
 import 'package:provider/provider.dart';
 import 'package:keeping/provider/provider.dart';
+import 'package:keeping/provider/mission_provider.dart';
 
 //FCM
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -75,6 +76,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => OnlinePaymentRequestFormProvider()),
     ChangeNotifierProvider(create: (_) => UserInfoProvider()),
     ChangeNotifierProvider(create: (_) => AccountInfoProvider()),
+    ChangeNotifierProvider(create: (_) => MissionInfoProvider()), // 미션 관련
   ], child: const MaterialApp(home: MainPage())));
 }
 

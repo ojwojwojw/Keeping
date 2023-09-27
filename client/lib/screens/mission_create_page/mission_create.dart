@@ -4,8 +4,8 @@ import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/number_keyboard.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
-
-TextEditingController _controller1 = TextEditingController();
+import 'package:keeping/provider/mission_provider.dart';
+import 'package:provider/provider.dart';
 
 //미션 생성페이지 1
 class MissionCreatePage1 extends StatefulWidget {
@@ -16,8 +16,46 @@ class MissionCreatePage1 extends StatefulWidget {
 }
 
 class _MissionCreatePage1State extends State<MissionCreatePage1> {
-  final _formKey = GlobalKey<FormState>();
+  // final _createKey = GlobalKey<FormState>();
   String? missionTitle;
+  String? missionDueDate;
+  TextEditingController _missionTitle = TextEditingController();
+  bool _isButtonDisabled = true; // 버튼 활성화 여부
+  bool _isTitleChecked = false; //  미션 제목 입력 여부
+  bool _isDateChecked = false; //미션 마감 날짜 선택 여부
+  DateTime dateValue = DateTime.now();
+
+  TextEditingController _controller1 = TextEditingController();
+
+  //버튼 활성화 관련
+  handleCreateDisable() {
+    if (_isTitleChecked && _isDateChecked) {
+      setState(() {
+        _isButtonDisabled = false;
+      });
+    } else {
+      setState(() {
+        _isButtonDisabled = true;
+      });
+    }
+  }
+
+  //데이트 피커
+  Future datePicker() async {
+    DateTime? picked = await showDatePicker(
+        context: context,
+        firstDate: new DateTime(2000),
+        initialDate: new DateTime.now(),
+        lastDate: new DateTime(2030));
+    if (picked != null) {
+      setState(() {
+        dateValue = picked;
+        _isDateChecked = true; // 날짜가 선택되면 _isDateChecked를 true로 설정
+        handleCreateDisable(); // 버튼 활성화 상태 업데이트
+        missionDueDate = picked.toString();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +77,36 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
           ),
 
           // 입력 폼
-          renderTextFormField(label: '미션제목을 입력해주세요'),
+          renderTextFormField(
+              label: '미션 제목 입력',
+              onChange: (value) {
+                setState(() {
+                  _isTitleChecked = value != null && value.isNotEmpty;
+                  handleCreateDisable(); // 버튼 활성화 상태 업데이트
+                  missionTitle = value;
+                });
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return '필수 항목입니다';
+                } else if (value.length < 1) {
+                  return '제목은 1자 이상이 되어야 합니다.';
+                } else if (value.length > 30) {
+                  return '제목은 30자 이하가 되어야 합니다.';
+                }
+
+                return null;
+              },
+              controller: _missionTitle),
 
           SizedBox(
             height: 100,
+          ),
+
+          // 선택한 날짜 렌더링
+          Text(
+            '선택한 날짜: ${dateValue.toLocal()}', // 선택한 날짜를 렌더링
+            style: TextStyle(color: Colors.white),
           ),
 
           //달력 들어갈곳
@@ -54,21 +118,28 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
       ),
       bottomNavigationBar: BottomBtn(
         text: '다음',
-        action: MissionCreatePage2(),
-        isDisabled: false,
+        action: () {
+          saveAndMove(context, missionTitle, missionDueDate); // 함수 호출
+        },
+        isDisabled: !_isTitleChecked || !_isDateChecked,
       ),
     );
   }
 
-  DateTime dateValue = DateTime.now();
-//데이트 피커
-  Future datePicker() async {
-    DateTime? picked = await showDatePicker(
-        context: context,
-        firstDate: new DateTime(2000),
-        initialDate: new DateTime.now(),
-        lastDate: new DateTime(2030));
-    if (picked != null) setState(() => dateValue = picked);
+  Future<void> saveAndMove(context, todo, endDate) {
+    // 프로바이더 데이터 업데이트
+    print('!!!');
+    print(todo);
+    print(endDate);
+    Provider.of<MissionInfoProvider>(context, listen: false)
+        .saveTodoData(todo: todo, endDate: endDate);
+
+    // MissionCreatePage2 페이지로 이동
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MissionCreatePage2()),
+    );
+    return Future.value();
   }
 }
 
