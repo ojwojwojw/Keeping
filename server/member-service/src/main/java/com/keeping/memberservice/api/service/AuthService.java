@@ -216,6 +216,7 @@ public class AuthService {
     }
 
     private void redisStringInsert(String key, String value, long expire) {
+        redisTemplate.delete(key);
         redisTemplate.opsForValue().append(key, value);
         redisTemplate.expire(key, expire, TimeUnit.SECONDS);
     }
