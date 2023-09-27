@@ -1,5 +1,6 @@
 package com.keeping.memberservice.domain.repository;
 
+import com.keeping.memberservice.api.controller.response.ChildKeyResponse;
 import com.keeping.memberservice.api.controller.response.ChildrenResponse;
 import com.keeping.memberservice.domain.Parent;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -18,6 +19,15 @@ public class LinkQueryRepository {
 
     public LinkQueryRepository(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
+    }
+
+    public List<ChildKeyResponse> getChildKeyList(String memberKey) {
+        return queryFactory.select(constructor(ChildKeyResponse.class,
+                        link.child.member.memberKey
+                ))
+                .from(link)
+                .where(link.parent.member.memberKey.eq(memberKey))
+                .fetch();
     }
 
     public List<ChildrenResponse> getChildList(Parent parent) {
