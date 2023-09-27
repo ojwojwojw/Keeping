@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
-class OnlinePaymentRequestFilters extends StatefulWidget {
-  OnlinePaymentRequestFilters({super.key});
+class RequestMoneyFilters extends StatefulWidget {
+  RequestMoneyFilters({super.key});
 
   @override
-  State<OnlinePaymentRequestFilters> createState() =>
-      _OnlinePaymentRequestFiltersState();
+  State<RequestMoneyFilters> createState() => _RequestMoneyFiltersState();
 }
 
-class _OnlinePaymentRequestFiltersState
-    extends State<OnlinePaymentRequestFilters> {
+class _RequestMoneyFiltersState extends State<RequestMoneyFilters> {
   int selectedBtnIdx = 0; // 선택된 버튼의 인덱스
 
   @override
@@ -18,7 +16,7 @@ class _OnlinePaymentRequestFiltersState
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       child: Row(
         children: [
-          _OnlinePaymentRequestFilter(
+          _RequestMoneyFilter(
             value: 0,
             text: '전체',
             isSelected: selectedBtnIdx == 0,
@@ -28,9 +26,9 @@ class _OnlinePaymentRequestFiltersState
               });
             },
           ),
-          _OnlinePaymentRequestFilter(
+          _RequestMoneyFilter(
             value: 1,
-            text: '부탁 대기',
+            text: '대기중',
             isSelected: selectedBtnIdx == 1,
             onPressed: () {
               setState(() {
@@ -38,9 +36,9 @@ class _OnlinePaymentRequestFiltersState
               });
             },
           ),
-          _OnlinePaymentRequestFilter(
+          _RequestMoneyFilter(
             value: 2,
-            text: '부탁 완료',
+            text: '승인',
             isSelected: selectedBtnIdx == 2,
             onPressed: () {
               setState(() {
@@ -48,9 +46,9 @@ class _OnlinePaymentRequestFiltersState
               });
             },
           ),
-          _OnlinePaymentRequestFilter(
+          _RequestMoneyFilter(
             value: 3,
-            text: '부탁 거절',
+            text: '거부',
             isSelected: selectedBtnIdx == 3,
             onPressed: () {
               setState(() {
@@ -64,13 +62,13 @@ class _OnlinePaymentRequestFiltersState
   }
 }
 
-class _OnlinePaymentRequestFilter extends StatelessWidget {
+class _RequestMoneyFilter extends StatelessWidget {
   final int value;
   final String text;
   final bool isSelected;
   final Function onPressed;
 
-  _OnlinePaymentRequestFilter({
+  _RequestMoneyFilter({
     super.key,
     required this.value,
     required this.text,
@@ -87,19 +85,19 @@ class _OnlinePaymentRequestFilter extends StatelessWidget {
             onPressed();
           },
           style: isSelected
-              ? _selectedOnlinePaymentRequestFilterBtnStyle()
-              : _unselectedOnlinePaymentRequestFilterBtnStyle(),
+              ? _selectedRequestMoneyFilterBtnStyle()
+              : _unselectedRequestMoneyFilterBtnStyle(),
           child: Text(
             text,
             style: isSelected
-                ? _selectedOnlinePaymentRequestFilterTextStyle()
-                : _unselectedOnlinePaymentRequestFilterTextStyle(),
+                ? _selectedRequestMoneyFilterTextStyle()
+                : _unselectedRequestMoneyFilterTextStyle(),
           ),
         ));
   }
 }
 
-ButtonStyle _unselectedOnlinePaymentRequestFilterBtnStyle() {
+ButtonStyle _unselectedRequestMoneyFilterBtnStyle() {
   return ButtonStyle(
     backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -114,11 +112,11 @@ ButtonStyle _unselectedOnlinePaymentRequestFilterBtnStyle() {
   );
 }
 
-TextStyle _unselectedOnlinePaymentRequestFilterTextStyle() {
+TextStyle _unselectedRequestMoneyFilterTextStyle() {
   return TextStyle(color: Color.fromARGB(255, 146, 146, 146));
 }
 
-ButtonStyle _selectedOnlinePaymentRequestFilterBtnStyle() {
+ButtonStyle _selectedRequestMoneyFilterBtnStyle() {
   return ButtonStyle(
     backgroundColor: MaterialStateProperty.all<Color>(Color(0xFFF3E6FF)),
     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -133,6 +131,6 @@ ButtonStyle _selectedOnlinePaymentRequestFilterBtnStyle() {
   );
 }
 
-TextStyle _selectedOnlinePaymentRequestFilterTextStyle() {
+TextStyle _selectedRequestMoneyFilterTextStyle() {
   return TextStyle(color: const Color(0xFF8320E7), fontWeight: FontWeight.bold);
 }

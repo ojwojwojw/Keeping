@@ -100,15 +100,6 @@ class _ChildMainPageState extends State<ChildMainPage> {
                   },
                   child: Text('계좌 유무'),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => ChildRequestMoneyPage()));
-                  },
-                  child: Text('용돈 조르기'),
-                )
               ],
             ),
           ),

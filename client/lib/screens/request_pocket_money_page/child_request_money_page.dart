@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:keeping/screens/request_pocket_money_page/widgets/tab_request_money.dart';
+import 'package:keeping/screens/online_payment_request/widgets/online_payment_request_filters.dart';
+import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_box.dart';
+import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_filter.dart';
+import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_how_much.dart';
+import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:keeping/widgets/bottom_nav.dart';
+import 'package:keeping/widgets/render_field.dart';
 
 class ChildRequestMoneyPage extends StatefulWidget {
   const ChildRequestMoneyPage({super.key});
@@ -10,19 +15,14 @@ class ChildRequestMoneyPage extends StatefulWidget {
   State<ChildRequestMoneyPage> createState() => _ChildRequestMoneyPageState();
 }
 
-class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage>
-    with TickerProviderStateMixin {
-  late final TabController _tabController;
-
+class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -31,95 +31,27 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage>
     return Scaffold(
       appBar: MyHeader(text: '용돈 조르기'),
       body: SingleChildScrollView(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            requestPocketMoneyBox(),
-            TabBar(
-              controller: _tabController,
-              isScrollable: true,
-              tabAlignment: TabAlignment.center,
-              indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                color: const Color(0xFFFFD600).withOpacity(0.2),
-                backgroundBlendMode: BlendMode.srcATop,
-                border: Border.all(
-                  color: const Color(0xFFFFD600),
-                  width: 2.0,
-                ),
-              ),
-              tabs: <Widget>[
-                Tab(
-                  height: 110,
-                  child: TabRequestMoney(name: '전체'),
-                ),
-                Tab(
-                  height: 110,
-                  child: TabRequestMoney(name: '대기중'),
-                ),
-                Tab(
-                  height: 110,
-                  child: TabRequestMoney(name: '승인'),
-                ),
-                Tab(
-                  height: 110,
-                  child: TabRequestMoney(name: '거부'),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: <Widget>[
-                      totalRequestPockeyMoney(),
-                      waitingRequestPockeyMoney(),
-                      acceptRequestPockeyMoney(),
-                      denyRequestPockeyMoney(),
-                    ],
-                  ),
-                )
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget requestPocketMoneyBox() {
-    return Container(
-      width: 300,
-      height: 150,
-      decoration: BoxDecoration(
-        color: const Color(0xFF8320E7),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              '용돈을 요청하시겠어요?',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                backgroundColor: Color(0xFF8320E7),
-              ),
-              textAlign: TextAlign.center,
+          children: [
+            // InkWell로 감싸서 클릭 가능하게 만듭니다.
+            InkWell(
+              onTap: () {
+                print('용돈 조르기 다음 화면');
+                // 클릭 시 다음 페이지로 이동합니다.
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => RequestPocketMoneySecondPage()),
+                );
+              },
+              child: requestPocketMoneyBox(),
             ),
-            Text(
-              '남은 횟수 : 10번',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                backgroundColor: Color(0xFF8320E7),
-              ),
-              textAlign: TextAlign.center,
-            ),
+            RequestMoneyFilters(),
+            Text('용돈 조르기 내역이 없습니다.')
           ],
         ),
       ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 
@@ -171,6 +103,60 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage>
           fontSize: 24,
           fontWeight: FontWeight.bold,
         ),
+      ),
+    );
+  }
+}
+
+class RequestPocketMoneySecondPage extends StatefulWidget {
+  @override
+  _RequestPocketMoneySecondPageState createState() =>
+      _RequestPocketMoneySecondPageState();
+}
+
+class _RequestPocketMoneySecondPageState
+    extends State<RequestPocketMoneySecondPage> {
+  bool _isButtonDisabled = true;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: MyHeader(text: '용돈 조르기'),
+      body: Center(
+          child: Column(
+        children: [
+          requestMoneyHowMuch(),
+          renderBoxFormField(label: '하고 싶은 말을 적어봐요!'),
+        ],
+      )),
+      bottomNavigationBar: BottomBtn(
+        text: '조르기 완료',
+        action: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => RequestPocketMoneyThirdPage()),
+          );
+        },
+        isDisabled: false,
+      ),
+    );
+  }
+}
+
+class RequestPocketMoneyThirdPage extends StatefulWidget {
+  @override
+  _RequestPocketMoneyThirdPageState createState() =>
+      _RequestPocketMoneyThirdPageState();
+}
+
+class _RequestPocketMoneyThirdPageState
+    extends State<RequestPocketMoneyThirdPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // appBar: MyHeader(text: '용돈 조르기'),
+      body: Center(
+        child: Text('엄마에게 \n 용돈 조르기 완료!'),
       ),
     );
   }

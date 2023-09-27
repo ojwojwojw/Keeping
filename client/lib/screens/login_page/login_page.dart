@@ -2,9 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
-import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
-import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 
@@ -157,10 +155,14 @@ class _LoginPageState extends State<LoginPage> {
     };
 
     try {
+      print(data);
       var response = await dio.post(
-        'http://j9c207.p.ssafy.io:8000/member-service/login',
+        'http://52.79.255.94:8000/member-service/login',
         data: data,
       );
+      String fcmToken = Provider.of<UserInfoProvider>(context, listen: false)
+          .fcmToken; // fcmToken 가져오기
+      print(fcmToken);
 
       if (response.statusCode == 200) {
         // 로그인에 성공한 경우
@@ -168,10 +170,10 @@ class _LoginPageState extends State<LoginPage> {
 
         String? token = response.headers.value('token');
         String? memberKey = response.headers.value('memberKey');
-
+        print('$token, $memberKey');
         // 나머지 처리 코드 추가
         handleLogin('로그인 성공');
-        requestUserInfo(memberKey, token);
+        requestUserInfo(memberKey, token, fcmToken);
         Provider.of<UserInfoProvider>(context, listen: false)
             .updateTokenMemberKey(
           accessToken: token,
@@ -188,22 +190,26 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void requestUserInfo(memberKey, accessToken) async {
+  void requestUserInfo(memberKey, accessToken, fcmToken) async {
     Options options = Options(
       headers: {
         'Authorization': 'Bearer $accessToken', // 토큰 추가
       },
     );
     print(memberKey);
+    print('토큰');
     try {
       var response = await dio.get(
-        'http://j9c207.p.ssafy.io:8000/member-service/auth/api/$memberKey/login-check',
+        'http://52.79.255.94:8000/member-service/auth/api/$memberKey/login-check/$fcmToken', // fcmToken 사용
         options: options,
       );
       Map<String, dynamic> jsonResponse = json.decode(response.toString());
+      print(response);
       String? _name = jsonResponse['resultBody']['name'];
       String? _profileImage = jsonResponse['resultBody']['profileImage'];
-      String? _childrenList = jsonResponse['resultBody']['childrenList'];
+      List<Map<String, dynamic>> _childrenList =
+          jsonResponse['resultBody']['childrenList'];
+
       bool? _parent = jsonResponse['resultBody']['parent'];
       print('$_name, $_profileImage, $_childrenList, $_parent');
 
