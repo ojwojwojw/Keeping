@@ -36,6 +36,17 @@ public class MemberService implements UserDetailsService {
     private final AuthService authService;
 
     /**
+     * 멤버 이름 받아오기
+     *
+     * @param memberKey
+     * @return
+     */
+    public String getMamberName(String memberKey) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() -> new NoSuchElementException("잘못된 회원키입니다."));
+        return member.getName();
+    }
+
+    /**
      * 자녀 키 목록 출력
      *
      * @param memberKey
@@ -107,7 +118,6 @@ public class MemberService implements UserDetailsService {
         LoginMember loginMember = null;
         if (isParent) {
             // 부모일 때
-            // TODO: 2023-09-22 자녀 가져오기
             Parent parent = findParent.get();
             List<ChildrenResponse> childList = linkQueryRepository.getChildList(parent);
             loginMember = LoginMember.builder()
