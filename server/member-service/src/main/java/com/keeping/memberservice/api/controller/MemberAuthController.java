@@ -2,7 +2,6 @@ package com.keeping.memberservice.api.controller;
 
 import com.keeping.memberservice.api.ApiResponse;
 import com.keeping.memberservice.api.controller.request.PasswordCheckRequest;
-import com.keeping.memberservice.api.controller.request.SetFcmTokenRequest;
 import com.keeping.memberservice.api.controller.request.UpdateLoginPwRequest;
 import com.keeping.memberservice.api.controller.response.*;
 import com.keeping.memberservice.api.service.AuthService;
@@ -29,7 +28,6 @@ public class MemberAuthController {
     public ApiResponse<LinkResultResponse> link(@PathVariable String memberKey,
                                                 @PathVariable String type,
                                                 @PathVariable String linkcode) {
-        // TODO: 2023-09-14 연결
         LinkResultDto result = authService.link(linkcode, memberKey, type);
         if (!result.isSuccess()) {
             return ApiResponse.of(1, HttpStatus.BAD_REQUEST, result.getFailMessage());
@@ -39,10 +37,14 @@ public class MemberAuthController {
         return ApiResponse.ok(response);
     }
 
-    @GetMapping("/link")
-    public ApiResponse<String> whoLinkMe(@PathVariable String memberKey) {
-        // TODO: 2023-09-26 해야함
-        return ApiResponse.ok("김부모");
+    @GetMapping("/link/{linkCode}")
+    public ApiResponse<String> whoLinkMe(@PathVariable String memberKey, @PathVariable String linkCode) {
+        String partnerMemberKey = authService.whoLinkMe(memberKey, linkCode);
+        if (partnerMemberKey == null) {
+            return ApiResponse.of(1, HttpStatus.NOT_FOUND, "나를 등록한 회원이 없습니다.");
+        }
+        String partnerName = memberService.getMamberName(partnerMemberKey);
+        return ApiResponse.ok(partnerName);
     }
 
     @GetMapping("/{type}/linkcode")
@@ -73,13 +75,6 @@ public class MemberAuthController {
     public ApiResponse<List<ChildrenResponse>> getChildrenList(@PathVariable String memberKey) {
         // TODO: 2023-09-14 자녀 목록 출력
         return ApiResponse.ok(null);
-    }
-
-    @PostMapping("/fcm-token")
-    public ApiResponse<String> setFcmToken(@PathVariable String memberKey,
-                                           @RequestBody @Valid SetFcmTokenRequest request) {
-        // TODO: 2023-09-14 fcm token
-        return ApiResponse.ok("");
     }
 
     @PostMapping("/profile/{imageNum}")
@@ -116,7 +111,7 @@ public class MemberAuthController {
 
     @GetMapping("/login-check/{fcmToken}")
     public ApiResponse<LoginMember> getLoginMember(@PathVariable String memberKey, @PathVariable String fcmToken) {
-        memberService.setFcmToken(memberKey,fcmToken);
+        memberService.setFcmToken(memberKey, fcmToken);
         LoginMember loginUser = memberService.getLoginUser(memberKey);
         return ApiResponse.ok(loginUser);
     }
