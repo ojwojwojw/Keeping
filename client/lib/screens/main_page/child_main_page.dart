@@ -11,6 +11,7 @@ import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/screens/online_payment_request/online_payment_request_page.dart';
 import 'package:keeping/screens/piggy_page/piggy_page.dart';
 import 'package:keeping/screens/question_page/question_page.dart';
+import 'package:keeping/screens/user_link_page/before_user_link_page.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:provider/provider.dart';
 
@@ -51,22 +52,37 @@ class _ChildMainPageState extends State<ChildMainPage> {
             width: 350,
             child: Column(
               children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BeforeUserLinkPage(),
+                      ),
+                    );
+                  },
+                  child: const Text('유저 연결 페이지'),
+                ),
                 SizedBox(
                   height: 100,
                 ),
                 FutureBuilder(
-                  future: getAccountInfo(accessToken: _accessToken, memberKey: _memberKey, targetKey: _targetKey ?? _memberKey), 
+                  future: getAccountInfo(
+                      accessToken: _accessToken,
+                      memberKey: _memberKey,
+                      targetKey: _targetKey ?? _memberKey),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var response = snapshot.data;
                       if (response['resultStatus']['resultCode'] == '404') {
                         return MakeAccountBtn();
                       } else {
-                        Provider.of<AccountInfoProvider>(context, listen: false).setAccountInfo(response['resultBody']);
+                        Provider.of<AccountInfoProvider>(context, listen: false)
+                            .setAccountInfo(response['resultBody']);
                         return AccountInfo(
                           balance: response['resultBody']['balance'],
                         );
-                        }
+                      }
                     } else {
                       return Text('로딩중');
                     }
