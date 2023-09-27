@@ -104,6 +104,7 @@ Future<dynamic> getMonthTotalExpense({
         url: '/bank-service/api/$memberKey/account-history/$targetKey/expense/$date'
       );
       print('월 지출 총액 응답 $response');
+      return response;
     } catch (e) {
       print('월 지출 총액 에러 $e');
     }

@@ -16,6 +16,7 @@ class MoneyRecord extends StatefulWidget {
   final int accountHistoryId;
   final Map<String, dynamic>? detail;
   final bool onlyTime;
+  final bool type;
 
   MoneyRecord({
     super.key,
@@ -26,6 +27,7 @@ class MoneyRecord extends StatefulWidget {
     required this.accountHistoryId,
     this.detail,
     this.onlyTime = true,
+    required this.type,
   });
 
   @override
@@ -65,47 +67,43 @@ class _MoneyRecordState extends State<MoneyRecord> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: categoryImg('assets/image/temp_image.jpg'),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                        child: categoryImg('assets/image/temp_image.jpg'),
+                      Text(
+                        widget.storeName,
+                        style: bigStyle(),
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.storeName,
-                            style: bigStyle(),
-                          ),
-                          Text(
-                            widget.onlyTime
-                                ? formattedTime(widget.date)
-                                : formattedFullDate(widget.date),
-                          )
-                        ],
-                      ),
+                      Text(
+                        widget.onlyTime
+                            ? formattedTime(widget.date)
+                            : formattedFullDate(widget.date),
+                      )
                     ],
                   ),
-                  Padding(
-                      padding: EdgeInsets.only(right: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            '-${formattedMoney(widget.money)}',
-                            style: bigStyle(),
-                          ),
-                          Text(formattedMoney(widget.balance))
-                        ],
-                      )),
                 ],
               ),
-            ]
-          )
+              Padding(
+                  padding: EdgeInsets.only(right: 15),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${widget.type?'+':'-'}${formattedMoney(widget.money)}',
+                        style: bigStyle(),
+                      ),
+                      Text(formattedMoney(widget.balance))
+                    ],
+                  )),
+            ],
+          ),
+            
         )
       )
     );

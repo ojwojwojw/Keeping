@@ -18,7 +18,7 @@ class _MoneyRecordsDateState extends State<MoneyRecordsDate> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.only(top: 15, bottom: 8),
       child: SizedBox(
         width: 360,
         child: Text(

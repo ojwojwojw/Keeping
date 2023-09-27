@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
@@ -9,6 +10,7 @@ import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/rounded_modal.dart';
+import 'package:provider/provider.dart';
 
 class AllowanceLedgerDetailCreatePage extends StatefulWidget {
   // 카테고리 따라 사진 다르게 설정, 지출 입금 따라 -/+ 기호 추가
@@ -35,9 +37,9 @@ class AllowanceLedgerDetailCreatePage extends StatefulWidget {
 
 class _AllowanceLedgerDetailCreatePageState
     extends State<AllowanceLedgerDetailCreatePage> {
-  String? type;
-  String? accessToken;
-  String? memberKey;
+  bool? _parent;
+  String? _accessToken;
+  String? _memberKey;
 
   TextEditingController contentControlloer = TextEditingController();
   TextEditingController moneyControlloer = TextEditingController();
@@ -92,10 +94,9 @@ class _AllowanceLedgerDetailCreatePageState
   @override
   void initState() {
     super.initState();
-    // type
-    accessToken =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NGFiMjY2MS00N2EyLTQ4NmMtOWY3Zi1mOGNkNTkwMGRiMTAiLCJleHAiOjE2OTU3MDM4NzZ9.Pmks2T9tCqjazb4IUgx1GVUCbtOz97DsBBGKrwkGd5c';
-    memberKey = '84ab2661-47a2-486c-9f7f-f8cd5900db10';
+    _parent = context.read<UserInfoProvider>().parent;
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
   }
 
   @override
@@ -118,6 +119,7 @@ class _AllowanceLedgerDetailCreatePageState
                   money: widget.money,
                   balance: widget.balance,
                   accountHistoryId: widget.accountHistoryId,
+                  type: true,
                 )
               ],
             ),
@@ -170,9 +172,9 @@ class _AllowanceLedgerDetailCreatePageState
         text: '등록하기',
         action: () async {
           var response = await createAccountDetail(
-            accessToken: accessToken!,
-            memberKey: memberKey!,
-            accountHistoryId: widget.accountHistoryId!,
+            accessToken: _accessToken!,
+            memberKey: _memberKey!,
+            accountHistoryId: widget.accountHistoryId,
             content: _content,
             money: _money,
           );
