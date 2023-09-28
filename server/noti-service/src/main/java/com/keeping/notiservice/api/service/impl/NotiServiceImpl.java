@@ -30,7 +30,7 @@ import java.util.List;
 @Slf4j
 public class NotiServiceImpl implements NotiService {
     
-    private MemberFeignClient memberFeignClient;
+    private final MemberFeignClient memberFeignClient;
     private final FCMNotificationService fcmNotificationService;
     private final NotiQueryRepository notiQueryRepository;
     private final NotiRepository notiRepository;
@@ -52,12 +52,18 @@ public class NotiServiceImpl implements NotiService {
     @Override
     public Long sendNoti(String memberKey, SendNotiDto dto) {
 
+        log.debug("[알림 전송] : " + memberKey);
+        log.debug(dto.toString());
+
         // FCMNotificationDto로 분류
         FCMNotificationDto fcmDto = FCMNotificationDto.toDto(dto);
 
-        fcmNotificationService.sendNotification(fcmDto);
+        String sendReturn = fcmNotificationService.sendNotification(fcmDto);
 
         ApiResponse<String> fcmKey = memberFeignClient.getFCMKey(memberKey);
+
+        log.debug("[알림 전송 완료] : ");
+        log.debug(sendReturn);
         return addNoti(AddNotiDto.toDto(dto, fcmKey.getResultBody()));
     }
 

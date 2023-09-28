@@ -86,10 +86,10 @@ public class MissionServiceImpl implements MissionService {
             Mission savedMission = missionRepository.save(mission);
 
             // 자녀에게 알림 전송
-            notiFeignClient.sendNoti(SendNotiRequest.builder()
+            notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
                     .memberKey(dto.getTo())
                     .title("미션 도착!! 😆")
-                    .body(dto.getTodo())
+                    .content(dto.getTodo())
                     .type("MISSION")
                     .build());
 
@@ -113,10 +113,10 @@ public class MissionServiceImpl implements MissionService {
             Mission savedMission = missionRepository.save(mission);
 
             //  부모에게 알림 전송
-            notiFeignClient.sendNoti(SendNotiRequest.builder()
+            notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
                     .memberKey(dto.getTo())
                     .title("🎁미션 요청이 도착했어요~! ")
-                    .body(dto.getTodo())
+                    .content(dto.getTodo())
                     .type("MISSION")
                     .build());
 

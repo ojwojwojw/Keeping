@@ -12,15 +12,15 @@ public class SendNotiRequest {
 
     private String title;
 
-    private String body;
+    private String content;
 
     private String type;
 
     @Builder
-    public SendNotiRequest(String memberKey, String title, String body, String type) {
+    public SendNotiRequest(String memberKey, String title, String content, String type) {
         this.memberKey = memberKey;
         this.title = title;
-        this.body = body;
+        this.content = content;
         this.type = type;
     }
 }

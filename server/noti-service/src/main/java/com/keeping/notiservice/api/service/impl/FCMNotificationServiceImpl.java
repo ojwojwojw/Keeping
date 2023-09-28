@@ -21,7 +21,7 @@ public class FCMNotificationServiceImpl implements FCMNotificationService {
 
     private final FirebaseMessaging firebaseMessaging;
     private final NotiRepository notiRepository;
-    private MemberFeignClient memberFeignClient; 
+    private final MemberFeignClient memberFeignClient;
     
     @Override
     public String sendNotification(FCMNotificationDto dto) {
