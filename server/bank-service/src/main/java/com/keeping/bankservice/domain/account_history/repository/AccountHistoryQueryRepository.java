@@ -60,7 +60,8 @@ public class AccountHistoryQueryRepository {
                         accountHistory.detailed,
                         accountHistory.address,
                         accountHistory.latitude,
-                        accountHistory.longitude))
+                        accountHistory.longitude,
+                        accountHistory.createdDate))
                 .from(accountHistory)
                 .where(accountHistory.account.accountNumber.eq(accountNumber), accountHistory.account.memberKey.eq(memberKey), whatType(type), accountHistory.createdDate.between(startDateTime, endDateTime))
                 .orderBy(accountHistory.createdDate.desc())

@@ -214,6 +214,47 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
     }
 
     @Override
+    public Map<String, List<ShowAccountHistoryResponse>> showAccountHistoryRoute(String memberKey, String targetKey, String accountNumber, String date) {
+        // TODO: 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
+        // TODO: 계좌가 존재하는지 확인하고, 소유자를 확인하는 검사 필요
+
+        LocalDate localDate = LocalDate.parse(date);
+        LocalDateTime startDateTime = localDate.atStartOfDay();
+        LocalDateTime endDateTime = localDate.atTime(LocalTime.MAX);
+
+        List<ShowAccountHistoryDto> result = accountHistoryQueryRepository.showAccountDailyHistories(targetKey, accountNumber, startDateTime, endDateTime, "WITHDRAW");
+
+        Map<String, List<ShowAccountHistoryResponse>> response = new HashMap<>();
+
+        for (ShowAccountHistoryDto dto : result) {
+            if (dto.getLatitude() != null && dto.getLongitude() != null) {
+                ShowAccountHistoryResponse showAccountHistoryResponse = null;
+
+                if (dto.isDetailed()) {
+                    List<ShowAccountDetailDto> detailResult = accountDetailQueryRepository.showAccountDetailes(dto.getId(), targetKey);
+
+                    if (dto.getRemain() != 0) {
+                        ShowAccountDetailDto extraDetailDto = ShowAccountDetailDto.toDto(-1l, "남은 금액", dto.getRemain(), SmallCategory.ETC);
+                        detailResult.add(extraDetailDto);
+                    }
+
+                    showAccountHistoryResponse = ShowAccountHistoryResponse.toResponse(dto, detailResult);
+                } else {
+                    showAccountHistoryResponse = ShowAccountHistoryResponse.toResponse(dto, null);
+                }
+
+                if (!response.containsKey(date)) {
+                    response.put(date, new ArrayList<ShowAccountHistoryResponse>());
+                }
+
+                response.get(date).add(showAccountHistoryResponse);
+            }
+        }
+
+        return response;
+    }
+
+    @Override
     public Long countMonthExpense(String memberKey, String targetKey, String date) {
         // TODO: 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
 

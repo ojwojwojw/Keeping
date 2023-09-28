@@ -74,6 +74,20 @@ public class AccountHistoryApiController {
         }
     }
 
+    @GetMapping("/{target-key}/{account-number}/{date}")
+    public ApiResponse<Map<String, List<ShowAccountHistoryResponse>>> showAccountHistoryRoute(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("account-number") String accountNumber, @PathVariable("date") String date) {
+        log.debug("ShowAccountHistoryRoute");
+
+        try {
+            Map<String, List<ShowAccountHistoryResponse>> response = accountHistoryService.showAccountHistoryRoute(memberKey, targetKey, accountNumber, date);
+            return ApiResponse.ok(response);
+        }
+        catch(Exception e) {
+            log.debug("에러 발생 : {}", e.toString());
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "거래 내역을 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
+        }
+    }
+
     @GetMapping("/{target-key}/expense/{date}")
     public ApiResponse<Long> countMonthExpense(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("date") String date) {
         log.debug("CountMonthExpense");

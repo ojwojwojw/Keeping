@@ -17,6 +17,7 @@ public interface AccountHistoryService {
     AccountHistory addAccountDetail(String memberKey, AddAccountDetailValidationDto dto);
     Map<String, List<ShowAccountHistoryResponse>> showAccountHistory(String memberKey, String targetKey, String accountNumber);
     Map<String, List<ShowAccountHistoryResponse>> showAccountDailyHistory(String memberKey, String targetKey, String accountNumber, String date, String type);
+    Map<String, List<ShowAccountHistoryResponse>> showAccountHistoryRoute(String memberKey, String targetKey, String accountNumber, String date);
     Long countMonthExpense(String memberKey, String targetKey, String date);
     void transferMoney(String memberKey, TransferMoneyDto dto) throws URISyntaxException;
 }
