@@ -19,7 +19,6 @@ Future<dynamic> dioPost({
       'Authorization': 'Bearer $accessToken',
     };
     var response = await dio.post(url, data: data);
-    print(response);
     print('dioPost 성공');
     return response.data;
   } catch (e) {

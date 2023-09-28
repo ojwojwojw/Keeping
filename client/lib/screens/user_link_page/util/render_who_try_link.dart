@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_link.dart';
+import 'package:keeping/screens/user_link_page/after_user_link_page.dart';
 import 'package:keeping/screens/user_link_page/util/make_new_link_code.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,11 @@ Future<String> renderWhoTryLink(BuildContext context, userCode) async {
     print(response);
     if (response['resultStatus']['successCode'] == 0) {
       return Future.value(response['resultBody'] + '님이 연결을 시도중입니다.');
+    } else if (response['resultStatus']['resultCode'] == 400) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const AfterUserLinkPage()),
+      );
     }
   }
 

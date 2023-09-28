@@ -3,6 +3,7 @@ import 'package:keeping/screens/user_link_page/util/render_my_number.dart';
 import 'package:keeping/screens/user_link_page/util/render_who_try_link.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
+import 'package:keeping/widgets/bottom_modal.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/screens/user_link_page/after_user_link_page.dart';
@@ -173,25 +174,71 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
         Provider.of<UserInfoProvider>(context, listen: false).accessToken;
     String memberKey =
         Provider.of<UserInfoProvider>(context, listen: false).memberKey;
-
+    bool isParent =
+        Provider.of<UserInfoProvider>(context, listen: false).parent;
     String oppCode =
         Provider.of<UserLinkProvider>(context, listen: false).oppCode;
     print('$accessToken, $memberKey, $oppCode');
+    String url = isParent
+        ? '/member-service/auth/api/$memberKey/parent/link/$oppCode'
+        : '/member-service/auth/api/$memberKey/child/link/$oppCode';
     // 비동기 작업 수행
-    if (oppCode == null || oppCode.isEmpty) {
+    if (oppCode == '' || oppCode.isEmpty) {
       handleLinkErrMsg('상대방 코드를 입력해주세요.');
     } else {
       final response = await dioPost(
         accessToken: accessToken,
-        url: '/member-service/auth/api/$memberKey/parent/link/$oppCode',
+        url: url,
       );
       print(response);
-      if (response != null || response['resultStatus']['resultCode'] == 400) {
-        handleLinkErrMsg(response['resultStatus']['resultMessage']);
+
+      if (response != null) {
+        if (response['resultStatus']['resultMessage'] == '일치하는 인증번호가 없습니다.') {
+          // 인증번호 오류
+          handleLinkErrMsg(response['resultStatus']['resultMessage']);
+        } else if (response['resultStatus']['successCode'] == 0) {
+          // 연결된 상황
+          final partner = response['resultBody']['partner'];
+          // ignore: use_build_context_synchronously
+          bottomModal(
+            context: context,
+            title: '연결 완료',
+            content: Text('$partner님과 연결되었습니다!'), // Text 위젯으로 감싸기
+            // ignore: use_build_context_synchronously
+            button: linkAcceptedBtn(context),
+          );
+        } else {
+          // 다음 단계
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AfterUserLinkPage()),
+          );
+        }
       } else {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const AfterUserLinkPage()));
+        // response가 null인 경우 처리
+        handleLinkErrMsg('서버에서 응답을 받지 못했습니다.');
       }
     }
+  }
+
+  Widget linkAcceptedBtn(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF8320E7),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0), // 모서리 둥글기 조절
+            ),
+            minimumSize: Size(200, 50), // 가로로 더 길게 조절
+          ),
+          child: Text('확인'),
+        ),
+      ],
+    );
   }
 }
