@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/number_keyboard.dart';
@@ -6,6 +7,10 @@ import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/provider/mission_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+final _baseUrl = dotenv.env['BASE_URL'];
 
 //미션 생성페이지 1
 class MissionCreatePage1 extends StatefulWidget {
@@ -52,7 +57,7 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
         dateValue = picked;
         _isDateChecked = true; // 날짜가 선택되면 _isDateChecked를 true로 설정
         handleCreateDisable(); // 버튼 활성화 상태 업데이트
-        missionDueDate = picked.toString();
+        missionDueDate = picked.toString().substring(0, 10);
       });
     }
   }
@@ -105,7 +110,7 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
 
           // 선택한 날짜 렌더링
           Text(
-            '선택한 날짜: ${dateValue.toLocal()}', // 선택한 날짜를 렌더링
+            '선택한 날짜: ${dateValue.toLocal().toString().substring(0, 10)}', // 선택한 날짜를 렌더링
             style: TextStyle(color: Colors.white),
           ),
 
@@ -166,9 +171,7 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
 
   onBackspacePress() {
     if (amount.isEmpty) {
-      setState(() {
-        return;
-      });
+      return;
     } else {
       setState(() {
         amount = amount.substring(0, amount.length - 1);
@@ -184,15 +187,14 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
         child: Column(children: [
           Text('성공하면 얼마를 줄까요?'),
 
-          //예시 이미지 파일
+          // 예시 이미지 파일
           Container(
             width: 300,
             height: 300,
-            child:
-                Image.asset('./assets/image/temp_image.jpg'), // 이미지 파일 경로를 지정
+            child: Image.asset('./assets/image/temp_image.jpg'),
           ),
 
-          //숫자패드
+          // 숫자패드
           Text(amount),
           NumberKeyboard(
             onNumberPress: onNumberPress,
@@ -202,8 +204,17 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
       ),
       bottomNavigationBar: BottomBtn(
         text: '다음',
-        action: MissionCreatePage3(),
-        isDisabled: false,
+        action: () {
+          // 2. 프로바이더 데이터 업데이트
+          Provider.of<MissionInfoProvider>(context, listen: false)
+              .saveMoneyData(amount);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MissionCreatePage3()),
+          );
+        },
+        isDisabled: amount.isEmpty, // 금액이 없을 경우 버튼 비활성화
       ),
     );
   }
@@ -211,78 +222,129 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
 
 //////////////////////////////
 //미션 생성페이지 3
-class MissionCreatePage3 extends StatefulWidget {
-  const MissionCreatePage3({super.key});
 
+class MissionCreatePage3 extends StatefulWidget {
   @override
-  State<MissionCreatePage3> createState() => _MissionCreatePage3State();
+  _MissionCreatePage3State createState() => _MissionCreatePage3State();
 }
 
 class _MissionCreatePage3State extends State<MissionCreatePage3> {
-  List<Map<String, dynamic>> data = [
-    {
-      "memberKey": 2,
-      "name": "김첫째",
-      "profileImage": "profile.png",
-      "questionTime": "22:00"
-    },
-    {
-      "memberKey": 3,
-      "name": "김둘째",
-      "profileImage": "profile.png",
-      "questionTime": "22:00"
-    },
-    {
-      "memberKey": 4,
-      "name": "김셋째",
-      "profileImage": "profile.png",
-      "questionTime": "22:00"
+  TextEditingController _commentController = TextEditingController();
+  Future<String?>? memberKeyFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    memberKeyFuture = _fetchMemberKey();
+  }
+
+  Future<String?> _fetchMemberKey() async {
+    var provider = Provider.of<UserInfoProvider>(context, listen: false);
+    return provider.memberKey;
+  }
+
+  Future<String?> _fetchAccessToken() async {
+    var provider = Provider.of<UserInfoProvider>(context, listen: false);
+    return provider.accessToken;
+  }
+
+  _sendMissionData(String? memberKey) async {
+    if (memberKey == null) {
+      print('Member key is null');
+      return;
     }
-  ];
+
+    String? accessToken = await _fetchAccessToken();
+    if (accessToken == null) {
+      print('Access token is null');
+      return;
+    }
+
+    var missionProvider =
+        Provider.of<MissionInfoProvider>(context, listen: false);
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    String userType = userProvider.parent ? "PARENT" : "CHILD";
+    var dio = Dio();
+
+    dio.options.headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Content-Type': 'application/json'
+    };
+
+    var data = {
+      "type": userType,
+      "to": "", //부모는 무조건 한명이라 멤버키 불필요
+      "todo": missionProvider.missionTitle,
+      "money": int.parse(missionProvider.amount ?? '0'),
+      "cheeringMessage": "", //부모의 응원메시지 불필요
+      "childRequestComment": _commentController.text, // 입력폼에서 직접 받아야 한다
+      "startDate": DateTime.now().toString().substring(0, 10),
+      "endDate": missionProvider.missionDueDate
+    };
+    print(memberKey);
+    print(data);
+    print("$_baseUrl/mission-service/api/$memberKey");
+    var response =
+        await dio.post("$_baseUrl/mission-service/api/$memberKey", data: data);
+
+    if (response.statusCode == 200) {
+      print('Mission data sent successfully!');
+    } else {
+      print('Failed to send mission data.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyHeader(text: '미션생성3'),
-      body: Column(children: [
-        Text('누구에게 얼마를 줄까요?'),
-        _children_data(data),
-        renderBoxFormField(label: 'test'),
-      ]),
-      bottomNavigationBar: BottomBtn(
-        text: '다음',
-        action: MissionPage(),
-        isDisabled: false,
+      appBar: AppBar(
+        title: Text("Create Mission Page 3"),
+      ),
+      body: FutureBuilder<String?>(
+        future: memberKeyFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(child: Text('Error fetching member key'));
+          }
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  "Mission Details",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+              renderTextFormField(
+                  label: '부모님에게 요청 메세지를 보내봐요',
+                  controller: _commentController,
+                  onChange: (value) {
+                    Provider.of<MissionInfoProvider>(context, listen: false)
+                        .childRequestComment = value;
+                  }),
+
+              // TextFormField(
+              //   controller: _commentController,
+              //   decoration: InputDecoration(labelText: 'childRequestComment'),
+              //   onChanged: (value) {
+              //     Provider.of<MissionInfoProvider>(context, listen: false)
+              //         .childRequestComment = value;
+              //   },
+              // ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => _sendMissionData(snapshot.data),
+                child: Text('Send Mission Data'),
+              )
+            ],
+          );
+        },
       ),
     );
   }
-}
-
-Widget _children_data(data) {
-  return (Expanded(
-    child: ListView.builder(
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          final item = data[index];
-          return Container(
-            height: 50,
-            width: 400,
-            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.white, // 배경색 설정
-              border: Border.all(color: Color(0xFF8320E7)), // 테두리 설정
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: Text(
-                item['name'],
-                style: TextStyle(
-                  fontSize: 20, // 텍스트 크기 설정
-                  color: Colors.black, // 텍스트 색상 설정
-                ),
-              ),
-            ),
-          );
-        }),
-  ));
 }

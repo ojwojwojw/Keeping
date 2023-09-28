@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
 // import 'package:keeping/screens/mission_page/widgets/mission_box.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/screens/mission_create_page/mission_create.dart';
@@ -9,6 +10,10 @@ import 'package:keeping/screens/mission_create_page/mission_create.dart';
 // import 'package:keeping/provider/counter_test.dart';
 // import 'package:keeping/provider/array_test.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+
+final _baseUrl = dotenv.env['BASE_URL'];
 
 // 미션페이지 //
 class MissionPage extends StatefulWidget {
@@ -21,83 +26,18 @@ class MissionPage extends StatefulWidget {
 class _MissonPageState extends State<MissionPage> {
   List<Map<String, dynamic>> data = [
     {
-      "childKey": "childKey_70a7ad5dfa4c",
-      "id": 0,
+      "childKey": "595d952c-16ed-408e-ba63-ef988d624fa5",
+      "id": 3,
       "type": "PARENT",
-      "todo": "설거지 하기",
-      "money": 1500,
-      "cheeringMessage": "오늘도 화이팅!",
-      "childComment": "엄마 저 이 미션이 너무 하고싶어요!",
-      "startDate": "2023-09-25",
-      "endDate": "2023-09-25",
-      "completed": "CREATE_WAIT",
-      "createdDate": "2023-09-25 10:22:04"
-    },
-    {
-      "childKey": "childKey_70a7ad5dfa4c",
-      "id": 1,
-      "type": "PARENT",
-      "todo": "숙제 하기",
+      "todo": "학교생활잘마치기",
       "money": 2000,
-      "cheeringMessage": "오늘도 화이팅!",
-      "childComment": "아빠 저 이 미션이 너무 하고싶어요!",
+      "cheeringMessage": "오늘도화이팅!",
+      "childComment": null,
       "startDate": "2023-09-25",
-      "endDate": "2023-09-25",
-      "completed": "CREATE_WAIT",
-      "createdDate": "2023-09-25 10:22:04"
-    },
-    {
-      "childKey": "childKey_70a7ad5dfa4c",
-      "id": 2,
-      "type": "PARENT",
-      "todo": "밥 하기",
-      "money": 2500,
-      "cheeringMessage": "오늘도 화이팅!",
-      "childComment": "형! 저 이 미션이 너무 하고싶어요!",
-      "startDate": "2023-09-25",
-      "endDate": "2023-09-25",
-      "completed": "temp",
-      "createdDate": "2023-09-25 10:22:04"
-    },
-    {
-      "childKey": "childKey_70a7ad5dfa4c",
-      "id": 0,
-      "type": "PARENT",
-      "todo": "설거지 하기",
-      "money": 1500,
-      "cheeringMessage": "오늘도 화이팅!",
-      "childComment": "엄마 저 이 미션이 너무 하고싶어요!",
-      "startDate": "2023-09-25",
-      "endDate": "2023-09-25",
-      "completed": "CREATE_WAIT",
-      "createdDate": "2023-09-25 10:22:04"
-    },
-    {
-      "childKey": "childKey_70a7ad5dfa4c",
-      "id": 1,
-      "type": "PARENT",
-      "todo": "숙제 하기",
-      "money": 2000,
-      "cheeringMessage": "오늘도 화이팅!",
-      "childComment": "아빠 저 이 미션이 너무 하고싶어요!",
-      "startDate": "2023-09-25",
-      "endDate": "2023-09-25",
-      "completed": "temp",
-      "createdDate": "2023-09-25 10:22:04"
-    },
-    {
-      "childKey": "childKey_70a7ad5dfa4c",
-      "id": 2,
-      "type": "PARENT",
-      "todo": "밥 하기",
-      "money": 2500,
-      "cheeringMessage": "오늘도 화이팅!",
-      "childComment": "형! 저 이 미션이 너무 하고싶어요!",
-      "startDate": "2023-09-25",
-      "endDate": "2023-09-25",
-      "completed": "CREATE_WAIT",
-      "createdDate": "2023-09-25 10:22:04"
-    },
+      "endDate": "2023-09-30",
+      "completed": "YET",
+      "createdDate": "2023-09-27T05:18:22.797014"
+    }
   ];
 
   @override
@@ -187,12 +127,15 @@ class _MissonPageState extends State<MissionPage> {
 
   Future<void> getData() async {
     // Dio 객체 생성
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    var memberKey = userProvider.memberKey;
+
     final dio = Dio();
 
     try {
       // GET 요청 보내기
       final response = await dio.get(
-        '/mission-service/api/{member_key}',
+        "$_baseUrl/mission-service/api/$memberKey",
       );
 
       // 요청이 성공했을 때 처리
@@ -200,7 +143,6 @@ class _MissonPageState extends State<MissionPage> {
         final responseData = List<Map<String, dynamic>>.from(response.data);
         print('Response data: $responseData');
         setState(() {
-          // widget.data = responseData;// 백이랑 연결 시
           data = responseData;
         });
       } else {
@@ -303,10 +245,14 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  widget.item["childComment"],
-                  style: TextStyle(fontSize: 16.0),
-                ),
+                //// 자식의 메세지가 null이면 랜더링을 못한다
+                widget.item["childComment"] != null
+                    ? Text(
+                        widget.item["childComment"],
+                        style: TextStyle(fontSize: 16.0),
+                      )
+                    : SizedBox(),
+                /////
                 SizedBox(height: 10.0),
                 Text(
                   "시작일:",
@@ -380,8 +326,6 @@ class FilteringBar extends StatelessWidget {
   }
 }
 
-
-
 // /////////////////Test//////////////////////
 
 // Camera 테스트로 이동하는 버튼
@@ -443,4 +387,3 @@ class FilteringBar extends StatelessWidget {
 //     child: const Text('provider(array) test'),
 //   );
 // }
-
