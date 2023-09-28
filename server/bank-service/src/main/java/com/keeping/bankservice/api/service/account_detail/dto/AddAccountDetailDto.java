@@ -1,7 +1,6 @@
 package com.keeping.bankservice.api.service.account_detail.dto;
 
 import com.keeping.bankservice.api.controller.account_detail.request.AccountDetailRequest;
-import com.keeping.bankservice.api.controller.account_detail.request.AddAccountDetailRequest;
 import com.keeping.bankservice.domain.account_detail.SmallCategory;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +26,7 @@ public class AddAccountDetailDto {
         this.accountHistoryId = accountHistoryId;
         this.content = content;
         this.money = money;
+        this.smallCategory = smallCategory;
     }
 
     public static AddAccountDetailDto toDto(AccountDetailRequest request) {
@@ -34,7 +34,7 @@ public class AddAccountDetailDto {
                 .accountHistoryId(request.getAccountHistoryId())
                 .content(request.getContent())
                 .money(request.getMoney())
-                .smallCategory(SmallCategory.valueOf(request.getSmallCategory()))
+                .smallCategory(request.getSmallCategory() == null? null: SmallCategory.valueOf(request.getSmallCategory()))
                 .build();
     }
 

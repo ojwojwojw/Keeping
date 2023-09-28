@@ -29,7 +29,11 @@ public class AccountDetailServiceImpl implements AccountDetailService {
             AddAccountDetailValidationDto addAccountDetailValidationDto = AddAccountDetailValidationDto.toDto(dto.getAccountHistoryId(), dto.getMoney());
             AccountHistory accountHistory = accountHistoryService.addAccountDetail(memberKey, addAccountDetailValidationDto);
 
-            AccountDetail accountDetail = AccountDetail.toAccountDetail(accountHistory, dto.getContent(), dto.getMoney(), SmallCategory.valueOf(accountHistory.getLargeCategory().toString()));
+            if(dto.getSmallCategory() == null) {
+                dto.setSmallCategory(SmallCategory.valueOf(accountHistory.getLargeCategory().toString()));
+            }
+
+            AccountDetail accountDetail = AccountDetail.toAccountDetail(accountHistory, dto.getContent(), dto.getMoney(), dto.getSmallCategory());
             AccountDetail saveAccountDetail = accountDetailRepository.save(accountDetail);
         }
     }

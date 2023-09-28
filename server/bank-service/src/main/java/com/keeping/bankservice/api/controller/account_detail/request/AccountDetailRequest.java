@@ -22,7 +22,6 @@ public class AccountDetailRequest {
     @NotNull
     private Long money;
 
-    @NotBlank
     private String smallCategory;
 
 
