@@ -22,6 +22,15 @@ public class NotiApiController {
     private final FCMNotificationService fcmNotificationService;
     private final NotiService notiService;
 
+    @PostMapping("/question-send")
+    public ApiResponse<Void> sendQuestionNoti(
+            @PathVariable(name = "member_key") String memberKey,
+            @RequestBody QuestionNotiRequestList requestList
+    ) {
+        notiService.sendNotis(requestList);
+        return ApiResponse.ok(null);
+    }
+
     @PostMapping
     public ApiResponse<Long> sendNoti(
             @Valid @PathVariable(name = "member_key") String memberKey,
@@ -40,7 +49,9 @@ public class NotiApiController {
     }
 
     @PostMapping
-    public String sendNotification(@RequestBody FCMNotificationDto request) {
+    public String sendNotification(
+            @PathVariable(name = "member_key") String memberKey,
+            @RequestBody FCMNotificationDto request) {
         return fcmNotificationService.sendNotification(request);
     }
     

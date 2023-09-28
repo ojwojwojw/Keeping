@@ -30,6 +30,7 @@ public class Noti extends TimeBaseEntity {
     private String content;
     
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Type type;
 
     @Builder
