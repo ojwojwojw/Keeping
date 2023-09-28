@@ -186,6 +186,7 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
             accountHistoryId: widget.accountHistoryId, 
             content: _content, 
             money: _money,
+            smallCategory: _category,
           );
           if (response == 0) {
             Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(
