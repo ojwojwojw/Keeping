@@ -32,7 +32,8 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
   @override
   void initState() {
     super.initState();
-    context.read<PiggyDetailProvider>().removePiggyDetail();
+    context.read<PiggyDetailProvider>().initSelectedPiggyDetailInfo();
+    context.read<PiggyDetailProvider>().setSelectedPiggyDetailInfo(widget.piggyDetailInfo);
     _parent = context.read<UserInfoProvider>().parent;
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
@@ -99,7 +100,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
       floatingActionButton: _parent != null && !_parent! ? FloatingBtn(
         text: '저금하기',
         icon: Icon(Icons.savings_rounded),
-        path: PiggySavingPage(),
+        path: PiggySavingPage(piggyDetailInfo: widget.piggyDetailInfo),
       ) : null,
       bottomNavigationBar: BottomNav(),
     );
