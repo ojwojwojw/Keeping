@@ -20,7 +20,7 @@ Future<dynamic> getAccountList({
   }
 }
 
-// 거래 상세 내용 입력
+// 거래 상세 내용 입력(한 개)
 Future<dynamic> createAccountDetail({
   required String? accessToken, required String? memberKey,
   required int? accountHistoryId, required String? content, required int? money
@@ -31,9 +31,11 @@ Future<dynamic> createAccountDetail({
         accessToken: accessToken,
         url: '/bank-service/api/$memberKey/account-detail',
         data: {
-          "accountHistoryId": accountHistoryId,
-          "content": content,
-          "money": money
+          "accountDetailList" : [{
+            "accountHistoryId": accountHistoryId,
+            "content": content,
+            "money": money
+          }]
         }
       );
       print('거래 상세 내용 입력 응답 $response');

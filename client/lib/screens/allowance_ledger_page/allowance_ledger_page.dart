@@ -74,7 +74,10 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                           storeName: record['storeName'], 
                           money: record['money'], 
                           balance: record['balance'], 
-                          detail: record['detailList']
+                          accountHistoryId: record['id'],
+                          detail: record['detailList'],
+                          type: record['type'],
+                          largeCategory: record['largeCategory'],
                         )
                       :
                         MoneyRecord(
