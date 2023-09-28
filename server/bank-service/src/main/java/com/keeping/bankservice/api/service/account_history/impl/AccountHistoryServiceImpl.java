@@ -175,7 +175,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
     }
 
     @Override
-    public Map<String, List<ShowAccountHistoryResponse>> showAccountDailyHistory(String memberKey, String targetKey, String accountNumber, String date) {
+    public Map<String, List<ShowAccountHistoryResponse>> showAccountDailyHistory(String memberKey, String targetKey, String accountNumber, String date, String type) {
         // TODO: 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
         // TODO: 계좌가 존재하는지 확인하고, 소유자를 확인하는 검사 필요
 
@@ -183,7 +183,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         LocalDateTime startDateTime = localDate.atStartOfDay();
         LocalDateTime endDateTime = localDate.atTime(LocalTime.MAX);
 
-        List<ShowAccountHistoryDto> result = accountHistoryQueryRepository.showAccountDailyHistories(targetKey, accountNumber, startDateTime, endDateTime);
+        List<ShowAccountHistoryDto> result = accountHistoryQueryRepository.showAccountDailyHistories(targetKey, accountNumber, startDateTime, endDateTime, type);
 
         Map<String, List<ShowAccountHistoryResponse>> response = new HashMap<>();
 

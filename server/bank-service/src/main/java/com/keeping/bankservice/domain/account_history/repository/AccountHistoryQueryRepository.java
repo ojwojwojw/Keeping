@@ -3,6 +3,7 @@ package com.keeping.bankservice.domain.account_history.repository;
 import com.keeping.bankservice.api.service.account_history.dto.ShowAccountHistoryDto;
 import com.keeping.bankservice.domain.account.Account;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +18,9 @@ public class AccountHistoryQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public AccountHistoryQueryRepository(EntityManager em) { this.queryFactory = new JPAQueryFactory(em); }
+    public AccountHistoryQueryRepository(EntityManager em) {
+        this.queryFactory = new JPAQueryFactory(em);
+    }
 
     public List<ShowAccountHistoryDto> showAccountHistories(String memberKey, String accountNumber) {
         List<ShowAccountHistoryDto> result = queryFactory
@@ -43,7 +46,7 @@ public class AccountHistoryQueryRepository {
         return result;
     }
 
-    public List<ShowAccountHistoryDto> showAccountDailyHistories(String memberKey, String accountNumber, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public List<ShowAccountHistoryDto> showAccountDailyHistories(String memberKey, String accountNumber, LocalDateTime startDateTime, LocalDateTime endDateTime, String type) {
         List<ShowAccountHistoryDto> result = queryFactory
                 .select(Projections.fields(ShowAccountHistoryDto.class,
                         accountHistory.id,
@@ -59,7 +62,7 @@ public class AccountHistoryQueryRepository {
                         accountHistory.latitude,
                         accountHistory.longitude))
                 .from(accountHistory)
-                .where(accountHistory.account.accountNumber.eq(accountNumber), accountHistory.account.memberKey.eq(memberKey), accountHistory.createdDate.between(startDateTime, endDateTime))
+                .where(accountHistory.account.accountNumber.eq(accountNumber), accountHistory.account.memberKey.eq(memberKey), whatType(type), accountHistory.createdDate.between(startDateTime, endDateTime))
                 .orderBy(accountHistory.createdDate.desc())
                 .fetch();
 
@@ -74,5 +77,15 @@ public class AccountHistoryQueryRepository {
                 .fetchOne();
 
         return result;
+    }
+
+    private BooleanExpression whatType(String type) {
+        if (type.equals("DEPOSIT")) {
+            return accountHistory.type.isTrue();
+        } else if (type.equals("WITHDRAW")) {
+            return accountHistory.type.isFalse();
+        }
+
+        return null;
     }
 }

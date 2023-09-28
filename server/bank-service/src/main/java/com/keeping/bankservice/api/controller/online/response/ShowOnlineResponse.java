@@ -1,5 +1,6 @@
 package com.keeping.bankservice.api.controller.online.response;
 
+import com.keeping.bankservice.domain.online.Online;
 import com.keeping.bankservice.global.common.Approve;
 import lombok.Builder;
 import lombok.Data;
@@ -33,5 +34,19 @@ public class ShowOnlineResponse {
         this.comment = comment;
         this.approve = approve;
         this.createdDate = createdDate;
+    }
+
+    public static ShowOnlineResponse toResponse(Online online) {
+        return ShowOnlineResponse.builder()
+                .id(online.getId())
+                .productName(online.getProductName())
+                .url(online.getUrl())
+                .content(online.getContent())
+                .totalMoney(online.getTotalMoney())
+                .childMoney(online.getChildMoney())
+                .comment(online.getComment())
+                .approve(online.getApprove())
+                .createdDate(online.getCreatedDate())
+                .build();
     }
 }

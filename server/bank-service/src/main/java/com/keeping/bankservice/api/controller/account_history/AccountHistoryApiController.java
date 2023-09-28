@@ -60,12 +60,12 @@ public class AccountHistoryApiController {
         }
     }
 
-    @GetMapping("/{target-key}/{account-number}/{date}")
-    public ApiResponse<Map<String, List<ShowAccountHistoryResponse>>> showAccountDailyHistory(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("account-number") String accountNumber, @PathVariable("date") String date) {
+    @GetMapping("/{target-key}/{account-number}/{date}/{history-type}")
+    public ApiResponse<Map<String, List<ShowAccountHistoryResponse>>> showAccountDailyHistory(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("account-number") String accountNumber, @PathVariable("date") String date, @PathVariable("history-type") String type) {
         log.debug("ShowAccountDailyHistory");
 
         try {
-            Map<String, List<ShowAccountHistoryResponse>> response = accountHistoryService.showAccountDailyHistory(memberKey, targetKey, accountNumber, date);
+            Map<String, List<ShowAccountHistoryResponse>> response = accountHistoryService.showAccountDailyHistory(memberKey, targetKey, accountNumber, date, type);
             return ApiResponse.ok(response);
         }
         catch(Exception e) {
