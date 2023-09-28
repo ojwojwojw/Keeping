@@ -53,16 +53,18 @@ Future<dynamic> createAccountDetail({
 
 // 날짜별로 거래 내역 반환
 Future<dynamic> getAccountListByDate({
-  required String? accessToken, required String? memberKey, required String? targetKey, required String? accountNumber, required String? date,
+  required String? accessToken, required String? memberKey, required String? targetKey,
+  required String? accountNumber, required String? date, String? historyType,
 }) async {
   if (accessToken != null && memberKey != null && accountNumber != null && date != null) {
     print("날짜별 거래 내역 $date");
     try {
       final response = await dioGet(
         accessToken: accessToken,
-        url: '/bank-service/api/$memberKey/account-history/$targetKey/$accountNumber/$date',
+        url: '/bank-service/api/$memberKey/account-history/$targetKey/$accountNumber/$date${historyType == null ? '' : '/$historyType'}',
       );
-      print('날짜별로 거래 내역 반환 응답 $response url: /bank-service/api/$memberKey/account-history/$targetKey/$accountNumber/$date');
+      print('날짜별로 거래 내역 반환 url ${'/bank-service/api/$memberKey/account-history/$targetKey/$accountNumber/$date${historyType == null ? '' : '/$historyType'}'}');
+      print('날짜별로 거래 내역 반환 응답 $response');
       return response;
     } catch (e) {
       print('날짜별로 거래 내역 반환 에러 $e');
