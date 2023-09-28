@@ -86,11 +86,12 @@ public class MissionServiceImpl implements MissionService {
             Mission savedMission = missionRepository.save(mission);
 
             // 자녀에게 알림 전송
-//            notiFeignClient.sendNoti(SendNotiRequest.builder()
-//                    .memberKey(dto.getTo())
-//                    .title("미션 도착!! 😆")
-//                    .body(dto.getTodo())
-//                    .build());
+            notiFeignClient.sendNoti(SendNotiRequest.builder()
+                    .memberKey(dto.getTo())
+                    .title("미션 도착!! 😆")
+                    .body(dto.getTodo())
+                    .type("MISSION")
+                    .build());
 
             return savedMission.getId();
         }
@@ -112,11 +113,12 @@ public class MissionServiceImpl implements MissionService {
             Mission savedMission = missionRepository.save(mission);
 
             //  부모에게 알림 전송
-//            notiFeignClient.sendNoti(SendNotiRequest.builder()
-//                    .memberKey(dto.getTo())
-//                    .title("🎁미션 요청이 도착했어요~! ")
-//                    .body(dto.getTodo())
-//                    .build());
+            notiFeignClient.sendNoti(SendNotiRequest.builder()
+                    .memberKey(dto.getTo())
+                    .title("🎁미션 요청이 도착했어요~! ")
+                    .body(dto.getTodo())
+                    .type("MISSION")
+                    .build());
 
             return savedMission.getId();
         } else {
@@ -137,7 +139,7 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
-    public Long addFinisehdComment(String memberKey, AddCommentDto dto) {
+    public Long addFinishedComment(String memberKey, AddCommentDto dto) {
         // 미션 있는지 id로 확인
         Mission mission = missionRepository.findMissionByIdAndChildKey(dto.getMissionId(), memberKey)
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));

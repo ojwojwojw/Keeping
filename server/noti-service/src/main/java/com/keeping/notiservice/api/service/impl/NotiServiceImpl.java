@@ -86,6 +86,6 @@ public class NotiServiceImpl implements NotiService {
 //
 //        log.debug("결과값 : ");
 //        log.debug(test);
-//        log.debug("[알람 전송 성공]");
+//        log.debug("[알람 전송 성공]");/**/
 //    }
 }
