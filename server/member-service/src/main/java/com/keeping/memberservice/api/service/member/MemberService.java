@@ -36,13 +36,26 @@ public class MemberService implements UserDetailsService {
     private final AuthService authService;
 
     /**
+     * fcm 토큰 받아오기
+     *
+     * @param memberKey
+     * @return
+     */
+    public String getFcmToken(String memberKey) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
+                new NoSuchElementException("잘못된 회원키입니다."));
+        return member.getFcmToken();
+    }
+
+    /**
      * 멤버 이름 받아오기
      *
      * @param memberKey
      * @return
      */
     public String getMamberName(String memberKey) {
-        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() -> new NoSuchElementException("잘못된 회원키입니다."));
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
+                new NoSuchElementException("잘못된 회원키입니다."));
         return member.getName();
     }
 

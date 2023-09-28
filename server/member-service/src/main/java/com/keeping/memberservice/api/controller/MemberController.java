@@ -33,6 +33,15 @@ public class MemberController {
     private final SmsService smsService;
     private final MemberService memberService;
 
+    @GetMapping("/{memberKey}/fcm-key")
+    public ApiResponse<String> getFcmToken(@PathVariable String memberKey) {
+        String fcm = memberService.getFcmToken(memberKey);
+        if (fcm == null) {
+            return ApiResponse.of(1, HttpStatus.NO_CONTENT, "토큰이 발급되지 않은 회원입니다.");
+        }
+        return ApiResponse.ok(fcm);
+    }
+
     @GetMapping("/{member_key}/children")
     public ApiResponse<List<ChildKeyResponse>> getChildList(@PathVariable String member_key) {
         List<ChildKeyResponse> list = memberService.getChildKeyList(member_key);
