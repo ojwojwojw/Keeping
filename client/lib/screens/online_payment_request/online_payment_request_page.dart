@@ -12,70 +12,70 @@ import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
 
-final _tempData = {
-  "online": [
-    {
-      "id": 1,
-      "name": "가방",
-      "url": "http://localhost:8080",
-      "reason": "이 가방이 너무 예뻐요",
-      "cost": 5000,
-      "paidMoney": 2000,
-      "status": "YET",
-      "createdDate": "2020-10-10T14:58:04+09:00"
-    },
-    {
-      "id": 2,
-      "name": "신발",
-      "url": "http://localhost:8080",
-      "reason": "이 신발이 너무 멋져요",
-      "cost": 5000,
-      "paidMoney": 2000,
-      "status": "ACCEPT",
-      "createdDate": "2020-10-10T14:58:04+09:00"
-    },
-    {
-      "id": 3,
-      "name": "모자",
-      "url": "http://localhost:8080",
-      "reason": "이 모자가 너무 짱이에요",
-      "cost": 5000,
-      "paidMoney": 2000,
-      "status": "REJECT",
-      "createdDate": "2020-10-10T14:58:04+09:00"
-    },
-    {
-      "id": 4,
-      "name": "가방",
-      "url": "http://localhost:8080",
-      "reason": "이 가방이 너무 예뻐요",
-      "cost": 5000,
-      "paidMoney": 2000,
-      "status": "YET",
-      "createdDate": "2020-10-10T14:58:04+09:00"
-    },
-    {
-      "id": 5,
-      "name": "신발",
-      "url": "http://localhost:8080",
-      "reason": "이 신발이 너무 멋져요",
-      "cost": 5000,
-      "paidMoney": 2000,
-      "status": "ACCEPT",
-      "createdDate": "2020-10-10T14:58:04+09:00"
-    },
-    {
-      "id": 6,
-      "name": "모자",
-      "url": "http://localhost:8080",
-      "reason": "이 모자가 너무 짱이에요",
-      "cost": 5000,
-      "paidMoney": 2000,
-      "status": "REJECT",
-      "createdDate": "2020-10-10T14:58:04+09:00"
-    },
-  ]
-};
+// final _tempData = {
+//   "online": [
+//     {
+//       "id": 1,
+//       "name": "가방",
+//       "url": "http://localhost:8080",
+//       "reason": "이 가방이 너무 예뻐요",
+//       "cost": 5000,
+//       "paidMoney": 2000,
+//       "status": "YET",
+//       "createdDate": "2020-10-10T14:58:04+09:00"
+//     },
+//     {
+//       "id": 2,
+//       "name": "신발",
+//       "url": "http://localhost:8080",
+//       "reason": "이 신발이 너무 멋져요",
+//       "cost": 5000,
+//       "paidMoney": 2000,
+//       "status": "ACCEPT",
+//       "createdDate": "2020-10-10T14:58:04+09:00"
+//     },
+//     {
+//       "id": 3,
+//       "name": "모자",
+//       "url": "http://localhost:8080",
+//       "reason": "이 모자가 너무 짱이에요",
+//       "cost": 5000,
+//       "paidMoney": 2000,
+//       "status": "REJECT",
+//       "createdDate": "2020-10-10T14:58:04+09:00"
+//     },
+//     {
+//       "id": 4,
+//       "name": "가방",
+//       "url": "http://localhost:8080",
+//       "reason": "이 가방이 너무 예뻐요",
+//       "cost": 5000,
+//       "paidMoney": 2000,
+//       "status": "YET",
+//       "createdDate": "2020-10-10T14:58:04+09:00"
+//     },
+//     {
+//       "id": 5,
+//       "name": "신발",
+//       "url": "http://localhost:8080",
+//       "reason": "이 신발이 너무 멋져요",
+//       "cost": 5000,
+//       "paidMoney": 2000,
+//       "status": "ACCEPT",
+//       "createdDate": "2020-10-10T14:58:04+09:00"
+//     },
+//     {
+//       "id": 6,
+//       "name": "모자",
+//       "url": "http://localhost:8080",
+//       "reason": "이 모자가 너무 짱이에요",
+//       "cost": 5000,
+//       "paidMoney": 2000,
+//       "status": "REJECT",
+//       "createdDate": "2020-10-10T14:58:04+09:00"
+//     },
+//   ]
+// };
 
 class OnlinePaymentRequestPage extends StatefulWidget {
   OnlinePaymentRequestPage({
@@ -92,12 +92,9 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
   String? _memberKey;
   String? _childKey;
 
-  List<Map<String, dynamic>> _response = [];
-
   @override
   void initState() {
     super.initState();
-    _response = _tempData['online'] ?? [];
     _parent = context.read<UserInfoProvider>().parent;
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
@@ -122,6 +119,10 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
             builder: (context, snapshot) {
               print('스냅샷스냅샷스냅샷 ${snapshot.toString()}');
               if (snapshot.hasData) {
+                var response = snapshot.data;
+                if (response['resultBody'].isEmpty) {
+                  return Text('거래내역이 없습니다.');
+                }
                 return Expanded(
                   child: Container(
                     decoration: lightGreyBgStyle(),
@@ -129,19 +130,18 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          ..._response.map((e) => 
+                          ...response['resultBody'].map((e) => 
                             ColorInfoCard(
-                              name: e['name'],
+                              name: e['productName'],
                               url: e['url'],
-                              reason: e['reason'],
-                              cost: e['cost'],
-                              paidMoney: e['paidMoney'],
-                              status: e['status'],
+                              reason: e['content'],
+                              cost: e['totalMoney'],
+                              paidMoney: e['childMoney'],
+                              status: e['approve'],
                               createdDate: DateTime.parse(e['createdDate']),
                               path: OnlinePaymentRequestDetailPage(onlineId: e['id']),
                             )                    
                           ),
-                          // ColorInfoCard(path: OnlinePaymentRequestDetailPage()),
                         ],
                       )
                     )
