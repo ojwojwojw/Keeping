@@ -76,13 +76,12 @@ class _PiggyPageState extends State<PiggyPage> {
           print('저금통 페이지 ${snapshot.toString()}');
           if (snapshot.hasData) {
             var response = snapshot.data;
-            if (response['resultBody'].isEmpty) {
+            if (response['resultBody'] != null && response['resultBody'].isEmpty) {
               return Text('거래내역이 없습니다.');
             }
             return Column(
               children: [
                 PiggyInfo(),
-                // PiggyFilters(),
                 Expanded(
                   child: Container(
                     decoration: lightGreyBgStyle(),
@@ -95,13 +94,16 @@ class _PiggyPageState extends State<PiggyPage> {
                           ),
                           ...response['resultBody'].map((e) => InkWell(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => PiggyDetailPage(piggyId: e['id'])));
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(builder: (context) => PiggyDetailPage(piggyDetailInfo: e))
+                              );
                             },
                             child: PiggyInfoCard(
                               content: e['content'],
                               balance: e['balance'],
                               goalMoney: e['goalMoney'],
-                              img: Base64Decoder().convert(e['savedImage']),
+                              img: e['savedImage'],
                             )
                           )).toList()
                         ]

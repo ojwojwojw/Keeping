@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:keeping/provider/piggy_provider.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_detail_chart.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/child_tag.dart';
-import 'package:provider/provider.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class PiggyDetailInfo extends StatefulWidget {
   final bool? parent;
+  final String content;
+  final int balance;
+  final int goalMoney;
+  final String img;
+  final DateTime createdDate;
 
   PiggyDetailInfo({
     super.key,
     required this.parent,
+    required this.content,
+    required this.balance,
+    required this.goalMoney,
+    required this.img,
+    required this.createdDate,
   });
 
   @override
@@ -40,21 +48,21 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      roundedAssetImg(imgPath: 'assets/image/temp_image.jpg', size: 120),
+                      roundedMemoryImg(img: widget.img),
                       Column(
                         children: [
                           SizedBox(
                             width: 200,
-                            child: Flexible(
+                            child: Center(
                               child: TextScroll(
-                                context.watch<PiggyDetailProvider>().content!,
-                                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                                widget.content,
+                                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white,),
                                 intervalSpaces: 10,
                                 velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
                               ),
-                            ),
+                            )
                           ),
-                          Text(formattedMoney(context.watch<PiggyDetailProvider>().balance), style: TextStyle(fontSize: 40, color: Colors.white),),
+                          Text(formattedMoney(widget.balance), style: TextStyle(fontSize: 40, color: Colors.white),),
                         ],
                       )
                     ],
@@ -62,7 +70,7 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
                 ],
               ),
             ),
-            PiggyDetailChart(balance: 50, goalMoney: 100, createdDate: DateTime.parse('2020-10-10T14:58:04+09:00'),)
+            PiggyDetailChart(balance: widget.balance, goalMoney: widget.goalMoney, createdDate: widget.createdDate,)
           ],
         ),
       ),

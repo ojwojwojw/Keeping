@@ -5,6 +5,7 @@ import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart'
 import 'package:keeping/screens/piggy_page/piggy_saving_page.dart';
 import 'package:keeping/screens/piggy_page/utils/piggy_future_methods.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_detail_info.dart';
+import 'package:keeping/screens/piggy_page/widgets/piggy_money_record.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
@@ -12,11 +13,11 @@ import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
 
 class PiggyDetailPage extends StatefulWidget {
-  final int piggyId;
+  final Map<String, dynamic> piggyDetailInfo;
 
   PiggyDetailPage({
     super.key,
-    required this.piggyId,
+    required this.piggyDetailInfo,
   });
 
   @override
@@ -28,51 +29,13 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
   String? _accessToken;
   String? _memberKey;
 
-  dynamic piggyResponse;
-  Map<String, dynamic>? _response;
-
   @override
   void initState() {
     super.initState();
     context.read<PiggyDetailProvider>().removePiggyDetail();
-    initPiggyDetail();
     _parent = context.read<UserInfoProvider>().parent;
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
-  }
-
-  initPiggyDetail() async {
-    _response = {
-      "piggy": {
-        "id": 3,
-        "piggyAccountNumber": "1",
-        "content": "아디다스 삼바 살거야",
-        "goalMoney": 140000,
-        "balance": 70000,
-        "uploadImage": "produce1.png",
-      },
-      "saving": [
-        {
-          "id": 13,
-          "name": "1회차",
-          "money": 3000,
-          "balance": 3000,
-          "createdDate": "2023-09-01 12:23"
-        },
-        {
-          "id": 35,
-          "name": "2회차",
-          "money": 5500,
-          "balance": 8500,
-          "createdDate": "2023-09-02 18:45"
-        }
-      ]
-    };
-    await context
-        .read<PiggyDetailProvider>()
-        .initPiggyDetail(_response!['piggy']);
-    if (!mounted) return;
-    await context.read<PiggyProvider>().initPiggy(_response!['saving']);
   }
 
   @override
@@ -85,58 +48,50 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
       ),
       body: Column(
         children: [
-          PiggyDetailInfo(parent: _parent),
+          PiggyDetailInfo(
+            parent: _parent,
+            content: widget.piggyDetailInfo['content'],
+            balance: widget.piggyDetailInfo['balance'],
+            goalMoney: widget.piggyDetailInfo['goalMoney'],
+            img: widget.piggyDetailInfo['savedImage'],
+            createdDate: DateTime.parse(widget.piggyDetailInfo['createdDate']),
+          ),
           FutureBuilder(
-            future: _accessToken != null && _memberKey != null
-                ? getPiggyDetailList(
-                    accessToken: 'accessToken',
-                    memberKey: 'memberKey',
-                    piggyId: widget.piggyId,
-                    targetKey: _parent != null && _parent == true ? null : _memberKey,
-                  )
-                : null,
+            future: getPiggyDetailList(
+              accessToken: _accessToken,
+              memberKey: _memberKey,
+              piggyId: widget.piggyDetailInfo['id'],
+              targetKey: _parent != null && _parent == true ? null : _memberKey,
+            ),
             builder: (context, snapshot) {
-              // if (snapshot.connectionState == ConnectionState.waiting) {
-              //   return const Text('로딩중');
-              // } else if (snapshot.connectionState == ConnectionState.done) {
-              //   if (snapshot.hasError) {
-              //     return const Text('에러');
-              //   } else if (snapshot.hasData) {
-              // List<Post> _posts = snapshot.data as List<Post>; 이런 식으로 정의하기
-              // return Column(
-              //   children: [
-              return Expanded(
+              print('저금통 상세 페이지 ${snapshot.toString()}');
+              if (snapshot.hasData) {
+                var response = snapshot.data;
+                if (response['resultBody'] != null && response['resultBody'].isEmpty) {
+                  return Text('저금 내역이 없습니다.');
+                }
+                return Expanded(
                   child: Container(
-                      decoration: lightGreyBgStyle(),
-                      width: double.infinity,
-                      child: SingleChildScrollView(
-                        child: Column(children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          ..._response!['saving']!
-                              .map((e) => MoneyRecord(
-                                    date: DateTime.parse(e['createdDate']),
-                                    storeName: e['name'],
-                                    money: e['money'],
-                                    balance: e['balance'],
-                                    accountHistoryId: e['id'],
-                                    onlyTime: false,
-                                    type: true,
-                                    largeCategory: e['largeCategory'],
-                                  ))
-                              .toList(),
-                        ]),
-                      ))
-                  //   )
-                  // ],
-                  );
-              //   } else {
-              //     return const Text('스냅샷 데이터 없음');
-              //   }
-              // } else {
-              //   return Text('퓨처 객체 null');
-              // }
+                    decoration: lightGreyBgStyle(),
+                    width: double.infinity,
+                    child: SingleChildScrollView(
+                      child: Column(children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        ...response['resultBody'].map((e) => PiggyMoneyRecord(
+                          date: DateTime.parse(e['createdDate']),
+                          name: '${int.parse(e['name'])}회차',
+                          money: e['money'],
+                          balance: e['balance'],
+                        )).toList(),
+                      ]),
+                    )
+                  )
+                );
+              } else {
+                return Text('로딩중');
+              }
             },
           ),
         ],
