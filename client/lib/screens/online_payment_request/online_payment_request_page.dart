@@ -116,49 +116,40 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
           OnlinePaymentRequestInfo(),
           OnlinePaymentRequestFilters(),
           FutureBuilder(
-            future: _accessToken == null && _memberKey == null ? null :
-              _parent != null && _parent! ? 
-              getOnlinePaymentRequestListForParent(accessToken: _accessToken!, memberKey: _memberKey!, childKey: _childKey!)
-              : getOnlinePaymentRequestListForChild(accessToken: _accessToken!, memberKey: _memberKey!),
+            future: _parent != null && _parent! ? 
+              getOnlinePaymentRequestList(accessToken: _accessToken, memberKey: _memberKey, targetKey: _childKey)
+              : getOnlinePaymentRequestList(accessToken: _accessToken, memberKey: _memberKey, targetKey: _memberKey),
             builder: (context, snapshot) {
               print('스냅샷스냅샷스냅샷 ${snapshot.toString()}');
-              // if (snapshot.connectionState == ConnectionState.waiting) {
-              //   return const Text('로딩중');
-              // } else if (snapshot.connectionState == ConnectionState.done) {
-              //   if (snapshot.hasError) {
-              //     return const Text('스냅샷에 에러 발생');
-              //   } else if (snapshot.hasData) {
-                  return Expanded(
-                    child: Container(
-                      decoration: lightGreyBgStyle(),
-                      width: double.infinity,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            ..._response.map((e) => 
-                              ColorInfoCard(
-                                name: e['name'],
-                                url: e['url'],
-                                reason: e['reason'],
-                                cost: e['cost'],
-                                paidMoney: e['paidMoney'],
-                                status: e['status'],
-                                createdDate: DateTime.parse(e['createdDate']),
-                                path: OnlinePaymentRequestDetailPage(onlineId: e['id']),
-                              )                    
-                            ),
-                            // ColorInfoCard(path: OnlinePaymentRequestDetailPage()),
-                          ],
-                        )
+              if (snapshot.hasData) {
+                return Expanded(
+                  child: Container(
+                    decoration: lightGreyBgStyle(),
+                    width: double.infinity,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ..._response.map((e) => 
+                            ColorInfoCard(
+                              name: e['name'],
+                              url: e['url'],
+                              reason: e['reason'],
+                              cost: e['cost'],
+                              paidMoney: e['paidMoney'],
+                              status: e['status'],
+                              createdDate: DateTime.parse(e['createdDate']),
+                              path: OnlinePaymentRequestDetailPage(onlineId: e['id']),
+                            )                    
+                          ),
+                          // ColorInfoCard(path: OnlinePaymentRequestDetailPage()),
+                        ],
                       )
                     )
-                  );
-              //   } else {
-              //     return const Text('스냅샷 데이터 없음');
-              //   }
-              // } else {
-              //   return Text('퓨처 객체 null');
-              // }
+                  )
+                );
+              } else {
+                return Text('로딩중');
+              }
             },
           ),
         ],

@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeping/util/dio_method.dart';
 
 // 계좌의 상세 내역 포함한 거래 내역 조회

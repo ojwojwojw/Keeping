@@ -75,7 +75,7 @@ Future<dynamic> createOnlinePaymentRequest({
         }
       );
       print('자녀 온라인 결제 요구 응답 $response');
-      return response;
+      return response['resultStatus']['successCode'];
     } catch (e) {
       print('자녀 온라인 결제 요구 에러 $e');
     }
