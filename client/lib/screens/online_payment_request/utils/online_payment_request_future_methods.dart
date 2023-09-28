@@ -21,7 +21,7 @@ Future<dynamic> getOnlinePaymentRequestList({
 }
 
 // 필터링된 온라인 결제 전체조회
-Future<dynamic> getFilteredOnlinePaymentRequestListForChild({
+Future<dynamic> getFilteredOnlinePaymentRequestList({
   required String? accessToken, required String? memberKey, required String? targetKey, required String? status
 }) async {
   if (accessToken != null && memberKey != null && targetKey != null && status != null) {

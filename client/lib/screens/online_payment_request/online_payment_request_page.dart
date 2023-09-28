@@ -12,71 +12,6 @@ import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
 
-// final _tempData = {
-//   "online": [
-//     {
-//       "id": 1,
-//       "name": "가방",
-//       "url": "http://localhost:8080",
-//       "reason": "이 가방이 너무 예뻐요",
-//       "cost": 5000,
-//       "paidMoney": 2000,
-//       "status": "YET",
-//       "createdDate": "2020-10-10T14:58:04+09:00"
-//     },
-//     {
-//       "id": 2,
-//       "name": "신발",
-//       "url": "http://localhost:8080",
-//       "reason": "이 신발이 너무 멋져요",
-//       "cost": 5000,
-//       "paidMoney": 2000,
-//       "status": "ACCEPT",
-//       "createdDate": "2020-10-10T14:58:04+09:00"
-//     },
-//     {
-//       "id": 3,
-//       "name": "모자",
-//       "url": "http://localhost:8080",
-//       "reason": "이 모자가 너무 짱이에요",
-//       "cost": 5000,
-//       "paidMoney": 2000,
-//       "status": "REJECT",
-//       "createdDate": "2020-10-10T14:58:04+09:00"
-//     },
-//     {
-//       "id": 4,
-//       "name": "가방",
-//       "url": "http://localhost:8080",
-//       "reason": "이 가방이 너무 예뻐요",
-//       "cost": 5000,
-//       "paidMoney": 2000,
-//       "status": "YET",
-//       "createdDate": "2020-10-10T14:58:04+09:00"
-//     },
-//     {
-//       "id": 5,
-//       "name": "신발",
-//       "url": "http://localhost:8080",
-//       "reason": "이 신발이 너무 멋져요",
-//       "cost": 5000,
-//       "paidMoney": 2000,
-//       "status": "ACCEPT",
-//       "createdDate": "2020-10-10T14:58:04+09:00"
-//     },
-//     {
-//       "id": 6,
-//       "name": "모자",
-//       "url": "http://localhost:8080",
-//       "reason": "이 모자가 너무 짱이에요",
-//       "cost": 5000,
-//       "paidMoney": 2000,
-//       "status": "REJECT",
-//       "createdDate": "2020-10-10T14:58:04+09:00"
-//     },
-//   ]
-// };
-
 class OnlinePaymentRequestPage extends StatefulWidget {
   OnlinePaymentRequestPage({
     super.key,
@@ -91,6 +26,19 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
   String? _accessToken;
   String? _memberKey;
   String? _childKey;
+  Future<dynamic>? _future;
+
+  void setFuture(String? status) {
+    if (status == null) {
+      setState(() {
+        _future = getOnlinePaymentRequestList(accessToken: _accessToken, memberKey: _memberKey, targetKey: _parent != null && _parent! ? _childKey : _memberKey);
+      });
+    } else {
+      setState(() {
+        _future = getFilteredOnlinePaymentRequestList(accessToken: _accessToken, memberKey: _memberKey, targetKey: _parent != null && _parent! ? _childKey : _memberKey, status: status);
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -98,6 +46,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
     _parent = context.read<UserInfoProvider>().parent;
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
+    _future = getOnlinePaymentRequestList(accessToken: _accessToken, memberKey: _memberKey, targetKey: _parent != null && _parent! ? _childKey : _memberKey);
   }
 
   @override
@@ -111,17 +60,16 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
       body: Column(
         children: [
           OnlinePaymentRequestInfo(),
-          OnlinePaymentRequestFilters(),
+          OnlinePaymentRequestFilters(setFuture: setFuture),
           FutureBuilder(
-            future: _parent != null && _parent! ? 
-              getOnlinePaymentRequestList(accessToken: _accessToken, memberKey: _memberKey, targetKey: _childKey)
-              : getOnlinePaymentRequestList(accessToken: _accessToken, memberKey: _memberKey, targetKey: _memberKey),
+            // future: getOnlinePaymentRequestList(accessToken: _accessToken, memberKey: _memberKey, targetKey: _parent != null && _parent! ? _childKey : _memberKey),
+            future: _future,
             builder: (context, snapshot) {
               print('스냅샷스냅샷스냅샷 ${snapshot.toString()}');
               if (snapshot.hasData) {
                 var response = snapshot.data;
                 if (response['resultBody'].isEmpty) {
-                  return Text('거래내역이 없습니다.');
+                  return Text('부탁내역이 없습니다.');
                 }
                 return Expanded(
                   child: Container(
