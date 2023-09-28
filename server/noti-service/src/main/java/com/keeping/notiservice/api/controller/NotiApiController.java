@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/noti-service/api")
+@RequestMapping("/noti-service/api/{member_key}")
 @RequiredArgsConstructor
 public class NotiApiController {
     
@@ -23,13 +23,14 @@ public class NotiApiController {
 
     @PostMapping("/question-send")
     public ApiResponse<Void> sendQuestionNoti(
+            @PathVariable(name = "member_key") String memberKey,
             @RequestBody QuestionNotiRequestList requestList
     ) {
         notiService.sendNotis(requestList);
         return ApiResponse.ok(null);
     }
     
-    @GetMapping("/{member_key}")
+    @GetMapping
     public ApiResponse<List<NotiResponse>> showNoti(
             @Valid @PathVariable(name = "member_key") String memberKey
     ) {
@@ -38,7 +39,9 @@ public class NotiApiController {
     }
 
     @PostMapping
-    public String sendNotification(@RequestBody FCMNotificationDto request) {
+    public String sendNotification(
+            @PathVariable(name = "member_key") String memberKey,
+            @RequestBody FCMNotificationDto request) {
         return fcmNotificationService.sendNotification(request);
     }
     
