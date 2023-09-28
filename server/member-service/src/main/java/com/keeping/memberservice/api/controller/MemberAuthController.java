@@ -28,6 +28,7 @@ public class MemberAuthController {
     public ApiResponse<LinkResultResponse> link(@PathVariable String memberKey,
                                                 @PathVariable String type,
                                                 @PathVariable String linkcode) {
+        log.debug("[연결]");
         LinkResultDto result = authService.link(linkcode, memberKey, type);
         if (!result.isSuccess()) {
             return ApiResponse.of(1, HttpStatus.BAD_REQUEST, result.getFailMessage());
@@ -39,11 +40,16 @@ public class MemberAuthController {
 
     @GetMapping("/link/{linkCode}")
     public ApiResponse<String> whoLinkMe(@PathVariable String memberKey, @PathVariable String linkCode) {
+        if (authService.doILink(memberKey)) {
+            return ApiResponse.of(1, HttpStatus.BAD_REQUEST, "상대방의 연결을 대기중입니다.");
+        }
         String partnerMemberKey = authService.whoLinkMe(memberKey, linkCode);
+        log.debug("[누가 나를 링크했는가] 나 = {}, 상대 = {}", memberKey, partnerMemberKey);
         if (partnerMemberKey == null) {
             return ApiResponse.of(1, HttpStatus.NOT_FOUND, "나를 등록한 회원이 없습니다.");
         }
         String partnerName = memberService.getMamberName(partnerMemberKey);
+        log.debug("[누가 나를 링크했는가] 누구의 이름 = {}", partnerName);
         return ApiResponse.ok(partnerName);
     }
 

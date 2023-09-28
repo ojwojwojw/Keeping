@@ -24,6 +24,17 @@ public class AuthService {
     private static final long ONE_DAY = 86400;
     private static final String VERIFIED_NUMBER = "verified_number_";
     private static final String WFC = "WAITING_FOR_CONNECTION_";
+    private static final String IL = "I_LINK_";
+
+    /**
+     * 내가 링크했는지 확인
+     *
+     * @param memberKey
+     * @return
+     */
+    public boolean doILink(String memberKey) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(IL + memberKey));
+    }
 
     /**
      * 누가 나를 링크했나
@@ -48,9 +59,10 @@ public class AuthService {
     public LinkResultDto link(String yourLinkCode, String myMemberKey, String myType) {
         // 인증번호 유효한지 확인
         String yourType = myType.equals("parent") ? "child" : "parent";
+        log.debug("[연결] 나 = {}, 너 = {}", myType, yourType);
         String yourKeyWithCode = createLinkCodeKey(yourType, yourLinkCode);
         if (Boolean.FALSE.equals(redisTemplate.hasKey(yourKeyWithCode))) {
-
+            log.debug("[연결] 너의 연결코드 = {} 없음", yourLinkCode);
             return LinkResultDto.builder()
                     .success(false)
                     .failMessage("일치하는 인증번호가 없습니다.")
@@ -60,6 +72,7 @@ public class AuthService {
         // 상대 연결 코드가 사용 가능한지 확인
         String yourOpponentMemberKey = redisTemplate.opsForValue().get(WFC + yourLinkCode);
         if (yourOpponentMemberKey != null && !yourOpponentMemberKey.equals(myMemberKey)) {
+            log.debug("[연결] 상대방이 다른사람 = {} 과 연결 시도중, 나는 = {}", yourOpponentMemberKey, myMemberKey);
             return LinkResultDto.builder()
                     .success(false)
                     .failMessage("상대방이 다른 사람과 연결을 시도 중 입니다.")
@@ -75,9 +88,11 @@ public class AuthService {
         }
 
         if (Boolean.TRUE.equals(redisTemplate.hasKey(linkKey))) {
+            log.debug("[연결] 상대가 먼저 연결했음");
             deleteLinkCodeKey(myMemberKey, myType);
             deleteLinkCodeKey(yourMemberKey, yourType);
             redisTemplate.delete(linkKey);
+            redisTemplate.delete(IL + yourMemberKey);
 
             return LinkResultDto.builder()
                     .success(true)
@@ -92,6 +107,7 @@ public class AuthService {
             String myCode = redisTemplate.opsForValue().get(createLinkCodeKey(myType, myMemberKey));
             redisStringInsert(WFC + myCode, yourMemberKey, ONE_DAY);
             redisStringInsert(WFC + yourLinkCode, myMemberKey, ONE_DAY);
+            redisStringInsert(IL + myMemberKey, "ok", ONE_DAY);
             redisTemplate.expire(key, ONE_DAY, TimeUnit.SECONDS);
 
             return LinkResultDto.builder()
