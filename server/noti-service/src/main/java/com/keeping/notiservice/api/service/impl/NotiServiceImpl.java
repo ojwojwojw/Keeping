@@ -15,12 +15,18 @@ import com.keeping.notiservice.domain.noti.Noti;
 import com.keeping.notiservice.domain.noti.repository.NotiQueryRepository;
 import com.keeping.notiservice.domain.noti.repository.NotiRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NotiServiceImpl implements NotiService {
     
     private MemberFeignClient memberFeignClient;
@@ -65,4 +71,21 @@ public class NotiServiceImpl implements NotiService {
     public List<NotiResponse> showNoti(String memberKey) {
         return notiQueryRepository.findByMemberKey(memberKey);
     }
+
+//    @Scheduled(cron = "0 0/2 * * * ?")
+//    private void sendNotiTest() {
+//        LocalTime localTime = LocalTime.now(ZoneId.of("Asia/Seoul"));
+//        String time = localTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+//        log.debug("[알람 전송] 현재시간 : " + time);
+//
+//        String test = fcmNotificationService.sendNotification(FCMNotificationDto.builder()
+//                .memberKey("test")
+//                .title("테스트 알람이 도착했어요~!~💸")
+//                .body("현재 시간은 " + time + "입니다.😆")
+//                .build());
+//
+//        log.debug("결과값 : ");
+//        log.debug(test);
+//        log.debug("[알람 전송 성공]");
+//    }
 }

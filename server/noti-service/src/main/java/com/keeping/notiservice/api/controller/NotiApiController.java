@@ -47,12 +47,5 @@ public class NotiApiController {
         List<NotiResponse> notiResponses = notiService.showNoti(memberKey);
         return ApiResponse.ok(notiResponses);
     }
-
-    @PostMapping
-    public String sendNotification(
-            @PathVariable(name = "member_key") String memberKey,
-            @RequestBody FCMNotificationDto request) {
-        return fcmNotificationService.sendNotification(request);
-    }
     
 }
