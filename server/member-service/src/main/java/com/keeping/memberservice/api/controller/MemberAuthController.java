@@ -7,13 +7,13 @@ import com.keeping.memberservice.api.controller.request.UpdateLoginPwRequest;
 import com.keeping.memberservice.api.controller.response.*;
 import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.MemberService;
+import com.keeping.memberservice.api.service.member.dto.LinkResultDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -25,12 +25,24 @@ public class MemberAuthController {
     private final MemberService memberService;
     private final AuthService authService;
 
-    @PostMapping("/{type}/link")
+    @PostMapping("/{type}/link/{linkcode}")
     public ApiResponse<LinkResultResponse> link(@PathVariable String memberKey,
                                                 @PathVariable String type,
-                                                @RequestBody @Valid @NotBlank String linkcode) {
+                                                @PathVariable String linkcode) {
         // TODO: 2023-09-14 연결
-        return ApiResponse.ok(LinkResultResponse.builder().build());
+        LinkResultDto result = authService.link(linkcode, memberKey, type);
+        if (!result.isSuccess()) {
+            return ApiResponse.of(1, HttpStatus.BAD_REQUEST, result.getFailMessage());
+        }
+
+        LinkResultResponse response = memberService.linkMember(memberKey, result.getPartner(), result.getRelation());
+        return ApiResponse.ok(response);
+    }
+
+    @GetMapping("/link")
+    public ApiResponse<String> whoLinkMe(@PathVariable String memberKey) {
+        // TODO: 2023-09-26 해야함
+        return ApiResponse.ok("김부모");
     }
 
     @GetMapping("/{type}/linkcode")
@@ -102,8 +114,9 @@ public class MemberAuthController {
         return ApiResponse.ok("");
     }
 
-    @GetMapping("/login-check")
-    public ApiResponse<LoginMember> getLoginMember(@PathVariable String memberKey) {
+    @GetMapping("/login-check/{fcmToken}")
+    public ApiResponse<LoginMember> getLoginMember(@PathVariable String memberKey, @PathVariable String fcmToken) {
+        memberService.setFcmToken(memberKey,fcmToken);
         LoginMember loginUser = memberService.getLoginUser(memberKey);
         return ApiResponse.ok(loginUser);
     }
