@@ -113,6 +113,7 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
   bool? _parent;
   String? _accessToken;
   String? _memberKey;
+  String? _childKey;
   String? _accountNumber;
   String _date = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
@@ -183,7 +184,8 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
           body: FutureBuilder(
             future: getAccountListByDate(
               accessToken: _accessToken, 
-              memberKey: _memberKey, 
+              memberKey: _memberKey,
+              targetKey: _parent != null && _parent! ? _childKey : _memberKey,
               accountNumber: _accountNumber, 
               date: _date,
             ),
@@ -204,6 +206,7 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                     ]
                   );
                 }
+                print('소비지도 응답값 첫번째 ${response['resultBody'].values.first[0]}');
                 return Stack(
                   alignment: Alignment.topCenter,
                   children: [
@@ -211,7 +214,7 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                       onMapCreated: ((controller) async {
                         mapController = controller;
                       }),
-                      center: LatLng(response['resultBody'][_date].first['latitude'] as double, response['resultBody'][_date].first['longitude'] as double),
+                      center: LatLng(response['resultBody'].values.first[0]['latitude'] as double, response['resultBody'].values.first[0]['longitude'] as double),
                       // markers: markers.toList(),
                       markers: [
                               response['resultBody'][_date].map(
