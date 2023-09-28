@@ -53,17 +53,17 @@ class MainPage extends StatelessWidget {
             },
             child: const Text('로그인'), // 로그인 페이지 이동 버튼 추가
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const BeforeUserLinkPage(),
-                ),
-              );
-            },
-            child: const Text('유저 연결 페이지'),
-          ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => const BeforeUserLinkPage(),
+          //       ),
+          //     );
+          //   },
+          //   child: const Text('유저 연결 페이지'),
+          // ),
           ElevatedButton(
             onPressed: () {
               Navigator.push(
