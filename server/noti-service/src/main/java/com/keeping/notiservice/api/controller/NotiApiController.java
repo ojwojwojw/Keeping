@@ -8,6 +8,7 @@ import com.keeping.notiservice.api.service.NotiService;
 import com.keeping.notiservice.api.service.dto.FCMNotificationDto;
 import com.keeping.notiservice.api.service.FCMNotificationService;
 import com.keeping.notiservice.api.service.dto.SendNotiDto;
+import com.keeping.notiservice.domain.noti.Type;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +46,15 @@ public class NotiApiController {
             @Valid @PathVariable(name = "member_key") String memberKey
     ) {
         List<NotiResponse> notiResponses = notiService.showNoti(memberKey);
+        return ApiResponse.ok(notiResponses);
+    }
+
+    @GetMapping("/{type}}")
+    public ApiResponse<List<NotiResponse>> showNotiByType(
+            @PathVariable(name = "member_key") String memberKey,
+            @PathVariable(name = "type") String  type
+            ) {
+        List<NotiResponse> notiResponses = notiService.showNotiByType(memberKey, type);
         return ApiResponse.ok(notiResponses);
     }
     

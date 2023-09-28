@@ -25,7 +25,9 @@ public class MissionResponse {
 
     private String cheeringMessage;
 
-    private String childComment;
+    private String childRequestComment;
+
+    private String finishedComment;
 
     private LocalDate startDate;
 
@@ -36,14 +38,15 @@ public class MissionResponse {
     private LocalDateTime createdDate;
 
     @Builder
-    public MissionResponse(String childKey, Long id, MissionType type, String todo, int money, String cheeringMessage, String childComment, LocalDate startDate, LocalDate endDate, Completed completed, LocalDateTime createdDate) {
+    public MissionResponse(String childKey, Long id, MissionType type, String todo, int money, String cheeringMessage, String childRequestComment, String finishedComment, LocalDate startDate, LocalDate endDate, Completed completed, LocalDateTime createdDate) {
         this.childKey = childKey;
         this.id = id;
         this.type = type;
         this.todo = todo;
         this.money = money;
         this.cheeringMessage = cheeringMessage;
-        this.childComment = childComment;
+        this.childRequestComment = childRequestComment;
+        this.finishedComment = finishedComment;
         this.startDate = startDate;
         this.endDate = endDate;
         this.completed = completed;

@@ -12,6 +12,7 @@ import com.keeping.notiservice.api.service.dto.AddNotiDto;
 import com.keeping.notiservice.api.service.dto.FCMNotificationDto;
 import com.keeping.notiservice.api.service.dto.SendNotiDto;
 import com.keeping.notiservice.domain.noti.Noti;
+import com.keeping.notiservice.domain.noti.Type;
 import com.keeping.notiservice.domain.noti.repository.NotiQueryRepository;
 import com.keeping.notiservice.domain.noti.repository.NotiRepository;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +71,11 @@ public class NotiServiceImpl implements NotiService {
     @Override
     public List<NotiResponse> showNoti(String memberKey) {
         return notiQueryRepository.findByMemberKey(memberKey);
+    }
+
+    @Override
+    public List<NotiResponse> showNotiByType(String memberKey, String notiType) {
+        return notiQueryRepository.findByMemberKeyAndType(memberKey, Type.valueOf(notiType));
     }
 
 //    @Scheduled(cron = "0 0/2 * * * ?")
