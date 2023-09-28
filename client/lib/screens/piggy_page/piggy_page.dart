@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/piggy_page/make_piggy_page.dart';
@@ -12,31 +10,6 @@ import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
-
-// final List<Map<String, dynamic>> tempData = [
-//   {
-//     "id": 3,
-//     "childKey": "0986724",
-//     "accountNumber": "172-123456-707-27",
-//     "piggyAccountNumber": "1",
-//     "content": "아디다스 삼바",
-//     "goalMoney": 140000,
-//     "balance": 70000,
-//     "savedImage": '[Base64 이미지]',
-//     "completed": "INCOMPLETED"
-//   },
-//   {
-//     "id": 7,
-//     "childKey": "0986724",
-//     "accountNumber": "172-234567-707-27",
-//     "piggyAccountNumber": "2",
-//     "content": "후드티 갖고 싶다",
-//     "goalMoney": 140000,
-//     "balance": 70000,
-//     "savedImage": '[Base64 이미지]',
-//     "completed": "INCOMPLETED"
-//   }
-// ];
 
 class PiggyPage extends StatefulWidget {
   PiggyPage({super.key});

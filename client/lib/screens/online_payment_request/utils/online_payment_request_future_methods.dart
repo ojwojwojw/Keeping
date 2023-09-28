@@ -42,17 +42,21 @@ Future<dynamic> getFilteredOnlinePaymentRequestList({
 
 // 온라인 결제 상세 조회
 Future<dynamic> getOnlinePaymentRequestDetail({
-  required String accessToken, required String memberKey, required int onlineId
+  required String? accessToken, required String? memberKey, required String? targetKey, required int? onlineId
 }) async {
-  try {
-    final response = await dioGet(
-      accessToken: accessToken,
-      url: '/bank-service/online/parent/$memberKey/$onlineId',
-    );
-    print('온라인 결제 상세 조회 응답 $response');
-    return response;
-  } catch (e) {
-    print('온라인 결제 상세 조회 에러 $e');
+  if (accessToken != null && memberKey != null && targetKey != null && onlineId != null) {
+    try {
+      final response = await dioGet(
+        accessToken: accessToken,
+        url: '/bank-service/api/$memberKey/online/$targetKey/detail/$onlineId',
+      );
+      print('온라인 결제 상세 조회 응답 $response');
+      return response;
+    } catch (e) {
+      print('온라인 결제 상세 조회 에러 $e');
+    }
+  } else {
+    return;
   }
 }
 
