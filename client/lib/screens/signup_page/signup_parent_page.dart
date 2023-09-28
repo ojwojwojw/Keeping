@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/main_page/main_page.dart';
+import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'dart:convert';
@@ -35,6 +36,13 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
   @override
   void initState() {
     super.initState();
+    _userId = TextEditingController();
+    _userPw = TextEditingController();
+    _userPwCk = TextEditingController();
+    _userName = TextEditingController();
+    _userPhoneNumber = TextEditingController();
+    _userBirth = TextEditingController();
+    _userVerificationNumber = TextEditingController();
   }
 
   handleSignupDisable() {
@@ -277,48 +285,45 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
   Future<void> idDupliCheck(
       BuildContext context, Function handledupCheck) async {
     final id = _userId.text;
-    try {
-      var response = await dio.get(
-        'http://j9c207.p.ssafy.io:8000/member-service/api/id/${id}',
-      );
-      var jsonResponse = json.decode(response.toString()); // 문자열로 변환 후 JSON 파싱
-      print(jsonResponse);
-      print('${jsonResponse['resultStatus']}, jsonresponse');
-      if (jsonResponse['resultStatus']['successCode'] == 0) {
-        handledupCheck(jsonResponse['resultBody']);
+    final response = await dioGet(url: '/member-service/api/id/$id');
+    if (id != '') {
+      if (response['resultStatus']['successCode'] == 0) {
+        handledupCheck(response['resultBody']);
         handleIsIdDupChecked(true); // 아이디 중복 아님
       } else {
-        handledupCheck(jsonResponse['resultStatus']['resultMessage']);
+        handledupCheck(response['resultStatus']['resultMessage']);
         handleIsIdDupChecked(false);
       }
-    } catch (err) {
-      handledupCheck(
-          '아이디 양식을 지켜주세요. \n 아이디는 5~20자 사이로, 영어와 숫자가 최소 한 개씩 들어가야 합니다.');
+    } else {
+      handledupCheck('아이디는 5~20자 사이로,\n영어와 숫자가 최소 한 개씩 들어가야 합니다.');
     }
   }
 
 // 인증 번호 받기 로직
   Future<void> checkVerification(
       phone, Function handleCheckVerification) async {
+    final phoneText = phone.text;
+
+    // 휴대폰 번호의 길이가 11자가 아닌 경우 에러 처리
+    if (phoneText.length != 13) {
+      handleCheckVerification('휴대폰 번호는 13자여야 합니다.');
+      return; // 함수 종료
+    }
+
     final data = {
-      'phone': phone.text,
+      'phone': phoneText,
     };
-    try {
-      var response = await dio.post(
-        'http://j9c207.p.ssafy.io:8000/member-service/api/phone',
-        data: data,
-      );
-      var jsonResponse = json.decode(response.toString());
-      if (jsonResponse['resultStatus']['successCode'] == 0) {
-        handleCheckVerification(jsonResponse['resultBody']);
-      } else if (response.data.resultStatus.successCode == 409) {
-        handleCheckVerification(jsonResponse['resultBody']);
-      } else {
-        handleCheckVerification('휴대폰 번호를 다시 확인해주세요');
-      }
-      print(response);
-    } catch (err) {
-      print(err);
+    final response = await dioPost(
+      url: '/member-service/api/phone',
+      data: data,
+    );
+    print(response);
+    if (response['resultStatus']['successCode'] == 0) {
+      handleCheckVerification(response['resultBody']);
+    } else if (response.data.resultStatus.successCode == 409) {
+      handleCheckVerification(response['resultBody']);
+    } else {
+      handleCheckVerification('휴대폰 번호를 다시 확인해주세요');
     }
   }
 
@@ -329,24 +334,22 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
       'phone': phone.text,
       'certification': certification.text,
     };
-    print(data);
-    try {
-      var response = await dio.post(
-        'http://j9c207.p.ssafy.io:8000/member-service/api/phone-check',
-        data: data,
-      );
-      var jsonResponse = json.decode(response.toString());
-      print(jsonResponse);
-      if (jsonResponse['resultStatus']['successCode'] == 0) {
-        handleCheckCertification(jsonResponse['resultBody']);
-
+    final certificationText = certification.text;
+    final response = await dioPost(
+      url: '/member-service/api/phone-check',
+      data: data,
+    );
+    if (certificationText.length != 6 || phone.text.length != 13) {
+      handleCheckCertification('휴대폰 번호와 인증번호를 모두 입력해주세요.');
+      handleIsVerificationChecked(false);
+    } else {
+      if (response['resultStatus']['successCode'] == 0) {
+        handleCheckCertification(response['resultBody']);
         handleIsVerificationChecked(true);
       } else {
-        handleCheckCertification(jsonResponse['resultStatus']['resultMessage']);
+        handleCheckCertification(response['resultStatus']['resultMessage']);
         handleIsVerificationChecked(false);
       }
-    } catch (err) {
-      print(err);
     }
   }
 

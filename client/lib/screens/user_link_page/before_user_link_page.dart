@@ -86,14 +86,7 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
               },
             ),
             _opponentNumber(),
-            Text(
-              _whoLinkMsg,
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey[600],
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            _whoLinkToUser(),
             _errMsg(),
             ConfirmBtn(
               text: '연결하기',
@@ -127,6 +120,20 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _whoLinkToUser() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(40, 20, 40, 10),
+      child: Text(
+        _whoLinkMsg,
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.grey[600],
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -171,16 +178,20 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
         Provider.of<UserLinkProvider>(context, listen: false).oppCode;
     print('$accessToken, $memberKey, $oppCode');
     // 비동기 작업 수행
-    final response = await dioPost(
-      accessToken: accessToken,
-      url: '/member-service/auth/api/$memberKey/parent/link/$oppCode',
-    );
-    print(response);
-    if (response != null || response['resultStatus']['resultCode'] == 400) {
-      handleLinkErrMsg(response['resultStatus']['resultMessage']);
+    if (oppCode == null || oppCode.isEmpty) {
+      handleLinkErrMsg('상대방 코드를 입력해주세요.');
     } else {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const AfterUserLinkPage()));
+      final response = await dioPost(
+        accessToken: accessToken,
+        url: '/member-service/auth/api/$memberKey/parent/link/$oppCode',
+      );
+      print(response);
+      if (response != null || response['resultStatus']['resultCode'] == 400) {
+        handleLinkErrMsg(response['resultStatus']['resultMessage']);
+      } else {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const AfterUserLinkPage()));
+      }
     }
   }
 }

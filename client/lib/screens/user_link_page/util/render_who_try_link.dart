@@ -19,10 +19,13 @@ Future<String> renderWhoTryLink(BuildContext context, userCode) async {
   if (response != null) {
     print('$accessToken, $memberKey, $userCode');
     print(response);
-    return response['resultStatus']['resultMessage'];
-  } else {
-    // 응답이 실패한 경우 오류 처리
-    print('키키');
-    return '오류 발생'; // 실제 오류 처리 결과로 대체하세요.
+    if (response['resultStatus']['successCode'] == 0) {
+      return Future.value(response['resultBody'] + '님이 연결을 시도중입니다.');
+    }
   }
+
+  // If there's an error or the conditions are not met, return an error message.
+  print('키키');
+  return Future.value(response['resultStatus']
+      ['resultMessage']); // You can customize the error message.
 }
