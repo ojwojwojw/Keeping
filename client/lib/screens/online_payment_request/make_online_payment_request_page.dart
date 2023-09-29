@@ -131,7 +131,8 @@ class _MakeOnlinePaymentRequestFirstPageState
           ),
         ),
       ),
-      bottomNavigationBar: BottomBtn(
+      // bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '다음',
         action: () async {
           if (_formKey.currentState != null && _formKey.currentState!.validate()) {

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/child_tag.dart';
+import 'package:provider/provider.dart';
 
 class AccountInfo extends StatefulWidget {
   final String? accessToken;
@@ -23,6 +25,16 @@ class AccountInfo extends StatefulWidget {
 }
 
 class _AccountInfoState extends State<AccountInfo> {
+  String? _childName;
+  String? _childKey;
+
+  @override
+  void initState() {
+    super.initState();
+    _childName = context.read<ChildInfoProvider>().name;
+    _childKey = context.read<ChildInfoProvider>().memberKey;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,7 +47,7 @@ class _AccountInfoState extends State<AccountInfo> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (widget.parent != null && widget.parent! == true) ChildTag(childName: '김첫째', text: '용돈 잔액'),
+            if (widget.parent != null && widget.parent! == true && _childName != null) ChildTag(childName: _childName!, text: '용돈 잔액'),
             Text(
               widget.balance == null ? '0원' : formattedMoney(widget.balance),
               style: TextStyle(
@@ -48,7 +60,7 @@ class _AccountInfoState extends State<AccountInfo> {
               future: getMonthTotalExpense(
                 accessToken: widget.accessToken,
                 memberKey: widget.memberKey,
-                targetKey: widget.parent != null && widget.parent! ? null : widget.memberKey,
+                targetKey: widget.parent != null && widget.parent! ? _childKey : widget.memberKey,
                 date: DateFormat('yyyy-MM').format(DateTime.now()),
               ), 
               builder: (context, snapshot) {
