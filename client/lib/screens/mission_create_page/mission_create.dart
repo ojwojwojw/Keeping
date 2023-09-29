@@ -4,7 +4,6 @@ import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/number_keyboard.dart';
 import 'package:keeping/widgets/render_field.dart';
-import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/provider/mission_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
@@ -22,28 +21,10 @@ class MissionCreatePage1 extends StatefulWidget {
 
 class _MissionCreatePage1State extends State<MissionCreatePage1> {
   // final _createKey = GlobalKey<FormState>();
-  String? missionTitle;
-  String? missionDueDate;
   TextEditingController _missionTitle = TextEditingController();
-  bool _isButtonDisabled = true; // 버튼 활성화 여부
-  bool _isTitleChecked = false; //  미션 제목 입력 여부
-  bool _isDateChecked = false; //미션 마감 날짜 선택 여부
+  String missionTitle = "";
+  String missionDueDate = "";
   DateTime dateValue = DateTime.now();
-
-  TextEditingController _controller1 = TextEditingController();
-
-  //버튼 활성화 관련
-  handleCreateDisable() {
-    if (_isTitleChecked && _isDateChecked) {
-      setState(() {
-        _isButtonDisabled = false;
-      });
-    } else {
-      setState(() {
-        _isButtonDisabled = true;
-      });
-    }
-  }
 
   //데이트 피커
   Future datePicker() async {
@@ -55,11 +36,25 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
     if (picked != null) {
       setState(() {
         dateValue = picked;
-        _isDateChecked = true; // 날짜가 선택되면 _isDateChecked를 true로 설정
-        handleCreateDisable(); // 버튼 활성화 상태 업데이트
         missionDueDate = picked.toString().substring(0, 10);
       });
     }
+  }
+
+  //다음 페이지로 가는 버튼에 넣어줄 동작들
+  Future<void> saveAndMove(context, todo, endDate) {
+    // 프로바이더 데이터 업데이트
+    print(todo);
+    print(endDate);
+    Provider.of<MissionInfoProvider>(context, listen: false)
+        .saveTodoData(todo: todo, endDate: endDate);
+
+    // MissionCreatePage2 페이지로 이동
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MissionCreatePage2()),
+    );
+    return Future.value();
   }
 
   @override
@@ -86,8 +81,6 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
               label: '미션 제목 입력',
               onChange: (value) {
                 setState(() {
-                  _isTitleChecked = value != null && value.isNotEmpty;
-                  handleCreateDisable(); // 버튼 활성화 상태 업데이트
                   missionTitle = value;
                 });
               },
@@ -110,7 +103,7 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
 
           // 선택한 날짜 렌더링
           Text(
-            '선택한 날짜: ${dateValue.toLocal().toString().substring(0, 10)}', // 선택한 날짜를 렌더링
+            "선택한 날짜: $missionDueDate", // 선택한 날짜를 렌더링
             style: TextStyle(color: Colors.white),
           ),
 
@@ -126,25 +119,9 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
         action: () {
           saveAndMove(context, missionTitle, missionDueDate); // 함수 호출
         },
-        isDisabled: !_isTitleChecked || !_isDateChecked,
+        isDisabled: missionTitle.isEmpty || missionDueDate.isEmpty,
       ),
     );
-  }
-
-  Future<void> saveAndMove(context, todo, endDate) {
-    // 프로바이더 데이터 업데이트
-    print('!!!');
-    print(todo);
-    print(endDate);
-    Provider.of<MissionInfoProvider>(context, listen: false)
-        .saveTodoData(todo: todo, endDate: endDate);
-
-    // MissionCreatePage2 페이지로 이동
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MissionCreatePage2()),
-    );
-    return Future.value();
   }
 }
 
@@ -159,6 +136,7 @@ class MissionCreatePage2 extends StatefulWidget {
 
 class _MissionCreatePage2State extends State<MissionCreatePage2> {
   String amount = '';
+  bool isParent = false;
 
   onNumberPress(val) {
     if (val == '0' && amount.isEmpty) {
@@ -177,6 +155,14 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
         amount = amount.substring(0, amount.length - 1);
       });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // 프로바이더로부터 유저타입을 가져오기
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    isParent = userProvider.parent;
   }
 
   @override
@@ -205,14 +191,19 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
       bottomNavigationBar: BottomBtn(
         text: '다음',
         action: () {
-          // 2. 프로바이더 데이터 업데이트
+          // 프로바이더 데이터 업데이트
           Provider.of<MissionInfoProvider>(context, listen: false)
               .saveMoneyData(amount);
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MissionCreatePage3()),
-          );
+          if (isParent) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ParentMissionCreatePage3()));
+          } else {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MissionCreatePage3()));
+          }
         },
         isDisabled: amount.isEmpty, // 금액이 없을 경우 버튼 비활성화
       ),
@@ -221,7 +212,7 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
 }
 
 //////////////////////////////
-//미션 생성페이지 3
+//미션 생성페이지 3 (자녀)
 
 class MissionCreatePage3 extends StatefulWidget {
   @override
@@ -230,120 +221,186 @@ class MissionCreatePage3 extends StatefulWidget {
 
 class _MissionCreatePage3State extends State<MissionCreatePage3> {
   TextEditingController _commentController = TextEditingController();
-  Future<String?>? memberKeyFuture;
 
-  @override
-  void initState() {
-    super.initState();
-    memberKeyFuture = _fetchMemberKey();
-  }
-
-  Future<String?> _fetchMemberKey() async {
-    var provider = Provider.of<UserInfoProvider>(context, listen: false);
-    return provider.memberKey;
-  }
-
-  Future<String?> _fetchAccessToken() async {
-    var provider = Provider.of<UserInfoProvider>(context, listen: false);
-    return provider.accessToken;
-  }
-
-  _sendMissionData(String? memberKey) async {
-    if (memberKey == null) {
-      print('Member key is null');
-      return;
-    }
-
-    String? accessToken = await _fetchAccessToken();
-    if (accessToken == null) {
-      print('Access token is null');
-      return;
-    }
+  Future<void> _sendMissionData() async {
+    var dio = Dio();
 
     var missionProvider =
         Provider.of<MissionInfoProvider>(context, listen: false);
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
-    String userType = userProvider.parent ? "PARENT" : "CHILD";
-    var dio = Dio();
-
-    dio.options.headers = {
-      'Authorization': 'Bearer $accessToken',
-      'Content-Type': 'application/json'
-    };
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+    var userType = userProvider.parent ? "PARENT" : "CHILD";
 
     var data = {
       "type": userType,
-      "to": "", //부모는 무조건 한명이라 멤버키 불필요
+      "to": "",
       "todo": missionProvider.missionTitle,
       "money": int.parse(missionProvider.amount ?? '0'),
-      "cheeringMessage": "", //부모의 응원메시지 불필요
-      "childRequestComment": _commentController.text, // 입력폼에서 직접 받아야 한다
+      "cheeringMessage": "",
+      "childRequestComment": _commentController.text,
       "startDate": DateTime.now().toString().substring(0, 10),
       "endDate": missionProvider.missionDueDate
     };
-    print(memberKey);
-    print(data);
-    print("$_baseUrl/mission-service/api/$memberKey");
-    var response =
-        await dio.post("$_baseUrl/mission-service/api/$memberKey", data: data);
 
-    if (response.statusCode == 200) {
-      print('Mission data sent successfully!');
-    } else {
-      print('Failed to send mission data.');
+    try {
+      final response = await dio.post(
+          "$_baseUrl/mission-service/api/$memberKey",
+          data: data,
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+
+      if (response.statusCode == 200) {
+        print('Mission data sent successfully!');
+      } else {
+        print('Failed to send mission data.');
+      }
+    } catch (e) {
+      print('Error: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Create Mission Page 3"),
+      appBar: MyHeader(text: '미션생성3(자녀)'),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              "Mission Details",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+          _renderTextFormField(
+              label: '부모님께 메세지를 보내봐요',
+              controller: _commentController,
+              onChange: (value) {
+                Provider.of<MissionInfoProvider>(context, listen: false)
+                    .childRequestComment = value;
+              }),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _sendMissionData,
+            child: Text('Send Mission Data'),
+          ),
+        ],
       ),
-      body: FutureBuilder<String?>(
-        future: memberKeyFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
+    );
+  }
 
-          if (snapshot.hasError) {
-            return Center(child: Text('Error fetching member key'));
-          }
+  Widget _renderTextFormField({
+    required String label,
+    required TextEditingController controller,
+    required Function(String) onChange,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        controller: controller,
+        onChanged: onChange,
+        decoration: InputDecoration(
+          labelText: label,
+        ),
+      ),
+    );
+  }
+}
 
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  "Mission Details",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ),
-              renderTextFormField(
-                  label: '부모님에게 요청 메세지를 보내봐요',
-                  controller: _commentController,
-                  onChange: (value) {
-                    Provider.of<MissionInfoProvider>(context, listen: false)
-                        .childRequestComment = value;
-                  }),
+/////////////////////////////
+//미션 생성페이지 3 (부모)
 
-              // TextFormField(
-              //   controller: _commentController,
-              //   decoration: InputDecoration(labelText: 'childRequestComment'),
-              //   onChanged: (value) {
-              //     Provider.of<MissionInfoProvider>(context, listen: false)
-              //         .childRequestComment = value;
-              //   },
-              // ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () => _sendMissionData(snapshot.data),
-                child: Text('Send Mission Data'),
-              )
-            ],
-          );
-        },
+class ParentMissionCreatePage3 extends StatefulWidget {
+  @override
+  _ParentMissionCreatePage3State createState() =>
+      _ParentMissionCreatePage3State();
+}
+
+class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
+  TextEditingController _commentController = TextEditingController();
+
+  Future<void> _sendMissionData() async {
+    var dio = Dio();
+
+    var missionProvider =
+        Provider.of<MissionInfoProvider>(context, listen: false);
+
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+    var userType = userProvider.parent ? "PARENT" : "CHILD";
+
+    var data = {
+      "type": userType,
+      "to": memberKey, //자식의 멤버키 필요
+      "todo": missionProvider.missionTitle,
+      "money": int.parse(missionProvider.amount ?? '0'),
+      "cheeringMessage": _commentController.text, //부모의 응원메시지 필요
+      "childRequestComment": "",
+      "startDate": DateTime.now().toString().substring(0, 10),
+      "endDate": missionProvider.missionDueDate
+    };
+
+    try {
+      final response = await dio.post(
+          "$_baseUrl/mission-service/api/$memberKey",
+          data: data,
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+
+      if (response.statusCode == 200) {
+        print('Mission data sent successfully!');
+      } else {
+        print('Failed to send mission data.');
+      }
+    } catch (e) {
+      print('Error: $e');
+      print(data);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: MyHeader(text: '미션생성3(부모)'),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              "Mission Details",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+          _renderTextFormField(
+              label: '아이에게 응원메세지를 보내봐요',
+              controller: _commentController,
+              onChange: (value) {
+                Provider.of<MissionInfoProvider>(context, listen: false)
+                    .childRequestComment = value;
+              }),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _sendMissionData,
+            child: Text('Send Mission Data'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _renderTextFormField({
+    required String label,
+    required TextEditingController controller,
+    required Function(String) onChange,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        controller: controller,
+        onChanged: onChange,
+        decoration: InputDecoration(
+          labelText: label,
+        ),
       ),
     );
   }

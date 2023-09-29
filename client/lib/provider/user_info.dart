@@ -23,6 +23,7 @@ class UserInfoProvider with ChangeNotifier {
     List<Map<String, dynamic>>? childrenList,
     bool? parent,
   }) {
+    print(childrenList);
     if (name != null) {
       _name = name;
     }

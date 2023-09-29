@@ -221,9 +221,7 @@ class _LoginPageState extends State<LoginPage> {
 
       // childrenList가 null이 아니면 파싱하여 _childrenList에 할당
       if (childrenListData != null) {
-        if (childrenListData is List<Map<String, dynamic>>) {
-          _childrenList = List<Map<String, dynamic>>.from(childrenListData);
-        }
+        _childrenList = List<Map<String, dynamic>>.from(childrenListData);
       }
 
       bool? _parent = jsonResponse['resultBody']['parent'];

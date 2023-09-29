@@ -127,16 +127,15 @@ class _MissonPageState extends State<MissionPage> {
 
   Future<void> getData() async {
     // Dio 객체 생성
+    final dio = Dio();
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
     var memberKey = userProvider.memberKey;
-
-    final dio = Dio();
+    var accessToken = userProvider.accessToken;
 
     try {
       // GET 요청 보내기
-      final response = await dio.get(
-        "$_baseUrl/mission-service/api/$memberKey",
-      );
+      final response = await dio.get("$_baseUrl/mission-service/api/$memberKey",
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
 
       // 요청이 성공했을 때 처리
       if (response.statusCode == 200) {
