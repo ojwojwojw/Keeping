@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/number_keyboard.dart';
@@ -8,6 +9,7 @@ import 'package:keeping/provider/mission_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:convert';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -221,6 +223,28 @@ class MissionCreatePage3 extends StatefulWidget {
 
 class _MissionCreatePage3State extends State<MissionCreatePage3> {
   TextEditingController _commentController = TextEditingController();
+  late Dio dio;
+  late MissionInfoProvider missionProvider;
+  late UserInfoProvider userProvider;
+  late List<Map<String, dynamic>> childrenList;
+  String parentMemberKey = '';
+
+  //부모키 가져오기//
+  Future<void> _getParentMemberKey() async {
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+    print(accessToken);
+    print(memberKey);
+    try {
+      var response = await dio.get(
+          "$_baseUrl/member-service/auth/api/$memberKey/parent",
+          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
+      Map<String, dynamic> jsonResponse = json.decode(response.toString());
+      parentMemberKey = jsonResponse['resultBody'];
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   Future<void> _sendMissionData() async {
     var dio = Dio();
@@ -234,7 +258,7 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
 
     var data = {
       "type": userType,
-      "to": "",
+      "to": parentMemberKey,
       "todo": missionProvider.missionTitle,
       "money": int.parse(missionProvider.amount ?? '0'),
       "cheeringMessage": "",
@@ -251,12 +275,24 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
 
       if (response.statusCode == 200) {
         print('Mission data sent successfully!');
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MissionPage()));
       } else {
         print('Failed to send mission data.');
       }
     } catch (e) {
       print('Error: $e');
+      print(data);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    missionProvider = Provider.of<MissionInfoProvider>(context, listen: false);
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    _getParentMemberKey();
   }
 
   @override
@@ -265,19 +301,13 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
       appBar: MyHeader(text: '미션생성3(자녀)'),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              "Mission Details",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-          ),
           _renderTextFormField(
               label: '부모님께 메세지를 보내봐요',
               controller: _commentController,
               onChange: (value) {
-                Provider.of<MissionInfoProvider>(context, listen: false)
-                    .childRequestComment = value;
+                setState(() {
+                  _commentController.text = value;
+                });
               }),
           SizedBox(height: 20),
           ElevatedButton(
@@ -285,6 +315,13 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
             child: Text('Send Mission Data'),
           ),
         ],
+      ),
+      bottomNavigationBar: BottomBtn(
+        text: "다음",
+        isDisabled: _commentController.text.isEmpty,
+        action: () {
+          _sendMissionData();
+        },
       ),
     );
   }
@@ -309,7 +346,6 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
 
 /////////////////////////////
 //미션 생성페이지 3 (부모)
-
 class ParentMissionCreatePage3 extends StatefulWidget {
   @override
   _ParentMissionCreatePage3State createState() =>
@@ -318,21 +354,32 @@ class ParentMissionCreatePage3 extends StatefulWidget {
 
 class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
   TextEditingController _commentController = TextEditingController();
+  late Dio dio;
+  late MissionInfoProvider missionProvider;
+  late UserInfoProvider userProvider;
+  late List<Map<String, dynamic>> childrenList;
+  String selectedMemberKey = '';
 
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    missionProvider = Provider.of<MissionInfoProvider>(context, listen: false);
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    childrenList = userProvider.childrenList;
+    if (childrenList.isNotEmpty) {
+      selectedMemberKey = childrenList.first['memberKey'] ?? '';
+    }
+  }
+
+  //Post 요청//
   Future<void> _sendMissionData() async {
-    var dio = Dio();
-
-    var missionProvider =
-        Provider.of<MissionInfoProvider>(context, listen: false);
-
-    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
     var accessToken = userProvider.accessToken;
     var memberKey = userProvider.memberKey;
     var userType = userProvider.parent ? "PARENT" : "CHILD";
-
     var data = {
       "type": userType,
-      "to": memberKey, //자식의 멤버키 필요
+      "to": selectedMemberKey, //자식의 멤버키 필요
       "todo": missionProvider.missionTitle,
       "money": int.parse(missionProvider.amount ?? '0'),
       "cheeringMessage": _commentController.text, //부모의 응원메시지 필요
@@ -346,12 +393,7 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
           "$_baseUrl/mission-service/api/$memberKey",
           data: data,
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
-
-      if (response.statusCode == 200) {
-        print('Mission data sent successfully!');
-      } else {
-        print('Failed to send mission data.');
-      }
+      print(response);
     } catch (e) {
       print('Error: $e');
       print(data);
@@ -364,26 +406,45 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
       appBar: MyHeader(text: '미션생성3(부모)'),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              "Mission Details",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+          ///
+          DropdownButton<String>(
+            value: selectedMemberKey.isNotEmpty ? selectedMemberKey : null,
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedMemberKey = newValue ?? '';
+              });
+            },
+            items: childrenList
+                .map<DropdownMenuItem<String>>((Map<String, dynamic> child) {
+              return DropdownMenuItem<String>(
+                value: child["memberKey"].toString(),
+                child: Text(child["name"].toString()),
+              );
+            }).toList(),
           ),
+
+          ///
           _renderTextFormField(
               label: '아이에게 응원메세지를 보내봐요',
               controller: _commentController,
               onChange: (value) {
-                Provider.of<MissionInfoProvider>(context, listen: false)
-                    .childRequestComment = value;
+                setState(() {
+                  _commentController.text = value;
+                });
               }),
           SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _sendMissionData,
-            child: Text('Send Mission Data'),
-          ),
+          // ElevatedButton(
+          //   onPressed: _sendMissionData,
+          //   child: Text('Send Mission Data'),
+          // ),
         ],
+      ),
+      bottomNavigationBar: BottomBtn(
+        text: "미션 등록 하기",
+        action: () {
+          _sendMissionData();
+        },
+        isDisabled: _commentController.text.isEmpty,
       ),
     );
   }
