@@ -23,7 +23,8 @@ class BottomBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomAppBar(
       color: isDisabled ? Colors.black38 : bgColor,
-        child: SizedBox(
+      elevation: 0,
+      child: SizedBox(
         height: 70,
         width: double.infinity,
         child: TextButton(
