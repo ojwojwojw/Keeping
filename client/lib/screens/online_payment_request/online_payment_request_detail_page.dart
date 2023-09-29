@@ -1,42 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/online_payment_request/utils/online_payment_request_future_methods.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/color_info_card_elements.dart';
 import 'package:keeping/widgets/color_info_detail_card.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
-
-final _tempData = [
-  {
-    "id": 1,
-    "name": "가방",
-    "url": "http://localhost:8080",
-    "reason": "이 가방이 너무 예뻐요",
-    "cost": 5000,
-    "paidMoney": 2000,
-    "status": "YET",
-    "createdDate": "2020-10-10T14:58:04+09:00"
-  },
-  {
-    "id": 2,
-    "name": "신발",
-    "url": "http://localhost:8080",
-    "reason": "이 신발이 너무 멋져요",
-    "cost": 5000,
-    "paidMoney": 2000,
-    "status": "ACCEPT",
-    "createdDate": "2020-10-10T14:58:04+09:00"
-  },
-  {
-    "id": 3,
-    "name": "모자",
-    "url": "http://localhost:8080",
-    "reason": "이 모자가 너무 짱이에요",
-    "cost": 5000,
-    "paidMoney": 2000,
-    "status": "REJECT",
-    "createdDate": "2020-10-10T14:58:04+09:00"
-  },
-];
+import 'package:provider/provider.dart';
 
 class OnlinePaymentRequestDetailPage extends StatefulWidget {
   final int onlineId;
@@ -51,12 +21,16 @@ class OnlinePaymentRequestDetailPage extends StatefulWidget {
 }
 
 class _OnlinePaymentRequestDetailPageState extends State<OnlinePaymentRequestDetailPage> {
-  Map<String, dynamic> _response = {};
+  bool? _parent;
+  String? _accessToken;
+  String? _memberKey;
 
   @override
   void initState() {
     super.initState();
-    _response = _tempData.firstWhere((e) => e['id'] == widget.onlineId);
+    _parent = context.read<UserInfoProvider>().parent;
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
   }
 
   @override
@@ -65,28 +39,47 @@ class _OnlinePaymentRequestDetailPageState extends State<OnlinePaymentRequestDet
       appBar: MyHeader(
         text: '부탁 내용 확인하기',
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ColorInfoDetailCard(
-              name: _response['name'],
-              url: _response['url'],
-              reason: _response['reason'],
-              cost: _response['cost'],
-              paidMoney: _response['paidMoney'],
-              status: _response['status'],
-              createdDate: DateTime.parse(_response['createdDate']),
-            ),
-            // ConfirmBtn(
-            //   bgColor: Colors.white,
-            //   textColor: const Color(0xFFFF8989),
-            //   borderColor: const Color(0xFFFFDDDD),
-            //   shadow: false,
-            // ),
-            // SizedBox(height: 45,)
-          ],
+      body: FutureBuilder(
+        future: getOnlinePaymentRequestDetail(
+          accessToken: _accessToken, 
+          memberKey: _memberKey, 
+          targetKey: _parent != null && _parent! ? null : _memberKey, 
+          onlineId: widget.onlineId
         ),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var response = snapshot.data;
+            if (response['resultBody'] != null && response['resultBody'].isEmpty) {
+              return Text('부탁내용이 없습니다.');
+            }
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ColorInfoDetailCard(
+                    name: response['resultBody']['productName'],
+                    url: response['resultBody']['url'],
+                    reason: response['resultBody']['content'],
+                    cost: response['resultBody']['totalMoney'],
+                    paidMoney: response['resultBody']['childMoney'],
+                    status: response['resultBody']['approve'],
+                    createdDate: DateTime.parse(response['resultBody']['createdDate']),
+                  ),
+                  // ConfirmBtn(
+                  //   bgColor: Colors.white,
+                  //   textColor: const Color(0xFFFF8989),
+                  //   borderColor: const Color(0xFFFFDDDD),
+                  //   shadow: false,
+                  // ),
+                  // SizedBox(height: 45,)
+                ],
+              ),
+            );
+          } else {
+            return Text('로딩중');
+          }
+
+        }
       ),
       bottomNavigationBar: BottomBtn(
         text: '확인',

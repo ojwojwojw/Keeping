@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
@@ -8,8 +6,7 @@ class PiggyInfoCard extends StatefulWidget {
   final String content;
   final num balance;
   final num goalMoney;
-  final Uint8List img;
-  // final dynamic img;
+  final String img;
   final String imgPath;
 
   PiggyInfoCard({
@@ -17,7 +14,6 @@ class PiggyInfoCard extends StatefulWidget {
     required this.content,
     required this.balance,
     required this.goalMoney,
-    // this.img,
     required this.img,
     this.imgPath = 'assets/image/temp_image.jpg',
   });
@@ -42,7 +38,7 @@ class _PiggyInfoCardState extends State<PiggyInfoCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // _piggyStringImg(widget.imgPath),
-              _piggyImg(widget.img),
+              roundedMemoryImg(img: widget.img),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -66,32 +62,6 @@ class _PiggyInfoCardState extends State<PiggyInfoCard> {
       )
     );
   }
-}
-
-ClipOval _piggyImg(Uint8List img) {
-  return ClipOval(
-    child: SizedBox(
-      width: 100,
-      height: 100,
-      child: Image.memory(
-        img,
-        fit: BoxFit.cover
-      ),
-    ),
-  );
-}
-
-ClipOval _piggyStringImg(String imgPath) {
-  return ClipOval(
-    child: SizedBox(
-      width: 100,
-      height: 100,
-      child: Image.asset(
-        imgPath,
-        fit: BoxFit.cover
-      ),
-    ),
-  );
 }
 
 TextStyle _contentStyle() {

@@ -7,6 +7,7 @@ import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/floating_date_btn.dart';
+import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
 
@@ -20,99 +21,10 @@ class ChildSpendingRoutePage extends StatefulWidget {
 class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
   late KakaoMapController mapController;
 
-  // // 임시 더미데이터 
-  // final _places = [
-  //   {
-  //     "date": "2023-09-07",
-  //     'store_name': '싸피',
-  //     'latitude': 35.205472,
-  //     'longitude': 126.811582,
-  //   },
-  //   {
-  //     "date": "2023-09-07",
-  //     'store_name': '컴포즈 커피',
-  //     'latitude': 35.200478,
-  //     'longitude': 126.814354,
-  //   },
-  //   {
-  //     "date": "2023-09-07",
-  //     'store_name': '스타벅스',
-  //     'latitude': 35.203040,
-  //     'longitude': 126.818698,
-  //   },
-  //   {
-  //     "date": "2023-09-07",
-  //     'store_name': '스타벅스',
-  //     'latitude': 35.204040,
-  //     'longitude': 126.818698,
-  //   },
-  //   {
-  //     "date": "2023-09-07",
-  //     'store_name': '스타벅스',
-  //     'latitude': 35.205040,
-  //     'longitude': 126.818698,
-  //   },
-  //   {
-  //     "date": "2023-09-07",
-  //     'store_name': '스타벅스',
-  //     'latitude': 35.206040,
-  //     'longitude': 126.818698,
-  //   },
-  //   {
-  //     "date": "2023-09-07",
-  //     'store_name': '스타벅스',
-  //     'latitude': 35.207040,
-  //     'longitude': 126.818698,
-  //   },
-  //   {
-  //     "date": "2023-09-07",
-  //     'store_name': '스타벅스',
-  //     'latitude': 35.208040,
-  //     'longitude': 126.818698,
-  //   },
-    // {
-    //   "date": "2023-09-07",
-    //   'store_name': '스타벅스',
-    //   'latitude': 35.209040,
-    //   'longitude': 126.818698,
-    // },
-    // {
-    //   "date": "2023-09-07",
-    //   'store_name': '스타벅스',
-    //   'latitude': 35.210040,
-    //   'longitude': 126.818698,
-    // },
-    // {
-    //   "date": "2023-09-07",
-    //   'store_name': '스타벅스',
-    //   'latitude': 35.211040,
-    //   'longitude': 126.818698,
-    // },
-    // {
-    //   "date": "2023-09-07",
-    //   'store_name': '스타벅스',
-    //   'latitude': 35.212040,
-    //   'longitude': 126.818698,
-    // },
-  // ];
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _initializeKakaoMap();
-  // }
-
-  // // 카카오맵 초기화 및 설정
-  // void _initializeKakaoMap() async {
-  //   await dotenv.load(fileName: 'assets/env/.env');
-  //   final appKey = dotenv.env['KAKAO_APP_KEY'] ?? '';
-
-  //   AuthRepository.initialize(appKey: 'b2768527932bfa91c8d7012e1da2f8bb');
-  // }
-
   bool? _parent;
   String? _accessToken;
   String? _memberKey;
+  String? _childKey;
   String? _accountNumber;
   String _date = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
@@ -121,8 +33,6 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
       _date = DateFormat('yyyy-MM-dd').format(val);
     });
   }
-
-  final markers = <Marker>{};
 
   void _onMapCreated(KakaoMapController controller) {
     mapController = controller;
@@ -137,31 +47,7 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
     _memberKey = context.read<UserInfoProvider>().memberKey;
     _accountNumber = context.read<AccountInfoProvider>().accountNumber;
     // _balance = context.read<UserInfoProvider>().balance;
-
-    // markers.addAll(
-    //   _places.map(
-    //     (e) => Marker(
-    //       markerId: e['store_name'] as String,
-    //       latLng: LatLng(
-    //         e['latitude'] as double,
-    //         e['longitude'] as double,
-    //       ),
-    //       // infoWindowContent: '<div>안녕</div>',
-    //       infoWindowContent: '''
-    //         <div
-    //           style="border: 2px solid black; border-radius: 10px; padding: 10px;
-    //         >
-    //           ${e['store_name']}
-    //         </div>
-    //       ''',
-    //       infoWindowFirstShow: true,
-    //       // infoWindowRemovable: true,
-    //     ),
-    //   ),
-    // );
   }
-
-  final String storeName = '싸피';
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +69,8 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
           body: FutureBuilder(
             future: getAccountListByDate(
               accessToken: _accessToken, 
-              memberKey: _memberKey, 
+              memberKey: _memberKey,
+              targetKey: _parent != null && _parent! ? _childKey : _memberKey,
               accountNumber: _accountNumber, 
               date: _date,
             ),
@@ -197,64 +84,51 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                     children: [
                       KakaoMap(
                         onMapCreated: ((controller) async {
-                          mapController = controller;
+                          _onMapCreated(controller);
                         }),
                       ),
                     FloatingDateBtn(setDate: _setDate)  // 커스텀 위젯
                     ]
                   );
                 }
+                print('소비지도 응답값 ${response['resultBody'].values.first}');
+                mapController.setCenter(
+                  LatLng(response['resultBody'].values.first[0]['latitude'] as double, response['resultBody'].values.first[0]['longitude'] as double)
+                );
                 return Stack(
                   alignment: Alignment.topCenter,
                   children: [
                     KakaoMap(
                       onMapCreated: ((controller) async {
-                        mapController = controller;
+                        _onMapCreated(controller);
                       }),
-                      center: LatLng(response['resultBody'][_date].first['latitude'] as double, response['resultBody'][_date].first['longitude'] as double),
-                      // markers: markers.toList(),
                       markers: [
-                              response['resultBody'][_date].map(
-                                (e) => Marker(
-                                  markerId: e['storeName'] as String,
-                                  latLng: LatLng(
-                                    e['latitude'] as double,
-                                    e['longitude'] as double,
-                                  ),
-                                  // infoWindowContent: '<div>안녕</div>',
-                                  infoWindowContent: '''
-                                    <div
-                                      style="border: 2px solid black; border-radius: 10px; padding: 10px;
-                                    >
-                                      ${e['storeName']}
-                                    </div>
-                                  ''',
-                                  infoWindowFirstShow: true,
-                                  // infoWindowRemovable: true,
-                                ),
-                              ),
-                        // Marker(
-                        //   markerId: '싸피',
-                        //   latLng: LatLng(
-                        //     35.205472,
-                        //     126.811582,
-                        //   ),
-                        //   infoWindowContent: '<div style="border: 2px solid red; border-radius: 10px; padding: 10px;">$storeName</div>',
-                        //   // infoWindowContent: '''
-                        //   //   <div
-                        //   //     style="border: 2px solid black; border-radius: 10px; padding: 10px;"
-                        //   //   >
-                        //   //     $storeName
-                        //   //   </div>
-                        //   // ''',
-                        //   infoWindowFirstShow: true,
-                        //   // infoWindowRemovable: true,
-                        // ),
+                        ...response['resultBody'].values.first.map(
+                          (e) => Marker(
+                            markerId: e['storeName'] as String,
+                            latLng: LatLng(
+                              e['latitude'] as double,
+                              e['longitude'] as double,
+                            ),
+                          ),
+                        ),
+                      ],
+                      customOverlays: [
+                        ...response['resultBody'].values.first.map(
+                          (e) => CustomOverlay(
+                            customOverlayId: e['storeName'], 
+                            latLng: LatLng(
+                              double.parse((e['latitude']+0.0005).toString()),
+                              e['longitude'],
+                            ), 
+                            content: '<div style="width: 200px; height: 60px; border-radius: 20px; border: 1px solid #F0F0F0; background: #FFF;"><span style="font-size: 18px; font-weight: 500;">${e['storeName']}</span></br><span style="color: #696969; font-size: 15px;">${formattedTime(DateTime.parse(e['createdDate']))}</span></div>'
+                          )
+                        )
                       ],
                       polylines: [
                         Polyline(
-                          polylineId: '9월 1일',
-                          points: response['resultBody'][_date].map((e) => LatLng(e['latitude'] as double, e['longitude'] as double)).toList(),
+                          polylineId: _date.toString(),
+                          points: [...response['resultBody'].values.first.map((e) => LatLng(e['latitude'] as double , e['longitude'] as double))],
                           strokeColor: Colors.blue,
                           strokeStyle: StrokeStyle.dashDot
                         )
@@ -270,7 +144,7 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                   children: [
                     KakaoMap(
                       onMapCreated: ((controller) async {
-                        mapController = controller;
+                        _onMapCreated(controller);
                       }),
                     ),
                     FloatingDateBtn(setDate: _setDate)  // 커스텀 위젯

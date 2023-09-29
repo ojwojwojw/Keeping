@@ -16,10 +16,31 @@ class CategoryDropdownBtn extends StatefulWidget {
   State<CategoryDropdownBtn> createState() => _CategoryDropdownBtnState();
 }
 
+const _categories = {
+  "MART": "마트",
+  "CONVENIENCE": "편의점",
+  "FOOD": "음식",
+  "SCHOOL": "학교",
+  "CAFE": "카페",
+  "CLOTH": "옷",
+  "CULTURE": "문화생활",
+  "PLAY": "놀이",
+  "SUBWAY": "지하철",
+  "BUS": "버스",
+  "TAXI": "택시",
+  "DIGGING": "취미",
+  "GIFT": "선물",
+  "OTT": "OTT",
+  "CONTENT": "VOD",
+  "ACADEMY": "학원",
+  "TOUR": "여행",
+  "BANK": "은행",
+  "HOSPITAL": "병원",
+  "PHARMACY": "약국",
+  "ETC": "기타",
+};
+
 class _CategoryDropdownBtnState extends State<CategoryDropdownBtn> {
-  final _categories = [
-    '대형마트', '편의점', '문화시설', '음식점', '카페', '병원', '약국'
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +62,7 @@ class _CategoryDropdownBtnState extends State<CategoryDropdownBtn> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _dropdownBtn(widget.selectedCategory, _categories),
+              _dropdownBtn(widget.selectedCategory),
               Icon(Icons.arrow_drop_down, size: 30,)
             ],
           ),
@@ -52,14 +73,14 @@ class _CategoryDropdownBtnState extends State<CategoryDropdownBtn> {
 }
 
 // 카테고리 선택 버튼의 카테고리 이미지 + 카테고리명
-Row _dropdownBtn(String? selectedCategory, List<String> categories) {
+Row _dropdownBtn(String? category) {
   return Row(
     children: [
       Padding(
         padding: EdgeInsets.only(right: 10),
         child: categoryImg('assets/image/temp_image.jpg'),
       ),
-      selectedCategory != null ? Text(selectedCategory, style: _selectedCategoryTextStyle(),) : Text(categories[0], style: _selectedCategoryTextStyle(),),
+      _categories[category] == null ? Text(_categories["ETC"]!) : Text(_categories[category]!, style: _selectedCategoryTextStyle(),),
     ],
   );
 }
@@ -85,17 +106,14 @@ BoxDecoration _categoryDropdownBtnStyle() {
 
 // 카테고리 선택 모달에 넣을 내용
 SizedBox _categoryModalContents(BuildContext context, Function selectCategory) {
-  final categories = [
-    '대형마트', '편의점', '문화시설', '음식점', '카페', '병원', '약국'
-  ];
 
   return SizedBox(
     height: 300,
     child: SingleChildScrollView(
       child: Column(
         children: 
-          categories.map((e) => 
-            _categoryModalContent(context, e, categories, selectCategory)
+          _categories.keys.map((e) =>
+            _categoryModalContent(context, e, _categories, selectCategory)
           ).toList(),
       ),
     )
@@ -103,7 +121,8 @@ SizedBox _categoryModalContents(BuildContext context, Function selectCategory) {
 }
 
 // 카테고리 선택 모달 안의 각 카테고리 위젯
-InkWell _categoryModalContent(BuildContext context, String? e, List<String> categories, Function selectCategory) {
+InkWell _categoryModalContent(BuildContext context, String e, Map<String, String> categories, Function selectCategory) {
+  print('eeeeeeeeeeeeee $e');
   return InkWell(
     onTap: () {
       selectCategory(e);
@@ -116,7 +135,7 @@ InkWell _categoryModalContent(BuildContext context, String? e, List<String> cate
         decoration: _categoryDropdownBtnStyle(),
         child: Padding(
           padding: EdgeInsets.all(10),
-          child:_dropdownBtn(e, categories)
+          child:_dropdownBtn(e)
         )
       )
     )

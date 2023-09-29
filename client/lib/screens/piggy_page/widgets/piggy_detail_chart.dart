@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:keeping/util/display_format.dart';
 
 class PiggyDetailChart extends StatelessWidget {
-  final double balance;
-  final double goalMoney;
+  final int balance;
+  final int goalMoney;
   final DateTime createdDate;
 
   PiggyDetailChart({
@@ -37,7 +37,7 @@ class PiggyDetailChart extends StatelessWidget {
   }
 }
 
-Widget _piggyChart({required double balance, required double goalMoney}) {
+Widget _piggyChart({required int balance, required int goalMoney}) {
   return SizedBox(
     height: 10,
     child: Stack(

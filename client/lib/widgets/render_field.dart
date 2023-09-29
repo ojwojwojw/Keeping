@@ -226,8 +226,9 @@ Padding renderCategoryField(Function selectCategory, String selectedCategory,
             height: 20,
           ),
           CategoryDropdownBtn(
-              selectedCategory: selectedCategory,
-              selectCategory: selectCategory)
+            selectedCategory: selectedCategory,
+            selectCategory: selectCategory
+          )
         ],
       ),
     )),

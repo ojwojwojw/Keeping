@@ -21,46 +21,6 @@ class AllowanceLedgerPage extends StatefulWidget {
 }
 
 class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
-  // final List<Map<String, dynamic>> _tempData = [
-  //   {
-  //     'date': '2020-10-10T14:58:04+09:00',
-  //     'store_name': '달콤왕가탕후루 전대',
-  //     'money': 3000,
-  //     'balance': 50000,
-  //     'detail': []
-  //   },
-  //   {
-  //     'date': '2020-10-10T14:58:04+09:00',
-  //     'store_name': '올리브영 전대',
-  //     'money': 5000,
-  //     'balance': 53000,
-  //     'detail': [
-  //       {
-  //         'content': '클렌징티슈',
-  //         'money': 3000
-  //       },
-  //       {
-  //         'content': '초콜릿',
-  //         'money': 2000
-  //       },
-  //     ]
-  //   },
-  //   {
-  //     'date': '2020-10-10T14:58:04+09:00',
-  //     'store_name': '달콤왕가탕후루 전대',
-  //     'money': 3000,
-  //     'balance': 58000,
-  //     'detail': []
-  //   },
-  //   {
-  //     'date': '2020-10-10T14:58:04+09:00',
-  //     'store_name': '달콤왕가탕후루 전대',
-  //     'money': 3000,
-  //     'balance': 61000,
-  //     'detail': []
-  //   },
-  // ];
-
   bool? _parent;
   String? _accessToken;
   String? _memberKey;
@@ -114,7 +74,10 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                           storeName: record['storeName'], 
                           money: record['money'], 
                           balance: record['balance'], 
-                          detail: record['detailList']
+                          accountHistoryId: record['id'],
+                          detail: record['detailList'],
+                          type: record['type'],
+                          largeCategory: record['largeCategory'],
                         )
                       :
                         MoneyRecord(
@@ -124,6 +87,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                           balance: record['balance'],
                           accountHistoryId: record['id'],
                           type: record['type'],
+                          largeCategory: record['largeCategory'],
                         )
                     );
                   });
@@ -145,6 +109,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
               }
             }
           ),
+          SizedBox(height: 10,)
         ],
       ),   
       floatingActionButton: FloatingBtn(

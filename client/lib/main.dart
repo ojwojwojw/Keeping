@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:keeping/fcmSetting.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeping/provider/account_info_provider.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/online_payment_request_provider.dart';
 import 'package:keeping/provider/piggy_provider.dart';
 import 'package:keeping/provider/request_money_provider.dart';
@@ -71,19 +72,30 @@ void main() async {
 
   await dotenv.load(fileName: "lib/.env");
 
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => Counts()), //Counts 인스턴스 추가
-    ChangeNotifierProvider(create: (_) => TestArray()), // TestArray 인스턴스 추가
-    ChangeNotifierProvider(create: (_) => PiggyDetailProvider()),
-    ChangeNotifierProvider(create: (_) => AddPiggyProvider()),
-    ChangeNotifierProvider(create: (_) => OnlinePaymentRequestFormProvider()),
-    ChangeNotifierProvider(create: (_) => UserInfoProvider()),
-    ChangeNotifierProvider(create: (_) => AccountInfoProvider()),
-    ChangeNotifierProvider.value(
-        value: userInfoProvider), // UserInfoProvider 제공
-    ChangeNotifierProvider(create: (_) => UserLinkProvider()),
-    ChangeNotifierProvider(create: (_) => RequestMoneyProvider()),
-  ], child: const MaterialApp(home: MainPage())));
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => Counts()), // Counts 인스턴스 추가
+        ChangeNotifierProvider(create: (_) => TestArray()), // TestArray 인스턴스 추가
+        ChangeNotifierProvider(create: (_) => PiggyDetailProvider()),
+        ChangeNotifierProvider(create: (_) => AddPiggyProvider()),
+        ChangeNotifierProvider(
+            create: (_) => OnlinePaymentRequestFormProvider()),
+        ChangeNotifierProvider(create: (_) => UserInfoProvider()),
+        ChangeNotifierProvider(create: (_) => AccountInfoProvider()),
+        ChangeNotifierProvider.value(
+            value: userInfoProvider), // UserInfoProvider 제공
+        ChangeNotifierProvider(create: (_) => UserLinkProvider()),
+        ChangeNotifierProvider(create: (_) => RequestMoneyProvider()),
+        ChangeNotifierProvider(
+            create: (_) =>
+                ChildInfoProvider()), // Move this inside MultiProvider
+      ],
+      child: MaterialApp(
+        theme: ThemeData(
+          fontFamily: "NotoSansKR",
+        ),
+        home: MainPage(),
+      )));
 }
 
 class MyApp extends StatelessWidget {
