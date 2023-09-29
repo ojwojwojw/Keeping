@@ -12,4 +12,6 @@ import java.util.Optional;
 @Repository
 public interface LinkRepository extends JpaRepository<Link, Long> {
     Optional<Link> findByParentAndChild(Parent parent, Child child);
+
+    Optional<Link> findByChild(Child child);
 }
