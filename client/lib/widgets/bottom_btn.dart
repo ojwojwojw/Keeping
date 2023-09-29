@@ -23,22 +23,24 @@ class BottomBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomAppBar(
       color: isDisabled ? Colors.black38 : bgColor,
-      height: 70.0,
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: TextButton(
-        onPressed: () {
-          if (!isDisabled) {
-            if (action is Widget) {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => action));
-            } else if (action is Function) {
-              action();
-            } else {
-              Navigator.pop(context);
+        child: SizedBox(
+        height: 70,
+        width: double.infinity,
+        child: TextButton(
+          onPressed: () {
+            if (!isDisabled) {
+              if (action is Widget) {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => action));
+              } else if (action is Function) {
+                action();
+              } else {
+                Navigator.pop(context);
+              }
             }
-          }
-        },
-        style: _bottomBtnStyle(textColor),
-        child: Text(text),
+          },
+          style: _bottomBtnStyle(textColor),
+          child: Text(text),
+        ),
       ),
     );
   }
