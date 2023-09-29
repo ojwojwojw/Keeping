@@ -14,16 +14,16 @@ class AfterUserLinkPage extends StatefulWidget {
 }
 
 class _AfterUserLinkPageState extends State<AfterUserLinkPage> {
-  int _remainingTime = 0; // 초기 남은 시간을 0으로 설정
+  int? _remainingTime; // 초기 남은 시간을 null로 설정
   late Timer _timer; // 타이머 변수
-
+  String? _myCode;
   @override
-  void initState() {
-    super.initState();
-    // initState에서 _remainingTime 초기화
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // didChangeDependencies에서 _remainingTime 초기화
     _remainingTime =
         Provider.of<UserLinkProvider>(context, listen: false).expire;
-    print(_remainingTime);
+    _myCode = Provider.of<UserLinkProvider>(context, listen: false).myCode;
     _startTimer(); // 타이머 시작
   }
 
@@ -38,9 +38,9 @@ class _AfterUserLinkPageState extends State<AfterUserLinkPage> {
     const oneSecond = Duration(seconds: 1);
     _timer = Timer.periodic(oneSecond, (timer) {
       // 1초마다 실행되는 코드
-      if (_remainingTime > 0) {
+      if (_remainingTime! > 0) {
         setState(() {
-          _remainingTime -= 1;
+          _remainingTime = _remainingTime! - 1;
         });
       } else {
         timer.cancel(); // 남은 시간이 0 이하로 떨어지면 타이머를 취소합니다.
@@ -51,22 +51,17 @@ class _AfterUserLinkPageState extends State<AfterUserLinkPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: MyHeader(text: '연결하기', elementColor: Colors.black),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            MyHeader(text: '연결하기', elementColor: Colors.black),
             MainDescriptionText('상대방의 연결을 기다리는 중입니다!'),
             Column(
               children: [
                 watingOpponent(),
-                Text(
-                  formatSecondsToHHMMSS(_remainingTime),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                timer(),
+                if (_myCode != null) myCodeWidget(),
                 ConfirmBtn(
                   text: '상대방에게 알려주기',
                   action: noticeToUser,
@@ -78,6 +73,37 @@ class _AfterUserLinkPageState extends State<AfterUserLinkPage> {
         ),
       ),
     );
+  }
+
+  Widget myCodeWidget() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+      child: Text(
+        '내 연결 코드 $_myCode',
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget timer() {
+    if (_remainingTime == null) {
+      // _remainingTime이 null인 경우 처리
+      return CircularProgressIndicator();
+    } else {
+      return Container(
+        margin: EdgeInsets.fromLTRB(0, 10, 0, 30),
+        child: Text(
+          formatSecondsToHHMMSS(_remainingTime!),
+          style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF8320E7)),
+        ),
+      );
+    }
   }
 }
 
@@ -104,6 +130,7 @@ doNotice() {
     child: Text(
       '남은 시간 안에 상대방도 연결을 완료해야 \n 계정 연결이 완료됩니다. \n 연결 신청한 사실을 상대방에게 알려주세요!',
       textAlign: TextAlign.center, // 가운데 정렬 설정
+      style: TextStyle(color: Colors.grey[700]),
     ),
   );
 }

@@ -20,9 +20,13 @@ Future<String> renderWhoTryLink(BuildContext context, userCode) async {
   if (response != null) {
     print('$accessToken, $memberKey, $userCode');
     print(response);
+    Provider.of<UserLinkProvider>(context, listen: false)
+        .updateUserCode(myCode: userCode);
+
+    print('누가 연결 시도하나요?');
     if (response['resultStatus']['successCode'] == 0) {
       return Future.value(response['resultBody'] + '님이 연결을 시도중입니다.');
-    } else if (response['resultStatus']['resultCode'] == 400) {
+    } else if (response['resultStatus']['resultCode'] == '400') {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const AfterUserLinkPage()),
@@ -30,7 +34,6 @@ Future<String> renderWhoTryLink(BuildContext context, userCode) async {
     }
   }
 
-  // If there's an error or the conditions are not met, return an error message.
   print('키키');
   return Future.value(response['resultStatus']
       ['resultMessage']); // You can customize the error message.

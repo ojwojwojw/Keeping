@@ -78,6 +78,7 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
                   final userCode = snapshot.data;
                   if (userCode != null && userCode.isNotEmpty) {
                     // 사용자 코드를 가져온 경우 표시
+
                     return _myCode(userCode);
                   } else {
                     // 데이터가 없는 경우 빈 화면 또는 메시지 표시
@@ -231,6 +232,7 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFF8320E7),
+            textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0), // 모서리 둥글기 조절
             ),

@@ -19,9 +19,12 @@ Future<String> renderMyNumber(BuildContext context, bool isParent) async {
   print('여기');
   if (response != null && response['resultBody'] != null) {
     final linkCode = response['resultBody']['linkcode'];
-    print(linkCode);
+    final expire = response['resultBody']['expire'];
     Provider.of<UserLinkProvider>(context, listen: false).updateUserCode(
       myCode: linkCode,
+    );
+    Provider.of<UserLinkProvider>(context, listen: false).updateUserCode(
+      expire: expire,
     );
     return linkCode.toString();
   } else {
