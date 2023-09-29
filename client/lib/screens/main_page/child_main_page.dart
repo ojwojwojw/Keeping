@@ -18,7 +18,8 @@ import 'package:provider/provider.dart';
 class ChildMainPage extends StatefulWidget {
   ChildMainPage({super.key});
 
-  _ChildMainPageState createState() => _ChildMainPageState();
+  @override
+  State<ChildMainPage> createState() => _ChildMainPageState();
 }
 
 class _ChildMainPageState extends State<ChildMainPage> {
@@ -68,17 +69,16 @@ class _ChildMainPageState extends State<ChildMainPage> {
                 ),
                 FutureBuilder(
                   future: getAccountInfo(
-                      accessToken: _accessToken,
-                      memberKey: _memberKey,
-                      targetKey: _targetKey ?? _memberKey),
+                    accessToken: _accessToken,
+                    memberKey: _memberKey,
+                    targetKey: _targetKey ?? _memberKey),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var response = snapshot.data;
                       if (response['resultStatus']['resultCode'] == '404') {
                         return MakeAccountBtn();
                       } else {
-                        Provider.of<AccountInfoProvider>(context, listen: false)
-                            .setAccountInfo(response['resultBody']);
+                        Provider.of<AccountInfoProvider>(context, listen: false).setAccountInfo(response['resultBody']);
                         return AccountInfo(
                           balance: response['resultBody']['balance'],
                         );
