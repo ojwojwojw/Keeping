@@ -161,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       print(data);
       var response = await dio.post(
-        '$_baseUrl/member-service/login',
+        'https://j9c207.p.ssay.io/api/member-service/login',
         data: data,
       );
       String fcmToken = Provider.of<UserInfoProvider>(context, listen: false)
@@ -176,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
         String? memberKey = response.headers.value('memberKey');
         print(memberKey);
         // 나머지 처리 코드 추가
-        // handleLogin('로그인 성공');
+        handleLogin('로그인 성공');
         await requestUserInfo(memberKey, token, fcmToken,
             Provider.of<UserInfoProvider>(context, listen: false));
         Provider.of<UserInfoProvider>(context, listen: false)

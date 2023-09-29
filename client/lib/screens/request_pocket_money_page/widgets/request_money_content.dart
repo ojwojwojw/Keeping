@@ -3,17 +3,17 @@
 // import 'package:keeping/widgets/render_field.dart';
 // import 'package:provider/provider.dart';
 
-// Widget requestMoneyHowMuch(BuildContext context) {
-//   TextEditingController _money = TextEditingController();
+// Widget requestMoneyContent(BuildContext context) {
+//   TextEditingController _content = TextEditingController();
 
-//   void handleRequestMoney(dynamic value) {
+//   void handleRequestMoneyContent(dynamic value) {
 //     if (value is String) {
 //       Provider.of<RequestMoneyProvider>(context, listen: false)
-//           .updateRequestMoney(money: value);
-//       print('용돈 수정 중: $value');
+//           .updateRequestMoney(content: value, isContent: true);
+//       print('하고 싶은 말 수정 중: $value');
 //     } else {
 //       Provider.of<RequestMoneyProvider>(context, listen: false)
-//           .updateRequestMoney(money: value);
+//           .updateRequestMoney(isContent: false, content: value);
 //     }
 //   }
 
@@ -24,11 +24,10 @@
 //         Builder(
 //           builder: (BuildContext context) {
 //             // Builder를 사용하여 새로운 빌드 컨텍스트를 얻습니다.
-//             return renderTextFormField(
-//               label: '얼마를 조를까요?',
-//               controller: _money,
-//               onChange: handleRequestMoney,
-//               isNumber: true,
+//             return renderBoxFormField(
+//               label: '하고 싶은 말을 적어보세요!',
+//               controller: _content,
+//               onChange: handleRequestMoneyContent,
 //             );
 //           },
 //         ),

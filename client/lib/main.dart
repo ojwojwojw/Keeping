@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/online_payment_request_provider.dart';
 import 'package:keeping/provider/piggy_provider.dart';
+import 'package:keeping/provider/request_money_provider.dart';
 
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/provider/user_link.dart';
@@ -81,6 +82,7 @@ void main() async {
     ChangeNotifierProvider.value(
         value: userInfoProvider), // UserInfoProvider 제공
     ChangeNotifierProvider(create: (_) => UserLinkProvider()),
+    ChangeNotifierProvider(create: (_) => RequestMoneyProvider()),
   ], child: const MaterialApp(home: MainPage())));
 }
 

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/request_money_provider.dart';
 import 'package:keeping/screens/online_payment_request/widgets/online_payment_request_filters.dart';
 import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_box.dart';
+import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_content.dart';
 import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_filter.dart';
 import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_how_much.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/render_field.dart';
+import 'package:provider/provider.dart';
 
 class ChildRequestMoneyPage extends StatefulWidget {
   const ChildRequestMoneyPage({super.key});
@@ -117,27 +120,121 @@ class RequestPocketMoneySecondPage extends StatefulWidget {
 class _RequestPocketMoneySecondPageState
     extends State<RequestPocketMoneySecondPage> {
   bool _isButtonDisabled = true;
+  String _money = ''; // 초기값은 빈 문자열로 설정
+  String _content = ''; // 초기값은 빈 문자열로 설정
+  @override
+  void initState() {
+    super.initState();
+    _updateButtonDisabledState(); // 버튼 비활성화 상태 초기화
+  }
+
+  // _isAccepted 값을 업데이트하는 메서드
+  void _updateButtonDisabledState() {
+    setState(() {
+      if (_money != '' && _content != '') {
+        _isButtonDisabled = false;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(text: '용돈 조르기'),
       body: Center(
-          child: Column(
-        children: [
-          requestMoneyHowMuch(),
-          renderBoxFormField(label: '하고 싶은 말을 적어봐요!'),
-        ],
-      )),
+        child: Column(
+          children: [
+            requestMoneyHowMuch(context),
+            requestMoneyContent(context),
+          ],
+        ),
+      ),
       bottomNavigationBar: BottomBtn(
-        text: '조르기 완료',
+        text: '조르기 요청하기',
         action: () {
+          _money =
+              Provider.of<RequestMoneyProvider>(context, listen: false).money;
+          _content =
+              Provider.of<RequestMoneyProvider>(context, listen: false).content;
+          // 버튼을 누를 때 _money와 _content 값을 출력합니다.
+          print('Money: $_money');
+          print('Content: $_content');
+
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => RequestPocketMoneyThirdPage()),
           );
         },
-        isDisabled: false,
+        isDisabled: _isButtonDisabled,
+      ),
+    );
+  }
+
+  Widget requestMoneyHowMuch(BuildContext context) {
+    TextEditingController _money = TextEditingController();
+
+    void handleRequestMoney(dynamic value) {
+      if (value is String) {
+        Provider.of<RequestMoneyProvider>(context, listen: false)
+            .updateRequestMoney(money: value);
+        print('용돈 수정 중: $value');
+      } else {
+        Provider.of<RequestMoneyProvider>(context, listen: false)
+            .updateRequestMoney(money: value);
+      }
+      _updateButtonDisabledState();
+    }
+
+    return Container(
+      child: Column(
+        children: [
+          Builder(
+            builder: (BuildContext context) {
+              // Builder를 사용하여 새로운 빌드 컨텍스트를 얻습니다.
+              return renderTextFormField(
+                label: '얼마를 조를까요?',
+                controller: _money,
+                onChange: handleRequestMoney,
+                isNumber: true,
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget requestMoneyContent(BuildContext context) {
+    TextEditingController _content = TextEditingController();
+
+    void handleRequestMoneyContent(dynamic value) {
+      if (value is String) {
+        Provider.of<RequestMoneyProvider>(context, listen: false)
+            .updateRequestMoney(content: value, isContent: true);
+        print('하고 싶은 말 수정 중: $value');
+      } else {
+        Provider.of<RequestMoneyProvider>(context, listen: false)
+            .updateRequestMoney(isContent: false, content: value);
+      }
+      _updateButtonDisabledState;
+    }
+
+    return Container(
+      child: Column(
+        children: [
+          // Text('얼마를 조를까요?'),
+          Builder(
+            builder: (BuildContext context) {
+              // Builder를 사용하여 새로운 빌드 컨텍스트를 얻습니다.
+              return renderBoxFormField(
+                label: '하고 싶은 말을 적어보세요!',
+                controller: _content,
+                onChange: handleRequestMoneyContent,
+              );
+            },
+          ),
+        ],
       ),
     );
   }
