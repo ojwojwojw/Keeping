@@ -24,6 +24,12 @@ public class MemberAuthController {
     private final MemberService memberService;
     private final AuthService authService;
 
+    @GetMapping("/parent")
+    public ApiResponse<String> getMyParentKey(@PathVariable String memberKey) {
+        String result = memberService.getMyParentKey(memberKey);
+        return ApiResponse.ok(result);
+    }
+
     @PostMapping("/{type}/link/{linkcode}")
     public ApiResponse<LinkResultResponse> link(@PathVariable String memberKey,
                                                 @PathVariable String type,
