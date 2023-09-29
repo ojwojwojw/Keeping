@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/account_info_provider.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/account_info.dart';
@@ -26,6 +27,9 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
   String? _memberKey;
   String? _accountNumber;
   int? _balance;
+  String? _childKey;
+  String? _childAccountNumber;
+  int? _childBalance;
 
   @override
   void initState() {
@@ -35,6 +39,9 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
     _memberKey = context.read<UserInfoProvider>().memberKey;
     _accountNumber = context.read<AccountInfoProvider>().accountNumber;
     _balance = context.read<AccountInfoProvider>().balance;
+    _childKey = context.read<ChildInfoProvider>().memberKey;
+    _childAccountNumber = context.read<ChildInfoProvider>().accountNumber;
+    _childBalance = context.read<ChildInfoProvider>().balance;
   }
 
   @override
@@ -51,10 +58,10 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
             accessToken: _accessToken,
             memberKey: _memberKey,
             parent: _parent, 
-            balance: _balance,
+            balance: _parent != null && _parent == true ? _childBalance : _balance,
           ),
           FutureBuilder(
-            future: _parent != null && _parent! == true ? getAccountList(accessToken: _accessToken, memberKey: _memberKey, accountNumber: _accountNumber, targetKey: 'd')
+            future: _parent != null && _parent! == true ? getAccountList(accessToken: _accessToken, memberKey: _memberKey, accountNumber: _childAccountNumber, targetKey: _childKey)
               : getAccountList(accessToken: _accessToken, memberKey: _memberKey, accountNumber: _accountNumber, targetKey: _memberKey),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
