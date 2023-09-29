@@ -6,6 +6,7 @@ import 'package:keeping/provider/online_payment_request_provider.dart';
 import 'package:keeping/provider/piggy_provider.dart';
 
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/provider/user_link.dart';
 import 'screens/main_page/main_page.dart';
 
 //provider관련
@@ -79,6 +80,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => AccountInfoProvider()),
     ChangeNotifierProvider.value(
         value: userInfoProvider), // UserInfoProvider 제공
+    ChangeNotifierProvider(create: (_) => UserLinkProvider()),
   ], child: const MaterialApp(home: MainPage())));
 }
 

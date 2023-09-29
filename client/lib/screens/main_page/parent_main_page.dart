@@ -9,6 +9,7 @@ import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/screens/online_payment_request/online_payment_request_page.dart';
 import 'package:keeping/screens/piggy_page/piggy_page.dart';
 import 'package:keeping/screens/question_page/question_page.dart';
+import 'package:keeping/screens/user_link_page/before_user_link_page.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 
 class ParentMainPage extends StatefulWidget {
@@ -120,6 +121,17 @@ Widget myChild(BuildContext context, bool account, Function makeAccount) {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // account ? AccountInfo() : MakeAccountBtn(),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BeforeUserLinkPage(),
+                ),
+              );
+            },
+            child: const Text('유저 연결 페이지'),
+          ),
           SizedBox(height: 10),
           SizedBox(
               width: 350,
