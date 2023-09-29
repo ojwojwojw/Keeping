@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -34,6 +35,22 @@ public class MemberService implements UserDetailsService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthService authService;
+
+    /**
+     * 부모 키 반환
+     *
+     * @param memberKey
+     * @return 0: 정상동작, 1: 요청자가 자녀가 아님, 2: 연결된 부모 없음
+     */
+    public String getMyParentKey(String memberKey) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
+                new NoSuchElementException("잘못된 멤버키 입니다."));
+        Child child = childRepository.findByMember(member).orElseThrow(() ->
+                new NoSuchElementException("요청한 회원이 자녀 회원이 아닙니다."));
+        Link link = linkRepository.findByChild(child).orElseThrow(() ->
+                new NoSuchElementException("연결된 부모 회원이 없습니다."));
+        return link.getParent().getMember().getMemberKey();
+    }
 
     /**
      * fcm 토큰 받아오기
@@ -182,6 +199,7 @@ public class MemberService implements UserDetailsService {
 
         Child child = Child.builder()
                 .member(member)
+                .questionTime(LocalTime.of(20, 0))
                 .build();
         Child savedChild = childRepository.save(child);
         return member.getName();
