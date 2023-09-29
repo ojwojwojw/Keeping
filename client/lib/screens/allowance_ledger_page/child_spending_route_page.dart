@@ -7,6 +7,7 @@ import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/floating_date_btn.dart';
+import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
 
@@ -112,10 +113,22 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                           ),
                         ),
                       ],
+                      customOverlays: [
+                        ...response['resultBody'].values.first.map(
+                          (e) => CustomOverlay(
+                            customOverlayId: e['storeName'], 
+                            latLng: LatLng(
+                              double.parse((e['latitude']+0.0005).toString()),
+                              e['longitude'],
+                            ), 
+                            content: '<div style="width: 200px; height: 60px; border-radius: 20px; border: 1px solid #F0F0F0; background: #FFF;"><span style="font-size: 18px; font-weight: 500;">${e['storeName']}</span></br><span style="color: #696969; font-size: 15px;">${formattedTime(DateTime.parse(e['createdDate']))}</span></div>'
+                          )
+                        )
+                      ],
                       polylines: [
                         Polyline(
                           polylineId: _date.toString(),
-                          points: [...response['resultBody'].values.first.map((e) => LatLng(e['latitude'] as double, e['longitude'] as double))],
+                          points: [...response['resultBody'].values.first.map((e) => LatLng(e['latitude'] as double , e['longitude'] as double))],
                           strokeColor: Colors.blue,
                           strokeStyle: StrokeStyle.dashDot
                         )
