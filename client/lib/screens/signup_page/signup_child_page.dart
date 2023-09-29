@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/main_page/main_page.dart';
+import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'dart:convert';
@@ -40,6 +41,15 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
   @override
   void initState() {
     super.initState();
+    _userId = TextEditingController();
+    _userPw = TextEditingController();
+    _userPwCk = TextEditingController();
+    _userName = TextEditingController();
+    _userPhoneNumber = TextEditingController();
+    _userBirth = TextEditingController();
+    _userVerificationNumber = TextEditingController();
+    _parentPhone = TextEditingController();
+    _parentVerificationNumber = TextEditingController();
   }
 
   handleSignupDisable() {
@@ -60,17 +70,15 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
 
   handleIsIdDupChecked(result) {
     _isIdDupChecked = result;
-    print(_isIdDupChecked);
+    print(result);
   }
 
   handleIsVerificationChecked(result) {
     _isVerificationChecked = result;
-    print(_isVerificationChecked);
   }
 
   handleIsParentVerificationChecked(result) {
     _isParentVerificationChecked = result;
-    print(_isParentVerificationChecked);
   }
 
   void handleUserVerificationNumber(data) {
@@ -357,51 +365,46 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
       BuildContext context, Function handledupCheck) async {
     final id = _userId.text;
     print(id);
-    try {
-      var response = await dio.get(
-        'http://j9c207.p.ssafy.io:8000/member-service/api/id/${id}',
-      );
-      var jsonResponse = json.decode(response.toString()); // 문자열로 변환 후 JSON 파싱
-      print(jsonResponse);
-      print('${jsonResponse['resultStatus']}, jsonresponse');
-      if (jsonResponse['resultStatus']['successCode'] == 0) {
-        handledupCheck(jsonResponse['resultBody']);
+    final response = await dioGet(url: '/member-service/api/id/$id');
+    print(response);
+    if (id != '') {
+      if (response['resultStatus']['successCode'] == 0) {
+        handledupCheck(response['resultBody']);
         handleIsIdDupChecked(true); // 아이디 중복 아님
       } else {
-        handledupCheck(jsonResponse['resultStatus']['resultMessage']);
+        handledupCheck(response['resultStatus']['resultMessage']);
         handleIsIdDupChecked(false);
       }
-    } catch (err) {
-      handledupCheck(
-          '아이디 양식을 지켜주세요. \n 아이디는 5~20자 사이로, 영어와 숫자가 최소 한 개씩 들어가야 합니다.');
+    } else {
+      handledupCheck('아이디는 5~20자 사이로,\n영어와 숫자가 최소 한 개씩 들어가야 합니다.');
     }
   }
 
 // 인증 번호 받기 로직
   Future<void> checkVerification(
       phone, Function handleCheckVerification) async {
-    print(phone.text);
+    final phoneText = phone.text;
+
+    // 휴대폰 번호의 길이가 11자가 아닌 경우 에러 처리
+    if (phoneText.length != 13) {
+      handleCheckVerification('휴대폰 번호는 13자여야 합니다.');
+      return; // 함수 종료
+    }
+
     final data = {
-      'phone': phone.text,
+      'phone': phoneText,
     };
-    print(data);
-    print(phone);
-    try {
-      var response = await dio.post(
-        'http://j9c207.p.ssafy.io:8000/member-service/api/phone',
-        data: data,
-      );
-      var jsonResponse = json.decode(response.toString());
-      if (jsonResponse['resultStatus']['successCode'] == 0) {
-        handleCheckVerification(jsonResponse['resultBody']);
-      } else if (response.data.resultStatus.successCode == 409) {
-        handleCheckVerification(jsonResponse['resultBody']);
-      } else {
-        handleCheckVerification('휴대폰 번호를 다시 확인해주세요');
-      }
-      print(response);
-    } catch (err) {
-      print(err);
+    final response = await dioPost(
+      url: '/member-service/api/phone',
+      data: data,
+    );
+    print(response);
+    if (response['resultStatus']['successCode'] == 0) {
+      handleCheckVerification(response['resultBody']);
+    } else if (response.data.resultStatus.successCode == 409) {
+      handleCheckVerification(response['resultBody']);
+    } else {
+      handleCheckVerification('휴대폰 번호를 다시 확인해주세요');
     }
   }
 
@@ -412,16 +415,22 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
       'phone': phone.text,
       'certification': certification.text,
     };
-    print(data);
-    try {
-      var response = await dio.post(
-        'http://j9c207.p.ssafy.io:8000/member-service/api/phone-check',
-        data: data,
-      );
-      var jsonResponse = json.decode(response.toString());
-      print(jsonResponse);
-      if (jsonResponse['resultStatus']['successCode'] == 0) {
-        handleCheckCertification(jsonResponse['resultBody']);
+    final certificationText = certification.text;
+    final response = await dioPost(
+      url: '/member-service/api/phone-check',
+      data: data,
+    );
+    print('$response, $userType');
+    if (certificationText.length != 6 || phone.text.length != 13) {
+      if (userType == 'child') {
+        handleIsVerificationChecked(false);
+      } else {
+        handleIsParentVerificationChecked(false);
+      }
+      handleCheckCertification('휴대폰 번호와 인증번호를 모두 입력해주세요.');
+    } else {
+      if (response['resultStatus']['successCode'] == 0) {
+        handleCheckCertification(response['resultBody']);
         if (userType == 'child') {
           handleIsVerificationChecked(true);
         } else {
@@ -429,20 +438,17 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
         }
         handleIsVerificationChecked(true);
       } else {
-        handleCheckCertification(jsonResponse['resultStatus']['resultMessage']);
+        handleCheckCertification(response['resultStatus']['resultMessage']);
         if (userType == 'child') {
           handleIsVerificationChecked(false);
         } else {
           handleIsParentVerificationChecked(false);
         }
       }
-    } catch (err) {
-      print(err);
     }
   }
 
   Future<void> signUp(BuildContext context) async {
-    print('회원가입 함수까지 옵니다.');
     final data = {
       'loginId': _userId.text,
       'loginPw': _userPw.text,
@@ -451,35 +457,27 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
       'parentPhone': _parentPhone.text,
       'birth': _userBirth.text
     };
-    // String
-    // if (_signupKey.currentState!.validate()) {
     print('유효성 검사 통과');
     BuildContext currentContext = context;
-    print(data);
-    try {
-      var response = await dio.post(
-        'http://j9c207.p.ssafy.io:8000/member-service/api/join/child',
-        data: data,
+
+    final response = await dioPost(
+      url: '/member-service/api/join/child',
+      data: data,
+    );
+
+    if (response['resultStatus']['successCode'] == 0) {
+      handleIsParentVerificationChecked(true);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainPage(),
+        ),
       );
-      final jsonResponse = json.decode(response.toString());
-      print(jsonResponse);
-      if (jsonResponse['resultStatus']['successCode'] == 0) {
-        handleIsParentVerificationChecked(true);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MainPage(),
-          ),
-        );
-      } else if (jsonResponse['resultStatus']['resultCode'] == 409) {
-        print('이미 가입한 회원입니다.');
-      } else {
-        print('유효성 검사 실패');
-      }
-    } catch (err) {
-      print(err);
+    } else if (response['resultStatus']['resultCode'] == 409) {
+      print('이미 가입한 회원입니다.');
+    } else {
+      print('유효성 검사 실패');
     }
-    // }
   }
 }
 

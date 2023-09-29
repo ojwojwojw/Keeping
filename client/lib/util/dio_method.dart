@@ -2,7 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<dynamic> dioPost({
-  required String accessToken, required String url, String contentType = 'application/json', required dynamic data
+  String? accessToken,
+  required String url,
+  String contentType = 'application/json',
+  dynamic data,
 }) async {
   var dio = Dio();
   try {
@@ -15,10 +18,7 @@ Future<dynamic> dioPost({
     dio.options.headers = {
       'Authorization': 'Bearer $accessToken',
     };
-    var response = await dio.post(
-      url,
-      data: data
-    );
+    var response = await dio.post(url, data: data);
     print('dioPost 성공');
     return response.data;
   } catch (e) {
@@ -27,9 +27,7 @@ Future<dynamic> dioPost({
   }
 }
 
-Future<dynamic> dioGet({
-  required String accessToken, required String url
-}) async {
+Future<dynamic> dioGet({String? accessToken, required String url}) async {
   var dio = Dio();
   try {
     dio.options.baseUrl = dotenv.env['BASE_URL']!;

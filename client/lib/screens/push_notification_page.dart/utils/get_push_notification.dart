@@ -28,32 +28,33 @@ class NotiResponse {
   }
 }
 
-Future<List<NotiResponse>> getPushNotification(context) async {
+Future<List<Map<String, dynamic>>> getPushNotification(context) async {
   String memberKey =
       Provider.of<UserInfoProvider>(context, listen: false).memberKey;
   String accessToken =
       Provider.of<UserInfoProvider>(context, listen: false).accessToken;
-  String url = '/noti-service/api/${memberKey}';
+  String url = '/noti-service/api/$memberKey';
 
   try {
     final response = await dioGet(
       accessToken: accessToken,
       url: url,
     );
-    print(url);
-    print(accessToken);
-    print(memberKey);
+    print(response != null);
     if (response != null) {
-      final List<dynamic> notiResponseList =
-          response['resultBody']['notiResponseList'];
-      final List<NotiResponse> notiList =
-          notiResponseList.map((data) => NotiResponse.fromJson(data)).toList();
-      return notiList;
+      final dynamic resultBody = response['resultBody'];
+      print(resultBody != null);
+      if (resultBody != null) {
+        final List<dynamic> notiResponseList = resultBody as List<dynamic>;
+        return notiResponseList.cast<Map<String, dynamic>>();
+      } else {
+        return [];
+      }
     } else {
       return [];
     }
   } catch (error) {
     print('알림 데이터 가져오기 오류: $error');
-    rethrow;
+    return [];
   }
 }
