@@ -81,7 +81,12 @@ void main() async {
     ChangeNotifierProvider.value(
         value: userInfoProvider), // UserInfoProvider 제공
     ChangeNotifierProvider(create: (_) => UserLinkProvider()),
-  ], child: const MaterialApp(home: MainPage())));
+  ], child: MaterialApp(
+    theme: ThemeData(
+      fontFamily: "NotoSansKR"
+    ),
+    home: MainPage()
+  )));
 }
 
 class MyApp extends StatelessWidget {
