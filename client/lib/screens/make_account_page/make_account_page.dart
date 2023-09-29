@@ -43,7 +43,7 @@ class _MakeAccountPageState extends State<MakeAccountPage> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '다음',
         action: () {goNext(context, PhoneVerificationPage());},
         isDisabled: !_agreementResult
@@ -252,7 +252,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '인증하기',
         action: () async {
           if (widget._verificationFormKey.currentState != null && widget._verificationFormKey.currentState!.validate()) {

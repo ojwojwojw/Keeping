@@ -105,7 +105,7 @@ class _PiggyEnterAuthPasswordPageState extends State<PiggyEnterAuthPasswordPage>
           ),
         ],
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '저금하기',
         action: () async {
           final response = savePiggy(

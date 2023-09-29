@@ -84,7 +84,7 @@ class _OnlinePaymentRequestDetailPageState extends State<OnlinePaymentRequestDet
 
         }
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '확인',
         isDisabled: false,
       ),

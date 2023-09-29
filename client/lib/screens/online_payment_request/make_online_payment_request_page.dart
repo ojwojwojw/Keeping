@@ -131,7 +131,6 @@ class _MakeOnlinePaymentRequestFirstPageState
           ),
         ),
       ),
-      // bottomNavigationBar: BottomBtn(
       bottomSheet: BottomBtn(
         text: '다음',
         action: () async {
@@ -268,7 +267,7 @@ class _MakeOnlinePaymentRequestSecondPageState extends State<MakeOnlinePaymentRe
           ),
         ),
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '부탁하기',
         action: () async {
           var response = await createOnlinePaymentRequest(
