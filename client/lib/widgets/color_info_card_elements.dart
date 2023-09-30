@@ -117,7 +117,7 @@ Widget colorInfoDetailCardContentUnderLine(String content) {
 }
 
 String requestStatusText(String status) {
-  if (status == 'ACCEPT') {
+  if (status == 'APPROVE') {
     return '부탁 완료';
   } else if (status == 'REJECT') {
     return '부탁 거절';
@@ -127,7 +127,7 @@ String requestStatusText(String status) {
 }
 
 Color requestStatusBgColor(String status) {
-  if (status == 'ACCEPT') {
+  if (status == 'APPROVE') {
     return Color(0xFFE0FBD6);
   } else if (status == 'REJECT') {
     return Color(0xFFFFDDDD);
@@ -137,7 +137,7 @@ Color requestStatusBgColor(String status) {
 }
 
 Color requestStatusTextColor(String status) {
-  if (status == 'ACCEPT') {
+  if (status == 'APPROVE') {
     return Color(0xFF62D00B);
   } else if (status == 'REJECT') {
     return Color(0xFFFF0000);

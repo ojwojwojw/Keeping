@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/online_payment_request/online_payment_request_page.dart';
 import 'package:keeping/screens/online_payment_request/utils/online_payment_request_future_methods.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/bottom_double_btn.dart';
 import 'package:keeping/widgets/color_info_card_elements.dart';
 import 'package:keeping/widgets/color_info_detail_card.dart';
+import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:keeping/widgets/rounded_modal.dart';
 import 'package:provider/provider.dart';
 
 class OnlinePaymentRequestDetailPage extends StatefulWidget {
@@ -81,7 +84,26 @@ class _OnlinePaymentRequestDetailPageState extends State<OnlinePaymentRequestDet
       bottomSheet: _parent != null && _parent! ? 
         BottomDoubleBtn(
           firstText: '거부하기', 
-          secondText: '승인하기', 
+          secondText: '승인하기',
+          secondAction: () async {
+            var response = await approveOnlinePaymentRequest(
+              accessToken: _accessToken, 
+              memberKey: _memberKey, 
+              onlineId: widget.onlineId, 
+              childKey: _childKey
+            );
+            print('온라인 결제 승인 결과 $response');
+            if (response == 0) {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(
+                text: '부탁이\n승인되었습니다.',
+                button: ConfirmBtn(
+                  action: OnlinePaymentRequestPage(),
+                ),
+              )));
+            } else {
+              roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
+            }
+          },
           isDisabled: false,
         ) :
         BottomBtn(text: '확인', isDisabled: false),
