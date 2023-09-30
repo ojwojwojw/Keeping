@@ -3,6 +3,7 @@ import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/online_payment_request/utils/online_payment_request_future_methods.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
+import 'package:keeping/widgets/bottom_double_btn.dart';
 import 'package:keeping/widgets/color_info_card_elements.dart';
 import 'package:keeping/widgets/color_info_detail_card.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
@@ -68,13 +69,6 @@ class _OnlinePaymentRequestDetailPageState extends State<OnlinePaymentRequestDet
                     status: response['resultBody']['approve'],
                     createdDate: DateTime.parse(response['resultBody']['createdDate']),
                   ),
-                  // ConfirmBtn(
-                  //   bgColor: Colors.white,
-                  //   textColor: const Color(0xFFFF8989),
-                  //   borderColor: const Color(0xFFFFDDDD),
-                  //   shadow: false,
-                  // ),
-                  // SizedBox(height: 45,)
                 ],
               ),
             );
@@ -84,10 +78,13 @@ class _OnlinePaymentRequestDetailPageState extends State<OnlinePaymentRequestDet
 
         }
       ),
-      bottomSheet: BottomBtn(
-        text: '확인',
-        isDisabled: false,
-      ),
+      bottomSheet: _parent != null && _parent! ? 
+        BottomDoubleBtn(
+          firstText: '거부하기', 
+          secondText: '승인하기', 
+          isDisabled: false,
+        ) :
+        BottomBtn(text: '확인', isDisabled: false),
     );
   }
 }

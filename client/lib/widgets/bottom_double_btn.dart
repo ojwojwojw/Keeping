@@ -2,18 +2,30 @@ import 'package:flutter/material.dart';
 
 // 하단 네모난 버튼 클래스
 class BottomDoubleBtn extends StatelessWidget {
-  final String text;
-  final Color bgColor;
-  final Color textColor;
-  final dynamic action;
+  final String firstText;
+  final Color firstBgColor;
+  final Color firstTextColor;
+  final double firstTextSize;
+  final dynamic firstAction;
+  final String secondText;
+  final Color secondBgColor;
+  final Color secondTextColor;
+  final double secondTextSize;
+  final dynamic secondAction;
   final bool isDisabled;
 
   BottomDoubleBtn({
     super.key,
-    required this.text,
-    this.bgColor = const Color(0xFF8320E7),
-    this.textColor = Colors.white,
-    this.action,
+    this.firstText = '취소',
+    this.firstBgColor = const Color(0xFFF0F0F0),
+    this.firstTextColor = const Color(0xFF8320E7),
+    this.firstTextSize = 22,
+    this.firstAction,
+    this.secondText = '확인',
+    this.secondBgColor = const Color(0xFF8320E7),
+    this.secondTextColor = Colors.white,
+    this.secondTextSize = 22,
+    this.secondAction,
     this.isDisabled = true,
   });
 
@@ -21,47 +33,64 @@ class BottomDoubleBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: Container(
-          width: double.infinity,
-          color: Colors.white,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(vertical: 14),
+    return BottomAppBar(
+      elevation: 0,
+      child: SizedBox(
+        // height: 70,
+        width: double.infinity,
+        child: Row(
+          children: [
+            Flexible(
+              flex: 1,
+              fit: FlexFit.tight,
+              child: Container(
+                height: 70,
+                color: isDisabled ? Colors.black38 : firstBgColor,
+                child: TextButton(
+                  onPressed: () {
+                    if (!isDisabled) {
+                      if (firstAction is Widget) {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => firstAction));
+                      } else if (firstAction is Function) {
+                        firstAction();
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    }
+                  },
+                  style: _bottomBtnStyle(firstTextColor),
+                  child: Text(firstText, style: TextStyle(fontSize: firstTextSize),),
+                ),
+              ),
             ),
-            onPressed: () {  },
-            child: Text('Login'),
-          ),
+            Flexible(
+              flex: 1,
+              fit: FlexFit.tight,
+              child: Container(
+                height: 70,
+                color: isDisabled ? Colors.black38 : secondBgColor,
+                child: TextButton(
+                  onPressed: () {
+                    if (!isDisabled) {
+                      if (secondAction is Widget) {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => secondAction));
+                      } else if (secondAction is Function) {
+                        secondAction();
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    }
+                  },
+                  style: _bottomBtnStyle(secondTextColor),
+                  child: Text(secondText, style: TextStyle(fontSize: secondTextSize),),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return BottomAppBar(
-  //     color: isDisabled ? Colors.black38 : bgColor,
-  //     height: 70.0,
-  //     padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-  //     child: TextButton(
-  //       onPressed: () {
-  //         if (!isDisabled) {
-  //           if (action is Widget) {
-  //             Navigator.push(context, MaterialPageRoute(builder: (_) => action));
-  //           } else if (action is Function) {
-  //             action();
-  //           } else {
-  //             Navigator.pop(context);
-  //           }
-  //         }
-  //       },
-  //       style: _bottomBtnStyle(textColor),
-  //       child: Text(text),
-  //     ),
-  //   );
-  // }
 }
 
 // 버튼 스타일

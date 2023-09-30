@@ -17,8 +17,6 @@ class BottomBtn extends StatelessWidget {
     this.isDisabled = true,
   });
 
-  // 특정 페이지로 가던지, 데이터를 보내던지, 이전 페이지로 돌아가던지 구분해서 로직 짜기
-
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
