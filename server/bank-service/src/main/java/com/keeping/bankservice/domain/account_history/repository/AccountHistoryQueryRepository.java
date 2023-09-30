@@ -6,6 +6,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
@@ -63,7 +64,7 @@ public class AccountHistoryQueryRepository {
                         accountHistory.longitude,
                         accountHistory.createdDate))
                 .from(accountHistory)
-                .where(accountHistory.account.accountNumber.eq(accountNumber), accountHistory.account.memberKey.eq(memberKey), whatType(type), accountHistory.createdDate.between(startDateTime, endDateTime))
+                .where(whatAccountNumber(accountNumber), accountHistory.account.memberKey.eq(memberKey), whatType(type), accountHistory.createdDate.between(startDateTime, endDateTime))
                 .orderBy(accountHistory.createdDate.desc())
                 .fetch();
 
@@ -78,6 +79,13 @@ public class AccountHistoryQueryRepository {
                 .fetchOne();
 
         return result;
+    }
+
+    private BooleanExpression whatAccountNumber(String accountNumber) {
+        if(StringUtils.hasText(accountNumber)) {
+            return accountHistory.account.accountNumber.eq(accountNumber);
+        }
+        return null;
     }
 
     private BooleanExpression whatType(String type) {

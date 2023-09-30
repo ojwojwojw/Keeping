@@ -1,6 +1,7 @@
 package com.keeping.bankservice.api.service.account_history;
 
 import com.keeping.bankservice.api.controller.account_history.response.ShowAccountHistoryResponse;
+import com.keeping.bankservice.api.controller.account_history.response.ShowChildHistoryResponse;
 import com.keeping.bankservice.api.service.account_history.dto.AddAccountDetailValidationDto;
 import com.keeping.bankservice.api.service.account_history.dto.AddAccountHistoryDto;
 import com.keeping.bankservice.api.service.account_history.dto.TransferMoneyDto;
@@ -20,4 +21,5 @@ public interface AccountHistoryService {
     Map<String, List<ShowAccountHistoryResponse>> showAccountHistoryRoute(String memberKey, String targetKey, String accountNumber, String date);
     Long countMonthExpense(String memberKey, String targetKey, String date);
     void transferMoney(String memberKey, TransferMoneyDto dto) throws URISyntaxException;
+    List<ShowChildHistoryResponse> showChildHistory();
 }

@@ -1,6 +1,9 @@
 package com.keeping.bankservice.api.service.account_history.impl;
 
 import com.keeping.bankservice.api.controller.account_history.response.ShowAccountHistoryResponse;
+import com.keeping.bankservice.api.controller.account_history.response.ShowChildHistoryResponse;
+import com.keeping.bankservice.api.controller.feign_client.MemberFeignClient;
+import com.keeping.bankservice.api.controller.feign_client.response.MemberKeyResponse;
 import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.DepositMoneyDto;
 import com.keeping.bankservice.api.service.account.dto.WithdrawMoneyDto;
@@ -48,15 +51,17 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
     private final AccountHistoryRepository accountHistoryRepository;
     private final AccountHistoryQueryRepository accountHistoryQueryRepository;
     private final AccountDetailQueryRepository accountDetailQueryRepository;
+    private final MemberFeignClient memberFeignClient;
     private final Environment env;
     private String kakaoAk;
 
-    public AccountHistoryServiceImpl(AccountService accountService, AccountRepository accountRepository, AccountHistoryRepository accountHistoryRepository, AccountHistoryQueryRepository accountHistoryQueryRepository, AccountDetailQueryRepository accountDetailQueryRepository, Environment env) {
+    public AccountHistoryServiceImpl(AccountService accountService, AccountRepository accountRepository, AccountHistoryRepository accountHistoryRepository, AccountHistoryQueryRepository accountHistoryQueryRepository, AccountDetailQueryRepository accountDetailQueryRepository, MemberFeignClient memberFeignClient, Environment env) {
         this.accountService = accountService;
         this.accountRepository = accountRepository;
         this.accountHistoryRepository = accountHistoryRepository;
         this.accountHistoryQueryRepository = accountHistoryQueryRepository;
         this.accountDetailQueryRepository = accountDetailQueryRepository;
+        this.memberFeignClient = memberFeignClient;
         this.env = env;
         this.kakaoAk = this.env.getProperty("kakao.api");
     }
@@ -298,6 +303,50 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         Account childAccount = childAccountList.get(0);
         AddAccountHistoryDto childAccountHistoryDto = AddAccountHistoryDto.toDto(childAccount.getAccountNumber(), "용돈", true, Long.valueOf(dto.getMoney()), "");
         addAccountHistory(dto.getChildKey(), childAccountHistoryDto);
+    }
+
+    @Override
+    public List<ShowChildHistoryResponse> showChildHistory() {
+        List<ShowChildHistoryResponse> response = new ArrayList<>();
+
+        List<MemberKeyResponse> memberKeyResponseList = memberFeignClient.getChildMemberKey().getResultBody();
+
+        LocalDate today = LocalDate.now();
+        LocalDateTime startDateTime = today.minusDays(1).atStartOfDay();
+        LocalDateTime endDateTime = today.minusDays(1).atTime(LocalTime.MAX);
+
+        System.out.println("[날짜 출력] startDateTime: " + startDateTime + ", endDateTime: " + endDateTime);
+
+        for(MemberKeyResponse memberKeyResponse : memberKeyResponseList) {
+            String childKey = memberKeyResponse.getChildKey();
+
+            List<ShowAccountHistoryResponse> transactionList = new ArrayList<>();
+            List<ShowAccountHistoryDto> result = accountHistoryQueryRepository.showAccountDailyHistories(childKey, null, startDateTime, endDateTime, "ALL");
+
+            for (ShowAccountHistoryDto dto : result) {
+                ShowAccountHistoryResponse showAccountHistoryResponse = null;
+
+                if (dto.isDetailed()) {
+                    List<ShowAccountDetailDto> detailResult = accountDetailQueryRepository.showAccountDetailes(dto.getId(), childKey);
+
+                    if (dto.getRemain() != 0) {
+                        ShowAccountDetailDto extraDetailDto = ShowAccountDetailDto.toDto(-1l, "남은 금액", dto.getRemain(), SmallCategory.ETC);
+                        detailResult.add(extraDetailDto);
+                    }
+
+                    showAccountHistoryResponse = ShowAccountHistoryResponse.toResponse(dto, detailResult);
+                } else {
+                    showAccountHistoryResponse = ShowAccountHistoryResponse.toResponse(dto, null);
+                }
+
+                transactionList.add(showAccountHistoryResponse);
+            }
+
+            ShowChildHistoryResponse showChildHistoryResponse = ShowChildHistoryResponse.toResponse(childKey, memberKeyResponse.getParentKey(), transactionList);
+            response.add((showChildHistoryResponse));
+        }
+
+        return response;
     }
 
     private Map useKakaoLocalApi(boolean flag, String value) {
