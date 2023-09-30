@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:keeping/provider/account_info_provider.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/floating_date_btn.dart';
@@ -24,8 +25,9 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
   bool? _parent;
   String? _accessToken;
   String? _memberKey;
-  String? _childKey;
   String? _accountNumber;
+  String? _childKey;
+  String? _childAccountNumber;
   String _date = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   void _setDate(val) {
@@ -46,7 +48,8 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
     _accountNumber = context.read<AccountInfoProvider>().accountNumber;
-    // _balance = context.read<UserInfoProvider>().balance;
+    _childKey = context.read<ChildInfoProvider>().memberKey;
+    _childAccountNumber = context.read<ChildInfoProvider>().accountNumber;
   }
 
   @override
@@ -71,7 +74,7 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
               accessToken: _accessToken, 
               memberKey: _memberKey,
               targetKey: _parent != null && _parent! ? _childKey : _memberKey,
-              accountNumber: _accountNumber, 
+              accountNumber: _parent != null && _parent! ? _childAccountNumber : _accountNumber, 
               date: _date,
             ),
             builder: (context, snapshot) {

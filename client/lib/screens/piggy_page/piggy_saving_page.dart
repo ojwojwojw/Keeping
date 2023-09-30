@@ -109,7 +109,7 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
           )
         ],
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '다음',
         action: () async {
           Navigator.push(

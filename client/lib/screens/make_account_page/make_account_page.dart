@@ -45,7 +45,7 @@ class _MakeAccountPageState extends State<MakeAccountPage> {
               child: _agreementBtn(_setAgreementResult, _agreementResult)),
         ],
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
           text: '다음',
           action: () {
             goNext(context, PhoneVerificationPage());
@@ -264,7 +264,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '인증하기',
         action: () async {
           if (widget._verificationFormKey.currentState != null &&

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/piggy_page/make_piggy_page.dart';
 import 'package:keeping/screens/piggy_page/piggy_detail_page.dart';
@@ -22,6 +23,7 @@ class _PiggyPageState extends State<PiggyPage> {
   bool? _parent;
   String? _accessToken;
   String? _memberKey;
+  String? _childKey;
 
   @override
   void initState() {
@@ -29,6 +31,7 @@ class _PiggyPageState extends State<PiggyPage> {
     _parent = context.read<UserInfoProvider>().parent;
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
+    _childKey = context.read<ChildInfoProvider>().memberKey;
   }
 
   @override
@@ -43,7 +46,7 @@ class _PiggyPageState extends State<PiggyPage> {
         future: getPiggyList(
           accessToken: _accessToken, 
           memberKey: _memberKey,
-          targetKey: _parent != null && _parent == true ? null : _memberKey,
+          targetKey: _parent != null && _parent == true ? _childKey : _memberKey,
         ),
         builder: (context, snapshot) {
           print('저금통 페이지 ${snapshot.toString()}');

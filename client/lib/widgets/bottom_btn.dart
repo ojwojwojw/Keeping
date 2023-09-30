@@ -17,28 +17,29 @@ class BottomBtn extends StatelessWidget {
     this.isDisabled = true,
   });
 
-  // 특정 페이지로 가던지, 데이터를 보내던지, 이전 페이지로 돌아가던지 구분해서 로직 짜기
-
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
       color: isDisabled ? Colors.black38 : bgColor,
-      height: 70.0,
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: TextButton(
-        onPressed: () {
-          if (!isDisabled) {
-            if (action is Widget) {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => action));
-            } else if (action is Function) {
-              action();
-            } else {
-              Navigator.pop(context);
+      elevation: 0,
+      child: SizedBox(
+        height: 70,
+        width: double.infinity,
+        child: TextButton(
+          onPressed: () {
+            if (!isDisabled) {
+              if (action is Widget) {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => action));
+              } else if (action is Function) {
+                action();
+              } else {
+                Navigator.pop(context);
+              }
             }
-          }
-        },
-        style: _bottomBtnStyle(textColor),
-        child: Text(text),
+          },
+          style: _bottomBtnStyle(textColor),
+          child: Text(text),
+        ),
       ),
     );
   }

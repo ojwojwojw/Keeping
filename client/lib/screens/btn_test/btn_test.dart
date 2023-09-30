@@ -16,7 +16,7 @@ class BtnTest extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '다음',
         isDisabled: false,
       )

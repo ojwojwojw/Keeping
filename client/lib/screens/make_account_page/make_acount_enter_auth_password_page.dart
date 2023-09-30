@@ -100,7 +100,7 @@ class _MakeAccountEnterAuthPasswordPageState extends State<MakeAccountEnterAuthP
           ),
         ],
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '만들기', 
         action: () async {
           var response = await makeAccount(

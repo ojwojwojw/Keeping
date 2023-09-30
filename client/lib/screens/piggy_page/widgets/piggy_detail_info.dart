@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_detail_chart.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/child_tag.dart';
+import 'package:provider/provider.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class PiggyDetailInfo extends StatefulWidget {
@@ -28,6 +30,13 @@ class PiggyDetailInfo extends StatefulWidget {
 }
 
 class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
+  String? childName;
+
+  @override
+  void initState() {
+    super.initState();
+    childName = context.read<ChildInfoProvider>().name;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +53,7 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
               padding: const EdgeInsets.only(top: 30),
               child: Column(
                 children: [
-                  if (widget.parent != null && widget.parent!) ChildTag(childName: '김첫째', text: '저금통',),
+                  if (widget.parent != null && widget.parent! && childName != null) ChildTag(childName: childName!, text: '저금통',),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

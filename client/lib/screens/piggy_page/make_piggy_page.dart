@@ -154,7 +154,7 @@ class _MakePiggyPageState extends State<MakePiggyPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '만들기',
         action: () async {
           var response = await makePiggy(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/online_payment_request/make_online_payment_request_page.dart';
 import 'package:keeping/screens/online_payment_request/online_payment_request_detail_page.dart';
@@ -46,6 +47,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
     _parent = context.read<UserInfoProvider>().parent;
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
+    _childKey = context.read<ChildInfoProvider>().memberKey;
     _future = getOnlinePaymentRequestList(accessToken: _accessToken, memberKey: _memberKey, targetKey: _parent != null && _parent! ? _childKey : _memberKey);
   }
 
@@ -62,7 +64,6 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
           OnlinePaymentRequestInfo(),
           OnlinePaymentRequestFilters(setFuture: setFuture),
           FutureBuilder(
-            // future: getOnlinePaymentRequestList(accessToken: _accessToken, memberKey: _memberKey, targetKey: _parent != null && _parent! ? _childKey : _memberKey),
             future: _future,
             builder: (context, snapshot) {
               print('스냅샷스냅샷스냅샷 ${snapshot.toString()}');
@@ -87,7 +88,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
                               paidMoney: e['childMoney'],
                               status: e['approve'],
                               createdDate: DateTime.parse(e['createdDate']),
-                              path: OnlinePaymentRequestDetailPage(onlineId: e['id']),
+                              path: OnlinePaymentRequestDetailPage(onlineId: e['id'], status: e['approve']),
                             )                    
                           ),
                         ],

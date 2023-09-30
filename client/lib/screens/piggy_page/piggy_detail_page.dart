@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/piggy_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
@@ -28,6 +29,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
   bool? _parent;
   String? _accessToken;
   String? _memberKey;
+  String? _childKey;
 
   @override
   void initState() {
@@ -37,6 +39,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
     _parent = context.read<UserInfoProvider>().parent;
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
+    _childKey = context.read<ChildInfoProvider>().memberKey;
   }
 
   @override
@@ -62,7 +65,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
               accessToken: _accessToken,
               memberKey: _memberKey,
               piggyId: widget.piggyDetailInfo['id'],
-              targetKey: _parent != null && _parent == true ? null : _memberKey,
+              targetKey: _parent != null && _parent == true ? _childKey : _memberKey,
             ),
             builder: (context, snapshot) {
               print('저금통 상세 페이지 ${snapshot.toString()}');
