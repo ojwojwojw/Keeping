@@ -24,21 +24,7 @@ class MissionPage extends StatefulWidget {
 }
 
 class _MissonPageState extends State<MissionPage> {
-  List<Map<String, dynamic>> data = [
-    {
-      "childKey": "595d952c-16ed-408e-ba63-ef988d624fa5",
-      "id": 3,
-      "type": "PARENT",
-      "todo": "학교생활잘마치기",
-      "money": 2000,
-      "cheeringMessage": "오늘도화이팅!",
-      "childComment": null,
-      "startDate": "2023-09-25",
-      "endDate": "2023-09-30",
-      "completed": "YET",
-      "createdDate": "2023-09-27T05:18:22.797014"
-    }
-  ];
+  List<Map<String, dynamic>> data = [];
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +117,9 @@ class _MissonPageState extends State<MissionPage> {
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
     var memberKey = userProvider.memberKey;
     var accessToken = userProvider.accessToken;
+    print('디버깅?!?');
+    print(memberKey);
+    print(accessToken);
 
     try {
       // GET 요청 보내기
@@ -139,7 +128,7 @@ class _MissonPageState extends State<MissionPage> {
 
       // 요청이 성공했을 때 처리
       if (response.statusCode == 200) {
-        final responseData = List<Map<String, dynamic>>.from(response.data);
+        dynamic responseData = List<Map<String, dynamic>>.from(response.data);
         print('Response data: $responseData');
         setState(() {
           data = responseData;
