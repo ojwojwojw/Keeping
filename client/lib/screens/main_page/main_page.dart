@@ -9,7 +9,7 @@ import '../signup_page/signup_user_type_select_page.dart';
 import '../login_page/login_page.dart';
 import '../user_link_page/before_user_link_page.dart';
 import '../my_page/parent_my_page.dart';
-import '../diary_page/child_diary_page.dart';
+import '../diary_page/diary_page.dart';
 import '../receipt_ocr_page/receipt_ocr_page.dart';
 
 class MainPage extends StatelessWidget {
