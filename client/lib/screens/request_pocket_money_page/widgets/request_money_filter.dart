@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class RequestMoneyFilters extends StatefulWidget {
-  RequestMoneyFilters({super.key});
+  final Function(int) onPressed; // onPressed 함수 추가
+
+  RequestMoneyFilters({Key? key, required this.onPressed}) : super(key: key);
 
   @override
   State<RequestMoneyFilters> createState() => _RequestMoneyFiltersState();
@@ -25,6 +27,7 @@ class _RequestMoneyFiltersState extends State<RequestMoneyFilters> {
               setState(() {
                 selectedBtnIdx = 0;
               });
+              widget.onPressed(selectedBtnIdx); // onPressed 콜백 호출
             },
           ),
           _RequestMoneyFilter(
@@ -35,6 +38,7 @@ class _RequestMoneyFiltersState extends State<RequestMoneyFilters> {
               setState(() {
                 selectedBtnIdx = 1;
               });
+              widget.onPressed(selectedBtnIdx); // onPressed 콜백 호출
             },
           ),
           _RequestMoneyFilter(
@@ -45,6 +49,7 @@ class _RequestMoneyFiltersState extends State<RequestMoneyFilters> {
               setState(() {
                 selectedBtnIdx = 2;
               });
+              widget.onPressed(selectedBtnIdx); // onPressed 콜백 호출
             },
           ),
           _RequestMoneyFilter(
@@ -54,6 +59,7 @@ class _RequestMoneyFiltersState extends State<RequestMoneyFilters> {
             onPressed: () {
               setState(() {
                 selectedBtnIdx = 3;
+                widget.onPressed(selectedBtnIdx); // onPressed 콜백 호출
               });
             },
           ),
