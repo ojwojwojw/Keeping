@@ -3,8 +3,8 @@ import 'package:keeping/util/display_format.dart';
 
 // 자녀 소비경로 페이지에서 날짜를 넘길 수 있는 버튼
 class FloatingDateBtn extends StatelessWidget {
-  Function setDate;
-  DateTime selectedDate;
+  final Function setDate;
+  final DateTime selectedDate;
 
   FloatingDateBtn({
     super.key,
@@ -12,7 +12,6 @@ class FloatingDateBtn extends StatelessWidget {
     required this.selectedDate,
   });
 
-  // DateTime selectedDate = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -53,11 +52,7 @@ class FloatingDateBtn extends StatelessWidget {
                   locale: const Locale('ko', 'KR'),
                 );
                 if (newDate != null ) {
-                  // setState(() {
-                  //   widget.selectedDate = DateFormat('yyyy-MM-dd').format(newDate);
-                  // });
                   setDate(newDate);
-                  // 새로 소비 경로 불러오는 함수 호출??
                 }
               },
               child: Text(formattedMDDate(selectedDate), style: TextStyle(fontSize: 20))
