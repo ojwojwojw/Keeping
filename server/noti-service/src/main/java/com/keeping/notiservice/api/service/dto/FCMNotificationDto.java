@@ -1,5 +1,6 @@
 package com.keeping.notiservice.api.service.dto;
 
+import com.keeping.notiservice.api.controller.request.QuestionNotiRequest;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,9 +24,17 @@ public class FCMNotificationDto {
 
     public static FCMNotificationDto toDto(SendNotiDto dto) {
         return FCMNotificationDto.builder()
-                .memberKey(dto.getSentKey())
+                .memberKey(dto.getMemberKey())
                 .title(dto.getTitle())
                 .body(dto.getContent())
+                .build();
+    }
+
+    public static FCMNotificationDto toDto(QuestionNotiRequest request) {
+        return FCMNotificationDto.builder()
+                .memberKey(request.getMemberKey())
+                .title(request.getTitle())
+                .body(request.getBody())
                 .build();
     }
 }

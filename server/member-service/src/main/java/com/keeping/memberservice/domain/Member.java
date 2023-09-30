@@ -61,4 +61,8 @@ public class Member extends TimeBaseEntity {
         this.fcmToken = fcmToken;
         this.active = active;
     }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 }

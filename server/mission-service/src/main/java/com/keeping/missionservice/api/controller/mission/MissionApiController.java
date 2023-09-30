@@ -2,6 +2,7 @@ package com.keeping.missionservice.api.controller.mission;
 
 import com.keeping.missionservice.api.ApiResponse;
 import com.keeping.missionservice.api.controller.mission.request.*;
+import com.keeping.missionservice.api.controller.mission.response.MemberRelationshipResponse;
 import com.keeping.missionservice.api.controller.mission.response.MissionResponse;
 import com.keeping.missionservice.api.service.mission.MissionService;
 import com.keeping.missionservice.api.service.mission.dto.AddCommentDto;
@@ -15,16 +16,40 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.ws.rs.Path;
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/mission-service/api/{member_key}")
+@RequestMapping("/mission-service/api/{member-key}")
 @Slf4j
 public class MissionApiController {
 
     private final MissionService missionService;
+    private final MemberFeignClient memberFeignClient;
+
+
+    /**
+     * bank 테스트
+     */
+    @GetMapping("/bank/test")
+    public ApiResponse<Long> testBalance(@PathVariable(name = "member-key") String memberKey) {
+        log.debug("[ bank ]");
+
+        Long balance = missionService.testBalance(memberKey);
+        return ApiResponse.ok(balance);
+    }
+
+    /**
+     * mission 테스트
+     */
+    @PostMapping("/mission/test")
+    public ApiResponse<Boolean> testMember(@PathVariable(name = "member-key") String memberKey, @RequestBody AddMissionRequest request) {
+        log.debug("[ member ]");
+
+        MemberRelationshipResponse response = missionService.testMember(memberKey, request);
+
+        return ApiResponse.ok(response.isParentialRelationship());
+    }
 
     /**
      * 미션 등록
@@ -34,7 +59,7 @@ public class MissionApiController {
      */
     @PostMapping
     public ApiResponse<Long> addMission(
-            @PathVariable(name = "member_key") String memberKey,
+            @PathVariable(name = "member-key") String memberKey,
             @Valid @RequestBody AddMissionRequest request
     ) {
         log.debug("addMission :: request={}", request);
@@ -50,17 +75,16 @@ public class MissionApiController {
         }
     }
 
-    @GetMapping
-    public ApiResponse<List<MissionResponse>> showMission(
-            @PathVariable("member_key") String memberKey
-    ) {
-        List<MissionResponse> missionResponses = missionService.showMission(memberKey);
+    @GetMapping("/{target-key}")
+    public ApiResponse<List<MissionResponse>> showMission(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey) {
+        List<MissionResponse> missionResponses = missionService.showMission(targetKey);
         return ApiResponse.ok(missionResponses);
     }
 
-    @GetMapping("/{mission_id}")
+    @GetMapping("/{target-key}/{mission_id}")
     public ApiResponse<MissionResponse> showDetailMission(
-            @PathVariable("member_key") String memberKey,
+            @PathVariable("member-key") String memberKey,
+            @PathVariable("target-key") String targetKey,
             @PathVariable("mission_id") Long missionId
     ) {
         try {
@@ -73,7 +97,7 @@ public class MissionApiController {
 
     @PatchMapping
     public ApiResponse<Long> editMission(
-            @PathVariable(name = "member_key") String memberKey,
+            @PathVariable(name = "member-key") String memberKey,
             @Valid @RequestBody EditMissionRequest request
     ) {
         try {
@@ -85,12 +109,12 @@ public class MissionApiController {
     }
 
     @PatchMapping("/comment")
-    public ApiResponse<Long> addComment(
-            @PathVariable(name = "member_key") String memberKey,
+    public ApiResponse<Long> addFinishedComment(
+            @PathVariable(name = "member-key") String memberKey,
             @Valid @RequestBody AddCommentRequest request
-            ) {
+    ) {
         try {
-            Long missionId = missionService.addComment(memberKey, AddCommentDto.toDto(request));
+            Long missionId = missionService.addFinishedComment(memberKey, AddCommentDto.toDto(request));
             return ApiResponse.ok(missionId);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage(), null);
@@ -99,7 +123,7 @@ public class MissionApiController {
 
     @PatchMapping("/complete")
     public ApiResponse<Long> editComplete(
-            @PathVariable(name = "member_key") String memberKey,
+            @PathVariable(name = "member-key") String memberKey,
             @Valid @RequestBody EditCompleteRequest request
     ) {
         try {
@@ -112,7 +136,7 @@ public class MissionApiController {
 
     @DeleteMapping("/{mission_id}")
     public ApiResponse<Long> removeMission(
-            @PathVariable(name = "member_key") String memberKey,
+            @PathVariable(name = "member-key") String memberKey,
             @PathVariable(name = "mission_id") Long missionId
     ) {
         try {

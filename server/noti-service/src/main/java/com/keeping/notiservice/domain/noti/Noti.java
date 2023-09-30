@@ -1,8 +1,8 @@
 package com.keeping.notiservice.domain.noti;
 
+import com.keeping.notiservice.global.common.TimeBaseEntity;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
@@ -18,10 +18,10 @@ public class Noti extends TimeBaseEntity {
     private Long id;
     
     @Column(nullable = false, length = 255)
-    private String receptionKey;
+    private String memberKey;
     
     @Column(nullable = false, length = 255)
-    private String sentKey;
+    private String fcmToken;
     
     @Column(nullable = false)
     private String title;
@@ -30,22 +30,23 @@ public class Noti extends TimeBaseEntity {
     private String content;
     
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Type type;
 
     @Builder
-    public Noti(Long id, String receptionKey, String sentKey, String title, String content, Type type) {
+    public Noti(Long id, String memberKey, String fcmToken, String title, String content, Type type) {
         this.id = id;
-        this.receptionKey = receptionKey;
-        this.sentKey = sentKey;
+        this.memberKey = memberKey;
+        this.fcmToken = fcmToken;
         this.title = title;
         this.content = content;
         this.type = type;
     }
 
-    public static Noti toNoti(String receptionKey, String sentKey, String title, String content, Type type) {
+    public static Noti toNoti(String memberKey, String fcmToken, String title, String content, Type type) {
         return Noti.builder()
-                .receptionKey(receptionKey)
-                .sentKey(sentKey)
+                .memberKey(memberKey)
+                .fcmToken(fcmToken)
                 .title(title)
                 .content(content)
                 .type(type)
