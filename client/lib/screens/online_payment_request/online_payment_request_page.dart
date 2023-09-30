@@ -88,7 +88,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
                               paidMoney: e['childMoney'],
                               status: e['approve'],
                               createdDate: DateTime.parse(e['createdDate']),
-                              path: OnlinePaymentRequestDetailPage(onlineId: e['id']),
+                              path: OnlinePaymentRequestDetailPage(onlineId: e['id'], status: e['approve']),
                             )                    
                           ),
                         ],

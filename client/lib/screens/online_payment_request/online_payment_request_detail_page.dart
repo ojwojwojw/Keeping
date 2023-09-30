@@ -15,10 +15,12 @@ import 'package:provider/provider.dart';
 
 class OnlinePaymentRequestDetailPage extends StatefulWidget {
   final int onlineId;
+  final String? status;
 
   OnlinePaymentRequestDetailPage({
     super.key,
     required this.onlineId,
+    required this.status,
   });
 
   @override
@@ -81,7 +83,7 @@ class _OnlinePaymentRequestDetailPageState extends State<OnlinePaymentRequestDet
 
         }
       ),
-      bottomSheet: _parent != null && _parent! ? 
+      bottomSheet: _parent != null && _parent! && widget.status == 'WAIT' ? 
         BottomDoubleBtn(
           firstText: '거절하기', 
           firstAction: RejectOnlinePaymentRequestPage(onlineId: widget.onlineId),
