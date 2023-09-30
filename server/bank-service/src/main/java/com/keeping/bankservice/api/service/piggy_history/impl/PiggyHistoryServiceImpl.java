@@ -33,7 +33,7 @@ public class PiggyHistoryServiceImpl implements PiggyHistoryService {
 
         String name = null;
         if(lastSavingHistoryName == null) {
-            name = "0";
+            name = "1";
         }
         else {
             name = Integer.toString(Integer.parseInt(lastSavingHistoryName) + 1);

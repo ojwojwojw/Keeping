@@ -20,6 +20,7 @@ public class AddPiggyHistoryDto {
     private AddPiggyHistoryDto(Piggy piggy, int money, int balance) {
         this.piggy = piggy;
         this.money = money;
+        this.balance = balance;
     }
 
     public static AddPiggyHistoryDto toDto(Piggy piggy, int money, int balance) {

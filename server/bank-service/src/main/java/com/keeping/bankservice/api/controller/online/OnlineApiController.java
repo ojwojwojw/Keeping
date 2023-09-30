@@ -8,6 +8,7 @@ import com.keeping.bankservice.api.service.online.OnlineService;
 import com.keeping.bankservice.api.service.online.dto.AddOnlineDto;
 import com.keeping.bankservice.api.service.online.dto.ApproveOnlineDto;
 import com.keeping.bankservice.global.common.Approve;
+import com.keeping.bankservice.global.exception.NoAuthorizationException;
 import com.keeping.bankservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,4 +78,17 @@ public class OnlineApiController {
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "현재 서비스 이용이 불가능합니다. 잠시 후 다시 시도해 주세요.", null);
         }
     }
+
+    @GetMapping("/{target-key}/detail/{online-id}")
+    public ApiResponse<ShowOnlineResponse> showDetailOnline(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("online-id") Long onlineId) {
+        log.debug("ShowDetailOnline={}", onlineId);
+
+        try {
+            ShowOnlineResponse response = onlineService.showDetailOnline(memberKey, targetKey, onlineId);
+            return ApiResponse.ok(response);
+        } catch (NotFoundException | NoAuthorizationException e) {
+            return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
+        }
+    }
+
 }
