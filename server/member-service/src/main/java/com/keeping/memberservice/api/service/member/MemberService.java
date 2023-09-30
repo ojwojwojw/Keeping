@@ -29,12 +29,22 @@ public class MemberService implements UserDetailsService {
     private final ParentRepository parentRepository;
 
     private final ChildRepository childRepository;
+    private final ChildQueryRepository childQueryRepository;
     private final MemberRepository memberRepository;
     private final LinkRepository linkRepository;
     private final LinkQueryRepository linkQueryRepository;
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthService authService;
+
+    /**
+     * 모든 자녀의 멤버 키 반환
+     *
+     * @return
+     */
+    public List<String> getAllChildKey() {
+        return childQueryRepository.getAllChildKey();
+    }
 
     /**
      * 부모 키 반환

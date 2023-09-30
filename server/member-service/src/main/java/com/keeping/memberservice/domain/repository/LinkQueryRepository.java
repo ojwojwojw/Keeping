@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-//import static com.keeping.memberservice.domain.QLink.*;
 import static com.keeping.memberservice.domain.QLink.link;
 import static com.querydsl.core.types.Projections.constructor;
 

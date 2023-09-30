@@ -35,6 +35,12 @@ public class MemberController {
     private final SmsService smsService;
     private final MemberService memberService;
 
+    @GetMapping("/child-keys")
+    public ApiResponse<List<String>> getAllChildKey() {
+        List<String> response = memberService.getAllChildKey();
+        return ApiResponse.ok(response);
+    }
+
     @GetMapping("/{memberKey}/registration-time")
     public ApiResponse<QuestionTimeResponse> getQuestionTime(@PathVariable String memberKey) {
         return ApiResponse.ok(QuestionTimeResponse.builder()
