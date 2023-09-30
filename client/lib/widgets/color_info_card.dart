@@ -39,7 +39,7 @@ class _ColorInfoCardState extends State<ColorInfoCard> {
         padding: EdgeInsets.symmetric(vertical: 7),
         child: Container(
           width: 360,
-          height: 120,
+          height: 110,
           decoration: roundedBoxWithShadowStyle(borderRadius: 30),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(30),
@@ -72,11 +72,26 @@ Widget _requestStatus(String status) {
 }
 
 Widget _requestContent(String name) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Text(name, style: TextStyle(fontWeight: FontWeight.bold),),
-      Text('을(를) 부탁했어요!')
-    ]
+  return Expanded(
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 17),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          categoryImg('assets/image/temp_image.jpg'),
+          SizedBox(
+            width: 250,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+                Text('을(를) 부탁했어요!', style: TextStyle(fontSize: 20),)
+              ]
+            ),
+          ),
+        ],
+      ),
+    ),
   );
 }

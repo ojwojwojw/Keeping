@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class OnlinePaymentRequestFilters extends StatefulWidget {
-  OnlinePaymentRequestFilters({super.key});
+  Function setFuture;
+
+  OnlinePaymentRequestFilters({
+    super.key,
+    required this.setFuture,
+  });
 
   @override
   State<OnlinePaymentRequestFilters> createState() =>
@@ -26,6 +31,7 @@ class _OnlinePaymentRequestFiltersState
               setState(() {
                 selectedBtnIdx = 0;
               });
+              widget.setFuture(null);
             },
           ),
           _OnlinePaymentRequestFilter(
@@ -36,6 +42,7 @@ class _OnlinePaymentRequestFiltersState
               setState(() {
                 selectedBtnIdx = 1;
               });
+              widget.setFuture('WAIT');
             },
           ),
           _OnlinePaymentRequestFilter(
@@ -46,6 +53,7 @@ class _OnlinePaymentRequestFiltersState
               setState(() {
                 selectedBtnIdx = 2;
               });
+              widget.setFuture('APPROVE');
             },
           ),
           _OnlinePaymentRequestFilter(
@@ -56,6 +64,7 @@ class _OnlinePaymentRequestFiltersState
               setState(() {
                 selectedBtnIdx = 3;
               });
+              widget.setFuture('REJECT');
             },
           ),
         ],

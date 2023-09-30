@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/online_payment_request_provider.dart';
+import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/online_payment_request/online_payment_request_page.dart';
+import 'package:keeping/screens/online_payment_request/utils/online_payment_request_future_methods.dart';
 import 'package:keeping/util/dio_method.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/completed_page.dart';
@@ -19,17 +24,17 @@ class MakeOnlinePaymentRequestFirstPage extends StatefulWidget {
 class _MakeOnlinePaymentRequestFirstPageState
     extends State<MakeOnlinePaymentRequestFirstPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _urlController = TextEditingController();
-  final TextEditingController _reasonController = TextEditingController();
+  // final TextEditingController _nameController = TextEditingController();
+  // final TextEditingController _urlController = TextEditingController();
+  // final TextEditingController _reasonController = TextEditingController();
 
-  bool _nameValidate = false;
+  bool _productNameValidate = false;
   bool _urlValidate = false;
   bool _reasonValidate = false;
 
-  void _setNameValidate(bool val) {
+  void _setProductNameValidate(bool val) {
     setState(() {
-      _nameValidate = val;
+      _productNameValidate = val;
     });
   }
 
@@ -48,9 +53,7 @@ class _MakeOnlinePaymentRequestFirstPageState
   @override
   void initState() {
     super.initState();
-    context
-        .read<OnlinePaymentRequestFormProvider>()
-        .removeOnlinePaymentRequestForm();
+    context.read<OnlinePaymentRequestFormProvider>().removeOnlinePaymentRequestForm();
   }
 
   @override
@@ -68,9 +71,7 @@ class _MakeOnlinePaymentRequestFirstPageState
                   label: '어떤 걸 사고 싶나요?',
                   hintText: '부탁하고 싶은 걸 적어주세요.',
                   onSaved: (val) {
-                    context
-                        .read<OnlinePaymentRequestFormProvider>()
-                        .setName(val);
+                    context.read<OnlinePaymentRequestFormProvider>().setProductName(val);
                   },
                   validator: (val) {
                     if (val.length < 1) {
@@ -80,19 +81,17 @@ class _MakeOnlinePaymentRequestFirstPageState
                   },
                   onChange: (val) {
                     if (val.length < 1) {
-                      _setNameValidate(false);
+                      _setProductNameValidate(false);
                     } else {
-                      _setNameValidate(true);
+                      _setProductNameValidate(true);
                     }
                   },
-                  controller: _nameController),
+                ),
               renderTextFormField(
                   label: '어디서 팔고 있나요?',
                   hintText: 'URL을 입력해 주세요.',
                   onSaved: (val) {
-                    context
-                        .read<OnlinePaymentRequestFormProvider>()
-                        .setUrl(val);
+                    context.read<OnlinePaymentRequestFormProvider>().setUrl(val);
                   },
                   validator: (val) {
                     if (val.length < 1) {
@@ -107,14 +106,12 @@ class _MakeOnlinePaymentRequestFirstPageState
                       _setUrlValidate(true);
                     }
                   },
-                  controller: _urlController),
+                ),
               renderBoxFormField(
                   label: '왜 필요한가요?',
                   hintText: '이 물건이 필요한 이유를 설명해주세요!',
                   onSaved: (val) {
-                    context
-                        .read<OnlinePaymentRequestFormProvider>()
-                        .setReason(val);
+                    context.read<OnlinePaymentRequestFormProvider>().setContent(val);
                   },
                   validator: (val) {
                     if (val.length < 1) {
@@ -129,7 +126,7 @@ class _MakeOnlinePaymentRequestFirstPageState
                       _setReasonValidate(true);
                     }
                   },
-                  controller: _reasonController),
+                ),
             ],
           ),
         ),
@@ -137,27 +134,23 @@ class _MakeOnlinePaymentRequestFirstPageState
       bottomNavigationBar: BottomBtn(
         text: '다음',
         action: () async {
-          if (_formKey.currentState != null &&
-              _formKey.currentState!.validate()) {
+          if (_formKey.currentState != null && _formKey.currentState!.validate()) {
             _formKey.currentState!.save();
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => MakeOnlinePaymentRequestSecondPage()));
+            Navigator.push(context, MaterialPageRoute(builder: (_) => MakeOnlinePaymentRequestSecondPage()));
             print('저장완료');
           } else {
             print('저장실패');
-            // 모달 띄우기
+            roundedModal(
+              context: context, 
+              title: '문제가 발생했습니다. 다시 시도해주세요.'
+            );
           }
         },
-        isDisabled:
-            _nameValidate && _urlValidate && _reasonValidate ? false : true,
+        isDisabled: _productNameValidate && _urlValidate && _reasonValidate ? false : true,
       ),
     );
   }
 }
-
-const int _balance = 50000;
 
 class MakeOnlinePaymentRequestSecondPage extends StatefulWidget {
   MakeOnlinePaymentRequestSecondPage({super.key});
@@ -167,26 +160,49 @@ class MakeOnlinePaymentRequestSecondPage extends StatefulWidget {
       _MakeOnlinePaymentRequestSecondPageState();
 }
 
-class _MakeOnlinePaymentRequestSecondPageState
-    extends State<MakeOnlinePaymentRequestSecondPage> {
+class _MakeOnlinePaymentRequestSecondPageState extends State<MakeOnlinePaymentRequestSecondPage> {
+  String? _accessToken;
+  String? _memberKey;
+  int _balance = 0;
+
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _costController = TextEditingController();
-  final TextEditingController _paidMoneyController = TextEditingController();
+  int _totalMoney = 0;
+  int _childMoney = 0;
 
-  bool _costValidate = false;
-  bool _paidMoneyValidate = false;
+  bool _totalMoneyValidate = false;
+  bool _childMoneyValidate = false;
 
-  void _setCostValidate(bool val) {
+  void _setTotalMoney(val) {
     setState(() {
-      _costValidate = val;
+      _totalMoney = int.parse(val);
     });
   }
 
-  void _setPaidMoneyValidate(bool val) {
+  void _setChildMoney(val) {
     setState(() {
-      _paidMoneyValidate = val;
+      _childMoney = int.parse(val);
     });
+  }
+
+  void _setTotalMoneyValidate(bool val) {
+    setState(() {
+      _totalMoneyValidate = val;
+    });
+  }
+
+  void _setChildMoneyValidate(bool val) {
+    setState(() {
+      _childMoneyValidate = val;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
+    _balance = context.read<AccountInfoProvider>().balance;
   }
 
   @override
@@ -211,16 +227,15 @@ class _MakeOnlinePaymentRequestSecondPageState
                     return null;
                   },
                   onChange: (val) {
-                    context
-                        .read<OnlinePaymentRequestFormProvider>()
-                        .setCost(val);
                     if (val.length < 1) {
-                      _setCostValidate(false);
+                      _setTotalMoney(0);
+                      _setTotalMoneyValidate(false);
                     } else {
-                      _setCostValidate(true);
+                      _setTotalMoney(val);
+                      _setTotalMoneyValidate(true);
                     }
                   },
-                  controller: _costController),
+                ),
               renderTextFormField(
                   isNumber: true,
                   label: '얼마를 낼까요?',
@@ -230,89 +245,54 @@ class _MakeOnlinePaymentRequestSecondPageState
                       return '금액을 입력해주세요.';
                     } else if (int.parse(val) > _balance) {
                       return '출금 가능 잔액을 초과했습니다.';
-                    } else if (context
-                            .watch<OnlinePaymentRequestFormProvider>()
-                            .cost! <
-                        int.parse(val)) {
-                      return '물건 금액을 초과했어요.';
+                    } else if (_totalMoney < int.parse(val)) {
+                      return '물건 금액을 초과했습니다.';
                     }
                     return null;
                   },
                   onChange: (val) {
-                    context
-                        .read<OnlinePaymentRequestFormProvider>()
-                        .setPaidMoney(val);
-                    if (val.length < 1 || int.parse(val) > _balance) {
-                      _setPaidMoneyValidate(false);
+                    if (val.length < 1) {
+                      _setChildMoney('0');
+                      _setChildMoneyValidate(false);
+                    } else if (int.parse(val) > _balance) {
+                      _setChildMoney(val);
+                      _setChildMoneyValidate(false);
                     } else {
-                      _setPaidMoneyValidate(true);
+                      _setChildMoney(val);
+                      _setChildMoneyValidate(true);
                     }
                   },
-                  controller: _paidMoneyController),
+                ),
             ],
           ),
         ),
       ),
       bottomNavigationBar: BottomBtn(
-        text: '다음',
+        text: '부탁하기',
         action: () async {
-          var response = await _makeOnlinePaymentRequest(
-            accessToken: "dd",
-            name: Provider.of<OnlinePaymentRequestFormProvider>(context,
-                        listen: false)
-                    .name ??
-                '',
-            url: Provider.of<OnlinePaymentRequestFormProvider>(context,
-                        listen: false)
-                    .url ??
-                '',
-            reason: Provider.of<OnlinePaymentRequestFormProvider>(context,
-                        listen: false)
-                    .reason ??
-                '',
-            cost: Provider.of<OnlinePaymentRequestFormProvider>(context,
-                        listen: false)
-                    .cost ??
-                0,
-            paidMoney: Provider.of<OnlinePaymentRequestFormProvider>(context,
-                        listen: false)
-                    .paidMoney ??
-                0,
+          var response = await createOnlinePaymentRequest(
+            accessToken: _accessToken, 
+            memberKey: _memberKey, 
+            productName: Provider.of<OnlinePaymentRequestFormProvider>(context, listen: false).productName, 
+            url: Provider.of<OnlinePaymentRequestFormProvider>(context, listen: false).url, 
+            content: Provider.of<OnlinePaymentRequestFormProvider>(context, listen: false).content, 
+            totalMoney: _totalMoney, 
+            childMoney: _childMoney
           );
-          if (!mounted) return;
-          if (response != null) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        CompletedPage(text: '아디다스 삼바\n부탁 완료')));
+          print('온라인 결제 요청 결과 $response');
+          if (response == 0) {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(
+              text: '부탁이\n완료되었습니다.',
+              button: ConfirmBtn(
+                action: OnlinePaymentRequestPage(),
+              ),
+            )));
           } else {
-            // 모달 띄우기
-            roundedModal(context: context, title: '다시 시도해주세요.');
+            roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
           }
         },
-        isDisabled: _costValidate && _paidMoneyValidate ? false : true,
+        isDisabled: _totalMoneyValidate && _childMoneyValidate ? false : true,
       ),
     );
   }
-}
-
-Future<dynamic> _makeOnlinePaymentRequest(
-    {required String accessToken,
-    required String name,
-    required String url,
-    required String reason,
-    required int cost,
-    required int paidMoney}) async {
-  final response = await dioPost(
-      accessToken: accessToken,
-      url: '/bank-service/online',
-      data: {
-        "name": name,
-        "url": url,
-        "reason": reason,
-        "cost": cost,
-        "paidMoney": paidMoney,
-      });
-  return response;
 }

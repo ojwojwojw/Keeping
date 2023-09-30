@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 // 저금통, 용돈기입장 등 은은한 회색 배경
@@ -32,11 +35,11 @@ BoxDecoration roundedBoxWithShadowStyle({
 }
 
 // 둥근 카테고리 이미지
-ClipOval categoryImg(String imgPath) {
+ClipOval categoryImg(String imgPath, {double size = 60}) {
   return ClipOval(
     child: SizedBox(
-      width: 60,
-      height: 60,
+      width: size,
+      height: size,
       child: Image.asset(
         imgPath,
         fit: BoxFit.cover
@@ -54,6 +57,20 @@ ClipOval roundedAssetImg({required String imgPath, double size = 60}) {
       child: Image.asset(
         imgPath,
         fit: BoxFit.cover,
+      ),
+    ),
+  );
+}
+
+// 둥근 파일 이미지(base64로 보내주는 이미지)
+ClipOval roundedMemoryImg({required String img, double size = 100}) {
+  return ClipOval(
+    child: SizedBox(
+      width: size,
+      height: size,
+      child: Image.memory(
+        Base64Decoder().convert(img),
+        fit: BoxFit.cover
       ),
     ),
   );

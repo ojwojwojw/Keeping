@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:keeping/fcmSetting.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeping/provider/account_info_provider.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/online_payment_request_provider.dart';
 import 'package:keeping/provider/piggy_provider.dart';
 
@@ -85,7 +86,13 @@ void main() async {
     ChangeNotifierProvider.value(
         value: userInfoProvider), // UserInfoProvider 제공
     ChangeNotifierProvider(create: (_) => UserLinkProvider()),
-  ], child: const MaterialApp(home: MainPage())));
+    ChangeNotifierProvider(create: (_) => ChildInfoProvider()),
+  ], child: MaterialApp(
+    theme: ThemeData(
+      fontFamily: "NotoSansKR"
+    ),
+    home: MainPage()
+  )));
 }
 
 class MyApp extends StatelessWidget {

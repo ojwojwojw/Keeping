@@ -14,6 +14,7 @@ class MoneyRecord extends StatefulWidget {
   final int money;
   final int balance;
   final int accountHistoryId;
+  final String largeCategory;
   final Map<String, dynamic>? detail;
   final bool onlyTime;
   final bool type;
@@ -25,6 +26,7 @@ class MoneyRecord extends StatefulWidget {
     required this.money,
     required this.balance,
     required this.accountHistoryId,
+    required this.largeCategory,
     this.detail,
     this.onlyTime = true,
     required this.type,
@@ -51,7 +53,7 @@ class _MoneyRecordState extends State<MoneyRecord> {
           context: context,
           title: '상세 내역 쓰기',
           content: moneyRecordModalContent(widget.date, widget.storeName, widget.money),
-          button: moneyRecordModalBtns(context, widget.date, widget.storeName, widget.money, widget.balance, widget.accountHistoryId),
+          button: moneyRecordModalBtns(context, widget.date, widget.storeName, widget.money, widget.balance, widget.accountHistoryId, widget.largeCategory),
         );
       },
       child: Padding(
@@ -164,7 +166,7 @@ Widget moneyRecordModalContent(DateTime date, String storeName, num money) {
 
 // 용돈기입장 내역 클릭시 나오는 모달에 들어갈 버튼(2개)
 Row moneyRecordModalBtns(BuildContext context, DateTime date, String storeName,
-    int money, int balance, int accountHistoryId) {
+    int money, int balance, int accountHistoryId, String largeCategory) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -179,6 +181,7 @@ Row moneyRecordModalBtns(BuildContext context, DateTime date, String storeName,
             money: money,
             balance: balance,
             accountHistoryId: accountHistoryId,
+            largeCategory: largeCategory,
           ))
     ],
   );
