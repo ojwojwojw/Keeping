@@ -185,8 +185,8 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
         }
 
         return Container(
-          width: 330,
-          margin: EdgeInsets.all(10),
+          width: 310,
+          margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
