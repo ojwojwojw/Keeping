@@ -33,7 +33,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class MissionServiceImpl implements MissionService {
 
@@ -51,6 +50,7 @@ public class MissionServiceImpl implements MissionService {
      * @return 미션 식별키
      */
     @Override
+    @Transactional
     public Long addMission(String memberKey, AddMissionDto dto) {
 
         // 부모가 자녀에게 미션을 주는 거라면 Completed(완성여부)를 YET으로 설정
@@ -139,9 +139,10 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
+    @Transactional
     public Long addFinishedComment(String memberKey, AddCommentDto dto) {
         // 미션 있는지 id로 확인
-        Mission mission = missionRepository.findMissionByIdAndChildKey(dto.getMissionId(), memberKey)
+        Mission mission = missionRepository.findMissionById(dto.getMissionId())
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
 
         mission.updateFinishedComment(dto.getComment());
@@ -150,6 +151,7 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
+    @Transactional
     public Long editCompleted(String memberKey, EditCompleteDto dto) {
         MemberTypeResponse memberType = memberFeignClient.getMemberType(MemberTypeRequest.builder()
                         .memberKey(memberKey)
@@ -157,13 +159,15 @@ public class MissionServiceImpl implements MissionService {
                         .build())
                 .getResultBody();
 
+        log.debug("[미션 멤버 타입] : " + memberType.isTypeRight());
+
         // 맞지 않는 멤버와 타입일 떄
         if (!memberType.isTypeRight()) {
             throw new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 회원을 찾을 수 없습니다.");
         }
 
         // 미션 id로 미션 찾기
-        Mission mission = missionRepository.findMissionByIdAndChildKey(dto.getMissionId(), memberKey)
+        Mission mission = missionRepository.findMissionById(dto.getMissionId())
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
 
         // 부모라면 CREATE_WAIT -> YET,  FINISH_WAIT -> FINISH
@@ -211,7 +215,7 @@ public class MissionServiceImpl implements MissionService {
             }
         }
         // 자녀라면 YET -> FINISH_WAIT
-        else if (dto.getType().equals(MemberType.PARENT)) {
+        else if (dto.getType().equals(MemberType.CHILD)) {
 
             if (mission.getCompleted().equals(Completed.YET)
                     && dto.getCompleted().equals(Completed.FINISH_WAIT)) {
@@ -228,9 +232,10 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
+    @Transactional
     public Long editMission(String memberKey, EditMissionDto dto) {
         // 미션 있는지 확인
-        Mission mission = missionRepository.findMissionByIdAndChildKey(dto.getMissionId(), memberKey)
+        Mission mission = missionRepository.findMissionById(dto.getMissionId())
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
 
         // 부모 통장의 잔액과 미션 총액을 비교
@@ -260,9 +265,10 @@ public class MissionServiceImpl implements MissionService {
     }
 
     @Override
+    @Transactional
     public Long removeMission(String memberKey, Long missionId) {
         // 미션 있는지 확인
-        Mission mission = missionRepository.findMissionByIdAndChildKey(missionId, memberKey)
+        Mission mission = missionRepository.findMissionById(missionId)
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 미션을 찾을 수 없습니다."));
 
         mission.deleteMission();

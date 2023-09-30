@@ -2,6 +2,7 @@ package com.keeping.questionservice.api.controller;
 
 import com.keeping.questionservice.api.ApiResponse;
 import com.keeping.questionservice.api.controller.request.*;
+import com.keeping.questionservice.api.controller.response.QuestionCommentResponse;
 import com.keeping.questionservice.api.controller.response.QuestionResponse;
 import com.keeping.questionservice.api.controller.response.QuestionResponseList;
 import com.keeping.questionservice.api.controller.response.TodayQuestionResponse;
@@ -40,14 +41,14 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/{question_id}")
-    public ApiResponse<QuestionResponse> getQuestion(
+    public ApiResponse<QuestionCommentResponse> getQuestion(
             @PathVariable String memberKey,
             @PathVariable(name = "question_id") Long questionId
     ) {
 
         try {
-            QuestionResponse questionResponse = questionService.showDetailQuestion(memberKey, questionId);
-            return ApiResponse.ok(questionResponse);
+            QuestionCommentResponse questionCommentResponse = questionService.showDetailQuestion(memberKey, questionId);
+            return ApiResponse.ok(questionCommentResponse);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage());
         }

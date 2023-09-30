@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,33 +22,33 @@ public class QuestionQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public Optional<QuestionResponse> findByChildKeyAndCreatedDate(String childKey, LocalDate createdDate) {
+    public Optional<QuestionResponse> findByChildKeyAndSceduledTime(String childKey, LocalDate scheduledTime) {
         return Optional.ofNullable(queryFactory
                 .select(constructor(QuestionResponse.class,
                         question.id,
                         question.content,
                         question.parentAnswer,
-                        question.childKey,
+                        question.childAnswer,
                         question.isCreated,
                         question.createdDate))
                 .from(question)
                 .where(question.childKey.eq(childKey),
-                        question.createdDate.between(createdDate.plusDays(1).atStartOfDay(), createdDate.plusDays(2).atStartOfDay()))
+                        question.scheduledTime.between(scheduledTime.plusDays(1).atStartOfDay(), scheduledTime.plusDays(2).atStartOfDay()))
                 .fetchOne());
     }
 
-    public Optional<QuestionResponse> findByChildKeyAndCreatedDateAtNow(String childKey, LocalDate createdDate) {
+    public Optional<QuestionResponse> findByChildKeyAndSceduledTimeAtNow(String childKey, LocalDate scheduledTime) {
         return Optional.ofNullable(queryFactory
                 .select(constructor(QuestionResponse.class,
                         question.id,
                         question.content,
                         question.parentAnswer,
-                        question.childKey,
+                        question.childAnswer,
                         question.isCreated,
                         question.createdDate))
                 .from(question)
                 .where(question.childKey.eq(childKey),
-                        question.createdDate.between(createdDate.atStartOfDay(), createdDate.plusDays(1).atStartOfDay()))
+                        question.scheduledTime.between(scheduledTime.atStartOfDay(), scheduledTime.plusDays(1).atStartOfDay()))
                 .fetchOne());
     }
     
@@ -57,7 +58,7 @@ public class QuestionQueryRepository {
                         question.id,
                         question.content,
                         question.parentAnswer,
-                        question.childKey,
+                        question.childAnswer,
                         question.isCreated,
                         question.createdDate))
                 .from(question)
@@ -72,7 +73,7 @@ public class QuestionQueryRepository {
                         question.id,
                         question.content,
                         question.parentAnswer,
-                        question.childKey,
+                        question.childAnswer,
                         question.isCreated,
                         question.createdDate))
                 .from(question)

@@ -11,5 +11,5 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
 
     Optional<Long> findByIdAndChildKey(Long id, String childKey);
 
-    Optional<Mission> findMissionByIdAndChildKey(Long id, String childKey);
+    Optional<Mission> findMissionById(Long id);
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "member-service", url = "http://j9c207.p.ssafy.io:8000")
+@FeignClient(name = "member-service", url = "https://j9c207.p.ssafy.io/api")
 public interface MemberFeignClient {
 
     @PostMapping("/member-service/api/relationship")

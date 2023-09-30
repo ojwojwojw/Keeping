@@ -5,9 +5,9 @@ import com.keeping.openaiservice.api.controller.request.TransactionTotalList;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@FeignClient(name = "/bank-service")
+@FeignClient(name = "bank-service")
 public interface BankFeignClient {
 
-    @GetMapping("/transaction-question")
+    @GetMapping("/bank-service/api/transaction-question")
     ApiResponse<TransactionTotalList> getTransactionData();
 }
