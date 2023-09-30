@@ -60,6 +60,7 @@ Padding renderBoxFormField({
   TextEditingController? controller,
   FormFieldSetter? onChange,
   double width = 340,
+  int maxLines = 3,
 }) {
   return Padding(
       padding: EdgeInsets.symmetric(vertical: 20),
@@ -95,7 +96,7 @@ Padding renderBoxFormField({
                           textInputAction: TextInputAction.next,
                           controller: controller,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          maxLines: 3,
+                          maxLines: maxLines,
                           style: TextStyle(height: 1.5),
                           cursorColor: Color(0xFF8320E7),
                           decoration: InputDecoration(
