@@ -27,10 +27,10 @@ public class AddNotiDto {
         this.type = type;
     }
 
-    public static AddNotiDto toDto(SendNotiDto dto) {
+    public static AddNotiDto toDto(SendNotiDto dto, String fcmToken) {
         return AddNotiDto.builder()
                 .memberKey(dto.getMemberKey())
-                .fcmToken(dto.getFcmToken())
+                .fcmToken(fcmToken)
                 .title(dto.getTitle())
                 .content(dto.getContent())
                 .type(dto.getType())

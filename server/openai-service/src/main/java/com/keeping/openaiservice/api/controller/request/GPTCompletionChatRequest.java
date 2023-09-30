@@ -19,6 +19,7 @@ public class GPTCompletionChatRequest {
         return ChatCompletionRequest.builder()
                 .model("gpt-3.5-turbo")
                 .messages(convertChatMessage(request))
+                .temperature(0.8)
                 .maxTokens(1000)
                 .build();
     }

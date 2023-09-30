@@ -1,8 +1,8 @@
 package com.keeping.missionservice.api.controller.mission;
 
-import com.keeping.missionservice.api.controller.mission.request.MemberRelationshipRequest;
+import com.keeping.missionservice.api.ApiResponse;
+import com.keeping.missionservice.api.controller.mission.request.RelationshipCheckRequest;
 import com.keeping.missionservice.api.controller.mission.request.MemberTypeRequest;
-import com.keeping.missionservice.api.controller.mission.response.ChildResponse;
 import com.keeping.missionservice.api.controller.mission.response.ChildResponseList;
 import com.keeping.missionservice.api.controller.mission.response.MemberRelationshipResponse;
 import com.keeping.missionservice.api.controller.mission.response.MemberTypeResponse;
@@ -12,18 +12,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.List;
-
-@FeignClient(name = "/member-service/api")
+@FeignClient(name = "member-service", url = "http://j9c207.p.ssafy.io:8000")
 public interface MemberFeignClient {
 
-    @PostMapping("/relationship")
-    MemberRelationshipResponse getMemberRelationship(@RequestBody MemberRelationshipRequest request);
+    @PostMapping("/member-service/api/relationship")
+    ApiResponse<MemberRelationshipResponse> getMemberRelationship(@RequestBody RelationshipCheckRequest request);
 
-    @PostMapping("/type-check")
-    MemberTypeResponse getMemberType(@RequestBody MemberTypeRequest request);
+    @PostMapping("/member-service/api/type-check")
+    ApiResponse<MemberTypeResponse> getMemberType(@RequestBody MemberTypeRequest request);
 
-    @GetMapping("/children/{member_key}")
-    ChildResponseList getChildren(@PathVariable(name = "member_key") String memberKey);
+    @GetMapping("/member-service/api/{member-key}/children")
+    ApiResponse<ChildResponseList> getChildren(@PathVariable(name = "member-key") String memberKey);
     
 }

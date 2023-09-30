@@ -39,7 +39,8 @@ public class PiggyHistoryQueryRepository {
                         piggyHistory.id,
                         piggyHistory.name,
                         piggyHistory.money,
-                        piggyHistory.balance))
+                        piggyHistory.balance,
+                        piggyHistory.createdDate))
                 .from(piggyHistory)
                 .where(piggyHistory.piggy.id.eq(piggyId))
                 .orderBy(piggyHistory.createdDate.desc())

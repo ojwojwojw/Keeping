@@ -34,9 +34,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class QuestionCreateSendServiceImpl implements QuestionCreateSendService {
 
-    private MemberFeignClient memberFeignClient;
-    private OpenaiFeignClient openaiFeignClient;
-    private NotiFeignClient notiFeignClient;
+    private final MemberFeignClient memberFeignClient;
+    private final OpenaiFeignClient openaiFeignClient;
+    private final NotiFeignClient notiFeignClient;
     private final QuestionRepository questionRepository;
     private final QuestionQueryRepository questionQueryRepository;
     private final RedisTemplate<String, String> redisTemplate;
