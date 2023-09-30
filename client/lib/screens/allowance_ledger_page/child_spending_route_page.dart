@@ -28,11 +28,13 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
   String? _accountNumber;
   String? _childKey;
   String? _childAccountNumber;
-  String _date = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  // String _date = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  DateTime _date = DateTime.now();
 
   void _setDate(val) {
     setState(() {
-      _date = DateFormat('yyyy-MM-dd').format(val);
+      // _date = DateFormat('yyyy-MM-dd').format(val);
+      _date = val;
     });
   }
 
@@ -63,6 +65,15 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
       supportedLocales: const [
         Locale('ko', 'KR')
       ],
+      theme: ThemeData(
+        datePickerTheme: DatePickerThemeData(
+          headerBackgroundColor: const Color(0xFF8320E7),
+          todayBorder: BorderSide(color: Colors.white),
+          todayBackgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
+          dayOverlayColor: MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
+          // surfaceTintColor: const Color(0xFF8320E7),
+        ),
+      ),
       home: Scaffold(
           appBar: MyHeader(
             text: '소비경로',
@@ -75,9 +86,10 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
               memberKey: _memberKey,
               targetKey: _parent != null && _parent! ? _childKey : _memberKey,
               accountNumber: _parent != null && _parent! ? _childAccountNumber : _accountNumber, 
-              date: _date,
+              date: DateFormat('yyyy-MM-dd').format(_date),
             ),
             builder: (context, snapshot) {
+              mapController.clear();
               if (snapshot.hasData) {
                 print('소비경로 페이지 ${snapshot.data}');
                 var response = snapshot.data;
@@ -90,7 +102,7 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                           _onMapCreated(controller);
                         }),
                       ),
-                    FloatingDateBtn(setDate: _setDate)  // 커스텀 위젯
+                    FloatingDateBtn(setDate: _setDate, selectedDate: _date,)  // 커스텀 위젯
                     ]
                   );
                 }
@@ -138,7 +150,7 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                       ],
                       zoomControl: true,
                     ),
-                    FloatingDateBtn(setDate: _setDate)  // 커스텀 위젯
+                    FloatingDateBtn(setDate: _setDate, selectedDate: _date,)  // 커스텀 위젯
                   ],
                 );
               } else {
@@ -150,7 +162,7 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                         _onMapCreated(controller);
                       }),
                     ),
-                    FloatingDateBtn(setDate: _setDate)  // 커스텀 위젯
+                    FloatingDateBtn(setDate: _setDate, selectedDate: _date,)  // 커스텀 위젯
                   ]
                 );
               }
