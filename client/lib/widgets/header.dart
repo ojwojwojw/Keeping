@@ -5,16 +5,21 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
   final String text;
   final Color bgColor;
   final Color elementColor;
+  final dynamic backPath;
   final Widget? icon; // 오른쪽 상단에 들어갈 아이콘 (ex. Icon(Icons.arrow_back))
-  final Widget? path; // 오른쪽 상단 아이콘을 클릭했을 때 이동할 곳
+  final dynamic iconPath; // 오른쪽 상단 아이콘을 클릭했을 때 이동할 곳
+  final dynamic path;
 
-  MyHeader(
-      {super.key,
-      required this.text,
-      this.bgColor = Colors.transparent,
-      this.elementColor = Colors.black,
-      this.icon,
-      this.path});
+  MyHeader({
+    super.key,
+    required this.text,
+    this.bgColor = Colors.transparent,
+    this.elementColor = Colors.black,
+    this.backPath,
+    this.icon,
+    this.iconPath,
+    this.path,
+  });
 
   @override
   Size get preferredSize => Size.fromHeight(70);
@@ -31,11 +36,10 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
               height: statusBarSize + 5,
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              backBtn(context, elementColor),
+              backBtn(context, elementColor, backPath),
               titleText(context, elementColor, text),
-              (icon != null &&
-                      path != null) // 오른쪽 아이콘이 없을 경우 SizedBox를 추가해 정렬에 문제없도록 처리
-                  ? extraBtn(context, elementColor, icon!, path!)
+              (icon != null) // 오른쪽 아이콘이 없을 경우 SizedBox를 추가해 정렬에 문제없도록 처리
+                  ? extraBtn(context, elementColor, icon!, iconPath)
                   : SizedBox(
                       width: 55,
                     )
@@ -49,10 +53,16 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
 }
 
 // 뒤로 돌아가는 화살표 버튼
-Widget backBtn(BuildContext context, Color elementColor) {
+Widget backBtn(BuildContext context, Color elementColor, dynamic backPath) {
   return IconButton(
     onPressed: () {
-      Navigator.pop(context);
+      if (backPath is Widget) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => backPath));
+      } else if (backPath is Function) {
+        backPath();
+      } else {
+        Navigator.pop(context);
+      }
     },
     icon: Icon(Icons.arrow_back),
     color: elementColor,
@@ -73,10 +83,16 @@ Widget titleText(BuildContext context, Color elementColor, String text) {
 
 // 있을수도 없을수도 있는 추가 버튼
 Widget extraBtn(
-    BuildContext context, Color elementColor, Widget icon, Widget path) {
+    BuildContext context, Color elementColor, Widget icon, dynamic iconPath) {
   return IconButton(
     onPressed: () {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => path));
+      if (iconPath is Widget) {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => iconPath));
+      } else if (iconPath is Function) {
+        iconPath();
+      } else {
+        Navigator.pop(context);
+      }
     },
     icon: icon,
     color: elementColor,

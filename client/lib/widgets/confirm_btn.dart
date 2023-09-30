@@ -8,7 +8,6 @@ class ConfirmBtn extends StatelessWidget {
   final Color textColor;
   final dynamic action;
   final bool shadow;
-  // final Widget? path;  // 버튼 클릭 후 이동할 곳. 비어있으면 이전 페이지로 이동
 
   const ConfirmBtn({
     super.key,
