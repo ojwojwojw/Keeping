@@ -35,6 +35,7 @@ class _MissonPageState extends State<MissionPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('에러 발생: ${snapshot.error}'));
           } else {
+            data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
             return Center(
               child: Column(
                 children: [
@@ -107,7 +108,7 @@ class _MissonPageState extends State<MissionPage> {
   }
   //미션 데이터를 최초로 가져오는 비동기 요청
 
-  Future<void> getData() async {
+  Future<List<Map<String, dynamic>>> getData() async {
     // Dio 객체 생성
     final dio = Dio();
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
@@ -124,22 +125,21 @@ class _MissonPageState extends State<MissionPage> {
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
 
       // 요청이 성공했을 때 처리
-      if (response.statusCode == 200) {
-        dynamic responseData = List<Map<String, dynamic>>.from(response.data);
-        print('Response data: $responseData');
-        setState(() {
-          data = responseData;
-        });
+      if (response.statusCode == 200 && response.data['resultBody'] is List) {
+        return List<Map<String, dynamic>>.from(response.data['resultBody']);
       } else {
-        print('Request failed with status: ${response.statusCode}');
+        throw Exception('Failed to fetch data');
       }
     } catch (error) {
       // 요청이 실패했을 때 처리
       print('Error: $error');
+      throw Exception('Failed to fetch data: $error');
     }
   }
 }
 
+////////////////
+////////////////
 //부모 미션 페이지
 class ParentMissionPage extends StatefulWidget {
   const ParentMissionPage({Key? key}) : super(key: key);
@@ -164,6 +164,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('에러 발생: ${snapshot.error}'));
           } else {
+            data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
             return Center(
               child: Column(
                 children: [
@@ -172,7 +173,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
                     height: 10,
                   ),
                   FilteringBar(),
-                  // parentMissionData(data),
+                  parentMissionData(data),
                 ],
               ),
             );
@@ -236,7 +237,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
   }
   //미션 데이터를 최초로 가져오는 비동기 요청
 
-  Future<void> getParentData() async {
+  Future<List<Map<String, dynamic>>> getParentData() async {
     // Dio 객체 생성
     final dio = Dio();
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
@@ -256,18 +257,15 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
 
       // 요청이 성공했을 때 처리
-      if (response.statusCode == 200) {
-        dynamic responseData = List<Map<String, dynamic>>.from(response.data);
-        print('Response data: $responseData');
-        setState(() {
-          data = responseData;
-        });
+      if (response.statusCode == 200 && response.data['resultBody'] is List) {
+        return List<Map<String, dynamic>>.from(response.data['resultBody']);
       } else {
-        print('Request failed with status: ${response.statusCode}');
+        throw Exception('Failed to fetch data');
       }
     } catch (error) {
       // 요청이 실패했을 때 처리
       print('Error: $error');
+      throw Exception('Failed to fetch data: $error');
     }
   }
 }

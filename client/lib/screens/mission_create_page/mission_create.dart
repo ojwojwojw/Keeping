@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
+import 'package:keeping/widgets/render_field.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -233,8 +234,6 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
   Future<void> _getParentMemberKey() async {
     var accessToken = userProvider.accessToken;
     var memberKey = userProvider.memberKey;
-    print(accessToken);
-    print(memberKey);
     try {
       var response = await dio.get(
           "$_baseUrl/member-service/auth/api/$memberKey/parent",
@@ -247,8 +246,6 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
   }
 
   Future<void> _sendMissionData() async {
-    var dio = Dio();
-
     var missionProvider =
         Provider.of<MissionInfoProvider>(context, listen: false);
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
@@ -274,11 +271,11 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
 
       if (response.statusCode == 200) {
-        print('Mission data sent successfully!');
+        print('미션생성 데이터 전송 성공!');
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => MissionPage()));
       } else {
-        print('Failed to send mission data.');
+        print('미션생성 데이터 전송 실패.');
       }
     } catch (e) {
       print('Error: $e');
@@ -301,7 +298,7 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
       appBar: MyHeader(text: '미션생성3(자녀)'),
       body: Column(
         children: [
-          _renderTextFormField(
+          renderTextFormField(
               label: '부모님께 메세지를 보내봐요',
               controller: _commentController,
               onChange: (value) {
@@ -309,11 +306,6 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
                   _commentController.text = value;
                 });
               }),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _sendMissionData,
-            child: Text('Send Mission Data'),
-          ),
         ],
       ),
       bottomNavigationBar: BottomBtn(
@@ -322,23 +314,6 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
         action: () {
           _sendMissionData();
         },
-      ),
-    );
-  }
-
-  Widget _renderTextFormField({
-    required String label,
-    required TextEditingController controller,
-    required Function(String) onChange,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextFormField(
-        controller: controller,
-        onChanged: onChange,
-        decoration: InputDecoration(
-          labelText: label,
-        ),
       ),
     );
   }
@@ -406,7 +381,7 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
       appBar: MyHeader(text: '미션생성3(부모)'),
       body: Column(
         children: [
-          ///
+          /// 자녀를 고르는 드랍다운
           DropdownButton<String>(
             value: selectedMemberKey.isNotEmpty ? selectedMemberKey : null,
             onChanged: (String? newValue) {
@@ -424,7 +399,7 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
           ),
 
           ///
-          _renderTextFormField(
+          renderTextFormField(
               label: '아이에게 응원메세지를 보내봐요',
               controller: _commentController,
               onChange: (value) {
@@ -432,11 +407,6 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
                   _commentController.text = value;
                 });
               }),
-          SizedBox(height: 20),
-          // ElevatedButton(
-          //   onPressed: _sendMissionData,
-          //   child: Text('Send Mission Data'),
-          // ),
         ],
       ),
       bottomNavigationBar: BottomBtn(
@@ -445,23 +415,6 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
           _sendMissionData();
         },
         isDisabled: _commentController.text.isEmpty,
-      ),
-    );
-  }
-
-  Widget _renderTextFormField({
-    required String label,
-    required TextEditingController controller,
-    required Function(String) onChange,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextFormField(
-        controller: controller,
-        onChanged: onChange,
-        decoration: InputDecoration(
-          labelText: label,
-        ),
       ),
     );
   }
