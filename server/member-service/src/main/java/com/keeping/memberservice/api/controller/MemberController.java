@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keeping.memberservice.api.ApiResponse;
 import com.keeping.memberservice.api.controller.request.*;
 import com.keeping.memberservice.api.controller.response.ChildKeyResponse;
+import com.keeping.memberservice.api.controller.response.QuestionTimeResponse;
 import com.keeping.memberservice.api.controller.response.RelationshipCheckResponse;
 import com.keeping.memberservice.api.controller.response.TypeCheckResult;
 import com.keeping.memberservice.api.service.AuthService;
@@ -21,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -32,6 +34,13 @@ public class MemberController {
     private final AuthService authService;
     private final SmsService smsService;
     private final MemberService memberService;
+
+    @GetMapping("/{memberKey}/registration-time")
+    public ApiResponse<QuestionTimeResponse> getQuestionTime(@PathVariable String memberKey) {
+        return ApiResponse.ok(QuestionTimeResponse.builder()
+                .registrationTime(LocalTime.of(20, 0))
+                .build());
+    }
 
     @GetMapping("/{memberKey}/fcm-key")
     public ApiResponse<String> getFcmToken(@PathVariable String memberKey) {
