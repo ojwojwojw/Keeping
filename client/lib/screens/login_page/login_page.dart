@@ -159,9 +159,8 @@ class _LoginPageState extends State<LoginPage> {
     };
 
     try {
-      print(data);
       var response = await dio.post(
-        'https://j9c207.p.ssay.io/api/member-service/login',
+        '$_baseUrl/member-service/login',
         data: data,
       );
       String fcmToken = Provider.of<UserInfoProvider>(context, listen: false)

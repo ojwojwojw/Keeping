@@ -68,7 +68,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // String? firebaseToken = await fcmSetting();
   UserInfoProvider userInfoProvider = UserInfoProvider();
-  String? firebaseToken = await fcmSetting(userInfoProvider);
+  await fcmSetting(userInfoProvider);
 
   await dotenv.load(fileName: "lib/.env");
 

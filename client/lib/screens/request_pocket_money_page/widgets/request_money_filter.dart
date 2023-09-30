@@ -15,6 +15,7 @@ class _RequestMoneyFiltersState extends State<RequestMoneyFilters> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center, // 좌우 정렬 추가
         children: [
           _RequestMoneyFilter(
             value: 0,
