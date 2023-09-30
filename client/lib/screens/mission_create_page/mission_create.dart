@@ -223,7 +223,7 @@ class MissionCreatePage3 extends StatefulWidget {
 }
 
 class _MissionCreatePage3State extends State<MissionCreatePage3> {
-  TextEditingController _commentController = TextEditingController();
+  String comment = '';
   late Dio dio;
   late MissionInfoProvider missionProvider;
   late UserInfoProvider userProvider;
@@ -259,7 +259,7 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
       "todo": missionProvider.missionTitle,
       "money": int.parse(missionProvider.amount ?? '0'),
       "cheeringMessage": "",
-      "childRequestComment": _commentController.text,
+      "childRequestComment": comment,
       "startDate": DateTime.now().toString().substring(0, 10),
       "endDate": missionProvider.missionDueDate
     };
@@ -300,17 +300,16 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
         children: [
           renderTextFormField(
               label: '부모님께 메세지를 보내봐요',
-              controller: _commentController,
               onChange: (value) {
                 setState(() {
-                  _commentController.text = value;
+                  comment = value;
                 });
               }),
         ],
       ),
       bottomNavigationBar: BottomBtn(
         text: "다음",
-        isDisabled: _commentController.text.isEmpty,
+        isDisabled: comment.isEmpty,
         action: () {
           _sendMissionData();
         },
@@ -328,7 +327,7 @@ class ParentMissionCreatePage3 extends StatefulWidget {
 }
 
 class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
-  TextEditingController _commentController = TextEditingController();
+  String comment = "";
   late Dio dio;
   late MissionInfoProvider missionProvider;
   late UserInfoProvider userProvider;
@@ -357,7 +356,7 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
       "to": selectedMemberKey, //자식의 멤버키 필요
       "todo": missionProvider.missionTitle,
       "money": int.parse(missionProvider.amount ?? '0'),
-      "cheeringMessage": _commentController.text, //부모의 응원메시지 필요
+      "cheeringMessage": comment, //부모의 응원메시지 필요
       "childRequestComment": "",
       "startDate": DateTime.now().toString().substring(0, 10),
       "endDate": missionProvider.missionDueDate
@@ -401,10 +400,9 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
           ///
           renderTextFormField(
               label: '아이에게 응원메세지를 보내봐요',
-              controller: _commentController,
               onChange: (value) {
                 setState(() {
-                  _commentController.text = value;
+                  comment = value;
                 });
               }),
         ],
@@ -414,7 +412,7 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
         action: () {
           _sendMissionData();
         },
-        isDisabled: _commentController.text.isEmpty,
+        isDisabled: comment.isEmpty,
       ),
     );
   }

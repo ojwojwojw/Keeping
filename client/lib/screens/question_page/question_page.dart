@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -18,7 +19,7 @@ class QuestionPage extends StatefulWidget {
 }
 
 class _QuestionPageState extends State<QuestionPage> {
-  List<Map<String, dynamic>> data = [];
+  Map<String, dynamic> data = {};
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,7 @@ class _QuestionPageState extends State<QuestionPage> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('에러 발생: ${snapshot.error}'));
               } else {
+                data = snapshot.data ?? {}; // 여기에서 snapshot의 데이터를 받아옵니다.
                 return Center(
                   child: Column(children: [
                     Text(
@@ -44,7 +46,7 @@ class _QuestionPageState extends State<QuestionPage> {
                     ),
                     Container(
                       width: 350,
-                      height: 250,
+                      height: 150,
                       decoration: BoxDecoration(
                         color: Colors.white, // 배경색 설정
                         border: Border.all(
@@ -60,8 +62,20 @@ class _QuestionPageState extends State<QuestionPage> {
                           ),
                         ],
                       ),
-                      child: Column(
-                          children: [Text('날짜 데이터 나올곳'), Text('질문 내용 나올 곳 ')]),
+                      child: Column(children: [
+                        Text(
+                          DateFormat('yyyy년 MM월 dd일').format(DateTime.now()) +
+                              "의 질문",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        data != null && data.isNotEmpty
+                            ? Text(
+                                "Q." + data["content"],
+                                style: TextStyle(fontSize: 20),
+                              )
+                            : Text("내용 없음"),
+                      ]),
                     ),
                     ElevatedButton(
                         onPressed: () {
@@ -81,7 +95,7 @@ class _QuestionPageState extends State<QuestionPage> {
             }));
   }
 
-  Future<void> getData() async {
+  Future<Map<String, dynamic>> getData() async {
     // Dio 객체 생성
     final dio = Dio();
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
@@ -91,22 +105,20 @@ class _QuestionPageState extends State<QuestionPage> {
     try {
       // GET 요청 보내기
       final response = await dio.get(
-          "$_baseUrl/mission-service/api/$memberKey/$memberKey",
+          "$_baseUrl/question-service/api/$memberKey/questions/today",
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
-
+      print('try를 하나요?');
+      print(response.data['resultBody']);
       // 요청이 성공했을 때 처리
-      if (response.statusCode == 200) {
-        dynamic responseData = List<Map<String, dynamic>>.from(response.data);
-        print('Response data: $responseData');
-        setState(() {
-          data = responseData;
-        });
+      if (response.statusCode == 200 && response.data['resultBody'] is Map) {
+        return response.data['resultBody'];
       } else {
-        print('Request failed with status: ${response.statusCode}');
+        return {}; // 빈 객체 반환
       }
     } catch (error) {
       // 요청이 실패했을 때 처리
       print('Error: $error');
+      return {}; // 빈 리스트 반환
     }
   }
 }
@@ -136,6 +148,7 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('에러 발생: ${snapshot.error}'));
               } else {
+                data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
                 return Center(
                   child: Column(children: [
                     Text(
@@ -185,7 +198,8 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
             }));
   }
 
-  Future<void> getData() async {
+  //질문 데이터를 가져오는 비동기 요청
+  Future<List<Map<String, dynamic>>> getData() async {
     // Dio 객체 생성
     final dio = Dio();
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
@@ -195,22 +209,22 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
     try {
       // GET 요청 보내기
       final response = await dio.get(
-          "$_baseUrl/mission-service/api/$memberKey/$memberKey",
+          "$_baseUrl/question-service/api/$memberKey/questions/today",
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
 
       // 요청이 성공했을 때 처리
       if (response.statusCode == 200) {
-        dynamic responseData = List<Map<String, dynamic>>.from(response.data);
-        print('Response data: $responseData');
-        setState(() {
-          data = responseData;
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}');
+        if (response.data['resultBody'] is List) {
+          return List<Map<String, dynamic>>.from(response.data['resultBody']);
+        } else if (response.data['resultBody'] is Map) {
+          return [response.data['resultBody']]; // Map을 List로 감싸줍니다.
+        }
       }
+      return []; // 빈 리스트 반환
     } catch (error) {
       // 요청이 실패했을 때 처리
       print('Error: $error');
+      return []; // 빈 리스트 반환
     }
   }
 }

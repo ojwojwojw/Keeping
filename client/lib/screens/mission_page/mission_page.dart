@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/widgets/bottom_btn.dart';
 
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/screens/mission_create_page/mission_create.dart';
@@ -76,9 +77,13 @@ class _MissonPageState extends State<MissionPage> {
             padding: EdgeInsets.symmetric(horizontal: 10.0),
             margin: EdgeInsets.symmetric(vertical: 2.0), // 위 아래 여백 추가
             decoration: BoxDecoration(
-              color: item["completed"] == "CREATE_WAIT"
-                  ? Color.fromRGBO(255, 170, 170, 1) // 연한 초록색, 채도 255
-                  : Color.fromRGBO(170, 255, 170, 1), // 더 진한 초록색, 채도 255
+              color: (item["completed"] == "CREATE_WAIT")
+                  ? Color.fromRGBO(255, 170, 170, 1)
+                  : (item["completed"] == "YET")
+                      ? Color.fromRGBO(255, 255, 170, 1)
+                      : (item["completed"] == "FINISH_WAIT")
+                          ? Color.fromRGBO(170, 255, 255, 1)
+                          : Color.fromRGBO(170, 255, 170, 1),
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: Column(
@@ -114,9 +119,6 @@ class _MissonPageState extends State<MissionPage> {
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
     var memberKey = userProvider.memberKey;
     var accessToken = userProvider.accessToken;
-    print('디버깅?!?');
-    print(memberKey);
-    print(accessToken);
 
     try {
       // GET 요청 보내기
@@ -133,7 +135,7 @@ class _MissonPageState extends State<MissionPage> {
     } catch (error) {
       // 요청이 실패했을 때 처리
       print('Error: $error');
-      throw Exception('Failed to fetch data: $error');
+      return []; // 빈 리스트 반환
     }
   }
 }
@@ -196,7 +198,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
 
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => MissionDetailPage(
+                builder: (context) => ParentMissionDetailPage(
                     item: item), // DetailPage는 새로운 페이지의 위젯입니다.
               ),
             );
@@ -205,14 +207,32 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
             padding: EdgeInsets.symmetric(horizontal: 10.0),
             margin: EdgeInsets.symmetric(vertical: 2.0), // 위 아래 여백 추가
             decoration: BoxDecoration(
-              color: item["completed"] == "CREATE_WAIT"
-                  ? Color.fromRGBO(255, 170, 170, 1) // 연한 초록색, 채도 255
-                  : Color.fromRGBO(170, 255, 170, 1), // 더 진한 초록색, 채도 255
+              color: (item["completed"] == "CREATE_WAIT")
+                  ? Color.fromRGBO(255, 170, 170, 1)
+                  : (item["completed"] == "YET")
+                      ? Color.fromRGBO(255, 255, 170, 1)
+                      : (item["completed"] == "FINISH_WAIT")
+                          ? Color.fromRGBO(170, 255, 255, 1)
+                          : Color.fromRGBO(170, 255, 170, 1),
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: Column(
               children: [
-                Text('#' + (index + 1).toString()),
+                Row(
+                  children: [
+                    Text('#' + (index + 1).toString()),
+                    Text(item["completed"] == "CREATE_WAIT"
+                        ? "생성 대기"
+                        : item["completed"] == "YET"
+                            ? "미완료"
+                            : item["completed"] == "FINISH_WAIT"
+                                ? "완료 대기"
+                                : item["completed"] == "FINISH"
+                                    ? "완료"
+                                    : "알 수 없는 상태"),
+                  ],
+                ),
+
                 Text(
                   item["todo"],
                   style: TextStyle(
@@ -260,12 +280,12 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
       if (response.statusCode == 200 && response.data['resultBody'] is List) {
         return List<Map<String, dynamic>>.from(response.data['resultBody']);
       } else {
-        throw Exception('Failed to fetch data');
+        return []; // 안전한 값 반환
       }
     } catch (error) {
       // 요청이 실패했을 때 처리
       print('Error: $error');
-      throw Exception('Failed to fetch data: $error');
+      return []; // 안전한 값 반환
     }
   }
 }
@@ -295,7 +315,8 @@ class CreateMissonBox extends StatelessWidget {
   }
 }
 
-//미션 상세조회 페이지//
+//////////////////////
+//자녀 미션 상세조회 페이지//
 class MissionDetailPage extends StatefulWidget {
   final Map<String, dynamic> item;
   const MissionDetailPage({super.key, required this.item});
@@ -420,6 +441,194 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/////////////////////
+//부모 미션 상세 조회 페이지
+class ParentMissionDetailPage extends StatefulWidget {
+  final Map<String, dynamic> item;
+  const ParentMissionDetailPage({super.key, required this.item});
+
+  @override
+  State<ParentMissionDetailPage> createState() =>
+      _ParentMissionDetailPageState();
+}
+
+class _ParentMissionDetailPageState extends State<ParentMissionDetailPage> {
+  late Dio dio;
+  late UserInfoProvider userProvider;
+  late List<Map<String, dynamic>> childrenList;
+
+  //하단 버튼 랜더링과 동작 로직 관련
+  String getBottomButtonText(String status) {
+    switch (status) {
+      case "CREATE_WAIT":
+        return "미션 생성 승인";
+      case "YET":
+        return "미션 진행 확인";
+      case "FINISH_WAIT":
+        return "미션 완료 승인";
+      case "FINISH":
+        return "미션 확인";
+      default:
+        return "미션 승인하기";
+    }
+  }
+
+  void handleButtonClick(String status) {
+    switch (status) {
+      case "CREATE_WAIT":
+        // 미션 생성 승인 로직
+        missionApprove();
+        break;
+      case "YET":
+        // 미션 진행 확인 로직
+        break;
+      case "FINISH_WAIT":
+        // 미션 완료 승인 로직
+        break;
+      case "FINISH":
+        // 미션 확인 로직
+        break;
+      default:
+        // 기본 로직
+        break;
+    }
+  }
+  ////
+
+  ///CREATED_WAIT 상태인 미션을 YET으로 바꾸기
+  Future<void> missionApprove() async {
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+    try {
+      var response = await dio.get(
+          "$_baseUrl/mission-service/api/$memberKey/complete",
+          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
+      print(response);
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  ///
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: MyHeader(text: "미션상세조회(부모)"),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 10.0),
+
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(230, 230, 250, 1.0), // 연보라색
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: Text(
+                    // 상태를 한글로 직접 변환하는 로직
+                    {
+                          "CREATE_WAIT": "생성 대기중",
+                          "YET": "미완료",
+                          "FINISH_WAIT": "완료 대기중",
+                          "FINISH": "완료",
+                        }[widget.item["completed"]] ??
+                        "알 수 없는 상태",
+                    style:
+                        TextStyle(fontSize: 16.0, color: Colors.purple), // 보라색
+                  ),
+                ),
+                Text(
+                  widget.item["todo"],
+                  style: TextStyle(fontSize: 20.0), // 폰트 크기를 20.0으로 변경
+                ),
+                Text(
+                  widget.item["money"].toString() + '원',
+                  style: TextStyle(
+                    fontSize: 24.0, // 폰트 크기를 24.0으로 변경 (todo보다 큰 크기)
+                    color: Colors.purple, // 글씨를 보라색으로 변경
+                  ),
+                ),
+                SizedBox(height: 10.0),
+                Text("아이의 프로필 이미지"),
+                SizedBox(
+                  height: 200,
+                ),
+                Text(
+                  widget.item["cheeringMessage"],
+                  style: TextStyle(fontSize: 16.0),
+                ),
+                SizedBox(height: 10.0),
+                //// 자식의 메세지가 null이면 랜더링을 못한다
+                widget.item["childComment"] != null
+                    ? Text(
+                        widget.item["childComment"],
+                        style: TextStyle(fontSize: 16.0),
+                      )
+                    : SizedBox(),
+                /////
+                SizedBox(height: 10.0),
+                Text(
+                  "시작일:",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  widget.item["startDate"],
+                  style: TextStyle(fontSize: 16.0),
+                ),
+                SizedBox(height: 10.0),
+                Text(
+                  "종료일:",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  widget.item["endDate"],
+                  style: TextStyle(fontSize: 16.0),
+                ),
+                SizedBox(height: 10.0),
+
+                Text(
+                  widget.item["completed"],
+                  style: TextStyle(fontSize: 16.0),
+                ),
+                SizedBox(height: 10.0),
+                Text(
+                  "생성일:",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  widget.item["createdDate"].toString().substring(0, 10),
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomBtn(
+        text: getBottomButtonText(widget.item["completed"]),
+        action: () => handleButtonClick(widget.item["completed"]),
+        isDisabled: true,
       ),
     );
   }
