@@ -3,6 +3,7 @@ import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/make_account_page/make_acount_enter_auth_password_page.dart';
 import 'package:keeping/screens/make_account_page/utils/make_account_future_methods.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
@@ -47,9 +48,10 @@ class _MakeAccountPageState extends State<MakeAccountPage> {
       ),
       bottomNavigationBar: BottomBtn(
           text: '다음',
-          action: () {
-            goNext(context, PhoneVerificationPage());
-          },
+          action: PhoneVerificationPage(),
+          // action: () {
+          //   noEffectTransition(context, PhoneVerificationPage());
+          // },
           isDisabled: !_agreementResult),
     );
   }
@@ -197,8 +199,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                                       _successPhoneAuth();
                                     } else {
                                       _failPhoneAuth();
-                                      roundedModal(
-                                          context: context, title: '다시 입력해주세요');
+                                      roundedModal(context: context, title: '다시 입력해주세요');
                                     }
                                   },
                                   validator: (val) {
@@ -283,54 +284,41 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
   }
 }
 
-Widget _authenticationBtn(
-    GlobalKey<FormState> formKey, BuildContext context, String title) {
+Widget _authenticationBtn(GlobalKey<FormState> formKey, BuildContext context, String title) {
   return Padding(
-      padding: EdgeInsets.only(bottom: 20, left: 10),
-      child: ElevatedButton(
-        onPressed: () async {
-          if (formKey.currentState != null &&
-              formKey.currentState!.validate()) {
-            formKey.currentState!.save();
-            print('저장완료');
-          } else {
-            print('저장실패');
-            roundedModal(context: context, title: '다시 입력해주세요');
-          }
-        },
-        style: _authenticationBtnStyle(),
-        child: Text(title),
-      ));
+    padding: EdgeInsets.only(bottom: 20, left: 10),
+    child: ElevatedButton(
+      onPressed: () async {
+        if (formKey.currentState != null &&
+            formKey.currentState!.validate()) {
+          formKey.currentState!.save();
+          print('저장완료');
+        } else {
+          print('저장실패');
+          roundedModal(context: context, title: '다시 입력해주세요');
+        }
+      },
+      style: _authenticationBtnStyle(),
+      child: Text(title),
+    )
+  );
 }
 
 ButtonStyle _authenticationBtnStyle() {
   return ButtonStyle(
-      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-      foregroundColor:
-          MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
-      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
+    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+    foregroundColor:
+        MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
+    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+      RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
         side: BorderSide(
           color: const Color(0xFF8320E7), // 테두리 색상 설정
           width: 2.0, // 테두리 두께 설정
         ),
-      )),
-      fixedSize: MaterialStateProperty.all<Size>(Size(120, 40)));
-}
-
-// 애니메이션 효과 없이 다음 페이지로 이동하는 함수
-void goNext(BuildContext context, Widget path) {
-  Navigator.push(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (BuildContext context, Animation<double> animation1,
-            Animation<double> animation2) {
-          return path; //변경 필요
-        },
-        transitionDuration: Duration.zero,
-        reverseTransitionDuration: Duration.zero,
-      ));
+      )
+    ),
+    fixedSize: MaterialStateProperty.all<Size>(Size(120, 40)));
 }
 
 const String _termsAndConditionsText = '''
