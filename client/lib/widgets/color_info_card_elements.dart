@@ -13,7 +13,7 @@ Widget colorInfoCardStatus(double width, String status) {
     decoration: BoxDecoration(
       color: requestStatusBgColor(status)
     ),
-    child: Text(requestStatusText(status), style: TextStyle(color: requestStatusTextColor(status), fontWeight: FontWeight.bold),),
+    child: Text(requestStatusText('부탁', status), style: TextStyle(color: requestStatusTextColor(status), fontWeight: FontWeight.bold),),
   );
 }
 
@@ -116,13 +116,13 @@ Widget colorInfoDetailCardContentUnderLine(String content) {
   );
 }
 
-String requestStatusText(String status) {
+String requestStatusText(String service, String status) {
   if (status == 'APPROVE') {
-    return '부탁 완료';
+    return '$service 완료';
   } else if (status == 'REJECT') {
-    return '부탁 거절';
+    return '$service 거절';
   } else {
-    return '부탁 대기';
+    return '$service 대기';
   }
 }
 

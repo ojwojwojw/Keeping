@@ -65,7 +65,7 @@ Widget _requestStatus(String status) {
       color: requestStatusBgColor(status)
     ),
     child: Text(
-      requestStatusText(status), 
+      requestStatusText('부탁', status), 
       style: TextStyle(color: requestStatusTextColor(status), fontWeight: FontWeight.bold),
     ),
   );
