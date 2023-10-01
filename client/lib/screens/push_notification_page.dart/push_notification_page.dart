@@ -4,6 +4,7 @@ import 'package:keeping/screens/push_notification_page.dart/widgets/push_notific
 import 'package:keeping/screens/request_pocket_money_page/child_request_money_detail.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
+import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/request_info_card.dart';
@@ -163,6 +164,17 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
           typeString = '계좌';
         }
 
+        String FormatDate = '';
+        if (noti['createdDate'] == null) {
+          final now = DateTime.now();
+          FormatDate = formattedMDDate(now);
+          // final formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+          // FormatDate = formatter.format(now);
+        } else {
+          FormatDate = formattedMDDate(noti['createdDate']);
+          // FormatDate = noti['createdDate'];
+        }
+
         // 알림을 랩핑하는 컨테이너
         return Container(
           width: 330,
@@ -192,10 +204,10 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
                           ),
                         ),
                         SizedBox(
-                          width: 170,
+                          width: 140,
                         ),
                         Text(
-                          '${noti['createdDate']}',
+                          '$FormatDate',
                           style: TextStyle(
                             color: Colors.grey[700],
                             fontSize: 14,
