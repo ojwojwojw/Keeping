@@ -22,7 +22,7 @@ public class QuestionQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public Optional<QuestionResponse> findByChildKeyAndSceduledTime(String childKey, LocalDate scheduledTime) {
+    public Optional<QuestionResponse> findByChildKeyAndSceduledTime(String memberKey, LocalDate scheduledTime) {
         return Optional.ofNullable(queryFactory
                 .select(constructor(QuestionResponse.class,
                         question.id,
@@ -32,7 +32,8 @@ public class QuestionQueryRepository {
                         question.isCreated,
                         question.createdDate))
                 .from(question)
-                .where(question.childKey.eq(childKey),
+                .where(question.childKey.eq(memberKey)
+                                .or(question.parentKey.eq(memberKey)),
                         question.scheduledTime.between(scheduledTime.plusDays(1).atStartOfDay(), scheduledTime.plusDays(2).atStartOfDay()))
                 .fetchOne());
     }
