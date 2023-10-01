@@ -177,7 +177,7 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
           ],
         ),
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '등록하기',
         action: () async {
           var response = await createAccountDetail(

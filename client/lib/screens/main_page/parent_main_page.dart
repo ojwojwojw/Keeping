@@ -131,6 +131,7 @@ class ChildContent extends StatefulWidget {
 class _ChildContentState extends State<ChildContent> {
   String? _accessToken;
   String? _memberKey;
+  bool? _hasChildAccount;
 
   @override
   void initState() {
@@ -138,6 +139,7 @@ class _ChildContentState extends State<ChildContent> {
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
     Provider.of<ChildInfoProvider>(context, listen: false).setChildInfo(widget.childInfo);
+    _hasChildAccount = context.read<ChildInfoProvider>().accountNumber.isNotEmpty ? true : false;
   }
 
   @override
@@ -187,12 +189,14 @@ class _ChildContentState extends State<ChildContent> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GradientBtn(
+                    hasAccount: _hasChildAccount,
                     path: PiggyPage(),
                     text: '저금통',
                     beginColor: Color(0xFF9271C8),
                     endColor: Color(0xFF6E2FD5),
                   ),
                   GradientBtn(
+                    hasAccount: _hasChildAccount,
                     path: OnlinePaymentRequestPage(),
                     text: '온라인 결제\n부탁 목록',
                     beginColor: Color(0xFFFF7595),
@@ -208,12 +212,14 @@ class _ChildContentState extends State<ChildContent> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GradientBtn(
+                  hasAccount: _hasChildAccount,
                   path: MissionPage(),
                   text: '미션',
                   beginColor: Color(0xFF07B399),
                   endColor: Color(0xFF068572),
                 ),
                 GradientBtn(
+                  hasAccount: _hasChildAccount,
                   path: QuestionPage(),
                   text: '질문',
                   beginColor: Color(0xFFFFCE72),

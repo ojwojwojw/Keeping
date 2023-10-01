@@ -99,14 +99,14 @@ Future<dynamic> approveOnlinePaymentRequest({
         accessToken: accessToken,
         url: '/bank-service/api/$memberKey/online/approve',
         data: {
-          "onlineId": memberKey,
+          "onlineId": onlineId,
           "childKey": childKey,
           "approve": comment != null ? 'REJECT' : 'APPROVE',
           "comment": comment
         }
       );
       print('부모 온라인 결제 승인 응답 $response');
-      return response;
+      return response['resultStatus']['successCode'];
     } catch (e) {
       print('부모 온라인 결제 승인 에러 $e');
     }

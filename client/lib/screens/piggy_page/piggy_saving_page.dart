@@ -100,7 +100,7 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
           NumberKeyboard(onNumberPress: onNumberPress, onBackspacePress: onBackspacePress,)
         ],
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '다음',
         action: () async {
           Navigator.push(
