@@ -29,6 +29,7 @@ Future<dynamic> dioPost({
 
 Future<dynamic> dioGet({String? accessToken, required String url}) async {
   var dio = Dio();
+
   try {
     dio.options.baseUrl = dotenv.env['BASE_URL']!;
     // dio.options.maxRedirects.isFinite;

@@ -45,7 +45,7 @@ class _MakeAccountPageState extends State<MakeAccountPage> {
               child: _agreementBtn(_setAgreementResult, _agreementResult)),
         ],
       ),
-      bottomSheet: BottomBtn(
+      bottomNavigationBar: BottomBtn(
           text: '다음',
           action: () {
             goNext(context, PhoneVerificationPage());

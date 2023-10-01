@@ -27,7 +27,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String _loginResult = '로그인 안 된 상태';
+  String _loginResult = '';
   String _loginId = '';
   String _loginPw = '';
 
@@ -101,6 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                       controller: _userId,
+                      width: 300,
                     ),
                     Container(
                       height: 20,
@@ -119,6 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       controller: _userPw,
                       isPassword: true,
+                      width: 300,
                     ),
                     Container(
                       height: 20,
@@ -159,7 +161,6 @@ class _LoginPageState extends State<LoginPage> {
     };
 
     try {
-      print(data);
       var response = await dio.post(
         '$_baseUrl/member-service/login',
         data: data,
@@ -176,7 +177,6 @@ class _LoginPageState extends State<LoginPage> {
         String? memberKey = response.headers.value('memberKey');
         print(memberKey);
         // 나머지 처리 코드 추가
-        // handleLogin('로그인 성공');
         await requestUserInfo(memberKey, token, fcmToken,
             Provider.of<UserInfoProvider>(context, listen: false));
         Provider.of<UserInfoProvider>(context, listen: false)

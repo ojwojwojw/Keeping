@@ -111,7 +111,7 @@ class _ChildPushNotificationPageState extends State<ChildPushNotificationPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNav(),
+      bottomSheet: BottomNav(),
     );
   }
 }

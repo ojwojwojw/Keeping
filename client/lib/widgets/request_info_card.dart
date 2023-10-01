@@ -1,34 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/color_info_card_elements.dart';
 
-class ColorInfoCard extends StatefulWidget {
-  final String name;
-  final String url;
-  final String reason;
-  final int cost;
-  final int paidMoney;
+class RequestInfoCard extends StatefulWidget {
+  final int money;
   final String status;
   final DateTime createdDate;
   final Widget path;
 
-  ColorInfoCard({
+  RequestInfoCard({
     super.key,
-    required this.name,
-    required this.url,
-    required this.reason,
-    required this.cost,
-    required this.paidMoney,
+    required this.money,
     required this.status,
     required this.createdDate,
     required this.path,
   });
 
   @override
-  State<ColorInfoCard> createState() => _ColorInfoCardState();
+  State<RequestInfoCard> createState() => _RequestInfoCardState();
 }
 
-class _ColorInfoCardState extends State<ColorInfoCard> {
+class _RequestInfoCardState extends State<RequestInfoCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -46,7 +39,7 @@ class _ColorInfoCardState extends State<ColorInfoCard> {
               child: Column(
                 children: [
                   _requestStatus(widget.status),
-                  _requestContent(widget.name),
+                  _requestContent(widget.money),
                 ],
               ),
             )),
@@ -62,14 +55,14 @@ Widget _requestStatus(String status) {
     alignment: Alignment.center,
     decoration: BoxDecoration(color: requestStatusBgColor(status)),
     child: Text(
-      requestStatusText('부탁', status),
+      requestStatusText('조르기', status),
       style: TextStyle(
           color: requestStatusTextColor(status), fontWeight: FontWeight.bold),
     ),
   );
 }
 
-Widget _requestContent(String name) {
+Widget _requestContent(int money) {
   return Expanded(
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 17),
@@ -82,11 +75,11 @@ Widget _requestContent(String name) {
             width: 250,
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
-                name,
+                formattedMoney(money),
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
-                '을(를) 부탁했어요!',
+                '을 졸랐어요!',
                 style: TextStyle(fontSize: 20),
               )
             ]),

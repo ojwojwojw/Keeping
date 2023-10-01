@@ -18,10 +18,12 @@ class MakeAccountEnterAuthPasswordPage extends StatefulWidget {
   });
 
   @override
-  State<MakeAccountEnterAuthPasswordPage> createState() => _MakeAccountEnterAuthPasswordPageState();
+  State<MakeAccountEnterAuthPasswordPage> createState() =>
+      _MakeAccountEnterAuthPasswordPageState();
 }
 
-class _MakeAccountEnterAuthPasswordPageState extends State<MakeAccountEnterAuthPasswordPage> {
+class _MakeAccountEnterAuthPasswordPageState
+    extends State<MakeAccountEnterAuthPasswordPage> {
   bool? _parent;
   String? _accessToken;
   String? _memberKey;
@@ -45,7 +47,6 @@ class _MakeAccountEnterAuthPasswordPageState extends State<MakeAccountEnterAuthP
         _authPassword = _authPassword! + val;
       });
     }
-
   }
 
   onBackspacePress() {
@@ -82,47 +83,62 @@ class _MakeAccountEnterAuthPasswordPageState extends State<MakeAccountEnterAuthP
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 60,),
+            padding: EdgeInsets.only(
+              top: 60,
+            ),
             child: Column(
               children: [
-                Text('비밀번호 입력', style: TextStyle(fontSize: 27),),
-                SizedBox(height: 7,),
-                Text('결제 비밀번호를 입력해 주세요.', style: TextStyle(fontSize: 15, color: Colors.black54),),
-                passwordCircles(_authPassword != null ? _authPassword!.length : 0),
+                Text(
+                  '비밀번호 입력',
+                  style: TextStyle(fontSize: 27),
+                ),
+                SizedBox(
+                  height: 7,
+                ),
+                Text(
+                  '결제 비밀번호를 입력해 주세요.',
+                  style: TextStyle(fontSize: 15, color: Colors.black54),
+                ),
+                passwordCircles(
+                    _authPassword != null ? _authPassword!.length : 0),
                 Text(_authPassword.toString())
               ],
             ),
           ),
           PasswordKeyboard(
-            onNumberPress: onNumberPress,
-            onBackspacePress: onBackspacePress,
-            onClearPress: onClearPress
-          ),
+              onNumberPress: onNumberPress,
+              onBackspacePress: onBackspacePress,
+              onClearPress: onClearPress),
         ],
       ),
-      bottomSheet: BottomBtn(
-        text: '만들기', 
+      bottomNavigationBar: BottomBtn(
+        text: '만들기',
         action: () async {
           var response = await makeAccount(
-            accessToken: _accessToken!, 
-            memberKey: _memberKey!, 
-            authPassword: _authPassword!
-          );
+              accessToken: _accessToken!,
+              memberKey: _memberKey!,
+              authPassword: _authPassword!);
           if (response == 0) {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(
-              text: '계좌가\n개설되었습니다.',
-              button: ConfirmBtn(
-                action: _parent != null && _parent == true ? ParentMainPage() : ChildMainPage(),
-              ),
-            )));
-
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => CompletedPage(
+                          text: '계좌가\n개설되었습니다.',
+                          button: ConfirmBtn(
+                            action: _parent != null && _parent == true
+                                ? ParentMainPage()
+                                : ChildMainPage(),
+                          ),
+                        )));
           } else if (response == 1) {
             roundedModal(context: context, title: '핸드폰 번호가 인증되지 않았습니다.');
           } else {
             roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
           }
         },
-        isDisabled: (_authPassword != null && _authPassword!.length == 6) ? false : true,
+        isDisabled: (_authPassword != null && _authPassword!.length == 6)
+            ? false
+            : true,
       ),
     );
   }

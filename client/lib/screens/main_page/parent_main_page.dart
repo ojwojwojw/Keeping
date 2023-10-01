@@ -163,6 +163,8 @@ class _ChildContentState extends State<ChildContent> {
                   var response = snapshot.data;
                   if (response['resultStatus']['resultCode'] == '404') {
                     return MakeAccountBtn();
+                  } else if (response['resultStatus']['resultCode'] == '503') {
+                    return AccountInfo(balance: 0);
                   } else {
                     Provider.of<ChildInfoProvider>(context, listen: false)
                         .setChildAccount(response['resultBody']);
@@ -217,14 +219,14 @@ class _ChildContentState extends State<ChildContent> {
                 children: [
                   GradientBtn(
                     hasAccount: _hasChildAccount,
-                    path: ParentMissionPage(), //부모전용 미션 페이지로 이동
+                    path: MissionPage(),
                     text: '미션',
                     beginColor: Color(0xFF07B399),
                     endColor: Color(0xFF068572),
                   ),
                   GradientBtn(
                     hasAccount: _hasChildAccount,
-                    path: ParentQuestionPage(),
+                    path: QuestionPage(),
                     text: '질문',
                     beginColor: Color(0xFFFFCE72),
                     endColor: Color(0xFFFFBC3F),
@@ -234,13 +236,6 @@ class _ChildContentState extends State<ChildContent> {
             ),
             SizedBox(
               height: 20,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => ParentDiaryPage()));
-              },
-              child: Text('일기 페이지'),
             ),
           ],
         ));

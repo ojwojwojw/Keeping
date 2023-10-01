@@ -69,31 +69,36 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // String? firebaseToken = await fcmSetting();
   UserInfoProvider userInfoProvider = UserInfoProvider();
-  String? firebaseToken = await fcmSetting(userInfoProvider);
+  await fcmSetting(userInfoProvider);
 
   await dotenv.load(fileName: "lib/.env");
 
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => Counts()), //Counts 인스턴스 추가
-    ChangeNotifierProvider(create: (_) => TestArray()), // TestArray 인스턴스 추가
-    ChangeNotifierProvider(create: (_) => PiggyDetailProvider()),
-    ChangeNotifierProvider(create: (_) => AddPiggyProvider()),
-    ChangeNotifierProvider(create: (_) => OnlinePaymentRequestFormProvider()),
-    ChangeNotifierProvider(create: (_) => UserInfoProvider()),
-    ChangeNotifierProvider(create: (_) => AccountInfoProvider()),
-    ChangeNotifierProvider(create: (_) => MissionInfoProvider()), // 미션 관련
-    ChangeNotifierProvider(create: (_) => OcrProvider()), // OCR 관련
-    ChangeNotifierProvider.value(
-        value: userInfoProvider), // UserInfoProvider 제공
-    ChangeNotifierProvider(create: (_) => UserLinkProvider()),
-    ChangeNotifierProvider(create: (_) => ChildInfoProvider()),
-    ChangeNotifierProvider(create: (_) => AccountDetailProvider()),
-  ], child: MaterialApp(
-    theme: ThemeData(
-      fontFamily: "NotoSansKR"
-    ),
-    home: MainPage()
-  )));
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => Counts()), // Counts 인스턴스 추가
+        ChangeNotifierProvider(create: (_) => TestArray()), // TestArray 인스턴스 추가
+        ChangeNotifierProvider(create: (_) => PiggyDetailProvider()),
+        ChangeNotifierProvider(create: (_) => AddPiggyProvider()),
+        ChangeNotifierProvider(
+            create: (_) => OnlinePaymentRequestFormProvider()),
+        ChangeNotifierProvider(create: (_) => UserInfoProvider()),
+        ChangeNotifierProvider(create: (_) => AccountInfoProvider()),
+        ChangeNotifierProvider(create: (_) => MissionInfoProvider()), // 미션 관련
+        ChangeNotifierProvider(create: (_) => OcrProvider()), // OCR 관련
+        ChangeNotifierProvider.value(
+            value: userInfoProvider), // UserInfoProvider 제공
+        ChangeNotifierProvider(create: (_) => UserLinkProvider()),
+        ChangeNotifierProvider(
+            create: (_) =>
+                ChildInfoProvider()), // Move this inside MultiProvider
+        ChangeNotifierProvider(create: (_) => AccountDetailProvider()),
+      ],
+      child: MaterialApp(
+        theme: ThemeData(
+          fontFamily: "NotoSansKR",
+        ),
+        home: MainPage(),
+      )));
 }
 
 class MyApp extends StatelessWidget {
