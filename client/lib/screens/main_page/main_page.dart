@@ -100,7 +100,7 @@ class MainPage extends StatelessWidget {
           ),
         ],
       )),
-      bottomNavigationBar: BottomAppBar(
+      bottomSheet: BottomAppBar(
           child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [

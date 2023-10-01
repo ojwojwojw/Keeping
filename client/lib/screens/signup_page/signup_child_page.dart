@@ -351,7 +351,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '회원가입',
         action: () {
           signUp(context);

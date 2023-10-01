@@ -12,6 +12,7 @@ import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/screens/online_payment_request/online_payment_request_page.dart';
 import 'package:keeping/screens/piggy_page/piggy_page.dart';
 import 'package:keeping/screens/question_page/question_page.dart';
+import 'package:keeping/screens/request_pocket_money_page/child_request_money_page.dart';
 import 'package:keeping/screens/user_link_page/before_user_link_page.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:provider/provider.dart';
@@ -74,6 +75,9 @@ class _ChildMainPageState extends State<ChildMainPage> {
                       var response = snapshot.data;
                       if (response['resultStatus']['resultCode'] == '404') {
                         return MakeAccountBtn();
+                      } else if (response['resultStatus']['resultCode'] ==
+                          '503') {
+                        return AccountInfo(balance: 0);
                       } else {
                         Provider.of<AccountInfoProvider>(context, listen: false)
                             .setAccountInfo(response['resultBody']);
@@ -155,7 +159,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNav(),
+      bottomSheet: BottomNav(),
     );
   }
 }

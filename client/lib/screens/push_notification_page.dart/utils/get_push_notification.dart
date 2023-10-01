@@ -40,7 +40,6 @@ Future<List<Map<String, dynamic>>> getPushNotification(context) async {
       accessToken: accessToken,
       url: url,
     );
-    print(response != null);
     if (response != null) {
       final dynamic resultBody = response['resultBody'];
       print(resultBody != null);

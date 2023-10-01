@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/request_pocket_money_page/child_request_money_detail.dart';
 import 'package:keeping/screens/request_pocket_money_page/request_pocket_money_second_page.dart';
@@ -13,47 +14,51 @@ import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/request_info_card.dart';
 import 'package:provider/provider.dart';
 
-class ChildRequestMoneyPage extends StatefulWidget {
-  const ChildRequestMoneyPage({super.key});
+class ParentRequestMoneyPage extends StatefulWidget {
+  const ParentRequestMoneyPage({super.key});
   @override
-  State<ChildRequestMoneyPage> createState() => _ChildRequestMoneyPageState();
+  State<ParentRequestMoneyPage> createState() => _ParentRequestMoneyPageState();
 }
 
-class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
+class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
   List<Map<String, dynamic>> _result = []; // 데이터를 저장할 변수
+
   int selectedBtnIdx = 0;
+  String? _childKey;
+  String? _myKey;
+  String? _accessToken;
+
   late Future<List<Map<String, dynamic>>> _dataFuture;
 
   @override
   void initState() {
     super.initState();
     _dataFuture = renderTotalRequestMoney(context, selectedBtnIdx);
+    _childKey = context.read<ChildInfoProvider>().memberKey;
+    _myKey = context.read<UserInfoProvider>().memberKey;
+    _accessToken = context.read<UserInfoProvider>().accessToken;
   }
 
   final DateFormat dateFormat = DateFormat('MM월 dd일');
 
   Future<List<Map<String, dynamic>>> renderTotalRequestMoney(
       BuildContext context, selectedBtnIdx) async {
-    String memberKey =
-        Provider.of<UserInfoProvider>(context, listen: false).memberKey;
-    String accessToken =
-        Provider.of<UserInfoProvider>(context, listen: false).accessToken;
     var _url = '';
     if (selectedBtnIdx == 0) {
       _url =
-          'http://j9c207.p.ssafy.io:8000/bank-service/api/$memberKey/allowance/$memberKey';
+          'http://j9c207.p.ssafy.io:8000/bank-service/api/$_myKey/allowance/$_childKey';
     } else if (selectedBtnIdx == 1) {
       _url =
-          'http://j9c207.p.ssafy.io:8000/bank-service/api/$memberKey/allowance/$memberKey/WAIT';
+          'http://j9c207.p.ssafy.io:8000/bank-service/api/$_myKey/allowance/$_childKey/WAIT';
     } else if (selectedBtnIdx == 2) {
       _url =
-          'http://j9c207.p.ssafy.io:8000/bank-service/api/$memberKey/allowance/$memberKey/APPROVE';
+          'http://j9c207.p.ssafy.io:8000/bank-service/api/$_myKey/allowance/$_childKey/APPROVE';
     } else {
       _url =
-          'http://j9c207.p.ssafy.io:8000/bank-service/api/$memberKey/allowance/$memberKey/REJECT';
+          'http://j9c207.p.ssafy.io:8000/bank-service/api/$_myKey/allowance/$_childKey/REJECT';
     }
     final response = await dioGet(
-      accessToken: accessToken,
+      accessToken: _accessToken,
       url: _url,
     );
     handleResult(response['resultBody']);
@@ -81,7 +86,7 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyHeader(text: '용돈 조르기'),
+      appBar: MyHeader(text: '용돈 조르기 모아보기'),
       body: SingleChildScrollView(
         child: Column(
           children: [

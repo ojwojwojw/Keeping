@@ -97,7 +97,7 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(),
+      bottomSheet: BottomAppBar(),
     );
   }
 

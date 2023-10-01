@@ -272,7 +272,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '회원가입',
         action: () {
           signUp(context);
