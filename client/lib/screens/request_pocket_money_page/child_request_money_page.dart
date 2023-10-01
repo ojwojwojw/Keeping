@@ -7,7 +7,6 @@ import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_
 import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_filter.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
-import 'package:keeping/widgets/color_info_card.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/request_info_card.dart';
@@ -38,23 +37,23 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
         Provider.of<UserInfoProvider>(context, listen: false).memberKey;
     String accessToken =
         Provider.of<UserInfoProvider>(context, listen: false).accessToken;
-    var _url = '';
+    var url = '';
     if (selectedBtnIdx == 0) {
-      _url =
+      url =
           'http://j9c207.p.ssafy.io:8000/bank-service/api/$memberKey/allowance/$memberKey';
     } else if (selectedBtnIdx == 1) {
-      _url =
+      url =
           'http://j9c207.p.ssafy.io:8000/bank-service/api/$memberKey/allowance/$memberKey/WAIT';
     } else if (selectedBtnIdx == 2) {
-      _url =
+      url =
           'http://j9c207.p.ssafy.io:8000/bank-service/api/$memberKey/allowance/$memberKey/APPROVE';
     } else {
-      _url =
+      url =
           'http://j9c207.p.ssafy.io:8000/bank-service/api/$memberKey/allowance/$memberKey/REJECT';
     }
     final response = await dioGet(
       accessToken: accessToken,
-      url: _url,
+      url: url,
     );
     handleResult(response['resultBody']);
     if (response != null) {
@@ -134,7 +133,7 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
           ],
         ),
       ),
-      bottomSheet: BottomNav(),
+      bottomNavigationBar: BottomNav(),
     );
   }
 
