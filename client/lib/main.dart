@@ -83,6 +83,7 @@ void main() async {
         value: userInfoProvider), // UserInfoProvider 제공
     ChangeNotifierProvider(create: (_) => UserLinkProvider()),
     ChangeNotifierProvider(create: (_) => ChildInfoProvider()),
+    ChangeNotifierProvider(create: (_) => AccountDetailProvider()),
   ], child: MaterialApp(
     theme: ThemeData(
       fontFamily: "NotoSansKR"

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
@@ -38,24 +39,9 @@ final Map<String, String> _categories = {
 };
 
 class AllowanceLedgerDetailCreatePage extends StatefulWidget {
-  // 카테고리 따라 사진 다르게 설정, 지출 입금 따라 -/+ 기호 추가
-  final DateTime date;
-  final String storeName;
-  final int money;
-  final int balance;
-  final int accountHistoryId;
-  final String largeCategory;
-  final Map<String, dynamic>? detail;
 
   AllowanceLedgerDetailCreatePage({
     super.key,
-    required this.date,
-    required this.storeName,
-    required this.money,
-    required this.balance,
-    required this.accountHistoryId,
-    required this.largeCategory,
-    this.detail
   });
 
   @override
@@ -66,17 +52,26 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
   String? _accessToken;
   String? _memberKey;
 
-  String _content = '';
+  DateTime _date = DateTime.now();
+  String _storeName = '';
   int _money = 0;
-  String _category = '';
+  int _balance = 0;
+  int _accountHistoryId = -2;
+  bool? _type;
+  String _largeCategory = '';
+  List<Map<String, dynamic>> _accountDetailList = [];
 
-  bool _contentResult = false;
-  bool _moneyResult = false;
+  String _newContent = '';
+  int _newMoney = 0;
+  String _newCategory = '';
+
+  bool _newContentResult = false;
+  bool _newMoneyResult = false;
 
   void _setContent(String val) {
     if (val.isNotEmpty) {
       setState(() {
-        _content = val;
+        _newContent = val;
       });
     }
   }
@@ -84,7 +79,7 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
   void _setMoney(String val) {
     if (val.isNotEmpty) {
       setState(() {
-        _money = int.parse(val);
+        _newMoney = int.parse(val);
       });
     }
   }
@@ -92,17 +87,17 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
   void _setCategory(String selectedCategory) {
     if (selectedCategory.isNotEmpty) {
       setState(() {
-        _category = selectedCategory;
+        _newCategory = selectedCategory;
       });
     }
   }
 
   void setContentResult(bool val) {
-    _contentResult = val;
+    _newContentResult = val;
   }
 
   void setMoneyResult(bool val) {
-    _moneyResult = val;
+    _newMoneyResult = val;
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -112,7 +107,16 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
     super.initState();
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
-    _category = widget.largeCategory;
+    _newCategory = context.read<AccountDetailProvider>().largeCategory;
+    
+    _date = DateTime.now();
+    _storeName = context.read<AccountDetailProvider>().storeName;
+    _money = context.read<AccountDetailProvider>().money;
+    _balance = context.read<AccountDetailProvider>().balance;
+    _accountHistoryId = context.read<AccountDetailProvider>().accountHistoryId;
+    _type = context.read<AccountDetailProvider>().type;
+    _largeCategory = context.read<AccountDetailProvider>().largeCategory;
+    _accountDetailList = context.read<AccountDetailProvider>().accountDetailList;
   }
 
   @override
@@ -126,8 +130,9 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
           children: [
             Column(
               children: [
-                MoneyRecordsDate(date: widget.date,),
-                MoneyRecord(date: widget.date, storeName: widget.storeName, money: widget.money, balance: widget.balance, accountHistoryId: widget.accountHistoryId, type: false, largeCategory: widget.largeCategory,)
+                MoneyRecordsDate(date: _date,),
+                MoneyRecord(date: _date, storeName: _storeName, money: _money, balance: _balance, accountHistoryId: _accountHistoryId, type: false, largeCategory: _largeCategory,),
+                Text(_accountDetailList.toString())
               ],
             ),
             Form(
@@ -151,19 +156,19 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
                       _setContent(val);
                     },
                   ),
-                  renderCategoryField(_setCategory, _category),
+                  renderCategoryField(_setCategory, _newCategory),
                   renderTextFormField(
                     label: '얼마인가요?',
                     validator: (val) {
                       if (val.length < 1) {
                         return '금액을 입력해주세요.';
-                      } else if (int.parse(val) > widget.money) {
+                      } else if (int.parse(val) > _money) {
                         return '금액을 초과했습니다.';
                       }
                       return null;
                     },
                     onChange: (val) {
-                      if (val.length < 1 || int.parse(val) > widget.money) {
+                      if (val.length < 1 || int.parse(val) > _money) {
                         setMoneyResult(false);
                       } else {
                         setMoneyResult(true);
@@ -180,17 +185,31 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
       ),
       bottomSheet: BottomDoubleBtn(
         firstText: '추가하기',
-        firstAction: Container(),
+        firstAction: () async {
+          Provider.of<AccountDetailProvider>(context, listen: false).addAccountDetail({
+            "accountHistoryId": _accountHistoryId,
+            "content": _newContent,
+            "money": _newMoney,
+            "smallCategory": _newCategory
+          });
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => AllowanceLedgerDetailCreatePage()));
+        },
         secondText: '등록하기',
         secondAction: () async {
           var response = await createAccountDetail(
-            accessToken: _accessToken!, 
-            memberKey: _memberKey!, 
-            accountHistoryId: widget.accountHistoryId, 
-            content: _content, 
-            money: _money,
-            smallCategory: _category,
+            accessToken: _accessToken, 
+            memberKey: _memberKey, 
+            accountDetailList: [
+              ..._accountDetailList, 
+              {
+                "accountHistoryId": _accountHistoryId,
+                "content": _newContent,
+                "money": _newMoney,
+                "smallCategory": _newCategory
+              }
+            ],
           );
+          Provider.of<AccountDetailProvider>(context, listen: false).initAccountDetail();
           if (response == 0) {
             Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(
               text: '상세 내용이\n등록되었습니다.',
@@ -202,7 +221,7 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
             roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
           }
         },
-        isDisabled: _contentResult && _moneyResult ? false : true,
+        isDisabled: _newContentResult && _newMoneyResult ? false : true,
       ),
       // bottomSheet: BottomBtn(
       //   text: '등록하기',
@@ -211,9 +230,9 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
       //       accessToken: _accessToken!, 
       //       memberKey: _memberKey!, 
       //       accountHistoryId: widget.accountHistoryId, 
-      //       content: _content, 
-      //       money: _money,
-      //       smallCategory: _category,
+      //       content: _newContent, 
+      //       money: _newMoney,
+      //       smallCategory: _newCategory,
       //     );
       //     if (response == 0) {
       //       Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(
@@ -226,7 +245,7 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
       //       roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
       //     }
       //   },
-      //   isDisabled: _contentResult && _moneyResult ? false : true,
+      //   isDisabled: _newContentResult && _newMoneyResult ? false : true,
       // ),
     );
   }
