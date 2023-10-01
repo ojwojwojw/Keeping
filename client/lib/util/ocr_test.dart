@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+
 import 'dart:io';
 import 'package:dio/dio.dart';
 
+// 저장된 사진을 불러오는 기본 OCR
 class OcrTest extends StatefulWidget {
   const OcrTest({Key? key}) : super(key: key);
 
@@ -41,10 +42,10 @@ class _OcrTestState extends State<OcrTest> {
                       parsedText.images[imageIndex].fields[fieldIndex];
                   return Column(
                     children: [
-                      Text('Value Type: ${field.valueType}'),
-                      Text('Infer Text: ${field.inferText}'),
-                      Text(
-                          'Infer Confidence: ${field.inferConfidence.toStringAsFixed(2)}'),
+                      // Text('Value Type: ${field.valueType}'),
+                      Text('${field.inferText}'),
+                      // Text(
+                      //     'Infer Confidence: ${field.inferConfidence.toStringAsFixed(2)}'),
                     ],
                   );
                 },

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class PiggySavingPage extends StatefulWidget {
   final Map<String, dynamic> piggyDetailInfo;
-  
+
   PiggySavingPage({
     super.key,
     required this.piggyDetailInfo,
@@ -54,7 +54,9 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
   }
 
   moneyValidate() {
-    if (amount.isNotEmpty && _balance != null && _balance! < int.parse(amount)) {
+    if (amount.isNotEmpty &&
+        _balance != null &&
+        _balance! < int.parse(amount)) {
       setState(() {
         validateText = '잔고가 부족합니다';
       });
@@ -63,7 +65,10 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
         validateText = '';
       });
     }
-    if (amount.isNotEmpty && widget.piggyDetailInfo['goalMoney'] - widget.piggyDetailInfo['balance'] < int.parse(amount)) {
+    if (amount.isNotEmpty &&
+        widget.piggyDetailInfo['goalMoney'] -
+                widget.piggyDetailInfo['balance'] <
+            int.parse(amount)) {
       setState(() {
         validateText = '목표 금액을 초과했습니다.';
       });
@@ -90,28 +95,37 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
               Text(
                 amount,
                 style: TextStyle(
-                  color: validateText != '' 
-                    ? Colors.red : Colors.black
-                ),
+                    color: validateText != '' ? Colors.red : Colors.black),
               ),
-              Text(validateText, style: TextStyle(color: Colors.red),)
+              Text(
+                validateText,
+                style: TextStyle(color: Colors.red),
+              )
             ],
           ),
-          NumberKeyboard(onNumberPress: onNumberPress, onBackspacePress: onBackspacePress,)
+          NumberKeyboard(
+            onNumberPress: onNumberPress,
+            onBackspacePress: onBackspacePress,
+          )
         ],
       ),
       bottomSheet: BottomBtn(
         text: '다음',
         action: () async {
           Navigator.push(
-            context, 
-            MaterialPageRoute(builder: (_) => PiggyEnterAuthPasswordPage(
-              money: int.parse(amount),
-              piggyAccountNumber: widget.piggyDetailInfo['accountNumber'],
-            ))
-          );
+              context,
+              MaterialPageRoute(
+                  builder: (_) => PiggyEnterAuthPasswordPage(
+                        money: int.parse(amount),
+                        piggyAccountNumber:
+                            widget.piggyDetailInfo['accountNumber'],
+                      )));
         },
-        isDisabled: (amount.isNotEmpty && _balance != null && _balance! >= int.parse(amount)) ? false : true,
+        isDisabled: (amount.isNotEmpty &&
+                _balance != null &&
+                _balance! >= int.parse(amount))
+            ? false
+            : true,
       ),
     );
   }
