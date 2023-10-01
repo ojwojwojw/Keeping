@@ -226,7 +226,7 @@ class _ChildContentState extends State<ChildContent> {
                   ),
                   GradientBtn(
                     hasAccount: _hasChildAccount,
-                    path: QuestionPage(),
+                    path: ParentQuestionPage(), //부모 질문 페이지로 가야함
                     text: '질문',
                     beginColor: Color(0xFFFFCE72),
                     endColor: Color(0xFFFFBC3F),
