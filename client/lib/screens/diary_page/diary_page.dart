@@ -5,6 +5,8 @@ import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:dio/dio.dart';
 import 'package:keeping/screens/question_page/question_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+import 'package:keeping/provider/user_info.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -17,98 +19,34 @@ class ChildDiaryPage extends StatefulWidget {
 }
 
 class _ChildDiaryPageState extends State<ChildDiaryPage> {
-  List<Map<String, dynamic>> data = [
-    {
-      "id": 0,
-      "content": "만원이 있다면 뭘 하고 싶나요?",
-      "parentAnswer": "부모대답1",
-      "childAnswer": "자식대답1",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 1,
-      "content": "내가 성공할 수 있는 사업이 있다면",
-      "parentAnswer": "부모대답2",
-      "childAnswer": "자식대답2",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 2,
-      "content": "대출에 대해서 어떻게 생각하세요?",
-      "parentAnswer": "test_f801c7f4f8fa",
-      "childAnswer": "test_def51ba140c7",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 3,
-      "content": "적금은 얼마나 드는게 좋을까요? ",
-      "parentAnswer": "test_f801c7f4f8fa",
-      "childAnswer": "test_def51ba140c7",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 4,
-      "content": "은행하면 가장 먼저 떠오르는 것은?",
-      "parentAnswer": "test_f801c7f4f8fa",
-      "childAnswer": "test_def51ba140c7",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 0,
-      "content": "만원이 있다면 뭘 하고 싶나요?",
-      "parentAnswer": "부모대답1",
-      "childAnswer": "자식대답1",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 1,
-      "content": "내가 성공할 수 있는 사업이 있다면",
-      "parentAnswer": "부모대답2",
-      "childAnswer": "자식대답2",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 2,
-      "content": "대출에 대해서 어떻게 생각하세요?",
-      "parentAnswer": "test_f801c7f4f8fa",
-      "childAnswer": "test_def51ba140c7",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 3,
-      "content": "적금은 얼마나 드는게 좋을까요? ",
-      "parentAnswer": "test_f801c7f4f8fa",
-      "childAnswer": "test_def51ba140c7",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 4,
-      "content": "은행하면 가장 먼저 떠오르는 것은?",
-      "parentAnswer": "test_f801c7f4f8fa",
-      "childAnswer": "test_def51ba140c7",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-  ];
+  List<Map<String, dynamic>> data = [];
+
+  //일기 보관함 데이터를 가져오는 비동기 요청
+  Future<List<Map<String, dynamic>>> getData() async {
+    // Dio 객체 생성
+    final dio = Dio();
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    var memberKey = userProvider.memberKey;
+    var accessToken = userProvider.accessToken;
+
+    try {
+      // GET 요청 보내기
+      final response = await dio.get(
+          "$_baseUrl/question-service/api/$memberKey/questions",
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+      // 요청이 성공했을 때 처리
+      if (response.statusCode == 200) {
+        return List<Map<String, dynamic>>.from(
+            response.data['resultBody']['questions']);
+      } else {
+        throw Exception('Failed to fetch data');
+      }
+    } catch (error) {
+      // 요청이 실패했을 때 처리
+      print('Error: $error');
+      return []; // 빈 리스트 반환
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,17 +57,30 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
         bgColor: Color(0xFF8320E7),
         elementColor: Colors.white,
       ),
-      body: Center(
-        child: Column(
-          children: [
-            ///일기 데이터 띄울 곳
-            _diaryData(data),
-            //일기 생성버튼
-            _diaryCreateBtn(),
-            //오늘의 질문 보기 버튼
-            _todayQuestionBtn()
-          ],
-        ),
+      body: FutureBuilder(
+        // 비동기 데이터를 기다리고 UI를 구성
+        future: getData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('에러 발생: ${snapshot.error}'));
+          } else {
+            data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
+            return Center(
+              child: Column(
+                children: [
+                  ///일기 데이터 띄울 곳
+                  _diaryData(data),
+                  //일기 생성버튼
+                  _diaryCreateBtn(),
+                  //오늘의 질문 보기 버튼
+                  _todayQuestionBtn()
+                ],
+              ),
+            );
+          }
+        },
       ),
     );
   }
@@ -220,34 +171,6 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
       },
       child: (Center(child: Text('오늘의 질문', style: TextStyle(fontSize: 20)))),
     ));
-  }
-
-  //전체 일기 데이터를 얻어올 비동기 요청
-  Future<void> getData() async {
-    // Dio 객체 생성
-    final dio = Dio();
-
-    try {
-      // GET 요청 보내기
-      final response = await dio.get(
-        'http://j9c207.p.ssafy.io:8000/mission-service/api/{member_key}',
-      );
-
-      // 요청이 성공했을 때 처리
-      if (response.statusCode == 200) {
-        final responseData = List<Map<String, dynamic>>.from(response.data);
-        print('Response data: $responseData');
-        setState(() {
-          // widget.data = responseData;// 백이랑 연결 시
-          data = responseData;
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}');
-      }
-    } catch (error) {
-      // 요청이 실패했을 때 처리
-      print('Error: $error');
-    }
   }
 }
 
@@ -357,98 +280,34 @@ class ParentDiaryPage extends StatefulWidget {
 }
 
 class _ParentDiaryPageState extends State<ParentDiaryPage> {
-  List<Map<String, dynamic>> data = [
-    {
-      "id": 0,
-      "content": "만원이 있다면 뭘 하고 싶나요?",
-      "parentAnswer": "부모대답1",
-      "childAnswer": "자식대답1",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 1,
-      "content": "내가 성공할 수 있는 사업이 있다면",
-      "parentAnswer": "부모대답2",
-      "childAnswer": "자식대답2",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 2,
-      "content": "대출에 대해서 어떻게 생각하세요?",
-      "parentAnswer": "test_f801c7f4f8fa",
-      "childAnswer": "test_def51ba140c7",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 3,
-      "content": "적금은 얼마나 드는게 좋을까요? ",
-      "parentAnswer": "test_f801c7f4f8fa",
-      "childAnswer": "test_def51ba140c7",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 4,
-      "content": "은행하면 가장 먼저 떠오르는 것은?",
-      "parentAnswer": "test_f801c7f4f8fa",
-      "childAnswer": "test_def51ba140c7",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 0,
-      "content": "만원이 있다면 뭘 하고 싶나요?",
-      "parentAnswer": "부모대답1",
-      "childAnswer": "자식대답1",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 1,
-      "content": "내가 성공할 수 있는 사업이 있다면",
-      "parentAnswer": "부모대답2",
-      "childAnswer": "자식대답2",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 2,
-      "content": "대출에 대해서 어떻게 생각하세요?",
-      "parentAnswer": "test_f801c7f4f8fa",
-      "childAnswer": "test_def51ba140c7",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 3,
-      "content": "적금은 얼마나 드는게 좋을까요? ",
-      "parentAnswer": "test_f801c7f4f8fa",
-      "childAnswer": "test_def51ba140c7",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-    {
-      "id": 4,
-      "content": "은행하면 가장 먼저 떠오르는 것은?",
-      "parentAnswer": "test_f801c7f4f8fa",
-      "childAnswer": "test_def51ba140c7",
-      "isCreated": false,
-      "createdDate": "2023-02-17 08:15:33",
-      "comments": null
-    },
-  ];
+  List<Map<String, dynamic>> data = [];
+
+  //일기 보관함 데이터를 가져오는 비동기 요청
+  Future<List<Map<String, dynamic>>> getData() async {
+    // Dio 객체 생성
+    final dio = Dio();
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    var memberKey = userProvider.memberKey;
+    var accessToken = userProvider.accessToken;
+
+    try {
+      // GET 요청 보내기
+      final response = await dio.get(
+          "$_baseUrl/question-service/api/$memberKey/questions",
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+      // 요청이 성공했을 때 처리
+      if (response.statusCode == 200) {
+        return List<Map<String, dynamic>>.from(
+            response.data['resultBody']['questions']);
+      } else {
+        throw Exception('Failed to fetch data');
+      }
+    } catch (error) {
+      // 요청이 실패했을 때 처리
+      print('Error: $error');
+      return []; // 빈 리스트 반환
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -459,17 +318,30 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
         bgColor: Color(0xFF8320E7),
         elementColor: Colors.white,
       ),
-      body: Center(
-        child: Column(
-          children: [
-            ///일기 데이터 띄울 곳
-            _diaryData(data),
-            //일기 생성버튼
-            _diaryCreateBtn(),
-            //오늘의 질문 보기 버튼
-            _todayQuestionBtn()
-          ],
-        ),
+      body: FutureBuilder(
+        // 비동기 데이터를 기다리고 UI를 구성
+        future: getData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('에러 발생: ${snapshot.error}'));
+          } else {
+            data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
+            return Center(
+              child: Column(
+                children: [
+                  ///일기 데이터 띄울 곳
+                  _diaryData(data),
+                  //일기 생성버튼
+                  _diaryCreateBtn(),
+                  //오늘의 질문 보기 버튼
+                  _todayQuestionBtn()
+                ],
+              ),
+            );
+          }
+        },
       ),
     );
   }
@@ -561,34 +433,6 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
       child: (Center(child: Text('오늘의 질문', style: TextStyle(fontSize: 20)))),
     ));
   }
-
-  //전체 일기 데이터를 얻어올 비동기 요청
-  Future<void> getData() async {
-    // Dio 객체 생성
-    final dio = Dio();
-
-    try {
-      // GET 요청 보내기
-      final response = await dio.get(
-        'http://j9c207.p.ssafy.io:8000/mission-service/api/{member_key}',
-      );
-
-      // 요청이 성공했을 때 처리
-      if (response.statusCode == 200) {
-        final responseData = List<Map<String, dynamic>>.from(response.data);
-        print('Response data: $responseData');
-        setState(() {
-          // widget.data = responseData;// 백이랑 연결 시
-          data = responseData;
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}');
-      }
-    } catch (error) {
-      // 요청이 실패했을 때 처리
-      print('Error: $error');
-    }
-  }
 }
 
 //부모 일기 상세조회 페이지 //
@@ -652,10 +496,12 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                   ),
                 ),
                 SizedBox(height: 16.0),
-                Text(
-                  widget.item["parentAnswer"],
-                  style: TextStyle(fontSize: 18.0),
-                ),
+                widget.item["parentAnswer"] != null
+                    ? Text(
+                        widget.item["parentAnswer"],
+                        style: TextStyle(fontSize: 18.0),
+                      )
+                    : Container(), // or some other widget
                 SizedBox(height: 24.0),
                 Text(
                   "자녀 응답",

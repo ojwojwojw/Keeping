@@ -21,7 +21,7 @@ class QuestionPage extends StatefulWidget {
 }
 
 class _QuestionPageState extends State<QuestionPage> {
-  Map<String, dynamic> data = {};
+  List<Map<String, dynamic>> data = [];
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class _QuestionPageState extends State<QuestionPage> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('에러 발생: ${snapshot.error}'));
               } else {
-                data = snapshot.data ?? {}; // 여기에서 snapshot의 데이터를 받아옵니다.
+                data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
                 return Center(
                   child: Column(children: [
                     Text(
@@ -50,7 +50,7 @@ class _QuestionPageState extends State<QuestionPage> {
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ChildDiaryDetailPage(
-                                  item: data,
+                                  item: data[0],
                                 )));
                       },
                       child: Container(
@@ -78,7 +78,7 @@ class _QuestionPageState extends State<QuestionPage> {
                           ),
                           data != null && data.isNotEmpty
                               ? Text(
-                                  "Q." + data["content"],
+                                  "Q." + data[0]["content"],
                                   style: TextStyle(fontSize: 20),
                                 )
                               : Text("오늘의 질문이 없습니다. "),
@@ -90,23 +90,23 @@ class _QuestionPageState extends State<QuestionPage> {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => QuestionSendPage()));
                         },
-                        child: Text('질문 생성하기')),
+                        child: Text('오늘의 질문 생성하기')),
                     ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => QeustionAnswerPage(
-                                    questionText: data["content"],
-                                    questionId: data["id"],
+                                    questionText: data[0]["content"],
+                                    questionId: data[0]["id"],
                                   )));
                         },
-                        child: Text('질문 대답하기'))
+                        child: Text('오늘의 질문 대답하기'))
                   ]),
                 );
               }
             }));
   }
 
-  Future<Map<String, dynamic>> getData() async {
+  Future<List<Map<String, dynamic>>> getData() async {
     // Dio 객체 생성
     final dio = Dio();
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
@@ -121,15 +121,15 @@ class _QuestionPageState extends State<QuestionPage> {
       print('try를 하나요?');
       print(response.data['resultBody']);
       // 요청이 성공했을 때 처리
-      if (response.statusCode == 200 && response.data['resultBody'] is Map) {
-        return response.data['resultBody'];
+      if (response.statusCode == 200 && response.data['resultBody'] is List) {
+        return List<Map<String, dynamic>>.from(response.data['resultBody']);
       } else {
-        return {}; // 빈 객체 반환
+        return []; // 빈 리스트 반환
       }
     } catch (error) {
       // 요청이 실패했을 때 처리
       print('Error: $error');
-      return {}; // 빈 리스트 반환
+      return []; // 빈 리스트 반환
     }
   }
 }
@@ -144,7 +144,7 @@ class ParentQuestionPage extends StatefulWidget {
 }
 
 class _ParentQuestionPageState extends State<ParentQuestionPage> {
-  Map<String, dynamic> data = {};
+  List<Map<String, dynamic>> data = [];
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +159,7 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('에러 발생: ${snapshot.error}'));
               } else {
-                data = snapshot.data ?? {}; // 여기에서 snapshot의 데이터를 받아옵니다.
+                data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
                 return Center(
                   child: Column(children: [
                     Text(
@@ -169,54 +169,60 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                         color: Colors.white, // 텍스트 색상 설정
                       ),
                     ),
-                    Container(
-                      width: 350,
-                      height: 250,
-                      decoration: BoxDecoration(
-                        color: Colors.white, // 배경색 설정
-                        border: Border.all(
-                            color: Colors.white, width: 2.0), // 테두리 설정
-                        borderRadius:
-                            BorderRadius.circular(10.0), // 테두리의 둥글기 설정
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5), // 그림자 색상 설정
-                            spreadRadius: 5, // 그림자 크기 설정
-                            blurRadius: 7, // 그림자 흐림 정도 설정
-                            offset: Offset(0, 3), // 그림자의 위치 설정
-                          ),
-                        ],
-                      ),
-                      child: Column(children: [
-                        Text(
-                          DateFormat('yyyy년 MM월 dd일').format(DateTime.now()) +
-                              "의 질문",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ChildDiaryDetailPage(
+                                  item: data[0],
+                                )));
+                      },
+                      child: Container(
+                        width: 350,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.white, width: 2.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
                         ),
-                        data != null && data.isNotEmpty
-                            ? Text(
-                                "Q." + data["content"],
-                                style: TextStyle(fontSize: 20),
-                              )
-                            : Text("오늘의 질문이 없습니다."),
-                      ]),
+                        child: Column(children: [
+                          Text(
+                            DateFormat('yyyy년 MM월 dd일').format(DateTime.now()) +
+                                "의 질문",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          data != null && data.isNotEmpty
+                              ? Text(
+                                  "Q." + data[0]["content"],
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              : Text("오늘의 질문이 없습니다. "),
+                        ]),
+                      ),
                     ),
                     ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => ParentQuestionSendPage()));
                         },
-                        child: Text('질문 생성하기')),
+                        child: Text('오늘의 질문 생성하기')),
                     ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => ParentQeustionAnswerPage(
-                                    questionText: data["content"],
-                                    questionId: data["id"],
+                                    questionText: data[0]["content"],
+                                    questionId: data[0]["id"],
                                   )));
                         },
-                        child: Text('질문 대답하기'))
+                        child: Text('오늘의 질문 대답하기'))
                   ]),
                 );
               }
@@ -224,7 +230,7 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
   }
 
   //질문 데이터를 가져오는 비동기 요청
-  Future<Map<String, dynamic>> getData() async {
+  Future<List<Map<String, dynamic>>> getData() async {
     // Dio 객체 생성
     final dio = Dio();
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
@@ -236,18 +242,18 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
       final response = await dio.get(
           "$_baseUrl/question-service/api/$memberKey/questions/today",
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
-      print('try를 하나요?');
+      print('부모 오늘의 질문 데이터');
       print(response.data['resultBody']);
       // 요청이 성공했을 때 처리
-      if (response.statusCode == 200 && response.data['resultBody'] is Map) {
-        return response.data['resultBody'];
+      if (response.statusCode == 200 && response.data['resultBody'] is List) {
+        return List<Map<String, dynamic>>.from(response.data['resultBody']);
       } else {
-        return {}; // 빈 객체 반환
+        return []; // 빈 객체 반환
       }
     } catch (error) {
       // 요청이 실패했을 때 처리
       print('Error: $error');
-      return {}; // 빈 리스트 반환
+      return []; // 빈 리스트 반환
     }
   }
 }
@@ -384,6 +390,7 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
 
       if (response.statusCode == 200) {
         print('사용자 개인질문 생성 데이터 전송 성공!');
+        print(data);
         // Navigator.push(context,
         //     MaterialPageRoute(builder: (context) => ParentQuestionPage()));
       } else {
