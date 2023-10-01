@@ -77,76 +77,44 @@ class _OnlinePaymentRequestDetailPageState
                       createdDate:
                           DateTime.parse(response['resultBody']['createdDate']),
                     ),
-                    // ConfirmBtn(
-                    //   bgColor: Colors.white,
-                    //   textColor: const Color(0xFFFF8989),
-                    //   borderColor: const Color(0xFFFFDDDD),
-                    //   shadow: false,
-                    // ),
-                    // SizedBox(height: 45,)
                   ],
                 ),
               );
             } else {
               return Text('로딩중');
             }
-<<<<<<< HEAD
           }),
-      bottomNavigationBar: BottomBtn(
-        text: '확인',
-        isDisabled: false,
-      ),
-=======
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ColorInfoDetailCard(
-                    name: response['resultBody']['productName'],
-                    url: response['resultBody']['url'],
-                    reason: response['resultBody']['content'],
-                    cost: response['resultBody']['totalMoney'],
-                    paidMoney: response['resultBody']['childMoney'],
-                    status: response['resultBody']['approve'],
-                    createdDate: DateTime.parse(response['resultBody']['createdDate']),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return Text('로딩중');
-          }
-
-        }
-      ),
-      bottomSheet: _parent != null && _parent! && widget.status == 'WAIT' ? 
-        BottomDoubleBtn(
-          firstText: '거절하기', 
-          firstAction: RejectOnlinePaymentRequestPage(onlineId: widget.onlineId),
-          secondText: '승인하기',
-          secondAction: () async {
-            var response = await approveOnlinePaymentRequest(
-              accessToken: _accessToken, 
-              memberKey: _memberKey, 
-              onlineId: widget.onlineId, 
-              childKey: _childKey
-            );
-            print('온라인 결제 승인 결과 $response');
-            if (response == 0) {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(
-                text: '부탁이\n승인되었습니다.',
-                button: ConfirmBtn(
-                  action: OnlinePaymentRequestPage(),
-                ),
-              )));
-            } else {
-              roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
-            }
-          },
-          isDisabled: false,
-        ) :
-        BottomBtn(text: '확인', isDisabled: false),
->>>>>>> 9e98eea368da723262c91d5aa68c36a216deccdd
+      bottomSheet: _parent != null && _parent! && widget.status == 'WAIT'
+          ? BottomDoubleBtn(
+              firstText: '거절하기',
+              firstAction:
+                  RejectOnlinePaymentRequestPage(onlineId: widget.onlineId),
+              secondText: '승인하기',
+              secondAction: () async {
+                var response = await approveOnlinePaymentRequest(
+                    accessToken: _accessToken,
+                    memberKey: _memberKey,
+                    onlineId: widget.onlineId,
+                    childKey: _childKey);
+                print('온라인 결제 승인 결과 $response');
+                if (response == 0) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => CompletedPage(
+                                text: '부탁이\n승인되었습니다.',
+                                button: ConfirmBtn(
+                                  action: OnlinePaymentRequestPage(),
+                                ),
+                              )));
+                } else {
+                  roundedModal(
+                      context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
+                }
+              },
+              isDisabled: false,
+            )
+          : BottomBtn(text: '확인', isDisabled: false),
     );
   }
 }

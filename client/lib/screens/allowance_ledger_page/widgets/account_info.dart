@@ -47,31 +47,32 @@ class _AccountInfoState extends State<AccountInfo> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (widget.parent != null && widget.parent! == true && _childName != null) ChildTag(childName: _childName!, text: '용돈 잔액'),
+            if (widget.parent != null &&
+                widget.parent! == true &&
+                _childName != null)
+              ChildTag(childName: _childName!, text: '용돈 잔액'),
             Text(
               widget.balance == null ? '0원' : formattedMoney(widget.balance),
-              style: TextStyle(
-                fontSize: 40,
-                color: Colors.white
-              ),
+              style: TextStyle(fontSize: 40, color: Colors.white),
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             FutureBuilder(
               future: getMonthTotalExpense(
                 accessToken: widget.accessToken,
                 memberKey: widget.memberKey,
-                targetKey: widget.parent != null && widget.parent! ? _childKey : widget.memberKey,
+                targetKey: widget.parent != null && widget.parent!
+                    ? _childKey
+                    : widget.memberKey,
                 date: DateFormat('yyyy-MM').format(DateTime.now()),
-              ), 
+              ),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var response = snapshot.data['resultBody'];
                   return Text(
                     '${DateTime.now().month}월 총 지출액: ${formattedMoney(response)}',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white
-                    ),
+                    style: TextStyle(fontSize: 20, color: Colors.white),
                   );
                 } else {
                   return Text('로딩중');
