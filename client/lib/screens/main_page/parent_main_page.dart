@@ -219,7 +219,7 @@ class _ChildContentState extends State<ChildContent> {
                 children: [
                   GradientBtn(
                     hasAccount: _hasChildAccount,
-                    path: MissionPage(),
+                    path: ParentMissionPage(), // 부모 미션 페이지로 가야함
                     text: '미션',
                     beginColor: Color(0xFF07B399),
                     endColor: Color(0xFF068572),
