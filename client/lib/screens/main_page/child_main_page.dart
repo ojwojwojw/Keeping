@@ -27,20 +27,16 @@ class _ChildMainPageState extends State<ChildMainPage> {
   String? _accessToken;
   String? _memberKey;
   String? _targetKey;
-
-  bool account = false;
-
-  makeAccount() {
-    setState(() {
-      account = !account;
-    });
-  }
+  bool? _hasAccount;
 
   @override
   void initState() {
     super.initState();
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
+    _hasAccount = context.read<AccountInfoProvider>().accountNumber.isNotEmpty
+        ? true
+        : false;
   }
 
   @override
@@ -97,12 +93,14 @@ class _ChildMainPageState extends State<ChildMainPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GradientBtn(
+                        hasAccount: _hasAccount,
                         path: PiggyPage(),
                         text: '저금통',
                         beginColor: Color(0xFF9271C8),
                         endColor: Color(0xFF6E2FD5),
                       ),
                       GradientBtn(
+                        hasAccount: _hasAccount,
                         path: OnlinePaymentRequestPage(),
                         text: '온라인 결제\n부탁하기',
                         beginColor: Color(0xFFFF7595),
@@ -119,12 +117,14 @@ class _ChildMainPageState extends State<ChildMainPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GradientBtn(
+                        hasAccount: _hasAccount,
                         path: MissionPage(),
                         text: '미션',
                         beginColor: Color(0xFF07B399),
                         endColor: Color(0xFF068572),
                       ),
                       GradientBtn(
+                        hasAccount: _hasAccount,
                         path: QuestionPage(),
                         text: '질문',
                         beginColor: Color(0xFFFFCE72),
@@ -142,12 +142,6 @@ class _ChildMainPageState extends State<ChildMainPage> {
                         MaterialPageRoute(builder: (_) => ParentMainPage()));
                   },
                   child: Text('부모 계정 전환'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    makeAccount();
-                  },
-                  child: Text('계좌 유무'),
                 ),
                 ElevatedButton(
                   onPressed: () {

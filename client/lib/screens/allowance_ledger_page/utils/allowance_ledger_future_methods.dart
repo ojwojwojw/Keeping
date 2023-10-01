@@ -20,24 +20,18 @@ Future<dynamic> getAccountList({
   }
 }
 
-// 거래 상세 내용 입력(한 개)
+// 거래 상세 내용 입력(여러 개)
 Future<dynamic> createAccountDetail({
-  required String? accessToken, required String? memberKey,
-  required int? accountHistoryId, required String? content, required int? money, required String? smallCategory,
+  required String? accessToken, required String? memberKey, required List<Map<String, dynamic>>? accountDetailList
 }) async {
-  if (accessToken != null && memberKey != null && accountHistoryId != null && content != null && money != null && smallCategory != null) {
+  if (accessToken != null && memberKey != null && accountDetailList != null) {
     try {
-      print('accessToken: $accessToken, memberKey: $memberKey, accountHistoryId: $accountHistoryId, content: $content, money: $money, smallCategory: $smallCategory');
+      print('accessToken: $accessToken, memberKey: $memberKey, accountDetilList: $accountDetailList');
       final response = await dioPost(
         accessToken: accessToken,
         url: '/bank-service/api/$memberKey/account-detail',
         data: {
-          "accountDetailList" : [{
-            "accountHistoryId": accountHistoryId,
-            "content": content,
-            "money": money,
-            "smallCategory": smallCategory,
-          }]
+          "accountDetailList" : accountDetailList
         }
       );
       print('거래 상세 내용 입력 응답 $response');
@@ -50,6 +44,37 @@ Future<dynamic> createAccountDetail({
     return;
   }
 }
+
+// // 거래 상세 내용 입력(한 개)
+// Future<dynamic> createAccountDetail({
+//   required String? accessToken, required String? memberKey,
+//   required int? accountHistoryId, required String? content, required int? money, required String? smallCategory,
+// }) async {
+//   if (accessToken != null && memberKey != null && accountHistoryId != null && content != null && money != null && smallCategory != null) {
+//     try {
+//       print('accessToken: $accessToken, memberKey: $memberKey, accountHistoryId: $accountHistoryId, content: $content, money: $money, smallCategory: $smallCategory');
+//       final response = await dioPost(
+//         accessToken: accessToken,
+//         url: '/bank-service/api/$memberKey/account-detail',
+//         data: {
+//           "accountDetailList" : [{
+//             "accountHistoryId": accountHistoryId,
+//             "content": content,
+//             "money": money,
+//             "smallCategory": smallCategory,
+//           }]
+//         }
+//       );
+//       print('거래 상세 내용 입력 응답 $response');
+//       return response['resultStatus']['successCode'];
+//     } catch (e) {
+//       print('거래 상세 내용 입력 에러 $e');
+//     }
+//   } else {
+//     print("거래 상세 내용 입력 값 안들어옴");
+//     return;
+//   }
+// }
 
 // 날짜별로 거래 내역 반환
 Future<dynamic> getAccountListByDate({

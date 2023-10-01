@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/widgets/rounded_modal.dart';
 
 class GradientBtn extends StatelessWidget {
   final Widget path;
+  final bool? hasAccount;
   final String text;
   final Color beginColor;
   final Color endColor;
@@ -9,6 +11,7 @@ class GradientBtn extends StatelessWidget {
 
   GradientBtn({
     super.key,
+    required this.hasAccount,
     required this.path,
     required this.text,
     required this.beginColor,
@@ -20,7 +23,13 @@ class GradientBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => path));
+        if (hasAccount != null) {
+          hasAccount! ? 
+          Navigator.push(context, MaterialPageRoute(builder: (_) => path))
+          : roundedModal(context: context, title: '계좌 개설 후에 이용하실 수 있습니다.');
+        } else  {
+          roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
+        }
       },
       child: Container(
         alignment: Alignment.center,
