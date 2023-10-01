@@ -7,8 +7,10 @@ import 'package:keeping/screens/mission_create_page/mission_create.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:keeping/widgets/render_field.dart';
 import 'package:provider/provider.dart';
 import 'package:keeping/provider/child_info_provider.dart';
+import 'package:keeping/widgets/completed_page.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -500,6 +502,7 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
 }
 
 /////////////////////
+///////////////////
 //부모 미션 상세 조회 페이지
 class ParentMissionDetailPage extends StatefulWidget {
   final Map<String, dynamic> item;
@@ -535,7 +538,12 @@ class _ParentMissionDetailPageState extends State<ParentMissionDetailPage> {
     switch (status) {
       case "CREATE_WAIT":
         // 미션 생성 승인 로직
-        missionApprove();
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => MissionApprovePage(
+                      missionId: widget.item["id"],
+                    ))); //미션 id 넘겨주는곳
         break;
       case "YET":
         // 미션 진행 확인 로직
@@ -553,21 +561,13 @@ class _ParentMissionDetailPageState extends State<ParentMissionDetailPage> {
   }
   ////
 
-  ///CREATED_WAIT 상태인 미션을 YET으로 바꾸기
-  Future<void> missionApprove() async {
-    var accessToken = userProvider.accessToken;
-    var memberKey = userProvider.memberKey;
-    try {
-      var response = await dio.get(
-          "$_baseUrl/mission-service/api/$memberKey/complete",
-          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
-      print(response);
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-
   ///
+  @override
+  void didChangeDependencies() {
+    dio = Dio();
+    super.didChangeDependencies();
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -616,14 +616,16 @@ class _ParentMissionDetailPageState extends State<ParentMissionDetailPage> {
                 SizedBox(height: 10.0),
                 Text("아이의 프로필 이미지"),
                 SizedBox(
-                  height: 200,
+                  height: 100,
                 ),
+                Text("부모의 응원 메세지"),
                 Text(
                   widget.item["cheeringMessage"],
                   style: TextStyle(fontSize: 16.0),
                 ),
                 SizedBox(height: 10.0),
                 //// 자식의 메세지가 null이면 랜더링을 못한다
+                Text("자식의 완료 메세지"),
                 widget.item["childComment"] != null
                     ? Text(
                         widget.item["childComment"],
@@ -681,7 +683,7 @@ class _ParentMissionDetailPageState extends State<ParentMissionDetailPage> {
       bottomNavigationBar: BottomBtn(
         text: getBottomButtonText(widget.item["completed"]),
         action: () => handleButtonClick(widget.item["completed"]),
-        isDisabled: true,
+        isDisabled: false,
       ),
     );
   }
@@ -700,5 +702,91 @@ class FilteringBar extends StatelessWidget {
         child: (Column(children: [
           Text('필터링 바', style: TextStyle(color: Colors.white, fontSize: 10)),
         ])));
+  }
+}
+
+// 미션 승인 입력 폼 페이지
+class MissionApprovePage extends StatefulWidget {
+  final int? missionId;
+  const MissionApprovePage({super.key, required this.missionId});
+
+  @override
+  State<MissionApprovePage> createState() => _MissionApprovePageState();
+}
+
+class _MissionApprovePageState extends State<MissionApprovePage> {
+  String comment = '';
+  late Dio dio;
+  late UserInfoProvider userProvider;
+  late List<Map<String, dynamic>> childrenList;
+
+  ///CREATED_WAIT 상태인 미션을 YET으로 바꾸기
+  Future<void> _sendData() async {
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+    var userType = userProvider.parent ? "PARENT" : "CHILD";
+
+    var data = {
+      "type": userType,
+      "missionId": widget.missionId,
+      "cheeringMessage": comment,
+      "completed": "YET"
+    };
+
+    try {
+      var response = await dio.patch(
+          "$_baseUrl/mission-service/api/$memberKey/complete",
+          data: data,
+          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
+      print(response);
+
+      if (response.statusCode == 200) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CompletedAndGoPage(
+                      text: "미션승인 완료!",
+                      targetPage: ParentMissionPage(),
+                    )));
+      }
+    } catch (e) {
+      print('Error: $e');
+      print(data);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: MyHeader(
+        text: "미션 승인 페이지",
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            renderTextFormField(
+                label: "응원 메시지를 적어봐요",
+                hintText: "응원 메시지를 적어봐요",
+                onChange: (value) {
+                  setState(() {
+                    comment = value;
+                  });
+                })
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomBtn(
+        text: "미션 생성 승인 하기",
+        action: _sendData,
+        isDisabled: comment.isEmpty,
+      ),
+    );
   }
 }
