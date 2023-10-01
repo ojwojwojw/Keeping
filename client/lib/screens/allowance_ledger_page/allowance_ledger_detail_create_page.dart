@@ -4,6 +4,7 @@ import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
+import 'package:keeping/widgets/bottom_double_btn.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/render_field.dart';
@@ -177,9 +178,11 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
           ],
         ),
       ),
-      bottomSheet: BottomBtn(
-        text: '등록하기',
-        action: () async {
+      bottomSheet: BottomDoubleBtn(
+        firstText: '추가하기',
+        firstAction: Container(),
+        secondText: '등록하기',
+        secondAction: () async {
           var response = await createAccountDetail(
             accessToken: _accessToken!, 
             memberKey: _memberKey!, 
@@ -201,6 +204,30 @@ class _AllowanceLedgerDetailCreatePageState extends State<AllowanceLedgerDetailC
         },
         isDisabled: _contentResult && _moneyResult ? false : true,
       ),
+      // bottomSheet: BottomBtn(
+      //   text: '등록하기',
+      //   action: () async {
+      //     var response = await createAccountDetail(
+      //       accessToken: _accessToken!, 
+      //       memberKey: _memberKey!, 
+      //       accountHistoryId: widget.accountHistoryId, 
+      //       content: _content, 
+      //       money: _money,
+      //       smallCategory: _category,
+      //     );
+      //     if (response == 0) {
+      //       Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(
+      //         text: '상세 내용이\n등록되었습니다.',
+      //         button: ConfirmBtn(
+      //           action: AllowanceLedgerPage(),
+      //         ),
+      //       )));
+      //     } else {
+      //       roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
+      //     }
+      //   },
+      //   isDisabled: _contentResult && _moneyResult ? false : true,
+      // ),
     );
   }
 }
