@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_detail_create_page.dart';
 import 'package:keeping/styles.dart';
@@ -8,7 +9,6 @@ import 'package:keeping/widgets/bottom_modal.dart';
 import 'package:provider/provider.dart';
 
 class MoneyRecord extends StatefulWidget {
-  // 카테고리 따라 사진 다르게 설정, 지출 입금 따라 -/+ 기호 추가
   final DateTime date;
   final String storeName;
   final int money;
@@ -52,8 +52,10 @@ class _MoneyRecordState extends State<MoneyRecord> {
         bottomModal(
           context: context,
           title: '상세 내역 쓰기',
-          content: moneyRecordModalContent(widget.date, widget.storeName, widget.money),
-          button: moneyRecordModalBtns(context, widget.date, widget.storeName, widget.money, widget.balance, widget.accountHistoryId, widget.largeCategory),
+          content: moneyRecordModalContent(
+            context, widget.date, widget.storeName, widget.money, widget.balance, widget.accountHistoryId, widget.type, widget.largeCategory
+          ),
+          button: moneyRecordModalBtns(context),
         );
       },
       child: Padding(
@@ -123,7 +125,21 @@ TextStyle smallStyle() {
 }
 
 // 용돈기입장 내역 클릭시 나오는 모달에 들어갈 내용
-Widget moneyRecordModalContent(DateTime date, String storeName, num money) {
+Widget moneyRecordModalContent(
+  BuildContext context, DateTime date, String storeName, int money, int balance, int accountHistoryId, bool? type, String largeCategory
+) {
+
+  Provider.of<AccountDetailProvider>(context, listen: false).setAccountDetail({
+    'createdDate': date,
+    'storeName' : storeName,
+    'money' : money,
+    'balance': balance,
+    'id': accountHistoryId,
+    'type': type,
+    'largeCategory': largeCategory,
+  });
+
+
   return Container(
       decoration: BoxDecoration(
         border: Border(
@@ -165,8 +181,7 @@ Widget moneyRecordModalContent(DateTime date, String storeName, num money) {
 }
 
 // 용돈기입장 내역 클릭시 나오는 모달에 들어갈 버튼(2개)
-Row moneyRecordModalBtns(BuildContext context, DateTime date, String storeName,
-    int money, int balance, int accountHistoryId, String largeCategory) {
+Row moneyRecordModalBtns(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -175,14 +190,7 @@ Row moneyRecordModalBtns(BuildContext context, DateTime date, String storeName,
           Icons.create,
           '직접 쓰기',
           context,
-          AllowanceLedgerDetailCreatePage(
-            date: date,
-            storeName: storeName,
-            money: money,
-            balance: balance,
-            accountHistoryId: accountHistoryId,
-            largeCategory: largeCategory,
-          ))
+          AllowanceLedgerDetailCreatePage())
     ],
   );
 }

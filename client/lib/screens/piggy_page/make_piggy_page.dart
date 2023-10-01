@@ -86,7 +86,7 @@ class _MakePiggyPageState extends State<MakePiggyPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _goalMoneyController = TextEditingController();
-  
+
   String? authPassword;
 
   @override
@@ -99,58 +99,55 @@ class _MakePiggyPageState extends State<MakePiggyPage> {
         child: Column(
           children: [
             AddPiggyImgBtn(
-              setUploadImage: _setUploadImage,
-              setUploadImageResult: _setUploadImageResult
-            ),
+                setUploadImage: _setUploadImage,
+                setUploadImageResult: _setUploadImageResult),
             Form(
               key: _formKey,
               child: Column(
                 children: [
                   renderTextFormField(
-                    label: '저금통 이름',
-                    // onSaved: (val) {
-                    //   context.read<AddPiggyProvider>().setContent(val);
-                    // },
-                    validator: (val) {
-                      if (val.length < 1) {
-                        return '저금통 이름을 입력해주세요.';
-                      }
-                      return null;
-                    },
-                    onChange: (val) {
-                      if (val.length < 1) {
-                        _setContent('');
-                        _setContentResult(false);
-                      } else {
-                        _setContent(val);
-                        _setContentResult(true);
-                      }
-                    },
-                    controller: _contentController
-                  ),
+                      label: '저금통 이름',
+                      // onSaved: (val) {
+                      //   context.read<AddPiggyProvider>().setContent(val);
+                      // },
+                      validator: (val) {
+                        if (val.length < 1) {
+                          return '저금통 이름을 입력해주세요.';
+                        }
+                        return null;
+                      },
+                      onChange: (val) {
+                        if (val.length < 1) {
+                          _setContent('');
+                          _setContentResult(false);
+                        } else {
+                          _setContent(val);
+                          _setContentResult(true);
+                        }
+                      },
+                      controller: _contentController),
                   renderTextFormField(
-                    label: '목표 금액',
-                    // onSaved: (val) {
-                    //   context.read<AddPiggyProvider>().setGoalMoney(double.parse(val));
-                    // },
-                    validator: (val) {
-                      if (val.length < 1) {
-                        return '목표 금액을 입력해주세요.';
-                      }
-                      return null;
-                    },
-                    onChange: (val) {
-                      if (val.length < 1) {
-                        _setGoalMoney('0');
-                        _setGoalMoneyResult(false);
-                      } else {
-                        _setGoalMoney(val);
-                        _setGoalMoneyResult(true);
-                      }
-                    },
-                    controller: _goalMoneyController,
-                    isNumber: true
-                  ),
+                      label: '목표 금액',
+                      // onSaved: (val) {
+                      //   context.read<AddPiggyProvider>().setGoalMoney(double.parse(val));
+                      // },
+                      validator: (val) {
+                        if (val.length < 1) {
+                          return '목표 금액을 입력해주세요.';
+                        }
+                        return null;
+                      },
+                      onChange: (val) {
+                        if (val.length < 1) {
+                          _setGoalMoney('0');
+                          _setGoalMoneyResult(false);
+                        } else {
+                          _setGoalMoney(val);
+                          _setGoalMoneyResult(true);
+                        }
+                      },
+                      controller: _goalMoneyController,
+                      isNumber: true),
                 ],
               ),
             ),
@@ -161,25 +158,30 @@ class _MakePiggyPageState extends State<MakePiggyPage> {
         text: '만들기',
         action: () async {
           var response = await makePiggy(
-            accessToken: _accessToken, 
-            memberKey: _memberKey, 
-            content: _content, 
-            goalMoney: _goalMoney, 
+            accessToken: _accessToken,
+            memberKey: _memberKey,
+            content: _content,
+            goalMoney: _goalMoney,
             uploadImage: _uploadImage,
           );
           print('저금통 만들기 결과 $response');
           if (response == 0) {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(
-              text: '저금통이\n생성되었습니다.',
-              button: ConfirmBtn(
-                action: PiggyPage(),
-              ),
-            )));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => CompletedPage(
+                          text: '저금통이\n생성되었습니다.',
+                          button: ConfirmBtn(
+                            action: PiggyPage(),
+                          ),
+                        )));
           } else {
             roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
           }
         },
-        isDisabled: _uploadImageResult && _contentResult && _goalMoneyResult ? false : true,
+        isDisabled: _uploadImageResult && _contentResult && _goalMoneyResult
+            ? false
+            : true,
       ),
     );
   }

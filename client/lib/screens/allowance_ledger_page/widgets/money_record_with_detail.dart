@@ -7,7 +7,6 @@ import 'package:keeping/widgets/bottom_modal.dart';
 import 'package:provider/provider.dart';
 
 class MoneyRecordWithDetail extends StatefulWidget {
-  // 카테고리 따라 사진 다르게 설정, 지출 입금 따라 -/+ 기호 추가
   final DateTime date;
   final String storeName;
   final int money;
@@ -49,8 +48,10 @@ class _MoneyRecordWithDetail extends State<MoneyRecordWithDetail> {
         bottomModal(
           context: context,
           title: '상세 내역 쓰기',
-          content: moneyRecordModalContent(widget.date, widget.storeName, widget.money),
-          button: moneyRecordModalBtns(context, widget.date, widget.storeName, widget.money, widget.balance, widget.accountHistoryId, widget.largeCategory),
+          content: moneyRecordModalContent(
+            context, widget.date, widget.storeName, widget.money, widget.balance, widget.accountHistoryId, widget.type, widget.largeCategory
+          ),
+          button: moneyRecordModalBtns(context),
         );
       },
       child: Padding(

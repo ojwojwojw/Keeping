@@ -4,6 +4,7 @@ import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/child_tag.dart';
+import 'package:keeping/widgets/rounded_modal.dart';
 import 'package:provider/provider.dart';
 
 class AccountInfo extends StatefulWidget {
@@ -69,6 +70,15 @@ class _AccountInfoState extends State<AccountInfo> {
               ),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
+                  if (snapshot.data['resultStatus']['resultCode'] == '503') {
+                    return Text(
+                      '${DateTime.now().month}월 총 지출액: 0원',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white
+                      ),
+                    );
+                  }
                   var response = snapshot.data['resultBody'];
                   return Text(
                     '${DateTime.now().month}월 총 지출액: ${formattedMoney(response)}',
