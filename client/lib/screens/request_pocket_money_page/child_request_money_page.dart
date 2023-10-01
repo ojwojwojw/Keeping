@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/request_pocket_money_page/child_request_money_detail.dart';
 import 'package:keeping/screens/request_pocket_money_page/request_pocket_money_second_page.dart';
 import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_box.dart';
 import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_filter.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
+import 'package:keeping/widgets/color_info_card.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
+import 'package:keeping/widgets/request_info_card.dart';
 import 'package:provider/provider.dart';
 
 class ChildRequestMoneyPage extends StatefulWidget {
@@ -59,7 +62,6 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
       if (resultBody != null) {
         final List<dynamic> requestResponseList = resultBody as List<dynamic>;
         handleResult(requestResponseList);
-        print('뭘 렌더링할래? $requestResponseList');
         return requestResponseList.cast<Map<String, dynamic>>();
       } else {
         return [];
@@ -73,8 +75,6 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
     if (res != null) {
       _result = List<Map<String, dynamic>>.from(res);
     }
-    print(_result);
-    print('변경 중~~');
     totalRequestPockeyMoney(_result);
   }
 
@@ -146,93 +146,44 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
 
   // 용돈 조회 필드
   Widget totalRequestPockeyMoney(List<Map<String, dynamic>> requests) {
-    print('req : $requests');
     if (requests.isEmpty) {
-      return Column(children: [
-        SizedBox(
-          height: 50,
-        ),
-        Text(
-          '내역이 없습니다.',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Colors.grey[800],
+      return Column(
+        children: [
+          SizedBox(
+            height: 50,
           ),
-        )
-      ]);
+          Text(
+            '내역이 없습니다.',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: Colors.grey[800],
+            ),
+          )
+        ],
+      );
     }
-    return Column(
-      children: requests.map((req) {
-        final DateTime date = DateTime.parse(req['createdDate']);
-        final String formattedDate = dateFormat.format(date);
-        Color statusBackgroundColor = Colors.white;
-        Color statusTextColor = const Color.fromARGB(255, 0, 0, 0);
-        String statusText = '';
 
-        if (req['approve'] == 'WAIT') {
-          statusText = '조르기 대기 중';
-          statusBackgroundColor = Color.fromARGB(255, 187, 187, 187);
-          statusTextColor = Color.fromARGB(255, 60, 60, 60);
-        } else if (req['approve'] == 'REJECT') {
-          statusText = '조르기 거부';
-          statusBackgroundColor = Colors.red;
-          statusTextColor = Colors.red;
-        } else {
-          statusText = '조르기 승인';
-          statusBackgroundColor = Colors.green;
-          statusTextColor = Colors.green;
-        }
+    return Container(
+      decoration: lightGreyBgStyle(),
+      width: double.infinity,
+      child: SingleChildScrollView(
+        child: Column(
+          children: requests.map((req) {
+            print(req);
+            final DateTime createdDate = DateTime.parse(req['createdDate']);
+            final String status = req['approve'];
+            final int money = req['money'];
 
-        return Container(
-          width: 310,
-          margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('$formattedDate'),
-              SizedBox(height: 10),
-              Container(
-                width: 330,
-                height: 80,
-                decoration: roundedBoxWithShadowStyle(),
-                child: Column(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10.0),
-                        topRight: Radius.circular(10.0),
-                      ),
-                      child: Container(
-                        color: statusBackgroundColor,
-                        width: 330,
-                        height: 30,
-                        child: Center(
-                          child: Text(
-                            '$statusText',
-                            style: TextStyle(
-                              color: statusTextColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      '용돈 ${req['money']}원을 졸랐어요!',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        );
-      }).toList(),
+            return RequestInfoCard(
+              money: money,
+              status: status,
+              createdDate: createdDate,
+              path: ChildRequestMoneyDetailPage(data: req), // req 데이터 전달
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 }

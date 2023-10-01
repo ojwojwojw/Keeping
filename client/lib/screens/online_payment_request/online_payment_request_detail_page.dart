@@ -18,10 +18,12 @@ class OnlinePaymentRequestDetailPage extends StatefulWidget {
   });
 
   @override
-  State<OnlinePaymentRequestDetailPage> createState() => _OnlinePaymentRequestDetailPageState();
+  State<OnlinePaymentRequestDetailPage> createState() =>
+      _OnlinePaymentRequestDetailPageState();
 }
 
-class _OnlinePaymentRequestDetailPageState extends State<OnlinePaymentRequestDetailPage> {
+class _OnlinePaymentRequestDetailPageState
+    extends State<OnlinePaymentRequestDetailPage> {
   bool? _parent;
   String? _accessToken;
   String? _memberKey;
@@ -43,47 +45,46 @@ class _OnlinePaymentRequestDetailPageState extends State<OnlinePaymentRequestDet
         text: '부탁 내용 확인하기',
       ),
       body: FutureBuilder(
-        future: getOnlinePaymentRequestDetail(
-          accessToken: _accessToken, 
-          memberKey: _memberKey, 
-          targetKey: _parent != null && _parent! ? _childKey : _memberKey, 
-          onlineId: widget.onlineId
-        ),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var response = snapshot.data;
-            if (response['resultBody'] != null && response['resultBody'].isEmpty) {
-              return Text('부탁내용이 없습니다.');
+          future: getOnlinePaymentRequestDetail(
+              accessToken: _accessToken,
+              memberKey: _memberKey,
+              targetKey: _parent != null && _parent! ? _childKey : _memberKey,
+              onlineId: widget.onlineId),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              var response = snapshot.data;
+              if (response['resultBody'] != null &&
+                  response['resultBody'].isEmpty) {
+                return Text('부탁내용이 없습니다.');
+              }
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ColorInfoDetailCard(
+                      name: response['resultBody']['productName'],
+                      url: response['resultBody']['url'],
+                      reason: response['resultBody']['content'],
+                      cost: response['resultBody']['totalMoney'],
+                      paidMoney: response['resultBody']['childMoney'],
+                      status: response['resultBody']['approve'],
+                      createdDate:
+                          DateTime.parse(response['resultBody']['createdDate']),
+                    ),
+                    // ConfirmBtn(
+                    //   bgColor: Colors.white,
+                    //   textColor: const Color(0xFFFF8989),
+                    //   borderColor: const Color(0xFFFFDDDD),
+                    //   shadow: false,
+                    // ),
+                    // SizedBox(height: 45,)
+                  ],
+                ),
+              );
+            } else {
+              return Text('로딩중');
             }
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ColorInfoDetailCard(
-                    name: response['resultBody']['productName'],
-                    url: response['resultBody']['url'],
-                    reason: response['resultBody']['content'],
-                    cost: response['resultBody']['totalMoney'],
-                    paidMoney: response['resultBody']['childMoney'],
-                    status: response['resultBody']['approve'],
-                    createdDate: DateTime.parse(response['resultBody']['createdDate']),
-                  ),
-                  // ConfirmBtn(
-                  //   bgColor: Colors.white,
-                  //   textColor: const Color(0xFFFF8989),
-                  //   borderColor: const Color(0xFFFFDDDD),
-                  //   shadow: false,
-                  // ),
-                  // SizedBox(height: 45,)
-                ],
-              ),
-            );
-          } else {
-            return Text('로딩중');
-          }
-
-        }
-      ),
+          }),
       bottomNavigationBar: BottomBtn(
         text: '확인',
         isDisabled: false,

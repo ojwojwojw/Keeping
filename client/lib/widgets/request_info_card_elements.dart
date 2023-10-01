@@ -4,31 +4,28 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
+import 'package:keeping/widgets/color_info_card_elements.dart';
 
-Widget colorInfoCardStatus(double width, String status) {
+Widget requestInfoCardStatus(double width, String status) {
   return Container(
     width: width,
     height: 30,
     alignment: Alignment.center,
     decoration: BoxDecoration(color: requestStatusBgColor(status)),
     child: Text(
-      requestStatusText('부탁', status),
+      requestStatusText('조르기', status),
       style: TextStyle(
           color: requestStatusTextColor(status), fontWeight: FontWeight.bold),
     ),
   );
 }
 
-Widget colorInfoCardContent() {
-  return Container();
-}
-
-Widget colorInfoDetailCardHeader(DateTime date, String name) {
+Widget requestInfoDetailCardHeader(DateTime date, String name) {
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 10),
     child: Column(
       children: [
-        colorInfoDetailDate(date),
+        requestInfoDetailDate(date),
         Row(
           children: [
             Text(name),
@@ -39,11 +36,11 @@ Widget colorInfoDetailCardHeader(DateTime date, String name) {
   );
 }
 
-Widget colorInfoDetailDate(DateTime date) {
+Widget requestInfoDetailDate(DateTime date) {
   return Text(formattedYMDDate(date));
 }
 
-Widget colorInfoDetailCardContents(Column content) {
+Widget requestInfoDetailCardContents(Column content) {
   return Expanded(
       child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),
@@ -55,32 +52,32 @@ Widget colorInfoDetailCardContents(Column content) {
           )))));
 }
 
-Widget colorInfoDetailCardContent(String title, String content,
+Widget requestInfoDetailCardContent(String title, String content,
     {bool box = true}) {
   return Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          colorInfoDetailCardContentTitle(title),
+          requestInfoDetailCardContentTitle(title),
           SizedBox(
             height: 5,
           ),
           box
-              ? colorInfoDetailCardContentGreyBox(content)
-              : colorInfoDetailCardContentUnderLine(content),
+              ? requestInfoDetailCardContentGreyBox(content)
+              : requestInfoDetailCardContentUnderLine(content),
         ],
       ));
 }
 
-Widget colorInfoDetailCardContentTitle(String title) {
+Widget requestInfoDetailCardContentTitle(String title) {
   return Text(
     title,
     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
   );
 }
 
-Widget colorInfoDetailCardContentGreyBox(String content) {
+Widget requestInfoDetailCardContentGreyBox(String content) {
   return Container(
       width: 280,
       decoration: roundedBoxWithShadowStyle(
@@ -91,7 +88,7 @@ Widget colorInfoDetailCardContentGreyBox(String content) {
       ));
 }
 
-Widget colorInfoDetailCardContentUnderLine(String content) {
+Widget requestInfoDetailCardContentUnderLine(String content) {
   return InkWell(
       onTap: () {
         Clipboard.setData(ClipboardData(text: content));
@@ -108,34 +105,4 @@ Widget colorInfoDetailCardContentUnderLine(String content) {
             padding: EdgeInsets.all(5),
             child: Text(content),
           )));
-}
-
-String requestStatusText(String service, String status) {
-  if (status == 'APPROVE') {
-    return '$service 완료';
-  } else if (status == 'REJECT') {
-    return '$service 거절';
-  } else {
-    return '$service 대기';
-  }
-}
-
-Color requestStatusBgColor(String status) {
-  if (status == 'ACCEPT') {
-    return Color(0xFFE0FBD6);
-  } else if (status == 'REJECT') {
-    return Color(0xFFFFDDDD);
-  } else {
-    return Color(0xFFD5D5D5);
-  }
-}
-
-Color requestStatusTextColor(String status) {
-  if (status == 'ACCEPT') {
-    return Color(0xFF62D00B);
-  } else if (status == 'REJECT') {
-    return Color(0xFFFF0000);
-  } else {
-    return Color(0xFF000000);
-  }
 }
