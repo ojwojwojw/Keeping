@@ -134,7 +134,7 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNav(),
+      bottomSheet: BottomNav(),
     );
   }
 

@@ -126,7 +126,7 @@ class _PrivacyEditPageState extends State<PasswordEditPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '비밀번호 수정',
         isDisabled: isButtonDisabled,
         action: () {

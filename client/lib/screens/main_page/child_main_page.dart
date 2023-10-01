@@ -163,7 +163,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNav(),
+      bottomSheet: BottomNav(),
     );
   }
 }

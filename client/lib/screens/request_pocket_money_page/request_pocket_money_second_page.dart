@@ -61,7 +61,7 @@ class _RequestPocketMoneySecondPageState
           ),
         ),
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '조르기 요청하기',
         action: () {
           requestMoney(context);

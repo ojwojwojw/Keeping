@@ -112,7 +112,7 @@ class _ParentPushNotificationPageState
           ),
         ),
       ),
-      bottomNavigationBar: BottomNav(),
+      bottomSheet: BottomNav(),
     );
   }
 }
