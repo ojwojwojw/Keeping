@@ -12,7 +12,6 @@ import 'package:keeping/provider/user_info.dart';
 
 class PushNotificationPage extends StatefulWidget {
   const PushNotificationPage({Key? key});
-
   @override
   State<PushNotificationPage> createState() => _PushNotificationPageState();
 }
@@ -20,6 +19,7 @@ class PushNotificationPage extends StatefulWidget {
 class _PushNotificationPageState extends State<PushNotificationPage> {
   List<Map<String, dynamic>> _result = []; // 데이터를 저장할 변수
   int selectedBtnIdx = 0;
+
   late Future<List<Map<String, dynamic>>> _dataFuture;
   @override
   void initState() {
@@ -27,17 +27,12 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
     _dataFuture = renderPushNotification(context, selectedBtnIdx);
   }
 
-  void _updateData() {
-    setState(() {
-      _dataFuture = renderPushNotification(context, selectedBtnIdx);
-    });
-  }
-
-  handleResult(res) {
+  void handleResult(res) {
     if (res != null) {
-      _result = List<Map<String, dynamic>>.from(res);
+      setState(() {
+        _result = List<Map<String, dynamic>>.from(res);
+      });
     }
-    totalPushNotification(_result);
   }
 
   @override
@@ -57,27 +52,48 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
                 },
               ),
               FutureBuilder<List<Map<String, dynamic>>>(
-                  future: getPushNotification(context),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text('로딩 중...'); // 데이터를 기다리는 동안 표시할 내용
-                    } else if (snapshot.hasError) {
-                      return Text('데이터를 가져오지 못했어요'); // 오류가 발생한 경우
-                    } else if (snapshot.hasData) {
-                      // 용돈 조르기 내역을 표시하는 위젯을 반환
+                future: getPushNotification(context),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return SizedBox(
+                      height: 200, // 원하는 높이로 조정하세요
+                      child: Container(
+                        child: Center(
+                          child: Text(
+                            '잠시 기다려주세요...',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 77, 19, 135)),
+                          ),
+                        ),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('데이터를 가져오지 못했어요'); // 오류가 발생한 경우
+                  } else if (snapshot.hasData) {
+                    if (_result.isNotEmpty) {
                       return totalPushNotification(_result);
                     } else {
                       return Text('데이터가 없어요');
                     }
+                  } else {
+                    return Text('데이터가 없어요');
                   }
-                  // },
-                  ),
+                },
+              ),
             ],
           ),
         ),
       ),
-      bottomSheet: BottomNav(),
+      bottomNavigationBar: BottomNav(),
     );
+  }
+
+  void _updateData() {
+    setState(() {
+      _dataFuture = renderPushNotification(context, selectedBtnIdx);
+    });
   }
 
   Future<List<Map<String, dynamic>>> renderPushNotification(
@@ -118,6 +134,7 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
   }
 
   Widget totalPushNotification(List<Map<String, dynamic>> requests) {
+    print('req: $requests');
     if (requests.isEmpty) {
       return Column(
         children: [
@@ -207,77 +224,6 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
           ),
         );
       }).toList(),
-    );
-  }
-
-  Widget renderingPushNotification(List<Map<String, dynamic>> requests) {
-    if (requests.isEmpty) {
-      return Column(
-        children: [
-          SizedBox(
-            height: 50,
-          ),
-          Text(
-            '내역이 없습니다.',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: Colors.grey[800],
-            ),
-          )
-        ],
-      );
-    }
-
-    return Container(
-      decoration: lightGreyBgStyle(),
-      width: double.infinity,
-      child: SingleChildScrollView(
-        child: Column(
-          children: requests.map((noti) {
-            // 알림 내용 표시
-            return Container(
-              width: 330,
-              margin: EdgeInsets.symmetric(vertical: 8),
-              padding: EdgeInsets.all(8),
-              decoration: roundedBoxWithShadowStyle(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '알림 유형: ${noti['type']}',
-                    style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    '날짜: ${noti['createdDate']}',
-                    style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: 14,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    '제목: ${noti['title']}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    '내용: ${noti['content']}',
-                    style: TextStyle(
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-        ),
-      ),
     );
   }
 }
