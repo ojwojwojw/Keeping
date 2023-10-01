@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:keeping/screens/diary_page/diary_page.dart';
 import 'dart:convert';
+import 'package:keeping/screens/diary_page/diary_page.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -94,6 +96,12 @@ class _QuestionPageState extends State<QuestionPage> {
                     ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ChildDiaryPage()));
+                        },
+                        child: Text('일기 페이지')),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => QeustionAnswerPage(
                                     questionText: data[0]["content"],
                                     questionId: data[0]["id"],
@@ -145,6 +153,20 @@ class ParentQuestionPage extends StatefulWidget {
 
 class _ParentQuestionPageState extends State<ParentQuestionPage> {
   List<Map<String, dynamic>> data = [];
+
+  late String? selectedMemberKey;
+  late Dio dio;
+  late UserInfoProvider userProvider;
+  late ChildInfoProvider childInfoProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    childInfoProvider = Provider.of<ChildInfoProvider>(context, listen: false);
+    selectedMemberKey = childInfoProvider.memberKey;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -217,6 +239,12 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                     ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ParentDiaryPage()));
+                        },
+                        child: Text('일기 페이지')),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => ParentQeustionAnswerPage(
                                     questionText: data[0]["content"],
                                     questionId: data[0]["id"],
@@ -246,7 +274,15 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
       print(response.data['resultBody']);
       // 요청이 성공했을 때 처리
       if (response.statusCode == 200 && response.data['resultBody'] is List) {
-        return List<Map<String, dynamic>>.from(response.data['resultBody']);
+        print('response관찰');
+        print(response);
+        // 멤버키를 기반으로 필터링 수행
+        var filteredData =
+            List<Map<String, dynamic>>.from(response.data['resultBody'])
+                .where((item) => item['memberKey'] == memberKey)
+                .toList();
+        print(filteredData);
+        return filteredData;
       } else {
         return []; // 빈 객체 반환
       }
