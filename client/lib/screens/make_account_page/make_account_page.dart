@@ -47,12 +47,11 @@ class _MakeAccountPageState extends State<MakeAccountPage> {
         ],
       ),
       bottomNavigationBar: BottomBtn(
-          text: '다음',
-          action: PhoneVerificationPage(),
-          // action: () {
-          //   noEffectTransition(context, PhoneVerificationPage());
-          // },
-          isDisabled: !_agreementResult),
+        text: '다음',
+        action: PhoneVerificationPage(),
+        isDisabled: !_agreementResult,
+        effect: false,
+      ),
     );
   }
 }
@@ -230,16 +229,13 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                                         memberKey: _memberKey!,
                                         code: val);
                                     if (response != null) {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) =>
-                                                  MakeAccountEnterAuthPasswordPage()));
+                                      noEffectTransition(context, MakeAccountEnterAuthPasswordPage());
                                     } else {
                                       _failVerification();
                                       roundedModal(
-                                          context: context,
-                                          title: '인증번호가 틀렸습니다.');
+                                        context: context,
+                                        title: '인증번호가 틀렸습니다.'
+                                      );
                                     }
                                   },
                                   validator: (val) {
@@ -256,7 +252,10 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                                     }
                                   },
                                   controller: _verificationController,
-                                  isNumber: true))),
+                                  isNumber: true
+                                )
+                              )
+                            ),
                     ],
                   ),
                 ],
