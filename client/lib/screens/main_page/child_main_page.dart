@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
+import 'package:keeping/screens/diary_page/diary_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/main_page/widgets/account_info.dart';
 import 'package:keeping/screens/main_page/widgets/gradient_btn.dart';
@@ -33,7 +34,9 @@ class _ChildMainPageState extends State<ChildMainPage> {
     super.initState();
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
-    _hasAccount = context.read<AccountInfoProvider>().accountNumber.isNotEmpty ? true : false;
+    _hasAccount = context.read<AccountInfoProvider>().accountNumber.isNotEmpty
+        ? true
+        : false;
   }
 
   @override
@@ -63,16 +66,17 @@ class _ChildMainPageState extends State<ChildMainPage> {
                 ),
                 FutureBuilder(
                   future: getAccountInfo(
-                    accessToken: _accessToken,
-                    memberKey: _memberKey,
-                    targetKey: _targetKey ?? _memberKey),
+                      accessToken: _accessToken,
+                      memberKey: _memberKey,
+                      targetKey: _targetKey ?? _memberKey),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var response = snapshot.data;
                       if (response['resultStatus']['resultCode'] == '404') {
                         return MakeAccountBtn();
                       } else {
-                        Provider.of<AccountInfoProvider>(context, listen: false).setAccountInfo(response['resultBody']);
+                        Provider.of<AccountInfoProvider>(context, listen: false)
+                            .setAccountInfo(response['resultBody']);
                         return AccountInfo(
                           balance: response['resultBody']['balance'],
                         );
@@ -138,6 +142,13 @@ class _ChildMainPageState extends State<ChildMainPage> {
                         MaterialPageRoute(builder: (_) => ParentMainPage()));
                   },
                   child: Text('부모 계정 전환'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => ChildDiaryPage()));
+                  },
+                  child: Text('일기 페이지'),
                 ),
               ],
             ),
