@@ -331,19 +331,28 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
   late Dio dio;
   late UserInfoProvider userProvider;
   late List<Map<String, dynamic>> childrenList;
+  late bool isParent = userProvider.parent;
 //하단 버튼 랜더링과 동작 로직 관련
+
+  @override
+  void initState() {
+    super.initState();
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    isParent = userProvider.parent;
+  }
+
   String getBottomButtonText(String status) {
     switch (status) {
       case "CREATE_WAIT":
         return "미션 생성 승인";
       case "YET":
-        return "미션 진행 확인";
+        return "미션 완료 요청 ";
       case "FINISH_WAIT":
         return "미션 완료 승인";
       case "FINISH":
-        return "미션 확인";
+        return "완료된 미션입니다.";
       default:
-        return "미션 승인하기";
+        return "NULL";
     }
   }
 
@@ -351,10 +360,15 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
     switch (status) {
       case "CREATE_WAIT":
         // 미션 생성 승인 로직
-        missionApprove();
         break;
       case "YET":
         // 미션 진행 확인 로직
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => MissionCompleteRequestPage(
+                      missionId: widget.item["id"],
+                    ))); //미션 id 넘겨주는곳
         break;
       case "FINISH_WAIT":
         // 미션 완료 승인 로직
@@ -495,7 +509,21 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
       bottomNavigationBar: BottomBtn(
         text: getBottomButtonText(widget.item["completed"]),
         action: () => handleButtonClick(widget.item["completed"]),
-        isDisabled: true,
+        isDisabled: () {
+          String status = widget.item["completed"];
+
+          if (status == "CREATE_WAIT" && !isParent) {
+            return true; // 자녀는 비활성화
+          } else if (status == "YET" && isParent) {
+            return true; // 부모는 비활성화
+          } else if (status == "FINISH_WAIT" && !isParent) {
+            return true; // 자녀는 비활성화
+          } else if (status == "FINISH" && isParent) {
+            return true; // 부모는 비활성화
+          }
+
+          return false; // 기본값은 활성화
+        }(),
       ),
     );
   }
@@ -517,6 +545,14 @@ class _ParentMissionDetailPageState extends State<ParentMissionDetailPage> {
   late Dio dio;
   late UserInfoProvider userProvider;
   late List<Map<String, dynamic>> childrenList;
+  late bool isParent = userProvider.parent;
+
+  @override
+  void initState() {
+    super.initState();
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    isParent = userProvider.parent;
+  }
 
   //하단 버튼 랜더링과 동작 로직 관련
   String getBottomButtonText(String status) {
@@ -524,11 +560,11 @@ class _ParentMissionDetailPageState extends State<ParentMissionDetailPage> {
       case "CREATE_WAIT":
         return "미션 생성 승인";
       case "YET":
-        return "미션 진행 확인";
+        return "미션 완료 요청";
       case "FINISH_WAIT":
         return "미션 완료 승인";
       case "FINISH":
-        return "미션 확인";
+        return "완료된 미션입니다.";
       default:
         return "미션 승인하기";
     }
@@ -549,6 +585,12 @@ class _ParentMissionDetailPageState extends State<ParentMissionDetailPage> {
         // 미션 진행 확인 로직
         break;
       case "FINISH_WAIT":
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => MissionCompletePage(
+                      missionId: widget.item["id"],
+                    ))); //미션 id 넘겨주는곳
         // 미션 완료 승인 로직
         break;
       case "FINISH":
@@ -683,7 +725,21 @@ class _ParentMissionDetailPageState extends State<ParentMissionDetailPage> {
       bottomNavigationBar: BottomBtn(
         text: getBottomButtonText(widget.item["completed"]),
         action: () => handleButtonClick(widget.item["completed"]),
-        isDisabled: false,
+        isDisabled: () {
+          String status = widget.item["completed"];
+
+          if (status == "CREATE_WAIT" && !isParent) {
+            return true; // 자녀는 비활성화
+          } else if (status == "YET" && isParent) {
+            return true; // 부모는 비활성화
+          } else if (status == "FINISH_WAIT" && !isParent) {
+            return true; // 자녀는 비활성화
+          } else if (status == "FINISH" && isParent) {
+            return true; // 부모는 비활성화
+          }
+
+          return false; // 기본값은 활성화
+        }(),
       ),
     );
   }
@@ -705,7 +761,7 @@ class FilteringBar extends StatelessWidget {
   }
 }
 
-// 미션 승인 입력 폼 페이지
+// 미션 생성 승인 입력 폼 페이지
 class MissionApprovePage extends StatefulWidget {
   final int? missionId;
   const MissionApprovePage({super.key, required this.missionId});
@@ -784,6 +840,182 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
       ),
       bottomNavigationBar: BottomBtn(
         text: "미션 생성 승인 하기",
+        action: _sendData,
+        isDisabled: comment.isEmpty,
+      ),
+    );
+  }
+}
+
+// 미션 완료 요청 폼 페이지
+////////////////////////////
+class MissionCompleteRequestPage extends StatefulWidget {
+  final int? missionId;
+  const MissionCompleteRequestPage({super.key, required this.missionId});
+
+  @override
+  State<MissionCompleteRequestPage> createState() =>
+      _MissionCompleteRequestPageState();
+}
+
+class _MissionCompleteRequestPageState
+    extends State<MissionCompleteRequestPage> {
+  String comment = '';
+  late Dio dio;
+  late UserInfoProvider userProvider;
+  late List<Map<String, dynamic>> childrenList;
+
+  ///YET 상태인 미션을 FINISH_WAIT으로 바꾸기
+  Future<void> _sendData() async {
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+    var userType = userProvider.parent ? "PARENT" : "CHILD";
+
+    var data = {
+      "type": userType,
+      "missionId": widget.missionId,
+      "cheeringMessage": comment,
+      "completed": "FINISH_WAIT"
+    };
+
+    try {
+      var response = await dio.patch(
+          "$_baseUrl/mission-service/api/$memberKey/complete",
+          data: data,
+          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
+      print(response);
+
+      if (response.statusCode == 200) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CompletedAndGoPage(
+                      text: "미션완료 요청완료!",
+                      targetPage: MissionPage(),
+                    )));
+      }
+    } catch (e) {
+      print('Error: $e');
+      print(data);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: MyHeader(
+        text: "미션 완료 요청 페이지",
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            renderTextFormField(
+                label: "완료 메시지를 적어봐요",
+                hintText: "완료 메시지를 적어봐요",
+                onChange: (value) {
+                  setState(() {
+                    comment = value;
+                  });
+                })
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomBtn(
+        text: "미션 완료 요청 하기",
+        action: _sendData,
+        isDisabled: comment.isEmpty,
+      ),
+    );
+  }
+}
+
+// 미션 완료 폼 페이지
+////////////////////////////
+class MissionCompletePage extends StatefulWidget {
+  final int? missionId;
+  const MissionCompletePage({super.key, required this.missionId});
+
+  @override
+  State<MissionCompletePage> createState() => _MissionCompletePageState();
+}
+
+class _MissionCompletePageState extends State<MissionCompletePage> {
+  String comment = '';
+  late Dio dio;
+  late UserInfoProvider userProvider;
+  late List<Map<String, dynamic>> childrenList;
+
+  ///FINISH_WAIT 상태인 미션을 FINISH로 바꾸기
+  Future<void> _sendData() async {
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+    var userType = userProvider.parent ? "PARENT" : "CHILD";
+
+    var data = {
+      "type": userType,
+      "missionId": widget.missionId,
+      "cheeringMessage": comment,
+      "completed": "FINISH"
+    };
+
+    try {
+      var response = await dio.patch(
+          "$_baseUrl/mission-service/api/$memberKey/complete",
+          data: data,
+          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
+      print(response);
+
+      if (response.statusCode == 200) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CompletedAndGoPage(
+                      text: "미션완료 승인완료!",
+                      targetPage: ParentMissionPage(),
+                    )));
+      }
+    } catch (e) {
+      print('Error: $e');
+      print(data);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: MyHeader(
+        text: "미션 완료 요청 페이지",
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            renderTextFormField(
+                label: "완료 승인메세지를 적어봐요",
+                hintText: "완료 승인 메세지를 적어봐요",
+                onChange: (value) {
+                  setState(() {
+                    comment = value;
+                  });
+                })
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomBtn(
+        text: "미션 완료 승인 하기",
         action: _sendData,
         isDisabled: comment.isEmpty,
       ),
