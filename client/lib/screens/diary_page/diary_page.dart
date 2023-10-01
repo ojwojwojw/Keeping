@@ -278,7 +278,10 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => QeustionAnswerPage()));
+                        builder: (context) => QeustionAnswerPage(
+                              questionText: widget.item["content"],
+                              questionId: widget.item["id"],
+                            )));
               },
               child: Text("작성"),
             ),
@@ -297,7 +300,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  widget.item["content"],
+                  widget.item["content"] ?? "내용 없음",
                   style: TextStyle(fontSize: 18.0),
                 ),
                 SizedBox(height: 24.0),
@@ -310,7 +313,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  widget.item["parentAnswer"],
+                  widget.item["parentAnswer"] ?? "응답 없음",
                   style: TextStyle(fontSize: 18.0),
                 ),
                 SizedBox(height: 24.0),
@@ -323,17 +326,17 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  widget.item["childAnswer"],
+                  widget.item["childAnswer"] ?? "응답 없음",
                   style: TextStyle(fontSize: 18.0),
                 ),
                 SizedBox(height: 24.0),
                 Text(
-                  "생성 날짜: ${widget.item["createdDate"]}",
+                  "생성 날짜: ${widget.item["createdDate"] ?? "날짜 정보 없음"}",
                   style: TextStyle(fontSize: 18.0),
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  "생성 여부: ${widget.item["isCreated"] ? "true" : "false"}",
+                  "생성 여부: ${(widget.item["isCreated"] ?? false) ? "true" : "false"}",
                   style: TextStyle(fontSize: 18.0),
                 ),
               ],
@@ -615,7 +618,10 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => QeustionAnswerPage()));
+                        builder: (context) => ParentQeustionAnswerPage(
+                              questionText: widget.item["content"],
+                              questionId: widget.item["id"],
+                            )));
               },
               child: Text("작성"),
             ),

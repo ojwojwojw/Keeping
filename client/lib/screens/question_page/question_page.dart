@@ -7,6 +7,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:keeping/screens/diary_page/diary_page.dart';
+import 'dart:convert';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -44,38 +46,44 @@ class _QuestionPageState extends State<QuestionPage> {
                         color: Colors.white, // 텍스트 색상 설정
                       ),
                     ),
-                    Container(
-                      width: 350,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        color: Colors.white, // 배경색 설정
-                        border: Border.all(
-                            color: Colors.white, width: 2.0), // 테두리 설정
-                        borderRadius:
-                            BorderRadius.circular(10.0), // 테두리의 둥글기 설정
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5), // 그림자 색상 설정
-                            spreadRadius: 5, // 그림자 크기 설정
-                            blurRadius: 7, // 그림자 흐림 정도 설정
-                            offset: Offset(0, 3), // 그림자의 위치 설정
-                          ),
-                        ],
-                      ),
-                      child: Column(children: [
-                        Text(
-                          DateFormat('yyyy년 MM월 dd일').format(DateTime.now()) +
-                              "의 질문",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ChildDiaryDetailPage(
+                                  item: data,
+                                )));
+                      },
+                      child: Container(
+                        width: 350,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.white, width: 2.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
                         ),
-                        data != null && data.isNotEmpty
-                            ? Text(
-                                "Q." + data["content"],
-                                style: TextStyle(fontSize: 20),
-                              )
-                            : Text("내용 없음"),
-                      ]),
+                        child: Column(children: [
+                          Text(
+                            DateFormat('yyyy년 MM월 dd일').format(DateTime.now()) +
+                                "의 질문",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          data != null && data.isNotEmpty
+                              ? Text(
+                                  "Q." + data["content"],
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              : Text("오늘의 질문이 없습니다. "),
+                        ]),
+                      ),
                     ),
                     ElevatedButton(
                         onPressed: () {
@@ -86,7 +94,10 @@ class _QuestionPageState extends State<QuestionPage> {
                     ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => QeustionAnswerPage()));
+                              builder: (context) => QeustionAnswerPage(
+                                    questionText: data["content"],
+                                    questionId: data["id"],
+                                  )));
                         },
                         child: Text('질문 대답하기'))
                   ]),
@@ -133,7 +144,7 @@ class ParentQuestionPage extends StatefulWidget {
 }
 
 class _ParentQuestionPageState extends State<ParentQuestionPage> {
-  List<Map<String, dynamic>> data = [];
+  Map<String, dynamic> data = {};
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +159,7 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('에러 발생: ${snapshot.error}'));
               } else {
-                data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
+                data = snapshot.data ?? {}; // 여기에서 snapshot의 데이터를 받아옵니다.
                 return Center(
                   child: Column(children: [
                     Text(
@@ -176,8 +187,20 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                           ),
                         ],
                       ),
-                      child: Column(
-                          children: [Text('날짜 데이터 나올곳'), Text('질문 내용 나올 곳 ')]),
+                      child: Column(children: [
+                        Text(
+                          DateFormat('yyyy년 MM월 dd일').format(DateTime.now()) +
+                              "의 질문",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        data != null && data.isNotEmpty
+                            ? Text(
+                                "Q." + data["content"],
+                                style: TextStyle(fontSize: 20),
+                              )
+                            : Text("오늘의 질문이 없습니다."),
+                      ]),
                     ),
                     ElevatedButton(
                         onPressed: () {
@@ -188,8 +211,10 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                     ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  ParentQeustionAnswerPage()));
+                              builder: (context) => ParentQeustionAnswerPage(
+                                    questionText: data["content"],
+                                    questionId: data["id"],
+                                  )));
                         },
                         child: Text('질문 대답하기'))
                   ]),
@@ -199,7 +224,7 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
   }
 
   //질문 데이터를 가져오는 비동기 요청
-  Future<List<Map<String, dynamic>>> getData() async {
+  Future<Map<String, dynamic>> getData() async {
     // Dio 객체 생성
     final dio = Dio();
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
@@ -211,20 +236,18 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
       final response = await dio.get(
           "$_baseUrl/question-service/api/$memberKey/questions/today",
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
-
+      print('try를 하나요?');
+      print(response.data['resultBody']);
       // 요청이 성공했을 때 처리
-      if (response.statusCode == 200) {
-        if (response.data['resultBody'] is List) {
-          return List<Map<String, dynamic>>.from(response.data['resultBody']);
-        } else if (response.data['resultBody'] is Map) {
-          return [response.data['resultBody']]; // Map을 List로 감싸줍니다.
-        }
+      if (response.statusCode == 200 && response.data['resultBody'] is Map) {
+        return response.data['resultBody'];
+      } else {
+        return {}; // 빈 객체 반환
       }
-      return []; // 빈 리스트 반환
     } catch (error) {
       // 요청이 실패했을 때 처리
       print('Error: $error');
-      return []; // 빈 리스트 반환
+      return {}; // 빈 리스트 반환
     }
   }
 }
@@ -238,6 +261,61 @@ class QuestionSendPage extends StatefulWidget {
 }
 
 class _QuestionSendPageState extends State<QuestionSendPage> {
+  String comment = '';
+  late UserInfoProvider userProvider;
+  late List<Map<String, dynamic>> childrenList;
+  String parentMemberKey = '';
+  late Dio dio;
+
+  //부모키 가져오기//
+  Future<void> _getParentMemberKey() async {
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+    try {
+      var response = await dio.get(
+          "$_baseUrl/member-service/auth/api/$memberKey/parent",
+          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
+      Map<String, dynamic> jsonResponse = json.decode(response.toString());
+      parentMemberKey = jsonResponse['resultBody'];
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> _sendQuestionData() async {
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+
+    var data = {"childMemberKey": memberKey, "content": comment};
+
+    try {
+      final response = await dio.post(
+          "$_baseUrl/question-service/api/$memberKey",
+          data: data,
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+
+      if (response.statusCode == 200) {
+        print('사용자 개인질문 생성 데이터 전송 성공!');
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => ParentQuestionPage()));
+      } else {
+        print('사용자 개인질문 생성 데이터 전송 실패.');
+      }
+    } catch (e) {
+      print('Error: $e');
+      print(data);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    _getParentMemberKey();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -246,32 +324,19 @@ class _QuestionSendPageState extends State<QuestionSendPage> {
       ),
       body: Column(
         children: [
-          Text('받는사람'),
-          Container(
-            height: 50,
-            width: 400,
-            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.white, // 배경색 설정
-              border: Border.all(color: Color(0xFF8320E7)), // 테두리 설정
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: Text(
-                '엄마',
-                style: TextStyle(
-                  fontSize: 20, // 텍스트 크기 설정
-                  color: Colors.black, // 텍스트 색상 설정
-                ),
-              ),
-            ),
-          ),
-          renderTextFormField(label: '질문내용', hintText: '질문 내용을 입력하세요'),
+          renderTextFormField(
+              label: '질문내용',
+              hintText: '질문 내용을 입력하세요',
+              onChange: (value) {
+                setState(() {
+                  comment = value;
+                });
+              }),
         ],
       ),
       bottomNavigationBar: BottomBtn(
         text: '질문보내기',
-        action: QuestionPage(),
+        action: _sendQuestionData,
         isDisabled: false,
       ),
     );
@@ -287,6 +352,49 @@ class ParentQuestionSendPage extends StatefulWidget {
 }
 
 class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
+  String selectedMemberKey = '';
+  String comment = "";
+  late Dio dio;
+  late UserInfoProvider userProvider;
+  List<Map<String, dynamic>> childrenList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    childrenList = userProvider.childrenList;
+    if (childrenList.isNotEmpty) {
+      selectedMemberKey = childrenList.first['memberKey'] ?? '';
+    }
+  }
+
+  Future<void> _sendQuestionData() async {
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+
+    var data = {"childMemberKey": selectedMemberKey, "content": comment};
+
+    try {
+      final response = await dio.post(
+          "$_baseUrl/question-service/api/$memberKey",
+          data: data,
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+
+      if (response.statusCode == 200) {
+        print('사용자 개인질문 생성 데이터 전송 성공!');
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => ParentQuestionPage()));
+      } else {
+        print('사용자 개인질문 생성 데이터 전송 실패.');
+      }
+    } catch (e) {
+      print('Error: $e');
+      print(data);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -296,46 +404,91 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
       body: Column(
         children: [
           Text('받는사람'),
-          Container(
-            height: 50,
-            width: 400,
-            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.white, // 배경색 설정
-              border: Border.all(color: Color(0xFF8320E7)), // 테두리 설정
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: Text(
-                '엄마',
-                style: TextStyle(
-                  fontSize: 20, // 텍스트 크기 설정
-                  color: Colors.black, // 텍스트 색상 설정
-                ),
-              ),
-            ),
+
+          /// 자녀를 고르는 드랍다운
+          DropdownButton<String>(
+            value: selectedMemberKey.isNotEmpty ? selectedMemberKey : null,
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedMemberKey = newValue ?? '';
+              });
+            },
+            items: childrenList
+                .map<DropdownMenuItem<String>>((Map<String, dynamic> child) {
+              return DropdownMenuItem<String>(
+                value: child["memberKey"].toString(),
+                child: Text(child["name"].toString()),
+              );
+            }).toList(),
           ),
-          renderTextFormField(label: '질문내용', hintText: '질문 내용을 입력하세요'),
+
+          ///
+          renderTextFormField(
+              label: '질문내용',
+              hintText: '질문 내용을 입력하세요',
+              onChange: (value) {
+                setState(() {
+                  comment = value;
+                });
+              }),
         ],
       ),
       bottomNavigationBar: BottomBtn(
         text: '질문보내기',
-        action: QuestionPage(),
-        isDisabled: false,
+        action: _sendQuestionData,
+        isDisabled: comment.isEmpty,
       ),
     );
   }
 }
 
+/////////////////////////
 //자식 질문에 답하는 페이지
 class QeustionAnswerPage extends StatefulWidget {
-  const QeustionAnswerPage({super.key});
+  final String? questionText;
+  final int? questionId;
+  const QeustionAnswerPage(
+      {Key? key, required this.questionText, required this.questionId})
+      : super(key: key);
 
   @override
   State<QeustionAnswerPage> createState() => _QeustionAnswerPageState();
 }
 
 class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
+  String comment = '';
+
+  Future<void> _sendMissionData() async {
+    var dio = Dio();
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+    var userType = userProvider.parent;
+
+    var data = {
+      "isParent": userType,
+      "questionId": widget.questionId,
+      "answer": comment
+    };
+
+    try {
+      final response = await dio.post(
+          "$_baseUrl/question-service/api/$memberKey/answer",
+          data: data,
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+
+      if (response.statusCode == 200) {
+        print('질문 답변 데이터 전송 성공!');
+      } else {
+        print('질문 답변 데이터 전송 실패.');
+      }
+    } catch (e) {
+      print('Error: $e');
+      print(data);
+      print("$_baseUrl/question-service/api/$memberKey/answer");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -344,15 +497,24 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
       ),
       body: Column(
         children: [
-          Text('날짜 들어갈 곳'),
-          Text('질문 내용 들어갈 곳'),
-          renderTextFormField(label: '', hintText: '질문에 대해 어떻게 생각하시나요?'),
+          Text(
+            widget.questionText.toString(),
+            style: TextStyle(fontSize: 20),
+          ),
+          renderTextFormField(
+              label: '',
+              hintText: '질문에 대해 어떻게 생각하시나요?',
+              onChange: (value) {
+                setState(() {
+                  comment = value;
+                });
+              }),
         ],
       ),
       bottomNavigationBar: BottomBtn(
         text: '등록하기',
-        action: QuestionPage(),
-        isDisabled: false,
+        action: _sendMissionData,
+        isDisabled: comment.isEmpty,
       ),
     );
   }
@@ -361,7 +523,10 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
 //부모 질문에 답하는 페이지
 
 class ParentQeustionAnswerPage extends StatefulWidget {
-  const ParentQeustionAnswerPage({super.key});
+  final String? questionText;
+  final int? questionId;
+  const ParentQeustionAnswerPage(
+      {super.key, required this.questionText, required this.questionId});
 
   @override
   State<ParentQeustionAnswerPage> createState() =>
@@ -369,6 +534,39 @@ class ParentQeustionAnswerPage extends StatefulWidget {
 }
 
 class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
+  String comment = '';
+
+  Future<void> _sendMissionData() async {
+    var dio = Dio();
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+    var userType = userProvider.parent;
+
+    var data = {
+      "isParent": userType,
+      "questionId": widget.questionId,
+      "answer": comment
+    };
+
+    try {
+      final response = await dio.post(
+          "$_baseUrl/question-service/api/$memberKey/answer",
+          data: data,
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+
+      if (response.statusCode == 200) {
+        print('질문 답변 데이터 전송 성공!');
+      } else {
+        print('질문 답변 데이터 전송 실패.');
+      }
+    } catch (e) {
+      print('Error: $e');
+      print(data);
+      print("$_baseUrl/question-service/api/$memberKey/answer");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -377,15 +575,21 @@ class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
       ),
       body: Column(
         children: [
-          Text('날짜 들어갈 곳'),
-          Text('질문 내용 들어갈 곳'),
-          renderTextFormField(label: '', hintText: '질문에 대해 어떻게 생각하시나요?'),
+          Text(widget.questionText.toString()),
+          renderTextFormField(
+              label: '',
+              hintText: '질문에 대해 어떻게 생각하시나요?',
+              onChange: (value) {
+                setState(() {
+                  comment = value;
+                });
+              }),
         ],
       ),
       bottomNavigationBar: BottomBtn(
         text: '등록하기',
-        action: QuestionPage(),
-        isDisabled: false,
+        action: _sendMissionData,
+        isDisabled: comment.isEmpty,
       ),
     );
   }
