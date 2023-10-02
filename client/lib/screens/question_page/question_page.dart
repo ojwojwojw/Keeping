@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:keeping/screens/diary_page/diary_page.dart';
 import 'dart:convert';
 import 'package:keeping/screens/diary_page/diary_page.dart';
+import 'package:keeping/widgets/completed_page.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -92,7 +93,7 @@ class _QuestionPageState extends State<QuestionPage> {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => QuestionSendPage()));
                         },
-                        child: Text('오늘의 질문 생성하기')),
+                        child: Text('내일의 질문 생성하기')),
                     ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -101,11 +102,34 @@ class _QuestionPageState extends State<QuestionPage> {
                         child: Text('일기 페이지')),
                     ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => QeustionAnswerPage(
-                                    questionText: data[0]["content"],
-                                    questionId: data[0]["id"],
-                                  )));
+                          // 데이터가 있고, 필요한 키들도 모두 있을 때만 화면 전환
+                          if (data != null &&
+                              data.isNotEmpty &&
+                              data[0]["content"] != null &&
+                              data[0]["id"] != null) {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ParentQeustionAnswerPage(
+                                questionText: data[0]["content"]!,
+                                questionId: data[0]["id"]!,
+                              ),
+                            ));
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text('알림'),
+                                content: Text('오늘의 질문이 없습니다.'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('확인'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                         },
                         child: Text('오늘의 질문 대답하기'))
                   ]),
@@ -235,7 +259,7 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => ParentQuestionSendPage()));
                         },
-                        child: Text('오늘의 질문 생성하기')),
+                        child: Text('내일의 질문 생성하기')),
                     ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -244,11 +268,34 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                         child: Text('일기 페이지')),
                     ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
+                          // 데이터가 있고, 필요한 키들도 모두 있을 때만 화면 전환
+                          if (data != null &&
+                              data.isNotEmpty &&
+                              data[0]["content"] != null &&
+                              data[0]["id"] != null) {
+                            Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => ParentQeustionAnswerPage(
-                                    questionText: data[0]["content"],
-                                    questionId: data[0]["id"],
-                                  )));
+                                questionText: data[0]["content"]!,
+                                questionId: data[0]["id"]!,
+                              ),
+                            ));
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text('알림'),
+                                content: Text('오늘의 질문이 없습니다.'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('확인'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                         },
                         child: Text('오늘의 질문 대답하기'))
                   ]),
@@ -338,16 +385,47 @@ class _QuestionSendPageState extends State<QuestionSendPage> {
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
 
       if (response.statusCode == 200) {
-        print('사용자 개인질문 생성 데이터 전송 성공!');
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => ParentQuestionPage()));
+        if (response.data['resultStatus']['successCode'] == 409) {
+          _showErrorMessage(response.data['resultStatus']['resultMessage']);
+        } else {
+          print('사용자 개인질문 생성 데이터 전송 성공!');
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CompletedAndGoPage(
+                        text: "질문생성 완료!",
+                        targetPage: ParentQuestionPage(),
+                      )));
+        }
       } else {
         print('사용자 개인질문 생성 데이터 전송 실패.');
       }
     } catch (e) {
       print('Error: $e');
       print(data);
+      // DioException에서 응답 상태 코드 확인
+      if (e is DioError && e.response?.statusCode == 400) {
+        _showErrorMessage('해당 날짜에 이미 질문이 존재합니다 (400).');
+      }
     }
+  }
+
+  void _showErrorMessage(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('알림'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: Text('확인'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -425,17 +503,47 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
 
       if (response.statusCode == 200) {
-        print('사용자 개인질문 생성 데이터 전송 성공!');
-        print(data);
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => ParentQuestionPage()));
+        if (response.data['resultStatus']['successCode'] == 409) {
+          _showErrorMessage(response.data['resultStatus']['resultMessage']);
+        } else {
+          print('사용자 개인질문 생성 데이터 전송 성공!');
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CompletedAndGoPage(
+                        text: "질문생성 완료!",
+                        targetPage: ParentQuestionPage(),
+                      )));
+        }
       } else {
         print('사용자 개인질문 생성 데이터 전송 실패.');
       }
     } catch (e) {
       print('Error: $e');
       print(data);
+      // DioException에서 응답 상태 코드 확인
+      if (e is DioError && e.response?.statusCode == 400) {
+        _showErrorMessage('해당 날짜에 이미 질문이 존재합니다 (400).');
+      }
     }
+  }
+
+  void _showErrorMessage(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('알림'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: Text('확인'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override
