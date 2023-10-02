@@ -13,6 +13,7 @@ import 'package:keeping/screens/online_payment_request/online_payment_request_pa
 import 'package:keeping/screens/piggy_page/piggy_page.dart';
 import 'package:keeping/screens/question_page/question_page.dart';
 import 'package:keeping/screens/user_link_page/before_user_link_page.dart';
+import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:provider/provider.dart';
 import 'package:keeping/screens/diary_page/diary_page.dart';
