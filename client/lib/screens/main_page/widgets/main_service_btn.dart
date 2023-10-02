@@ -7,12 +7,15 @@ class MainServiceBtn extends StatelessWidget {
   final bool? hasAccount;
   final String name;
   final String text;
+  final String emoji;
+
   MainServiceBtn({
     super.key,
     required this.path,
     required this.hasAccount,
     required this.name,
     required this.text,
+    required this.emoji,
   });
 
   @override
@@ -34,23 +37,35 @@ class MainServiceBtn extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  name, 
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name, 
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      text,
+                      style: TextStyle(
+                        color: Color(0xFF9A9A9A),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  text,
-                  style: TextStyle(
-                    color: Color(0xFF9A9A9A),
-                    fontSize: 12,
-                  ),
-                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(emoji, style: TextStyle(fontSize: 50),),
+                  ],
+                )
               ],
             ),
           ),

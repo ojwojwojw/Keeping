@@ -175,6 +175,7 @@ class _ChildContentState extends State<ChildContent> {
                 path: PiggyPage(),
                 name: '미션',
                 text: '자녀 소비습관 쑥쑥!',
+                emoji: '💪',
               ),
               SizedBox(width: 12,),
               MainServiceBtn(
@@ -182,6 +183,7 @@ class _ChildContentState extends State<ChildContent> {
                 path: QuestionPage(),
                 name: '결제 부탁하기',
                 text: '자녀가 부탁한\n결제 목록이에요.',
+                emoji: '🙇‍♀️',
               ),
             ],
           ),
@@ -194,6 +196,7 @@ class _ChildContentState extends State<ChildContent> {
                 path: MissionPage(),
                 name: '질문',
                 text: '질문에 답하고\n자녀와 소통해요',
+                emoji: '📬',
               ),
               SizedBox(width: 12,),
               MainServiceBtn(
@@ -201,6 +204,7 @@ class _ChildContentState extends State<ChildContent> {
                 path: OnlinePaymentRequestPage(),
                 name: '저금통',
                 text: '자녀의 위시리스트는?',
+                emoji: '🐷',
               ),
             ],
           ),

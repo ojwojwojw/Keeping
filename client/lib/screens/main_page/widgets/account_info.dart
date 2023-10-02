@@ -54,18 +54,15 @@ class _AccountInfoState extends State<AccountInfo> {
             decoration: roundedBoxWithShadowStyle(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 35),
+                  padding: EdgeInsets.only(left: 25, right: 25),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset('assets/image/money_coins.png', width: 100,),
                       Expanded(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
                               formattedMoney(widget.balance),
@@ -84,23 +81,23 @@ class _AccountInfoState extends State<AccountInfo> {
                                     return Text(
                                       '${DateTime.now().month}월 총 지출액: 0원',
                                       style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white
+                                        fontSize: 14,
+                                        color: Color(0xFF737373)
                                       ),
                                     );
                                   }
                                   var response = snapshot.data['resultBody'];
                                   return Text(
                                     '${DateTime.now().month}월 총 지출액: ${formattedMoney(response)}',
-                                    style: TextStyle(fontSize: 20, color: Colors.white),
+                                    style: TextStyle(
+                                      fontSize: 14, 
+                                      color: Color(0xFF737373)
+                                    ),
                                   );
                                 } else {
                                   return Text('로딩중');
                                 }
                               },
-                            ),
-                            Text(
-                              '${DateTime.now().month}월 총 지출액:'
                             ),
                           ],
                         )
@@ -109,7 +106,7 @@ class _AccountInfoState extends State<AccountInfo> {
                   ),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 12,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
