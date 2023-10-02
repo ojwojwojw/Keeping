@@ -171,7 +171,20 @@ class _AccountInfoState extends State<AccountInfo> {
                         Expanded(
                           child: InkWell(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => ParentRequestMoneyPage()),);
+                              if (_accountNumber != '') {
+                                Navigator.push(context,
+                                  MaterialPageRoute(
+                                  builder: (_) => ParentRequestMoneyPage(),
+                                  ),
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => MakeAccountPage(),
+                                  ),
+                                );
+                              }
                             },
                             child: Text(
                               '조르기 모아보기', 

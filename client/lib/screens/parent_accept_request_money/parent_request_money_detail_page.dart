@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/parent_accept_request_money/parent_accept_request_money.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/bottom_double_btn.dart';
@@ -95,6 +96,14 @@ class _ParentRequestMoneyDetailPageState
       url: url,
       data: data,
     );
+    if (response['resultStatus']['successCode'] == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ParentRequestMoneyPage(),
+        ),
+      );
+    }
     print(response);
     print('승인할 거예요');
   }
