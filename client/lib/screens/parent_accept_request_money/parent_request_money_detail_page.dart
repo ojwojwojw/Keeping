@@ -47,7 +47,6 @@ class _ParentRequestMoneyDetailPageState
     final money = data['money'] ?? 0;
     final approve = data['approve'] ?? '';
     final id = data['id'] ?? 0;
-    print('아이디아이디아이디 $id');
     final createdDate = data['createdDate'] is String
         ? DateTime.tryParse(data['createdDate'] ?? '') ?? DateTime.now()
         : DateTime.now();

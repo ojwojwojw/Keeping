@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/main_page/main_page.dart';
+import 'package:keeping/screens/main_page/parent_main_page.dart';
+import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
+import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/number_keyboard.dart'; // 새로 추가된 키보드 위젯 임포트
 import 'package:provider/provider.dart';
@@ -24,6 +28,7 @@ class _SendPocketMoneyPageState extends State<SendPocketMoneyPage> {
   int? _balance; // 잔액 변수를 int로 변경
   String validateText = '';
   String amount = '';
+  bool BtnDisable = true;
 
   @override
   void initState() {
@@ -48,7 +53,6 @@ class _SendPocketMoneyPageState extends State<SendPocketMoneyPage> {
   }
 
   void onBackspacePress() {
-    // 함수 인자 변경
     if (amount.isEmpty) {
       setState(() {
         return;
@@ -62,14 +66,14 @@ class _SendPocketMoneyPageState extends State<SendPocketMoneyPage> {
   }
 
   void moneyValidate() {
-    if (amount.isNotEmpty &&
-        _balance != null &&
-        _balance! < int.parse(amount)) {
+    if (amount.isEmpty || _balance == null || _balance! < int.parse(amount)) {
       setState(() {
-        validateText = '잔고가 부족합니다';
+        BtnDisable = true;
+        validateText = amount.isEmpty ? '' : '잔고가 부족합니다';
       });
     } else {
       setState(() {
+        BtnDisable = false;
         validateText = '';
       });
     }
@@ -90,7 +94,14 @@ class _SendPocketMoneyPageState extends State<SendPocketMoneyPage> {
             renderWhoReceiveMoney(),
             SizedBox(height: 80),
             sendMoneyField(),
-            SizedBox(height: 70),
+            SizedBox(height: 50),
+            Text(
+              validateText,
+              style: TextStyle(color: Colors.grey[800]),
+            ),
+            SizedBox(
+              height: 10,
+            ),
             renderAvailableWithdrawalBalance(formattedBalance),
             SizedBox(height: 20),
             NumberKeyboard(
@@ -100,8 +111,37 @@ class _SendPocketMoneyPageState extends State<SendPocketMoneyPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomBtn(text: '확인'),
+      bottomNavigationBar: BottomBtn(
+        text: '확인',
+        isDisabled: BtnDisable,
+        action: () async {
+          var response = await sendMoney(
+              accessToken: _accessToken!,
+              memberKey: _memberKey!,
+              money: amount,
+              childKey: _childKey);
+          if (response['resultStatus']['successCode'] == 0) {
+            Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CompletedAndGoPage(
+                      text: "용돈을 보냈어요!",
+                      targetPage: ParentMainPage(),
+                    )));
+          }
+          print('용돈 송금 완');
+        },
+      ),
     );
+  }
+
+  Future<dynamic> sendMoney({accessToken, memberKey, money, childKey}) async {
+    dynamic data = {'childKey': childKey, 'money': money};
+    final response = await dioPost(
+        url: '/bank-service/api/$memberKey/account-history/transfer',
+        data: data,
+        accessToken: accessToken);
+    return response;
   }
 
   Widget renderWhoReceiveMoney() {
@@ -130,6 +170,9 @@ class _SendPocketMoneyPageState extends State<SendPocketMoneyPage> {
           Text(
             '$amount',
             style: TextStyle(fontSize: 40),
+          ),
+          SizedBox(
+            width: 5,
           ),
           Text(
             '원',
