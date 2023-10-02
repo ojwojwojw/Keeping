@@ -579,12 +579,12 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container( height: 10, width: 410, color: Color(0xFF9271C8), child: SizedBox(),),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 좌측 상단 버튼을 눌렀을 때 실행할 동작 정의
                       // 좌측 상단 버튼을 눌렀을 때 실행할 동작 정의
                       Row(children: [
                         InkWell(
@@ -621,6 +621,7 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                             ),
                           ),
                         )
+                        ////// 이쁜 보라색 박스
                       ]),
 
                       SizedBox(height: 20,),
