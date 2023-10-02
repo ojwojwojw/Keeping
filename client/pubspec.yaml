@@ -94,6 +94,14 @@ flutter:
     - lib/.env
     - assets/image/temp_image.jpg
     - assets/image/money_coins.png
+    - assets/image/c_face.png
+    - assets/image/edit_square.png
+    - assets/image/m_face.png
+    - assets/image/money_bag.png
+    - assets/image/money_coins.png
+    - assets/image/n_face.png
+    - assets/image/right_arrow.png
+    - assets/image/sms.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
