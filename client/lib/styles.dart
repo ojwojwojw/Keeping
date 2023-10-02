@@ -83,3 +83,17 @@ TextStyle labelStyle() {
     fontWeight: FontWeight.bold
   );
 }
+
+// 메인페이지 배경 스타일
+BoxDecoration bgStyle() {
+  return BoxDecoration(
+    gradient: LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: const [
+        Color(0xFF1C0038),
+        Color(0xFF401C64)
+      ]
+    )
+  );
+}
