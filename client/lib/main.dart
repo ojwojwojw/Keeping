@@ -5,6 +5,7 @@ import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/online_payment_request_provider.dart';
 import 'package:keeping/provider/piggy_provider.dart';
+import 'package:keeping/screens/login_page/login_page.dart';
 
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/provider/user_link.dart';
@@ -98,7 +99,7 @@ void main() async {
         theme: ThemeData(
           fontFamily: "NotoSansKR",
         ),
-        home: MainPage(),
+        home: LoginPage(), //빌드하면 바로 로그인 페이지가 보이게 수정
       )));
 }
 
@@ -106,6 +107,6 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MainPage();
+    return LoginPage(); //빌드하면 첫 페이지를 로그인 페이지로 수정
   }
 }

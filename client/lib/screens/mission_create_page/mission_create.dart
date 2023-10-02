@@ -12,6 +12,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/completed_page.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -77,45 +78,83 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
 
           Text(
             '아이에게 어떤 미션을 줘볼까요?',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.white, fontSize: 24),
+          ),
+          SizedBox(
+            height: 10,
           ),
 
-          // 입력 폼
-          renderTextFormField(
-              label: '미션 제목 입력',
-              onChange: (value) {
-                setState(() {
-                  missionTitle = value;
-                });
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return '필수 항목입니다';
-                } else if (value.length < 1) {
-                  return '제목은 1자 이상이 되어야 합니다.';
-                } else if (value.length > 30) {
-                  return '제목은 30자 이하가 되어야 합니다.';
-                }
-
-                return null;
-              },
-              controller: _missionTitle),
+          Container(
+            padding: EdgeInsets.all(10),
+            margin: EdgeInsets.symmetric(horizontal: 24), // 좌우 여백 24
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2), // 검정색으로 변경
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: renderTextFormField(
+                label: '미션 제목 입력',
+                hintText: '내용을 입력해주세요.',
+                onChange: (value) {
+                  setState(() {
+                    missionTitle = value;
+                  });
+                }),
+          ),
 
           SizedBox(
             height: 100,
           ),
 
-          // 선택한 날짜 렌더링
-          Text(
-            "선택한 날짜: $missionDueDate", // 선택한 날짜를 렌더링
-            style: TextStyle(color: Colors.white),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 24), // 좌우 여백 24
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2), // 검정색으로 변경
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity, // 가로폭 최대로 설정
+                  color: Colors.grey,
+                  padding: EdgeInsets.symmetric(
+                      vertical: 10, horizontal: 16), // 패딩 조절
+                  child: Text(
+                    '미션 마감일을 정해줘요.',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+                Text(
+                  "선택한 날짜: $missionDueDate",
+                  style: TextStyle(color: Colors.black, fontSize: 18),
+                ),
+                ElevatedButton(
+                  onPressed: datePicker,
+                  child: Text('날짜를 선택해주세요.'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.purple,
+                  ),
+                ),
+              ],
+            ),
           ),
-
-          //달력 들어갈곳
-          Text('미션 마감일을 정해줘요.', style: TextStyle(color: Colors.white)),
-          ElevatedButton(onPressed: datePicker, child: Text('누르면 달력나와요')),
-
-          // 다음 페이지로 가는 버튼
+          // ... 나머지 부분
         ]),
       ),
       bottomNavigationBar: BottomBtn(
@@ -178,10 +217,11 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
           Text('성공하면 얼마를 줄까요?'),
 
           // 예시 이미지 파일
-          Container(
-            width: 300,
-            height: 300,
-            child: Image.asset('./assets/image/temp_image.jpg'),
+          Icon(
+            Icons.money_outlined,
+            color: Colors.yellow,
+            size: 240.0,
+            semanticLabel: 'test',
           ),
 
           // 숫자패드
@@ -337,6 +377,7 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
   late Dio dio;
   late MissionInfoProvider missionProvider;
   late UserInfoProvider userProvider;
+  late ChildInfoProvider childInfoProvider;
   late List<Map<String, dynamic>> childrenList;
   String selectedMemberKey = '';
 
@@ -346,9 +387,10 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
     dio = Dio();
     missionProvider = Provider.of<MissionInfoProvider>(context, listen: false);
     userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    childInfoProvider = Provider.of<ChildInfoProvider>(context, listen: false);
     childrenList = userProvider.childrenList;
     if (childrenList.isNotEmpty) {
-      selectedMemberKey = childrenList.first['memberKey'] ?? '';
+      selectedMemberKey = childInfoProvider.memberKey ?? '';
     }
   }
 
