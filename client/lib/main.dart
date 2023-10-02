@@ -94,6 +94,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AccountDetailProvider()),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           fontFamily: "NotoSansKR",
         ),
