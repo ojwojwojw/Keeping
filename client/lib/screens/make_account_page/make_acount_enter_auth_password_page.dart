@@ -120,9 +120,8 @@ class _MakeAccountEnterAuthPasswordPageState
             memberKey: _memberKey!,
             authPassword: _authPassword!
           );
-          if (response == 0) {
-            // Provider.of<AccountInfoProvider>(context, listen: false).setAccountInfo({
-            // });
+          if (response['resultStatus']['successCode'] == 0) {
+            Provider.of<AccountInfoProvider>(context, listen: false).setNewAccountInfo(response['resultBody']);
             Navigator.push(
               context, 
               MaterialPageRoute(
