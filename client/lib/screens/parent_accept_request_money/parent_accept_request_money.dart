@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/parent_accept_request_money/parent_request_money_detail_page.dart';
 import 'package:keeping/screens/request_pocket_money_page/child_request_money_detail.dart';
 import 'package:keeping/screens/request_pocket_money_page/request_pocket_money_second_page.dart';
 import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_box.dart';
@@ -61,7 +62,8 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
       accessToken: _accessToken,
       url: _url,
     );
-    handleResult(response['resultBody']);
+    print(response);
+    // handleResult(response['resultBody']);
     if (response != null) {
       final dynamic resultBody = response['resultBody'];
       if (resultBody != null) {
@@ -184,7 +186,7 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
               money: money,
               status: status,
               createdDate: createdDate,
-              path: ChildRequestMoneyDetailPage(data: req), // req 데이터 전달
+              path: ParentRequestMoneyDetailPage(data: req), // req 데이터 전달
             );
           }).toList(),
         ),
