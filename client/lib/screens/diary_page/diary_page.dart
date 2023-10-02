@@ -122,10 +122,12 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
                 ),
                 SizedBox(height: 16.0), // 텍스트 사이에 간격 추가
                 Text(
-                  item["createdDate"],
+                  (item["createdDate"] is String
+                      ? item["createdDate"].substring(0, 10) + "일 생성"
+                      : ""),
                   style: TextStyle(
-                    fontSize: 8.0, // 텍스트 크기 변경
-                    color: Colors.grey, // 텍스트 색상 변경
+                    fontSize: 8.0,
+                    color: Colors.grey,
                   ),
                 ),
               ],
@@ -422,10 +424,12 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
                 ),
                 SizedBox(height: 16.0), // 텍스트 사이에 간격 추가
                 Text(
-                  item["createdDate"],
+                  (item["createdDate"] is String
+                      ? item["createdDate"].substring(0, 10) + "일 생성"
+                      : ""),
                   style: TextStyle(
-                    fontSize: 8.0, // 텍스트 크기 변경
-                    color: Colors.grey, // 텍스트 색상 변경
+                    fontSize: 8.0,
+                    color: Colors.grey,
                   ),
                 ),
               ],
