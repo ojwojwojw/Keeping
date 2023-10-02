@@ -4,7 +4,7 @@ Future<dynamic> bottomModal({
   required BuildContext context,
   required String title,
   Color bgColor = Colors.white,
-  required Widget content,
+  Widget? content,
   required Widget button,
 }) {
   return showModalBottomSheet(
@@ -29,7 +29,7 @@ Future<dynamic> bottomModal({
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(height: 15),
-                          content,
+                          content ?? SizedBox(), // content가 null인 경우 SizedBox 반환
                           SizedBox(height: 25),
                           button,
                           SizedBox(height: 25),

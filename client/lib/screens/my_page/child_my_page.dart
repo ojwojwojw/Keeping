@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/my_page/util/handle_logout.dart';
+import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/header.dart';
-import 'package:keeping/screens/my_page/select_theme_page.dart';
 import 'package:keeping/screens/my_page/password_edit_page.dart';
 import 'package:keeping/screens/my_page/phonenum_edit_page.dart';
 
@@ -10,12 +10,6 @@ import 'package:keeping/widgets/bottom_modal.dart';
 class ChildMyPage extends StatelessWidget {
   const ChildMyPage({Key? key}) : super(key: key);
   final name = 'Child';
-
-  void gotoSelectTheme(BuildContext context) {
-    // 매개변수로 BuildContext 추가
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => SelectThemePage()));
-  }
 
   void gotoEditPwd(BuildContext context) {
     Navigator.push(
@@ -63,11 +57,6 @@ class ChildMyPage extends StatelessWidget {
               userInfoBox(),
               _MyPageDetailedFunctionPage(
                 context,
-                '테마 변경',
-                () => gotoSelectTheme(context), // BuildContext를 전달
-              ),
-              _MyPageDetailedFunctionPage(
-                context,
                 '비밀번호 변경',
                 () => gotoEditPwd(context),
               ),
@@ -88,6 +77,9 @@ class ChildMyPage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNav(
+        myPage: true,
       ),
     );
   }
@@ -193,19 +185,23 @@ class ChildMyPage extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: () {
-            // 회원 탈퇴 로직을 여기에 추가
-            // 예를 들어, 서버에 회원 탈퇴 요청을 보내는 등의 작업
-            // 작업이 성공하면 앱을 종료하거나 로그인 페이지로 이동할 수 있습니다.
             Navigator.of(context).pop();
-            // Navigator.of(context).pop();
+            handlelogout();
           },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF8320E7), // 배경색 설정
+          ),
           child: Text('확인'),
         ),
         SizedBox(width: 20),
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
+            handlelogout();
           },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF8320E7), // 배경색 설정
+          ),
           child: Text('취소'),
         ),
       ],
