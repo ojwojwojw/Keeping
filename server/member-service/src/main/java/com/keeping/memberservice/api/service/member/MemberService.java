@@ -37,6 +37,21 @@ public class MemberService implements UserDetailsService {
     private final AuthService authService;
 
     /**
+     * 이미 링크 되어있는지 확인
+     *
+     * @param memberKey
+     * @return
+     */
+    public boolean alreadyLink(String memberKey) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
+                new NoSuchElementException("찾을 수 없는 회원입니다."));
+        Child child = childRepository.findByMember(member).orElseThrow(() ->
+                new NoSuchElementException("자녀 회원이 아닙니다."));
+        Optional<Link> findLink = linkRepository.findByChild(child);
+        return findLink.isEmpty();
+    }
+
+    /**
      * 모든 링크 쌍 반환
      *
      * @return

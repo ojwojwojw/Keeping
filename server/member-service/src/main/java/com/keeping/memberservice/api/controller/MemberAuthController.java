@@ -35,6 +35,11 @@ public class MemberAuthController {
                                                 @PathVariable String type,
                                                 @PathVariable String linkcode) {
         log.debug("[연결]");
+        if (type.equals("child")) {
+            if (memberService.alreadyLink(memberKey)) {
+                return ApiResponse.of(1, HttpStatus.BAD_REQUEST, "이미 연결된 부모가 있는 회원입니다.");
+            }
+        }
         LinkResultDto result = authService.link(linkcode, memberKey, type);
         if (!result.isSuccess()) {
             return ApiResponse.of(1, HttpStatus.BAD_REQUEST, result.getFailMessage());
