@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -250,6 +251,12 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  height: 10,
+                  width: 410,
+                  color: Color(0xFF9271C8),
+                  child: SizedBox(),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -380,6 +387,26 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                         ],
                       ),
 
+                      SizedBox(
+                        height: 165,
+                      ),
+                      //댓글페이지로 가는버튼 //
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DiaryCommentPage(
+                                  questionId: data["id"],
+                                ),
+                              ),
+                            );
+                          },
+                          child: Image.asset('assets/image/sms.png',
+                              width: 40.0, height: 40.0),
+                        ),
+                      ]),
                       // Text(
                       //   "생성 여부: ${data["isCreated"] == null ? "정보 없음" : (data["isCreated"] ? "true" : "false")}",
                       //   style: TextStyle(fontSize: 18.0),
@@ -392,6 +419,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
           }
         },
       ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 }
@@ -406,6 +434,15 @@ class ParentDiaryPage extends StatefulWidget {
 
 class _ParentDiaryPageState extends State<ParentDiaryPage> {
   List<Map<String, dynamic>> data = [];
+  late String? selectedMemberKey;
+  late ChildInfoProvider childInfoProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    childInfoProvider = Provider.of<ChildInfoProvider>(context, listen: false);
+    selectedMemberKey = childInfoProvider.memberKey;
+  }
 
   //일기 보관함 데이터를 가져오는 비동기 요청
   Future<List<Map<String, dynamic>>> getData() async {
@@ -422,8 +459,14 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
       // 요청이 성공했을 때 처리
       if (response.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(
-            response.data['resultBody']['questions']);
+        // return List<Map<String, dynamic>>.from(
+        //     response.data['resultBody']['questions']);
+        // 멤버키를 기반으로 필터링 수행
+        var filteredData = List<Map<String, dynamic>>.from(
+                response.data['resultBody']['questions'])
+            .where((item) => item['childMemberKey'] == selectedMemberKey)
+            .toList();
+        return filteredData;
       } else {
         throw Exception('Failed to fetch data');
       }
@@ -767,7 +810,25 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                         style: TextStyle(fontSize: 18.0),
                       ),
 
-                      SizedBox(height: 16.0),
+                      SizedBox(height: 165.0),
+
+                      //댓글페이지로 가는버튼 //
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DiaryCommentPage(
+                                  questionId: data["id"],
+                                ),
+                              ),
+                            );
+                          },
+                          child: Image.asset('assets/image/sms.png',
+                              width: 40.0, height: 40.0),
+                        ),
+                      ]),
                       // Text(
                       //   "생성 여부: ${data["isCreated"] == null ? "정보 없음" : (data["isCreated"] ? "true" : "false")}",
                       //   style: TextStyle(fontSize: 18.0),
@@ -780,24 +841,31 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
           }
         },
       ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 }
 
 //일기 댓글 페이지 // //자식부모 유저 둘다 사용 가능하게 로직 짜기!
-class ParentDiaryCommentPage extends StatefulWidget {
-  const ParentDiaryCommentPage({super.key});
+class DiaryCommentPage extends StatefulWidget {
+  final questionId;
+  const DiaryCommentPage({super.key, required this.questionId});
+
+  //질문 아이디 받아오기
 
   @override
-  State<ParentDiaryCommentPage> createState() => _ParentDiaryCommentPageState();
+  State<DiaryCommentPage> createState() => _DiaryCommentPageState();
 }
 
-class _ParentDiaryCommentPageState extends State<ParentDiaryCommentPage> {
+class _DiaryCommentPageState extends State<DiaryCommentPage> {
   @override
   Widget build(BuildContext context) {
-    late List<Map<String, dynamic>> data;
+    late Map<String, dynamic> data;
+    late String? memberKey; //로그인한 유저의 멤버키
 
-    Future<List<Map<String, dynamic>>> getData() async {
+
+    //댓글 데이터 비동기 요청
+    Future<Map<String, dynamic>> getData() async {
       // Dio 객체 생성
       final dio = Dio();
       var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
@@ -807,25 +875,40 @@ class _ParentDiaryCommentPageState extends State<ParentDiaryCommentPage> {
       try {
         // GET 요청 보내기
         final response = await dio.get(
-            "$_baseUrl/question-service/api/$memberKey/questions",
+            "$_baseUrl/question-service/api/$memberKey/questions/${widget.questionId}",
             options:
                 Options(headers: {'Authorization': 'Bearer $accessToken'}));
         // 요청이 성공했을 때 처리
         if (response.statusCode == 200) {
-          return List<Map<String, dynamic>>.from(
-              response.data['resultBody']['questions']);
+          print('댓글정보 요청 성공 200');
+          print(response.data['resultBody']['comments']);
+
+          var commentsData = response.data['resultBody']['comments'];
+          var resultBodyData = response.data['resultBody']['resultBody'];
+          return {
+            'comments': commentsData != null
+                ? List<Map<String, dynamic>>.from(commentsData)
+                : [],
+            'resultBody': resultBodyData != null
+                ? List<Map<String, dynamic>>.from(resultBodyData)
+                : []
+          };
         } else {
           throw Exception('Failed to fetch data');
         }
       } catch (error) {
         // 요청이 실패했을 때 처리
         print('Error: $error');
-        return []; // 빈 리스트 반환
+        return {}; // 빈 리스트 반환
       }
     }
 
     return Scaffold(
-      appBar: MyHeader(text: "일기댓글(부모)"),
+      appBar: MyHeader(
+        text: "일기댓글",
+        bgColor: Color(0xFF6E2FD5),
+        elementColor: Colors.white,
+      ),
       body: FutureBuilder(
         // 비동기 데이터를 기다리고 UI를 구성
         future: getData(),
@@ -835,15 +918,47 @@ class _ParentDiaryCommentPageState extends State<ParentDiaryCommentPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('에러 발생: ${snapshot.error}'));
           } else {
-            data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
+
+            data = snapshot.data ?? {};
+            
             return Center(
               child: Column(
-                children: [],
+                children: [
+                  Container(height: 10, width: 410,color: Color(0xFF9271C8), child: SizedBox(),
+                  ),
+
+                  //현재 작성글의 데이터 //
+                  // Text(data['resultBody']['question']['id']),
+                  // Text(data['resultBody']['question']['childMemberKey']),
+                  // Text(data['resultBody']['question']['content']),
+                  // Text(data['resultBody']['question']['parentAnswer']) ,
+                  // Text(data['resultBody']['question']['childAnswer']),
+                  // Text(data['resultBody']['question']['childAnswer']),
+
+                  //댓글 데이터//
+                  ListView.builder(
+                    shrinkWrap: true, // ListView를 Column 내부에서 사용하기 위해 필요합니다.
+                    physics:
+                        NeverScrollableScrollPhysics(), // ListView 내부 스크롤을 비활성화합니다.
+                    itemCount:
+                        data['comments']?.length ?? 0, // 댓글 리스트의 길이를 사용합니다.
+                    itemBuilder: (context, index) {
+                      var comment = data['comments'][index];
+                      return ListTile(
+                        title: Text(comment['content']),
+                        subtitle: Text("날짜: ${comment['createdDate']}"),
+                      );
+                    },
+                  )
+
+                  ///
+                ],
               ),
             );
           }
         },
       ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 }

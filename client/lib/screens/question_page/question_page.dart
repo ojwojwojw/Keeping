@@ -294,7 +294,6 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
       print(response.data['resultBody']);
       // 요청이 성공했을 때 처리
       if (response.statusCode == 200 && response.data['resultBody'] is List) {
-        print('response관찰');
         print(response);
         // 멤버키를 기반으로 필터링 수행
         var filteredData =
