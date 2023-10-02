@@ -26,6 +26,66 @@ class MissionPage extends StatefulWidget {
 
 class _MissonPageState extends State<MissionPage> {
   List<Map<String, dynamic>> data = [];
+  String currentFilter = "ALL";
+
+  // 필터링 바
+  Widget filterBar() {
+    Map<String, String> filters = {
+      "ALL": "전체",
+      "YET": "미완료",
+      "CREATE_WAIT": "생성 대기",
+      "FINISH_WAIT": "완료 대기",
+      "FINISH": "완료"
+    };
+
+    return Container(
+      height: 30.0, // 높이를 조정하여 바를 얇게 만듭니다.
+      color: Colors.purple,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: filters.keys.length,
+        itemBuilder: (BuildContext context, int index) {
+          String key = filters.keys.elementAt(index);
+          return InkWell(
+            onTap: () {
+              setState(() {
+                currentFilter = key;
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0, vertical: 2.0), // 위젯의 패딩 조절
+              child: Container(
+                decoration: BoxDecoration(
+                  color: currentFilter == key ? Colors.purple[800] : null,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Align(
+                    alignment: Alignment.topCenter, // 글자를 위에 떠있게 만듭니다.
+                    child: Text(
+                      filters[key]!, // 한글로 매핑된 값을 사용합니다.
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // 미션 데이터를 선택된 상태에 따라 필터링하는 함수
+  List<Map<String, dynamic>> filterMissionsByStatus(String status) {
+    if (status == "ALL") {
+      return data; // 모든 미션을 반환
+    } else {
+      return data.where((item) => item["completed"] == status).toList();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +105,8 @@ class _MissonPageState extends State<MissionPage> {
             return Center(child: Text('에러 발생: ${snapshot.error}'));
           } else {
             data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
+            final filteredData =
+                filterMissionsByStatus(currentFilter); // 여기에서 필터링을 적용합니다
             return Center(
               child: Column(
                 children: [
@@ -52,8 +114,8 @@ class _MissonPageState extends State<MissionPage> {
                   SizedBox(
                     height: 10,
                   ),
-                  FilteringBar(),
-                  missionData(data),
+                  filterBar(),
+                  missionData(filteredData),
                 ],
               ),
             );
@@ -63,61 +125,124 @@ class _MissonPageState extends State<MissionPage> {
     );
   }
 
+  // 상태를 한글로 매핑해주는 함수
+  String mapStatusToKorean(String status) {
+    switch (status) {
+      case "CREATE_WAIT":
+        return "생성 승인 대기중...";
+      case "YET":
+        return "미션 진행중...";
+      case "FINISH_WAIT":
+        return "승인 요청이 왔어요!";
+      case "FINISH":
+        return "미션완료!";
+      default:
+        return "알 수 없음";
+    }
+  }
+
   //미션 데이터를 리스트뷰로 랜더링 하는 위젯
   Widget missionData(data) {
-    return (Expanded(
-        child: ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (BuildContext context, int index) {
-        final item = data[index];
-        return InkWell(
-          onTap: () {
-            // 컨테이너를 탭했을 때 실행할 동작 정의
+    return Expanded(
+      child: ListView.builder(
+        itemCount: data.length,
+        itemBuilder: (BuildContext context, int index) {
+          final item = data[index];
+          return InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => MissionDetailPage(item: item),
+                ),
+              );
+            },
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    mapStatusToKorean(item["completed"]), // 매핑 함수 사용
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Container(
+                    height: 70,
+                    width: 400,
+                    margin: EdgeInsets.only(top: 0.0),
+                    decoration: BoxDecoration(
+                      color: _getStatusColor(item["completed"]),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Row(
+                        mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween, // 가로 방향으로 가운데 정렬
+                        crossAxisAlignment:
+                            CrossAxisAlignment.center, // 세로 방향으로 가운데 정렬
+                        children: [
+                          // Text('#' + (index + 1).toString()),
 
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => MissionDetailPage(
-                    item: item), // DetailPage는 새로운 페이지의 위젯입니다.
+                          Text(
+                            item["startDate"],
+                            style: TextStyle(
+                              fontSize: 8.0,
+                              color: item["completed"] == "FINISH_WAIT"
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                          ),
+
+                          Text(
+                            item["todo"].length > 15
+                                ? item["todo"].substring(0, 15) + '...'
+                                : item["todo"],
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                              color: item["completed"] == "FINISH_WAIT"
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                          ),
+
+                          Image.asset(
+                            'assets/image/right_arrow.png',
+                            width: 20.0,
+                            height: 100.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.0),
-            margin: EdgeInsets.symmetric(vertical: 2.0), // 위 아래 여백 추가
-            decoration: BoxDecoration(
-              color: (item["completed"] == "CREATE_WAIT")
-                  ? Color.fromRGBO(255, 170, 170, 1)
-                  : (item["completed"] == "YET")
-                      ? Color.fromRGBO(255, 255, 170, 1)
-                      : (item["completed"] == "FINISH_WAIT")
-                          ? Color.fromRGBO(170, 255, 255, 1)
-                          : Color.fromRGBO(170, 255, 170, 1),
-              borderRadius: BorderRadius.circular(10.0),
             ),
-            child: Column(
-              children: [
-                Text('#' + (index + 1).toString()),
-                Text(
-                  item["todo"],
-                  style: TextStyle(
-                    fontSize: 18.0, // 텍스트 크기 변경
-                    fontWeight: FontWeight.bold, // 텍스트 굵게 만들기
-                  ),
-                ),
-                SizedBox(height: 16.0), // 텍스트 사이에 간격 추가
-                Text(
-                  item["startDate"],
-                  style: TextStyle(
-                    fontSize: 8.0, // 텍스트 크기 변경
-                    color: Colors.black, // 텍스트 색상 변경
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    )));
+          );
+        },
+      ),
+    );
+  }
+
+  //색깔 매핑
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case "CREATE_WAIT":
+        return Color(0xFFDFDFDF); // 16진수로 회색 지정
+      case "YET":
+        return Color(0xFFFF6262); // 16진수로 빨강 지정
+      case "FINISH_WAIT":
+        return Color(0xFF8320E7); // 16진수로 보라 지정
+      case "FINISH":
+        return Color(0xFF55FF55); // 16진수로 초록 지정
+      default:
+        return Colors.black;
+    }
   }
   //미션 데이터를 최초로 가져오는 비동기 요청
 
@@ -160,6 +285,66 @@ class ParentMissionPage extends StatefulWidget {
 
 class _ParentMissonPageState extends State<ParentMissionPage> {
   List<Map<String, dynamic>> data = [];
+  String currentFilter = "ALL";
+
+  // 필터링 바
+  Widget filterBar() {
+    Map<String, String> filters = {
+      "ALL": "전체",
+      "YET": "미완료",
+      "CREATE_WAIT": "생성 대기",
+      "FINISH_WAIT": "완료 대기",
+      "FINISH": "완료"
+    };
+
+    return Container(
+      height: 30.0, // 높이를 조정하여 바를 얇게 만듭니다.
+      color: Colors.purple,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: filters.keys.length,
+        itemBuilder: (BuildContext context, int index) {
+          String key = filters.keys.elementAt(index);
+          return InkWell(
+            onTap: () {
+              setState(() {
+                currentFilter = key;
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0, vertical: 2.0), // 위젯의 패딩 조절
+              child: Container(
+                decoration: BoxDecoration(
+                  color: currentFilter == key ? Colors.purple[800] : null,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Align(
+                    alignment: Alignment.topCenter, // 글자를 위에 떠있게 만듭니다.
+                    child: Text(
+                      filters[key]!, // 한글로 매핑된 값을 사용합니다.
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // 미션 데이터를 선택된 상태에 따라 필터링하는 함수
+  List<Map<String, dynamic>> filterMissionsByStatus(String status) {
+    if (status == "ALL") {
+      return data; // 모든 미션을 반환
+    } else {
+      return data.where((item) => item["completed"] == status).toList();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,6 +364,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
             return Center(child: Text('에러 발생: ${snapshot.error}'));
           } else {
             data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
+            final filteredData = filterMissionsByStatus(currentFilter);
             return Center(
               child: Column(
                 children: [
@@ -186,8 +372,8 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
                   SizedBox(
                     height: 10,
                   ),
-                  FilteringBar(),
-                  parentMissionData(data),
+                  filterBar(),
+                  parentMissionData(filteredData),
                 ],
               ),
             );
@@ -197,75 +383,124 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
     );
   }
 
+  // 상태를 한글로 매핑해주는 함수
+  String mapStatusToKorean(String status) {
+    switch (status) {
+      case "CREATE_WAIT":
+        return "생성 승인 대기중...";
+      case "YET":
+        return "미션 진행중...";
+      case "FINISH_WAIT":
+        return "승인 요청이 왔어요!";
+      case "FINISH":
+        return "미션완료!";
+      default:
+        return "알 수 없음";
+    }
+  }
+
   //미션 데이터를 리스트뷰로 랜더링 하는 위젯
   Widget parentMissionData(data) {
-    return (Expanded(
-        child: ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (BuildContext context, int index) {
-        final item = data[index];
-        return InkWell(
-          onTap: () {
-            // 컨테이너를 탭했을 때 실행할 동작 정의
+    return Expanded(
+      child: ListView.builder(
+        itemCount: data.length,
+        itemBuilder: (BuildContext context, int index) {
+          final item = data[index];
+          return InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => MissionDetailPage(item: item),
+                ),
+              );
+            },
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    mapStatusToKorean(item["completed"]), // 매핑 함수 사용
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Container(
+                    height: 70,
+                    width: 400,
+                    margin: EdgeInsets.only(top: 0.0),
+                    decoration: BoxDecoration(
+                      color: _getStatusColor(item["completed"]),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Row(
+                        mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween, // 가로 방향으로 가운데 정렬
+                        crossAxisAlignment:
+                            CrossAxisAlignment.center, // 세로 방향으로 가운데 정렬
+                        children: [
+                          // Text('#' + (index + 1).toString()),
 
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ParentMissionDetailPage(
-                    item: item), // DetailPage는 새로운 페이지의 위젯입니다.
+                          Text(
+                            item["startDate"],
+                            style: TextStyle(
+                              fontSize: 8.0,
+                              color: item["completed"] == "FINISH_WAIT"
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                          ),
+
+                          Text(
+                            item["todo"].length > 15
+                                ? item["todo"].substring(0, 15) + '...'
+                                : item["todo"],
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                              color: item["completed"] == "FINISH_WAIT"
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                          ),
+
+                          Image.asset(
+                            'assets/image/right_arrow.png',
+                            width: 20.0,
+                            height: 100.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.0),
-            margin: EdgeInsets.symmetric(vertical: 2.0), // 위 아래 여백 추가
-            decoration: BoxDecoration(
-              color: (item["completed"] == "CREATE_WAIT")
-                  ? Color.fromRGBO(255, 170, 170, 1)
-                  : (item["completed"] == "YET")
-                      ? Color.fromRGBO(255, 255, 170, 1)
-                      : (item["completed"] == "FINISH_WAIT")
-                          ? Color.fromRGBO(170, 255, 255, 1)
-                          : Color.fromRGBO(170, 255, 170, 1),
-              borderRadius: BorderRadius.circular(10.0),
             ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Text('#' + (index + 1).toString()),
-                    Text(item["completed"] == "CREATE_WAIT"
-                        ? "생성 대기"
-                        : item["completed"] == "YET"
-                            ? "미완료"
-                            : item["completed"] == "FINISH_WAIT"
-                                ? "완료 대기"
-                                : item["completed"] == "FINISH"
-                                    ? "완료"
-                                    : "알 수 없는 상태"),
-                  ],
-                ),
+          );
+        },
+      ),
+    );
+  }
 
-                Text(
-                  item["todo"],
-                  style: TextStyle(
-                    fontSize: 18.0, // 텍스트 크기 변경
-                    fontWeight: FontWeight.bold, // 텍스트 굵게 만들기
-                  ),
-                ),
-                SizedBox(height: 16.0), // 텍스트 사이에 간격 추가
-                Text(
-                  item["startDate"],
-                  style: TextStyle(
-                    fontSize: 8.0, // 텍스트 크기 변경
-                    color: Colors.black, // 텍스트 색상 변경
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    )));
+  //색깔 매핑
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case "CREATE_WAIT":
+        return Color(0xFFDFDFDF); // 16진수로 회색 지정
+      case "YET":
+        return Color(0xFFFF6262); // 16진수로 빨강 지정
+      case "FINISH_WAIT":
+        return Color(0xFF8320E7); // 16진수로 보라 지정
+      case "FINISH":
+        return Color(0xFF55FF55); // 16진수로 초록 지정
+      default:
+        return Colors.black;
+    }
   }
   //미션 데이터를 최초로 가져오는 비동기 요청
 
@@ -308,21 +543,48 @@ class CreateMissonBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        fixedSize: MaterialStateProperty.all(Size(400.0, 150.0)),
-        backgroundColor: MaterialStateProperty.all(Color(0xFF8320E7)),
-      ),
-      onPressed: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => (MissionCreatePage1()),
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 24),
+      child: ElevatedButton(
+        style: ButtonStyle(
+          fixedSize: MaterialStateProperty.all(Size(400.0, 150.0)),
+          backgroundColor: MaterialStateProperty.all(Color(0xFF8320E7)),
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                  15), // 원하는 둥글게 만들 모서리의 반지름 값. 15은 예시입니다.
+            ),
           ),
-        );
-      },
-      child:
-          (Center(child: Text('새로운 미션 만들기', style: TextStyle(fontSize: 20)))),
+        ),
+        onPressed: () async {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => (MissionCreatePage1()),
+            ),
+          );
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center, // 중앙에 배치하기 위해 사용
+          children: [
+            Container(
+              width: 40, // 네모 박스의 가로 길이 설정
+              height: 40, // 네모 박스의 세로 길이 설정
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white, width: 2), // 테두리 설정
+                borderRadius: BorderRadius.circular(5), // 네모 박스의 모서리 둥글게 설정
+              ),
+              child: Center(
+                child: Icon(Icons.add,
+                    size: 25, color: Colors.white), // 플러스 아이콘 추가
+              ),
+            ),
+            SizedBox(height: 10), // 아이콘과 텍스트 사이의 간격
+            Text('새로운 미션 만들기', style: TextStyle(fontSize: 20)),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -752,22 +1014,6 @@ class _ParentMissionDetailPageState extends State<ParentMissionDetailPage> {
         }(),
       ),
     );
-  }
-}
-
-//필터링 바//
-class FilteringBar extends StatelessWidget {
-  const FilteringBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        width: 400,
-        height: 20,
-        color: Colors.purple,
-        child: (Column(children: [
-          Text('필터링 바', style: TextStyle(color: Colors.white, fontSize: 10)),
-        ])));
   }
 }
 

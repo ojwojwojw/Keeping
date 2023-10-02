@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:keeping/screens/diary_page/diary_page.dart';
 import 'dart:convert';
-import 'package:keeping/screens/diary_page/diary_page.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
@@ -768,6 +767,13 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
 
       if (response.statusCode == 200) {
         print('질문 답변 데이터 전송 성공!');
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CompletedAndGoPage(
+                      text: "답변 작성 완료!",
+                      targetPage: ChildDiaryPage(),
+                    )));
       } else {
         print('질문 답변 데이터 전송 실패.');
       }
@@ -846,6 +852,13 @@ class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
 
       if (response.statusCode == 200) {
         print('질문 답변 데이터 전송 성공!');
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CompletedAndGoPage(
+                      text: "답변 작성 완료!",
+                      targetPage: ParentDiaryPage(),
+                    )));
       } else {
         print('질문 답변 데이터 전송 실패.');
       }
