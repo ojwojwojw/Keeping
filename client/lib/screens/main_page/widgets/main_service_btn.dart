@@ -26,15 +26,15 @@ class MainServiceBtn extends StatelessWidget {
       child: InkWell(
         onTap: () {
           if (hasAccount != null) {
-            if (hasAccount!) {
+            // if (hasAccount!) {
               Navigator.push(context, MaterialPageRoute(builder: (_) => path));
-            } else {
-              if (parent) {
-                roundedModal(context: context, title: '자녀 연결 후에 이용하실 수 있습니다.');
-              } else {
-                roundedModal(context: context, title: '계좌 개설 후에 이용하실 수 있습니다.');
-              }
-            }
+            // } else {
+            //   if (parent) {
+            //     roundedModal(context: context, title: '자녀 연결 후에 이용하실 수 있습니다.');
+            //   } else {
+            //     roundedModal(context: context, title: '계좌 개설 후에 이용하실 수 있습니다.');
+            //   }
+            // }
           } else  {
             roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
           }
