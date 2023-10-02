@@ -3,16 +3,15 @@ import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
-
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/screens/mission_create_page/mission_create.dart';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:provider/provider.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/widgets/completed_page.dart';
+import 'package:keeping/widgets/bottom_nav.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -27,6 +26,32 @@ class MissionPage extends StatefulWidget {
 class _MissonPageState extends State<MissionPage> {
   List<Map<String, dynamic>> data = [];
   String currentFilter = "ALL";
+
+  Future<List<Map<String, dynamic>>> getData() async {
+    // Dio 객체 생성
+    final dio = Dio();
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    var memberKey = userProvider.memberKey;
+    var accessToken = userProvider.accessToken;
+
+    try {
+      // GET 요청 보내기
+      final response = await dio.get(
+          "$_baseUrl/mission-service/api/$memberKey/$memberKey",
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+
+      // 요청이 성공했을 때 처리
+      if (response.statusCode == 200 && response.data['resultBody'] is List) {
+        return List<Map<String, dynamic>>.from(response.data['resultBody']);
+      } else {
+        throw Exception('Failed to fetch data');
+      }
+    } catch (error) {
+      // 요청이 실패했을 때 처리
+      print('Error: $error');
+      return []; // 빈 리스트 반환
+    }
+  }
 
   // 필터링 바
   Widget filterBar() {
@@ -87,6 +112,7 @@ class _MissonPageState extends State<MissionPage> {
     }
   }
 
+  //페이지 위젯 빌드
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,6 +148,7 @@ class _MissonPageState extends State<MissionPage> {
           }
         },
       ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 
@@ -246,35 +273,11 @@ class _MissonPageState extends State<MissionPage> {
   }
   //미션 데이터를 최초로 가져오는 비동기 요청
 
-  Future<List<Map<String, dynamic>>> getData() async {
-    // Dio 객체 생성
-    final dio = Dio();
-    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
-    var memberKey = userProvider.memberKey;
-    var accessToken = userProvider.accessToken;
-
-    try {
-      // GET 요청 보내기
-      final response = await dio.get(
-          "$_baseUrl/mission-service/api/$memberKey/$memberKey",
-          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
-
-      // 요청이 성공했을 때 처리
-      if (response.statusCode == 200 && response.data['resultBody'] is List) {
-        return List<Map<String, dynamic>>.from(response.data['resultBody']);
-      } else {
-        throw Exception('Failed to fetch data');
-      }
-    } catch (error) {
-      // 요청이 실패했을 때 처리
-      print('Error: $error');
-      return []; // 빈 리스트 반환
-    }
-  }
+  
 }
 
-////////////////
-////////////////
+
+
 //부모 미션 페이지
 class ParentMissionPage extends StatefulWidget {
   const ParentMissionPage({Key? key}) : super(key: key);
@@ -286,6 +289,39 @@ class ParentMissionPage extends StatefulWidget {
 class _ParentMissonPageState extends State<ParentMissionPage> {
   List<Map<String, dynamic>> data = [];
   String currentFilter = "ALL";
+
+  //데이터 비동기 요청
+  Future<List<Map<String, dynamic>>> getParentData() async {
+    // Dio 객체 생성
+    final dio = Dio();
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    var childInfoProvider =
+        Provider.of<ChildInfoProvider>(context, listen: false);
+    var memberKey = userProvider.memberKey;
+    var childMemberKey = childInfoProvider.memberKey;
+    var accessToken = userProvider.accessToken;
+    print('디버깅?!?');
+    print(memberKey);
+    print(accessToken);
+
+    try {
+      // GET 요청 보내기
+      final response = await dio.get(
+          "$_baseUrl/mission-service/api/$memberKey/$childMemberKey",
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+
+      // 요청이 성공했을 때 처리
+      if (response.statusCode == 200 && response.data['resultBody'] is List) {
+        return List<Map<String, dynamic>>.from(response.data['resultBody']);
+      } else {
+        return []; // 안전한 값 반환
+      }
+    } catch (error) {
+      // 요청이 실패했을 때 처리
+      print('Error: $error');
+      return []; // 안전한 값 반환
+    }
+  }
 
   // 필터링 바
   Widget filterBar() {
@@ -346,6 +382,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
     }
   }
 
+  //페이지 위젯 빌드
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -380,6 +417,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
           }
         },
       ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 
@@ -410,7 +448,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => MissionDetailPage(item: item),
+                  builder: (context) => ParentMissionDetailPage(item: item),
                 ),
               );
             },
@@ -504,43 +542,15 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
   }
   //미션 데이터를 최초로 가져오는 비동기 요청
 
-  Future<List<Map<String, dynamic>>> getParentData() async {
-    // Dio 객체 생성
-    final dio = Dio();
-    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
-    var childInfoProvider =
-        Provider.of<ChildInfoProvider>(context, listen: false);
-    var memberKey = userProvider.memberKey;
-    var childMemberKey = childInfoProvider.memberKey;
-    var accessToken = userProvider.accessToken;
-    print('디버깅?!?');
-    print(memberKey);
-    print(accessToken);
-
-    try {
-      // GET 요청 보내기
-      final response = await dio.get(
-          "$_baseUrl/mission-service/api/$memberKey/$childMemberKey",
-          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
-
-      // 요청이 성공했을 때 처리
-      if (response.statusCode == 200 && response.data['resultBody'] is List) {
-        return List<Map<String, dynamic>>.from(response.data['resultBody']);
-      } else {
-        return []; // 안전한 값 반환
-      }
-    } catch (error) {
-      // 요청이 실패했을 때 처리
-      print('Error: $error');
-      return []; // 안전한 값 반환
-    }
-  }
 }
+
+
 
 // 새로운 미션 생성 버튼//
 class CreateMissonBox extends StatelessWidget {
   const CreateMissonBox({super.key});
 
+  //위젯 빌드
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -589,7 +599,8 @@ class CreateMissonBox extends StatelessWidget {
   }
 }
 
-//////////////////////
+
+
 //자녀 미션 상세조회 페이지//
 class MissionDetailPage extends StatefulWidget {
   final Map<String, dynamic> item;
@@ -604,7 +615,6 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
   late UserInfoProvider userProvider;
   late List<Map<String, dynamic>> childrenList;
   late bool isParent = userProvider.parent;
-//하단 버튼 랜더링과 동작 로직 관련
 
   @override
   void initState() {
@@ -613,6 +623,23 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
     isParent = userProvider.parent;
   }
 
+  ///CREATED_WAIT 상태인 미션을 YET으로 바꾸는 비동기요청
+  Future<void> missionApprove() async {
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+    try {
+      var response = await dio.get(
+          "$_baseUrl/mission-service/api/$memberKey/complete",
+          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
+      print(response);
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+  
+  
+  //하단 버튼 랜더링과 동작 로직 관련
+  
   String getBottomButtonText(String status) {
     switch (status) {
       case "CREATE_WAIT":
@@ -655,127 +682,184 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
   }
   ////
 
-  ///CREATED_WAIT 상태인 미션을 YET으로 바꾸기
-  Future<void> missionApprove() async {
-    var accessToken = userProvider.accessToken;
-    var memberKey = userProvider.memberKey;
-    try {
-      var response = await dio.get(
-          "$_baseUrl/mission-service/api/$memberKey/complete",
-          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
-      print(response);
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-
+  
+  ///위젯 빌드
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyHeader(text: "미션상세조회"),
+      appBar: MyHeader(text: "미션상세조회(자녀)"),
       body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 10.0),
+
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(230, 230, 250, 1.0), // 연보라색
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              child: Text(
+                // 상태를 한글로 직접 변환하는 로직
+                {
+                      "CREATE_WAIT": "생성 대기중",
+                      "YET": "미완료",
+                      "FINISH_WAIT": "완료 대기중",
+                      "FINISH": "완료",
+                    }[widget.item["completed"]] ??
+                    "알 수 없는 상태",
+                style: TextStyle(fontSize: 16.0, color: Colors.purple), // 보라색
+              ),
+            ),
+            Text(
+              widget.item["todo"],
+              style: TextStyle(fontSize: 20.0), // 폰트 크기를 20.0으로 변경
+            ),
+            Text(
+              widget.item["money"].toString() + '원',
+              style: TextStyle(
+                fontSize: 24.0, // 폰트 크기를 24.0으로 변경 (todo보다 큰 크기)
+                color: Colors.purple, // 글씨를 보라색으로 변경
+              ),
+            ),
+            SizedBox(height: 10.0),
+
+            Image.asset(
+              'assets/image/m_face.png',
+              width: 100.0, // 원하는 크기로 조정
+              height: 100.0, // 원하는 크기로 조정
+              fit: BoxFit.cover, // 이미지가 부모의 크기에 맞게 조정됩니다.
+            ),
+
+            SizedBox(
+              height: 20,
+            ),
+
+            Text(
+              widget.item["cheeringMessage"],
+              style: TextStyle(fontSize: 16.0),
+            ),
+            SizedBox(height: 10.0),
+            //// 자식의 메세지가 null이면 랜더링을 못한다
+            widget.item["childComment"] != null
+                ? Text(
+                    widget.item["childComment"],
+                    style: TextStyle(fontSize: 16.0),
+                  )
+                : SizedBox(),
+
+            ///
+            SizedBox(height: 10.0),
+
+            ///정보를 출력하는 회색 폼///
+            Column(
               children: [
-                SizedBox(height: 10.0),
-
+                // 상단 부분 (진한 회색 배경)
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                  width: 380.0,
+                  padding: EdgeInsets.all(15.0),
                   decoration: BoxDecoration(
-                    color: Color.fromRGBO(230, 230, 250, 1.0), // 연보라색
-                    borderRadius: BorderRadius.circular(5.0),
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10.0),
+                      topRight: Radius.circular(10.0),
+                    ),
                   ),
-                  child: Text(
-                    // 상태를 한글로 직접 변환하는 로직
-                    {
-                          "CREATE_WAIT": "생성 대기중",
-                          "YET": "미완료",
-                          "FINISH_WAIT": "완료 대기중",
-                          "FINISH": "완료",
-                        }[widget.item["completed"]] ??
-                        "알 수 없는 상태",
-                    style:
-                        TextStyle(fontSize: 16.0, color: Colors.purple), // 보라색
-                  ),
-                ),
-                Text(
-                  widget.item["todo"],
-                  style: TextStyle(fontSize: 20.0), // 폰트 크기를 20.0으로 변경
-                ),
-                Text(
-                  widget.item["money"].toString() + '원',
-                  style: TextStyle(
-                    fontSize: 24.0, // 폰트 크기를 24.0으로 변경 (todo보다 큰 크기)
-                    color: Colors.purple, // 글씨를 보라색으로 변경
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                Text("아이의 프로필 이미지"),
-                SizedBox(
-                  height: 200,
-                ),
-                Text(
-                  widget.item["cheeringMessage"],
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(height: 10.0),
-                //// 자식의 메세지가 null이면 랜더링을 못한다
-                widget.item["childComment"] != null
-                    ? Text(
-                        widget.item["childComment"],
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "미션을 만든사람:",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        widget.item["type"] == "PARENT"
+                            ? "부모님"
+                            : widget.item["type"] == "CHILD"
+                                ? "아이"
+                                : widget.item["type"],
                         style: TextStyle(fontSize: 16.0),
-                      )
-                    : SizedBox(),
-                /////
-                SizedBox(height: 10.0),
-                Text(
-                  "시작일:",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  widget.item["startDate"],
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(height: 10.0),
-                Text(
-                  "종료일:",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
+                // 하단 부분 (연한 회색 배경)
+                Container(
+                  width: 380.0,
+                  padding: EdgeInsets.all(15.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10.0),
+                      bottomRight: Radius.circular(10.0),
+                    ),
                   ),
-                ),
-                Text(
-                  widget.item["endDate"],
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(height: 10.0),
-
-                Text(
-                  widget.item["completed"],
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(height: 10.0),
-                Text(
-                  "생성일:",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "시작일:",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            widget.item["startDate"],
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "종료일:",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            widget.item["endDate"],
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "생성일:",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            widget.item["createdDate"]
+                                .toString()
+                                .substring(0, 10),
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ),
-                Text(
-                  widget.item["createdDate"].toString().substring(0, 10),
-                  style: TextStyle(fontSize: 16.0),
                 ),
               ],
-            ),
-          ),
+            )
+            //////////////////////////////
+          ],
         ),
       ),
       bottomNavigationBar: BottomBtn(
@@ -801,8 +885,8 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
   }
 }
 
-/////////////////////
-///////////////////
+
+
 //부모 미션 상세 조회 페이지
 class ParentMissionDetailPage extends StatefulWidget {
   final Map<String, dynamic> item;
@@ -824,6 +908,12 @@ class _ParentMissionDetailPageState extends State<ParentMissionDetailPage> {
     super.initState();
     userProvider = Provider.of<UserInfoProvider>(context, listen: false);
     isParent = userProvider.parent;
+  }
+
+  @override
+  void didChangeDependencies() {
+    dio = Dio();
+    super.didChangeDependencies();
   }
 
   //하단 버튼 랜더링과 동작 로직 관련
@@ -876,122 +966,184 @@ class _ParentMissionDetailPageState extends State<ParentMissionDetailPage> {
   ////
 
   ///
-  @override
-  void didChangeDependencies() {
-    dio = Dio();
-    super.didChangeDependencies();
-    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
-  }
-
+  
+  ///위젯 빌드
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(text: "미션상세조회(부모)"),
       body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 10.0),
+
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(230, 230, 250, 1.0), // 연보라색
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              child: Text(
+                // 상태를 한글로 직접 변환하는 로직
+                {
+                      "CREATE_WAIT": "생성 대기중",
+                      "YET": "미완료",
+                      "FINISH_WAIT": "완료 대기중",
+                      "FINISH": "완료",
+                    }[widget.item["completed"]] ??
+                    "알 수 없는 상태",
+                style: TextStyle(fontSize: 16.0, color: Colors.purple), // 보라색
+              ),
+            ),
+            Text(
+              widget.item["todo"],
+              style: TextStyle(fontSize: 20.0), // 폰트 크기를 20.0으로 변경
+            ),
+            Text(
+              widget.item["money"].toString() + '원',
+              style: TextStyle(
+                fontSize: 24.0, // 폰트 크기를 24.0으로 변경 (todo보다 큰 크기)
+                color: Colors.purple, // 글씨를 보라색으로 변경
+              ),
+            ),
+            SizedBox(height: 10.0),
+
+            Image.asset(
+              'assets/image/m_face.png',
+              width: 100.0, // 원하는 크기로 조정
+              height: 100.0, // 원하는 크기로 조정
+              fit: BoxFit.cover, // 이미지가 부모의 크기에 맞게 조정됩니다.
+            ),
+
+            SizedBox(
+              height: 20,
+            ),
+
+            Text(
+              widget.item["cheeringMessage"],
+              style: TextStyle(fontSize: 16.0),
+            ),
+            SizedBox(height: 10.0),
+            //// 자식의 메세지가 null이면 랜더링을 못한다
+
+            widget.item["childComment"] != null
+                ? Text(
+                    widget.item["childComment"],
+                    style: TextStyle(fontSize: 16.0),
+                  )
+                : SizedBox(),
+            /////
+            SizedBox(height: 10.0),
+
+            ///정보를 출력하는 회색 폼///
+            Column(
               children: [
-                SizedBox(height: 10.0),
-
+                // 상단 부분 (진한 회색 배경)
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                  width: 380.0,
+                  padding: EdgeInsets.all(15.0),
                   decoration: BoxDecoration(
-                    color: Color.fromRGBO(230, 230, 250, 1.0), // 연보라색
-                    borderRadius: BorderRadius.circular(5.0),
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10.0),
+                      topRight: Radius.circular(10.0),
+                    ),
                   ),
-                  child: Text(
-                    // 상태를 한글로 직접 변환하는 로직
-                    {
-                          "CREATE_WAIT": "생성 대기중",
-                          "YET": "미완료",
-                          "FINISH_WAIT": "완료 대기중",
-                          "FINISH": "완료",
-                        }[widget.item["completed"]] ??
-                        "알 수 없는 상태",
-                    style:
-                        TextStyle(fontSize: 16.0, color: Colors.purple), // 보라색
-                  ),
-                ),
-                Text(
-                  widget.item["todo"],
-                  style: TextStyle(fontSize: 20.0), // 폰트 크기를 20.0으로 변경
-                ),
-                Text(
-                  widget.item["money"].toString() + '원',
-                  style: TextStyle(
-                    fontSize: 24.0, // 폰트 크기를 24.0으로 변경 (todo보다 큰 크기)
-                    color: Colors.purple, // 글씨를 보라색으로 변경
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                Text("아이의 프로필 이미지"),
-                SizedBox(
-                  height: 100,
-                ),
-                Text("부모의 응원 메세지"),
-                Text(
-                  widget.item["cheeringMessage"],
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(height: 10.0),
-                //// 자식의 메세지가 null이면 랜더링을 못한다
-                Text("자식의 완료 메세지"),
-                widget.item["childComment"] != null
-                    ? Text(
-                        widget.item["childComment"],
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "미션을 만든사람:",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        widget.item["type"] == "PARENT"
+                            ? "부모님"
+                            : widget.item["type"] == "CHILD"
+                                ? "아이"
+                                : widget.item["type"],
                         style: TextStyle(fontSize: 16.0),
-                      )
-                    : SizedBox(),
-                /////
-                SizedBox(height: 10.0),
-                Text(
-                  "시작일:",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  widget.item["startDate"],
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(height: 10.0),
-                Text(
-                  "종료일:",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
+                // 하단 부분 (연한 회색 배경)
+                Container(
+                  width: 380.0,
+                  padding: EdgeInsets.all(15.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10.0),
+                      bottomRight: Radius.circular(10.0),
+                    ),
                   ),
-                ),
-                Text(
-                  widget.item["endDate"],
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(height: 10.0),
-
-                Text(
-                  widget.item["completed"],
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(height: 10.0),
-                Text(
-                  "생성일:",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "시작일:",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            widget.item["startDate"],
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "종료일:",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            widget.item["endDate"],
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "생성일:",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            widget.item["createdDate"]
+                                .toString()
+                                .substring(0, 10),
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ),
-                Text(
-                  widget.item["createdDate"].toString().substring(0, 10),
-                  style: TextStyle(fontSize: 16.0),
                 ),
               ],
-            ),
-          ),
+            )
+            //////////////////////////////
+          ],
         ),
       ),
       bottomNavigationBar: BottomBtn(
@@ -1017,6 +1169,7 @@ class _ParentMissionDetailPageState extends State<ParentMissionDetailPage> {
   }
 }
 
+
 // 미션 생성 승인 입력 폼 페이지
 class MissionApprovePage extends StatefulWidget {
   final int? missionId;
@@ -1032,7 +1185,15 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
   late UserInfoProvider userProvider;
   late List<Map<String, dynamic>> childrenList;
 
-  ///CREATED_WAIT 상태인 미션을 YET으로 바꾸기
+
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+  }
+
+  ///CREATED_WAIT 상태인 미션을 YET으로 바꾸는 비동기 요청
   Future<void> _sendData() async {
     var accessToken = userProvider.accessToken;
     var memberKey = userProvider.memberKey;
@@ -1067,12 +1228,7 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    dio = Dio();
-    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -1103,8 +1259,8 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
   }
 }
 
+
 // 미션 완료 요청 폼 페이지
-////////////////////////////
 class MissionCompleteRequestPage extends StatefulWidget {
   final int? missionId;
   const MissionCompleteRequestPage({super.key, required this.missionId});
@@ -1121,7 +1277,14 @@ class _MissionCompleteRequestPageState
   late UserInfoProvider userProvider;
   late List<Map<String, dynamic>> childrenList;
 
-  ///YET 상태인 미션을 FINISH_WAIT으로 바꾸기
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+  }
+
+  ///YET 상태인 미션을 FINISH_WAIT으로 바꾸는 비동기 요청
   Future<void> _sendData() async {
     var accessToken = userProvider.accessToken;
     var memberKey = userProvider.memberKey;
@@ -1156,12 +1319,7 @@ class _MissionCompleteRequestPageState
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    dio = Dio();
-    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -1192,8 +1350,8 @@ class _MissionCompleteRequestPageState
   }
 }
 
-// 미션 완료 폼 페이지
-////////////////////////////
+
+// 미션 완료 승인 폼 페이지
 class MissionCompletePage extends StatefulWidget {
   final int? missionId;
   const MissionCompletePage({super.key, required this.missionId});
@@ -1208,7 +1366,14 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
   late UserInfoProvider userProvider;
   late List<Map<String, dynamic>> childrenList;
 
-  ///FINISH_WAIT 상태인 미션을 FINISH로 바꾸기
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+  }
+
+  ///FINISH_WAIT 상태인 미션을 FINISH로 바꾸는 비동기 요청
   Future<void> _sendData() async {
     var accessToken = userProvider.accessToken;
     var memberKey = userProvider.memberKey;
@@ -1243,13 +1408,7 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    dio = Dio();
-    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
-  }
-
+  //위젯 빌드,
   @override
   Widget build(BuildContext context) {
     return Scaffold(

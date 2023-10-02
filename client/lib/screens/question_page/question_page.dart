@@ -239,7 +239,6 @@ class _QuestionPageState extends State<QuestionPage> {
 }
 
 //오늘의 질문 페이지 (부모)
-
 class ParentQuestionPage extends StatefulWidget {
   const ParentQuestionPage({super.key});
 
@@ -264,6 +263,44 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
     selectedMemberKey = childInfoProvider.memberKey;
   }
 
+   //질문 데이터를 가져오는 비동기 요청
+  Future<List<Map<String, dynamic>>> getData() async {
+    // Dio 객체 생성
+    final dio = Dio();
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    var memberKey = userProvider.memberKey;
+    var accessToken = userProvider.accessToken;
+
+    try {
+      // GET 요청 보내기
+      final response = await dio.get(
+          "$_baseUrl/question-service/api/$memberKey/questions/today",
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+      print('부모 오늘의 질문 데이터');
+      print(response.data['resultBody']);
+      // 요청이 성공했을 때 처리
+      if (response.statusCode == 200 && response.data['resultBody'] is List) {
+        print('response관찰');
+        print(response);
+        // 멤버키를 기반으로 필터링 수행
+        var filteredData =
+            List<Map<String, dynamic>>.from(response.data['resultBody'])
+                .where((item) => item['memberKey'] == selectedMemberKey)
+                .toList();
+        print(filteredData);
+        return filteredData;
+      } else {
+        return []; // 빈 객체 반환
+      }
+    } catch (error) {
+      // 요청이 실패했을 때 처리
+      print('Error: $error');
+      return []; // 빈 리스트 반환
+    }
+  }
+
+
+  //페이지 빌드하는 위젯
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -284,16 +321,8 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                 data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
                 return Center(
                   child: Column(children: [
-                    SizedBox(
-                      height: 100,
-                    ),
-                    Text(
-                      '오늘의 질문에 답해보세요',
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                      ),
-                    ),
+                    SizedBox(height: 100,),
+                    Text('오늘의 질문에 답해보세요',style: TextStyle(fontSize: 24,color: Colors.white,),),
                     GestureDetector(
                       onTap: () {
                         if (data.length >= 1) {
@@ -310,11 +339,8 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                               title: Text('알림'),
                               content: Text('오늘의 질문이 없습니다. 페이지로 이동할 수 없습니다.'),
                               actions: <Widget>[
-                                TextButton(
-                                  child: Text('확인'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
+                                TextButton(child: Text('확인'),
+                                  onPressed: () { Navigator.of(context).pop();},
                                 ),
                               ],
                             ),
@@ -343,17 +369,12 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              DateFormat('yyyy년 MM월 dd일')
-                                      .format(DateTime.now()) +
-                                  "의 질문",
+                              DateFormat('yyyy년 MM월 dd일').format(DateTime.now()) +"의 질문",
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                              fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             data != null && data.isNotEmpty
-                                ? Text(
-                                    "Q." + data[0]["content"],
-                                    style: TextStyle(fontSize: 20),
-                                  )
+                                ? Text( "Q." + data[0]["content"], style: TextStyle(fontSize: 20),)
                                 : Text("오늘의 질문이 없습니다. "),
                           ],
                         ),
@@ -439,42 +460,6 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                 );
               }
             }));
-  }
-
-  //질문 데이터를 가져오는 비동기 요청
-  Future<List<Map<String, dynamic>>> getData() async {
-    // Dio 객체 생성
-    final dio = Dio();
-    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
-    var memberKey = userProvider.memberKey;
-    var accessToken = userProvider.accessToken;
-
-    try {
-      // GET 요청 보내기
-      final response = await dio.get(
-          "$_baseUrl/question-service/api/$memberKey/questions/today",
-          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
-      print('부모 오늘의 질문 데이터');
-      print(response.data['resultBody']);
-      // 요청이 성공했을 때 처리
-      if (response.statusCode == 200 && response.data['resultBody'] is List) {
-        print('response관찰');
-        print(response);
-        // 멤버키를 기반으로 필터링 수행
-        var filteredData =
-            List<Map<String, dynamic>>.from(response.data['resultBody'])
-                .where((item) => item['memberKey'] == memberKey)
-                .toList();
-        print(filteredData);
-        return filteredData;
-      } else {
-        return []; // 빈 객체 반환
-      }
-    } catch (error) {
-      // 요청이 실패했을 때 처리
-      print('Error: $error');
-      return []; // 빈 리스트 반환
-    }
   }
 }
 
@@ -694,20 +679,40 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
           Text('받는사람'),
 
           /// 자녀를 고르는 드랍다운
-          DropdownButton<String>(
-            value: selectedMemberKey.isNotEmpty ? selectedMemberKey : null,
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedMemberKey = newValue ?? '';
-              });
-            },
-            items: childrenList
-                .map<DropdownMenuItem<String>>((Map<String, dynamic> child) {
-              return DropdownMenuItem<String>(
-                value: child["memberKey"].toString(),
-                child: Text(child["name"].toString()),
-              );
-            }).toList(),
+          Container(
+            width: 380,
+            height: 60,
+            padding: EdgeInsets.symmetric(
+                horizontal: 10.0, vertical: 5.0), // dropdown arrow와 padding 조절
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.purple),
+              borderRadius: BorderRadius.circular(4.0),
+            ),
+            child: DropdownButtonHideUnderline(
+              // underline 제거
+              child: DropdownButton<String>(
+                isExpanded: true, // 텍스트와 dropdown arrow 간에 공간을 최대로 활용
+                value: selectedMemberKey.isNotEmpty ? selectedMemberKey : null,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedMemberKey = newValue ?? '';
+                  });
+                },
+                items: childrenList.map<DropdownMenuItem<String>>(
+                    (Map<String, dynamic> child) {
+                  return DropdownMenuItem<String>(
+                    value: child["memberKey"].toString(),
+                    child: Row(
+                      children: [
+                        Image.asset( 'assets/image/n_face.png',width: 100.0, height: 100.0,),
+                        SizedBox(width: 10.0), // 이미지와 텍스트 사이의 간격
+                        Text(child["name"].toString()),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
           ),
 
           ///
@@ -730,7 +735,6 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
   }
 }
 
-/////////////////////////
 //자식 질문에 답하는 페이지
 class QeustionAnswerPage extends StatefulWidget {
   final String? questionText;
@@ -816,7 +820,6 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
 }
 
 //부모 질문에 답하는 페이지
-
 class ParentQeustionAnswerPage extends StatefulWidget {
   final String? questionText;
   final int? questionId;
