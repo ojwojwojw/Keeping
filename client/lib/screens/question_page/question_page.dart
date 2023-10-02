@@ -761,11 +761,42 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
       ),
       body: Column(
         children: [
-          Container(height: 10,width: 410,color:  Color(0xFF9271C8),child: SizedBox(),),
+          Container(
+            height: 10,
+            width: 410,
+            color: Color(0xFF9271C8),
+            child: SizedBox(),
+          ),
 
-          SizedBox(height: 15,),
+          SizedBox(
+            height: 15,
+          ),
 
-          Image.asset( 'assets/image/m_face.png', width: 100.0, height: 100.0, fit: BoxFit.cover, ),
+          ////////
+          Padding(
+            padding: EdgeInsets.only(left: 0.0), // 왼쪽 패딩만 설정
+            child: Container(
+              padding: EdgeInsets.all(10.0), // 내부 패딩
+              decoration: BoxDecoration(
+                color: Colors.deepPurple[100], // 연보라색 배경
+                borderRadius: BorderRadius.circular(10.0), // 둥근 테두리
+              ),
+              child: Text(
+                "질문 보내기",
+                style: TextStyle(
+                  color: Colors.purple, // 보라색 글씨
+                  fontSize: 16.0, // 글씨 크기
+                ),
+              ),
+            ),
+          ),
+          ////// 이쁜 보라색 박스
+          Image.asset(
+            'assets/image/m_face.png',
+            width: 100.0,
+            height: 100.0,
+            fit: BoxFit.cover,
+          ),
 
           SizedBox(
             height: 15,
