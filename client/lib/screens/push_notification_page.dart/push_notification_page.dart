@@ -87,7 +87,9 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNav(),
+      bottomNavigationBar: BottomNav(
+        notification: true,
+      ),
     );
   }
 
@@ -224,7 +226,8 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
                         Text(
                           '${noti['title']}',
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
                           ),
                         ),
                       ],
