@@ -14,3 +14,17 @@ void noEffectTransition(BuildContext context, Widget path) {
     )
   );
 }
+
+void noEffectReplacementTransition(BuildContext context, Widget path) {
+  Navigator.pushReplacement(
+    context,
+    PageRouteBuilder(
+      pageBuilder: (BuildContext context, Animation<double> animation1,
+          Animation<double> animation2) {
+        return path; //변경 필요
+      },
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
+    )
+  );
+}
