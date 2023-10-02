@@ -70,7 +70,15 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                       print('부모 메인 페이지 ${snapshot.data}');
                       var response = snapshot.data;
                       if (response['resultBody']['childrenList'].isEmpty) {
-                        return Text('연결된 자녀가 없습니다.');
+                        return Column(
+                          children: [
+                            _changeChildBtn(
+                              context: context, childrenList: [], isDisabled: true
+                            ),
+                            ParentGreeting(name: _name, childName: null),
+                            ChildContent(childInfo: null),
+                          ],
+                        );
                       } else if (_childKey == null && _childName == null) {
                         return Column(
                           children: [
@@ -153,7 +161,7 @@ class _ChildContentState extends State<ChildContent> {
               if (snapshot.hasData) {
                 var response = snapshot.data;
                 if (response['resultStatus']['resultCode'] == '404') {
-                  return MakeAccountBtn();
+                  return noAccountForParent(context);
                 } else if (response['resultStatus']['resultCode'] == '503') {
                   return AccountInfo(balance: 0);
                 } else {
@@ -162,8 +170,10 @@ class _ChildContentState extends State<ChildContent> {
                     balance: response['resultBody']['balance'],
                   );
                 }
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return disabledAccount();
               } else {
-                return Text('로딩중');
+                return disabledAccountForParent(context);
               }
             },
           ),
@@ -176,6 +186,7 @@ class _ChildContentState extends State<ChildContent> {
                 name: '미션',
                 text: '자녀 소비습관 쑥쑥!',
                 emoji: '💪',
+                parent: true,
               ),
               SizedBox(width: 12,),
               MainServiceBtn(
@@ -184,6 +195,7 @@ class _ChildContentState extends State<ChildContent> {
                 name: '결제 부탁하기',
                 text: '자녀가 부탁한\n결제 목록이에요.',
                 emoji: '🙇‍♀️',
+                parent: true,
               ),
             ],
           ),
@@ -197,6 +209,7 @@ class _ChildContentState extends State<ChildContent> {
                 name: '질문',
                 text: '질문에 답하고\n자녀와 소통해요',
                 emoji: '📬',
+                parent: true,
               ),
               SizedBox(width: 12,),
               MainServiceBtn(
@@ -205,6 +218,7 @@ class _ChildContentState extends State<ChildContent> {
                 name: '저금통',
                 text: '자녀의 위시리스트는?',
                 emoji: '🐷',
+                parent: true,
               ),
             ],
           ),
@@ -215,13 +229,13 @@ class _ChildContentState extends State<ChildContent> {
 }
 
 // 자녀 전환 버튼
-Widget _changeChildBtn({required BuildContext context, required List<dynamic> childrenList}) {
+Widget _changeChildBtn({required BuildContext context, required List<dynamic> childrenList, bool isDisabled = false}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.end,
     children: [
       InkWell(
         onTap: () {
-          bottomModal(context: context, title: '자녀 계정 전환', content: _changeChildrenList(context, childrenList), button: Container());
+          if (!isDisabled) bottomModal(context: context, title: '자녀 계정 전환', content: _changeChildrenList(context, childrenList), button: Container());
         },
         child: Container(
           width: 66,

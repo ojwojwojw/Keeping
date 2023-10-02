@@ -8,6 +8,7 @@ class MainServiceBtn extends StatelessWidget {
   final String name;
   final String text;
   final String emoji;
+  final bool parent;
 
   MainServiceBtn({
     super.key,
@@ -16,6 +17,7 @@ class MainServiceBtn extends StatelessWidget {
     required this.name,
     required this.text,
     required this.emoji,
+    this.parent = false,
   });
 
   @override
@@ -24,9 +26,15 @@ class MainServiceBtn extends StatelessWidget {
       child: InkWell(
         onTap: () {
           if (hasAccount != null) {
-            hasAccount! ? 
-            Navigator.push(context, MaterialPageRoute(builder: (_) => path))
-            : roundedModal(context: context, title: '계좌 개설 후에 이용하실 수 있습니다.');
+            if (hasAccount!) {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => path));
+            } else {
+              if (parent) {
+                roundedModal(context: context, title: '자녀 연결 후에 이용하실 수 있습니다.');
+              } else {
+                roundedModal(context: context, title: '계좌 개설 후에 이용하실 수 있습니다.');
+              }
+            }
           } else  {
             roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
           }

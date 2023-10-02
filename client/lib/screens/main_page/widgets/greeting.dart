@@ -31,7 +31,7 @@ class ChildGreeting extends StatelessWidget {
 
 class ParentGreeting extends StatelessWidget {
   final String name;
-  final String childName;
+  final String? childName;
 
   ParentGreeting({
     super.key,
@@ -57,12 +57,14 @@ class ParentGreeting extends StatelessWidget {
                   Text('님', style: TextStyle(fontSize: 20),),
                 ],
               ),
-              Row(
-                children: [
-                  Text(childName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-                  Text('의 홈입니다.', style: TextStyle(fontSize: 20),)
-                ],
-              ),
+              childName == null ?
+                Text('자녀와 연결 후 이용가능합니다.', style: TextStyle(fontSize: 20),)
+                : Row(
+                  children: [
+                    Text(childName!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+                    Text('의 홈입니다.', style: TextStyle(fontSize: 20),)
+                  ],
+                ),
             ],
           )
         ],

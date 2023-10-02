@@ -71,7 +71,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
                         );
                       }
                     } else {
-                      return Text('로딩중');
+                      return disabledAccount();
                     }
                   },
                 ),

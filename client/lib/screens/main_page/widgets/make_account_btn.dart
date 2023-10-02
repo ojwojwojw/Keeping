@@ -14,7 +14,7 @@ class MakeAccountBtn extends StatelessWidget {
         Navigator.push(context, MaterialPageRoute(builder: (_) => MakeAccountPage()));
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24),
+        padding: const EdgeInsets.only(top: 24, bottom: 12),
         child: SizedBox(
           height: 160,
           child: DecoratedBox(
@@ -25,7 +25,7 @@ class MakeAccountBtn extends StatelessWidget {
               children: const [
                 Icon(Icons.add, color: Colors.grey,),
                 Text(
-                  '계좌 만들기',
+                  ' 계좌 만들기',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.grey,
@@ -39,4 +39,79 @@ class MakeAccountBtn extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget disabledAccountForParent(BuildContext context) {
+  return InkWell(
+    onTap: () {
+
+    },
+    child: Padding(
+      padding: const EdgeInsets.only(top: 24, bottom: 12),
+      child: SizedBox(
+        height: 160,
+        child: DecoratedBox(
+          decoration: roundedBoxWithShadowStyle(),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: const [
+              Icon(Icons.add, color: Colors.grey,),
+              Text(
+                ' 자녀 연결하러 가기',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 25
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget noAccountForParent(BuildContext context) {
+  return InkWell(
+    onTap: () {
+
+    },
+    child: Padding(
+      padding: const EdgeInsets.only(top: 24, bottom: 12),
+      child: SizedBox(
+        height: 160,
+        child: DecoratedBox(
+          decoration: roundedBoxWithShadowStyle(),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: const [
+              Text(
+                '자녀 계좌가 없습니다.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 25
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget disabledAccount() {
+  return Padding(
+    padding: const EdgeInsets.only(top: 24, bottom: 12),
+    child: SizedBox(
+      height: 160,
+      child: DecoratedBox(
+        decoration: roundedBoxWithShadowStyle(),
+      ),
+    ),
+  );
 }
