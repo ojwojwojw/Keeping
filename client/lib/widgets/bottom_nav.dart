@@ -4,8 +4,7 @@ import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/my_page/child_my_page.dart';
 import 'package:keeping/screens/my_page/parent_my_page.dart';
-import 'package:keeping/screens/push_notification_page.dart/child_push_notification_page.dart';
-import 'package:keeping/screens/push_notification_page.dart/parent_push_notification_page.dart';
+import 'package:keeping/screens/push_notification_page.dart/push_notification_page.dart';
 import 'package:provider/provider.dart';
 import 'package:keeping/provider/user_info.dart';
 
@@ -78,11 +77,7 @@ Widget diaryBtn(BuildContext context, bool isParent, bool isSelected) {
 Widget notificationBtn(BuildContext context, bool isParent, bool isSelected) {
   return InkWell(
     onTap: () {
-      if (isParent) {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ParentPushNotificationPage()));
-      } else {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ChildPushNotificationPage()));
-      }
+      Navigator.push(context, MaterialPageRoute(builder: (_) => PushNotificationPage()));
     },
     child: _navBtnStyle(icon: Icons.notifications, text: '알림', isSelected: isSelected),
   );

@@ -512,7 +512,7 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  widget.item["childAnswer"],
+                  widget.item["childAnswer"] ?? "기본 텍스트",
                   style: TextStyle(fontSize: 18.0),
                 ),
                 SizedBox(height: 24.0),
@@ -522,9 +522,9 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  "생성 여부: ${widget.item["isCreated"] ? "true" : "false"}",
+                  "생성 여부: ${widget.item["isCreated"] == null ? "정보 없음" : (widget.item["isCreated"] ? "true" : "false")}",
                   style: TextStyle(fontSize: 18.0),
-                ),
+                )
               ],
             ),
           ),

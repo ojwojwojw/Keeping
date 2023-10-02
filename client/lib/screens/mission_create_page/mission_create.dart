@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 import 'package:keeping/widgets/render_field.dart';
+import 'package:keeping/widgets/completed_page.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -273,7 +274,12 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
       if (response.statusCode == 200) {
         print('미션생성 데이터 전송 성공!');
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MissionPage()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => CompletedAndGoPage(
+                      text: "미션생성 완료!",
+                      targetPage: MissionPage(),
+                    )));
       } else {
         print('미션생성 데이터 전송 실패.');
       }
@@ -367,6 +373,15 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
           "$_baseUrl/mission-service/api/$memberKey",
           data: data,
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+      if (response.statusCode == 200) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CompletedAndGoPage(
+                      text: "미션생성 완료!",
+                      targetPage: ParentMissionPage(),
+                    )));
+      }
       print(response);
     } catch (e) {
       print('Error: $e');
