@@ -2,19 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
-import 'package:keeping/screens/diary_page/diary_page.dart';
-import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/main_page/widgets/account_info.dart';
-import 'package:keeping/screens/main_page/widgets/gradient_btn.dart';
 import 'package:keeping/screens/main_page/widgets/main_service_btn.dart';
 import 'package:keeping/screens/main_page/widgets/make_account_btn.dart';
-import 'package:keeping/screens/make_account_page/widgets/styles.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/screens/online_payment_request/online_payment_request_page.dart';
 import 'package:keeping/screens/piggy_page/piggy_page.dart';
 import 'package:keeping/screens/question_page/question_page.dart';
-import 'package:keeping/screens/request_pocket_money_page/child_request_money_page.dart';
-import 'package:keeping/screens/user_link_page/before_user_link_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:provider/provider.dart';
@@ -76,7 +70,6 @@ class _ChildMainPageState extends State<ChildMainPage> {
                     }
                   },
                 ),
-                SizedBox(height: 12,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
