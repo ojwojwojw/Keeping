@@ -52,7 +52,7 @@ Future<dynamic> makeAccount({
       }
     );
     print('계좌 개설 응답 $response ${response['resultStatus']['successCode'].runtimeType}');
-    return response['resultStatus']['successCode'];
+    return response;
   } catch (e) {
     print('계좌 개설 에러 $e');
   }

@@ -19,6 +19,7 @@ class ChildInfoProvider with ChangeNotifier {
     if (childInfo == null) {
       return;
     }
+    print('자녀 정보 저장 $childInfo');
     _memberKey = childInfo['memberKey'];
     _name = childInfo['name'];
     _profileImage = childInfo['profileImage'];
@@ -28,12 +29,22 @@ class ChildInfoProvider with ChangeNotifier {
     if (childAccount == null) {
       return;
     }
+    print('자녀계좌정보저장 $childAccount');
     _accountNumber = childAccount['accountNumber'];
     _balance = childAccount['balance'];
     _createdDate = DateTime.parse(childAccount['createdDate']);
   }
 
+  void initChildAccount() {
+    print('자녀계좌정보초기화');
+    _accountNumber = '';
+    _balance = null;
+    _createdDate = null;
+    print('자녀계좌정보초기화 $_accountNumber $_balance $_createdDate');
+  }
+
   void initChildInfo() {
+    print('자녀정보모두초기화');
     _memberKey = null;
     _name = null;
     _profileImage = null;

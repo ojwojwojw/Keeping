@@ -1,10 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
+import 'package:keeping/screens/piggy_page/make_piggy_test.dart';
 import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
+import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 
@@ -184,6 +187,10 @@ class _LoginPageState extends State<LoginPage> {
           accessToken: token,
           memberKey: memberKey,
         );
+        await renderingUserAccount(
+          token,
+          memberKey,
+        );
       } else {
         // 로그인에 실패한 경우
         print('로그인에 실패!');
@@ -232,6 +239,7 @@ class _LoginPageState extends State<LoginPage> {
         childrenList: _childrenList,
         parent: _parent,
       );
+      print('Parent $_parent');
       if (_parent == true) {
         Navigator.push(
             context, MaterialPageRoute(builder: (_) => ParentMainPage()));
@@ -241,6 +249,31 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (err) {
       print(err);
+    }
+  }
+
+  Future<void> renderingUserAccount(accessToken, memberKey) async {
+    print('계좌정보, $memberKey, $accessToken');
+    final response = await dioGet(
+      url: '/bank-service/api/$memberKey/account/$memberKey',
+      accessToken: accessToken,
+    );
+    print('로그인 후 저장할래요 $response');
+    if (response != null) {
+      // 계좌 있는 경우
+      print(response['resultBody']);
+      if (response['resultStatus']['successCode'] == 0) {
+        String accountNumber = response['resultBody']['accountNumber'];
+        int balance = response['resultBody']['balance'];
+
+        dynamic accountInfo = {
+          'accountNumber': accountNumber,
+          'balance': balance,
+        };
+        print('프로바이더에 넣어볼 것 $accountInfo');
+        Provider.of<AccountInfoProvider>(context, listen: false)
+            .setAccountInfo(accountInfo);
+      }
     }
   }
 }

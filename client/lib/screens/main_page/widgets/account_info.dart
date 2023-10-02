@@ -6,7 +6,9 @@ import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/make_account_page/make_account_page.dart';
+import 'package:keeping/screens/parent_accept_request_money/parent_accept_request_money.dart';
 import 'package:keeping/screens/request_pocket_money_page/child_request_money_page.dart';
+import 'package:keeping/screens/send_pocket_money_page/send_pocket_money_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:provider/provider.dart';
@@ -141,7 +143,7 @@ class _AccountInfoState extends State<AccountInfo> {
                         Expanded(
                           child: InkWell(
                             onTap: () {
-                        
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => SendPocketMoneyPage()),);
                             },
                             child: Text(
                               '용돈 보내기', 
@@ -154,7 +156,7 @@ class _AccountInfoState extends State<AccountInfo> {
                         Expanded(
                           child: InkWell(
                             onTap: () {
-                        
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => ParentRequestMoneyPage()),);
                             },
                             child: Text(
                               '조르기 모아보기', 
