@@ -25,7 +25,6 @@ class _ChildMainPageState extends State<ChildMainPage> {
   String? _accessToken;
   String? _memberKey;
   String? _targetKey;
-  bool? _hasAccount;
   String _name = '';
 
   @override
@@ -33,7 +32,6 @@ class _ChildMainPageState extends State<ChildMainPage> {
     super.initState();
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
-    _hasAccount = context.read<AccountInfoProvider>().accountNumber.isNotEmpty ? true : false;
     _name = context.read<UserInfoProvider>().name;
   }
 
@@ -79,7 +77,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     MainServiceBtn(
-                      hasAccount: _hasAccount,
+                      hasAccount: context.read<AccountInfoProvider>().accountNumber.isNotEmpty ? true : false,
                       path: PiggyPage(),
                       name: '미션',
                       text: '부모님도 돕고\n용돈도 받고!',
@@ -87,7 +85,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
                     ),
                     SizedBox(width: 12,),
                     MainServiceBtn(
-                      hasAccount: _hasAccount,
+                      hasAccount: context.read<AccountInfoProvider>().accountNumber.isNotEmpty ? true : false,
                       path: OnlinePaymentRequestPage(),
                       name: '저금통',
                       text: '티끌 모아 태산!',
@@ -100,7 +98,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     MainServiceBtn(
-                      hasAccount: _hasAccount,
+                      hasAccount: context.read<AccountInfoProvider>().accountNumber.isNotEmpty ? true : false,
                       path: MissionPage(),
                       name: '질문',
                       text: '질문에 답하고\n부모님과 소통해요',
@@ -108,7 +106,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
                     ),
                     SizedBox(width: 12,),
                     MainServiceBtn(
-                      hasAccount: _hasAccount,
+                      hasAccount: context.read<AccountInfoProvider>().accountNumber.isNotEmpty ? true : false,
                       path: QuestionPage(),
                       name: '결제 부탁하기',
                       text: '결제가 힘들면\n부모님에게 부탁해요',
