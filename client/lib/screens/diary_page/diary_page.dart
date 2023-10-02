@@ -229,23 +229,6 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // 좌측 상단 버튼을 눌렀을 때 실행할 동작 정의
-                      // 예를 들어 새로운 일기 작성 페이지로 이동할 수 있습니다.
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ParentQeustionAnswerPage(
-                                    questionText: data["content"],
-                                    questionId: data["id"],
-                                  )));
-                    },
-                    child: Text("작성"),
-                  ),
-                ),
-                Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -286,11 +269,46 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                         ),
                       ),
                       SizedBox(height: 16.0),
-                      Text(
-                        data["childAnswer"] ?? "아직 자녀의 대답이 없습니다.",
-                        style: TextStyle(fontSize: 18.0),
+                      Row(
+                        children: [
+                          Text(
+                            data["childAnswer"] ?? "아직 자녀의 대답이 없습니다.",
+                            style: TextStyle(fontSize: 18.0),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8.0), // 좌우 패딩 값 조정
+                              ),
+                              onPressed: () {
+                                // 좌측 상단 버튼을 눌렀을 때 실행할 동작 정의
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => QeustionAnswerPage(
+                                      questionText: data["content"],
+                                      questionId: data["id"],
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                mainAxisSize:
+                                    MainAxisSize.min, // 최소한의 크기로 Row 크기 설정
+                                mainAxisAlignment:
+                                    MainAxisAlignment.center, // 아이콘과 텍스트를 중앙 정렬
+                                children: [
+                                  Icon(Icons.edit), // 글 작성 아이콘
+                                  SizedBox(width: 4), // 아이콘과 텍스트 사이의 간격을 줄임
+                                  Text("작성"), // 버튼의 텍스트
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 24.0),
                       Text(
                         "생성 날짜: ${data["createdDate"].toString().substring(0, 10)}",
                         style: TextStyle(fontSize: 18.0),
@@ -532,23 +550,6 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // 좌측 상단 버튼을 눌렀을 때 실행할 동작 정의
-                      // 예를 들어 새로운 일기 작성 페이지로 이동할 수 있습니다.
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ParentQeustionAnswerPage(
-                                    questionText: data["content"],
-                                    questionId: data["id"],
-                                  )));
-                    },
-                    child: Text("작성"),
-                  ),
-                ),
-                Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -573,13 +574,49 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 16.0),
-                      data["parentAnswer"] != null
-                          ? Text(
-                              widget.item["parentAnswer"],
-                              style: TextStyle(fontSize: 18.0),
-                            )
-                          : Container(), // or some other widget
+                      Row(
+                        children: [
+                          data["parentAnswer"] != null
+                              ? Text(
+                                  widget.item["parentAnswer"],
+                                  style: TextStyle(fontSize: 18.0),
+                                )
+                              : Container(),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8.0), // 좌우 패딩 값 조정
+                              ),
+                              onPressed: () {
+                                // 좌측 상단 버튼을 눌렀을 때 실행할 동작 정의
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ParentQeustionAnswerPage(
+                                      questionText: data["content"],
+                                      questionId: data["id"],
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                mainAxisSize:
+                                    MainAxisSize.min, // 최소한의 크기로 Row 크기 설정
+                                mainAxisAlignment:
+                                    MainAxisAlignment.center, // 아이콘과 텍스트를 중앙 정렬
+                                children: [
+                                  Icon(Icons.edit), // 글 작성 아이콘
+                                  SizedBox(width: 4), // 아이콘과 텍스트 사이의 간격을 줄임
+                                  Text("작성"), // 버튼의 텍스트
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                       SizedBox(height: 24.0),
                       Text(
                         "자녀 응답",
