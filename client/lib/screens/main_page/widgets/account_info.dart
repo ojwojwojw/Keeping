@@ -10,6 +10,7 @@ import 'package:keeping/screens/request_pocket_money_page/child_request_money_pa
 import 'package:keeping/screens/send_pocket_money_page/send_pocket_money_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
+import 'package:keeping/widgets/bottom_modal.dart';
 import 'package:provider/provider.dart';
 
 class AccountInfo extends StatefulWidget {
@@ -151,20 +152,21 @@ class _AccountInfoState extends State<AccountInfo> {
                           children: [
                             Expanded(
                               child: InkWell(
-                                
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) {
-                                        if (_accountNumber != '') {
-                                          return SendPocketMoneyPage();
-                                        } else {
-                                          return MakeAccountPage();
-                                        }
-                                      },
-                                    ),
-                                  );
+                                  if (_accountNumber != '') {
+                                    bottomModal(
+                                      context: context,
+                                      title: '용돈 보내기',
+                                      button: sendTypeBtns(context),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => MakeAccountPage(),
+                                      ),
+                                    );
+                                  }
                                 },
                                 child: Text(
                                   '용돈 보내기',
@@ -199,5 +201,65 @@ class _AccountInfoState extends State<AccountInfo> {
       ),
     );
   }
-  
+}
+Row sendTypeBtns(BuildContext context) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      sentTypeModalBtn(
+        Icon(
+          Icons.event,
+        ),        
+        '정기로\n보내기', 
+        context, 
+        SendPocketMoneyPage()
+      ),
+      sentTypeModalBtn(
+        Icon(
+          Icons.payments,
+        ),
+        '바로\n보내기',
+        context,
+        SendPocketMoneyPage()
+      )
+    ],
+  );
+}
+
+InkWell sentTypeModalBtn(
+    Icon icon, String text, BuildContext context, Widget path) {
+  return InkWell(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => path));
+      },
+      child: Container(
+        width: 150,
+        height: 150,
+        decoration: _sendTypeModalBtnStyle(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              icon.icon, // 아이콘의 IconData를 가져와서 사용
+              size: 40, // 원하는 크기로 조정
+            ),
+            Text(
+              text,
+              style: TextStyle(fontSize: 20),
+            )
+          ],
+        ),
+      ));
+}
+
+
+BoxDecoration _sendTypeModalBtnStyle() {
+  return BoxDecoration(
+    borderRadius: BorderRadius.circular(30),
+    border: Border.all(
+      color: Color.fromARGB(255, 236, 236, 236), // 테두리 색상
+      width: 2.0, // 테두리 두께
+    ),
+  );
 }
