@@ -19,6 +19,7 @@ class ChildInfoProvider with ChangeNotifier {
     if (childInfo == null) {
       return;
     }
+    print('자녀 정보 저장 $childInfo');
     _memberKey = childInfo['memberKey'];
     _name = childInfo['name'];
     _profileImage = childInfo['profileImage'];
@@ -43,6 +44,7 @@ class ChildInfoProvider with ChangeNotifier {
   }
 
   void initChildInfo() {
+    print('자녀정보모두초기화');
     _memberKey = null;
     _name = null;
     _profileImage = null;

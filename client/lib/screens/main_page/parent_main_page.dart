@@ -167,6 +167,10 @@ class _ChildContentState extends State<ChildContent> {
                 } else if (response['resultStatus']['resultCode'] == '503') {
                   return AccountInfo(balance: 0);
                 } else {
+                  print('***********************************************');
+                  print(widget.childInfo.toString());
+                  print(response);
+                  print('***********************************************');
                   Provider.of<ChildInfoProvider>(context).setChildAccount(response['resultBody']);
                   return AccountInfo(
                     balance: response['resultBody']['balance'],
@@ -183,7 +187,7 @@ class _ChildContentState extends State<ChildContent> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               MainServiceBtn(
-                hasAccount: context.read<ChildInfoProvider>().accountNumber.isNotEmpty ? true : false,
+                hasAccount: context.read<ChildInfoProvider>().accountNumber != '' ? true : false,
                 path: MissionPage(),
                 name: '미션',
                 text: '자녀 소비습관 쑥쑥!',
@@ -192,7 +196,7 @@ class _ChildContentState extends State<ChildContent> {
               ),
               SizedBox(width: 12,),
               MainServiceBtn(
-                hasAccount: context.read<ChildInfoProvider>().accountNumber.isNotEmpty ? true : false,
+                hasAccount: context.read<ChildInfoProvider>().accountNumber != '' ? true : false,
                 path: OnlinePaymentRequestPage(),
                 name: '결제 부탁하기',
                 text: '자녀가 부탁한\n결제 목록이에요.',
@@ -206,7 +210,7 @@ class _ChildContentState extends State<ChildContent> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               MainServiceBtn(
-                hasAccount: context.read<ChildInfoProvider>().accountNumber.isNotEmpty ? true : false,
+                hasAccount: context.read<ChildInfoProvider>().accountNumber != '' ? true : false,
                 path: QuestionPage(),
                 name: '질문',
                 text: '질문에 답하고\n자녀와 소통해요',
@@ -215,7 +219,7 @@ class _ChildContentState extends State<ChildContent> {
               ),
               SizedBox(width: 12,),
               MainServiceBtn(
-                hasAccount: context.read<ChildInfoProvider>().accountNumber.isNotEmpty ? true : false,
+                hasAccount: context.read<ChildInfoProvider>().accountNumber != '' ? true : false,
                 path: PiggyPage(),
                 name: '저금통',
                 text: '자녀의 위시리스트는?',
