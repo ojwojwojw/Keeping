@@ -14,6 +14,13 @@ class AccountInfoProvider with ChangeNotifier {
     _balance = accountInfo['balance'];
     _createdDate = DateTime.parse(accountInfo['createdDate']);
   }
+
+  void setNewAccountInfo(dynamic accountInfo) {
+    _accountNumber = accountInfo['accountNumber'];
+    _balance = 0;
+    _createdDate = DateTime.parse(accountInfo['createdDate']);
+  }
+  
 }
 
 class AccountDetailProvider with ChangeNotifier {
