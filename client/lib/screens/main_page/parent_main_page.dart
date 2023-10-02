@@ -138,6 +138,7 @@ class _ChildContentState extends State<ChildContent> {
   @override
   void initState() {
     super.initState();
+    Provider.of<ChildInfoProvider>(context, listen: false).initChildInfo();
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
     Provider.of<ChildInfoProvider>(context, listen: false).setChildInfo(widget.childInfo);
@@ -159,13 +160,14 @@ class _ChildContentState extends State<ChildContent> {
             ),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                Provider.of<ChildInfoProvider>(context, listen: false).initChildAccount();
                 var response = snapshot.data;
                 if (response['resultStatus']['resultCode'] == '404') {
                   return noAccountForParent(context);
                 } else if (response['resultStatus']['resultCode'] == '503') {
                   return AccountInfo(balance: 0);
                 } else {
-                  Provider.of<ChildInfoProvider>(context, listen: false).setChildAccount(response['resultBody']);
+                  Provider.of<ChildInfoProvider>(context).setChildAccount(response['resultBody']);
                   return AccountInfo(
                     balance: response['resultBody']['balance'],
                   );
@@ -181,8 +183,8 @@ class _ChildContentState extends State<ChildContent> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               MainServiceBtn(
-                hasAccount: _hasChildAccount,
-                path: PiggyPage(),
+                hasAccount: context.read<ChildInfoProvider>().accountNumber.isNotEmpty ? true : false,
+                path: MissionPage(),
                 name: '미션',
                 text: '자녀 소비습관 쑥쑥!',
                 emoji: '💪',
@@ -190,8 +192,8 @@ class _ChildContentState extends State<ChildContent> {
               ),
               SizedBox(width: 12,),
               MainServiceBtn(
-                hasAccount: _hasChildAccount,
-                path: QuestionPage(),
+                hasAccount: context.read<ChildInfoProvider>().accountNumber.isNotEmpty ? true : false,
+                path: OnlinePaymentRequestPage(),
                 name: '결제 부탁하기',
                 text: '자녀가 부탁한\n결제 목록이에요.',
                 emoji: '🙇‍♀️',
@@ -204,8 +206,8 @@ class _ChildContentState extends State<ChildContent> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               MainServiceBtn(
-                hasAccount: _hasChildAccount,
-                path: MissionPage(),
+                hasAccount: context.read<ChildInfoProvider>().accountNumber.isNotEmpty ? true : false,
+                path: QuestionPage(),
                 name: '질문',
                 text: '질문에 답하고\n자녀와 소통해요',
                 emoji: '📬',
@@ -213,8 +215,8 @@ class _ChildContentState extends State<ChildContent> {
               ),
               SizedBox(width: 12,),
               MainServiceBtn(
-                hasAccount: _hasChildAccount,
-                path: OnlinePaymentRequestPage(),
+                hasAccount: context.read<ChildInfoProvider>().accountNumber.isNotEmpty ? true : false,
+                path: PiggyPage(),
                 name: '저금통',
                 text: '자녀의 위시리스트는?',
                 emoji: '🐷',
