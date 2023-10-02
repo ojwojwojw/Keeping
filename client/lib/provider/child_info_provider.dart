@@ -28,9 +28,18 @@ class ChildInfoProvider with ChangeNotifier {
     if (childAccount == null) {
       return;
     }
+    print('자녀계좌정보저장 $childAccount');
     _accountNumber = childAccount['accountNumber'];
     _balance = childAccount['balance'];
     _createdDate = DateTime.parse(childAccount['createdDate']);
+  }
+
+  void initChildAccount() {
+    print('자녀계좌정보초기화');
+    _accountNumber = '';
+    _balance = null;
+    _createdDate = null;
+    print('자녀계좌정보초기화 $_accountNumber $_balance $_createdDate');
   }
 
   void initChildInfo() {
