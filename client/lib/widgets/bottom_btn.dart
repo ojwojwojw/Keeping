@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 
 // 하단 네모난 버튼 클래스
 class BottomBtn extends StatelessWidget {
@@ -7,6 +8,7 @@ class BottomBtn extends StatelessWidget {
   final Color textColor;
   final dynamic action;
   final bool isDisabled;
+  final bool effect;
 
   BottomBtn({
     super.key,
@@ -15,6 +17,7 @@ class BottomBtn extends StatelessWidget {
     this.textColor = Colors.white,
     this.action,
     this.isDisabled = true,
+    this.effect = true,
   });
 
   @override
@@ -29,7 +32,11 @@ class BottomBtn extends StatelessWidget {
           onPressed: () {
             if (!isDisabled) {
               if (action is Widget) {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => action));
+                if (effect == true) {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => action));
+                } else {
+                  noEffectTransition(context, action);
+                }
               } else if (action is Function) {
                 action();
               } else {
