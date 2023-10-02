@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/main_page/child_main_page.dart';
+import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 
 import 'package:keeping/widgets/header.dart';
@@ -28,7 +30,11 @@ class _MissonPageState extends State<MissionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyHeader(text: '용돈 미션 (자녀)', elementColor: Colors.black),
+      appBar: MyHeader(
+        text: '용돈 미션 (자녀)',
+        elementColor: Colors.black,
+        backPath: ChildMainPage(),
+      ),
       body: FutureBuilder(
         // 비동기 데이터를 기다리고 UI를 구성
         future: getData(),
@@ -158,7 +164,11 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyHeader(text: '용돈 미션(부모)', elementColor: Colors.black),
+      appBar: MyHeader(
+        text: '용돈 미션(부모)',
+        elementColor: Colors.black,
+        backPath: ParentMainPage(),
+      ),
       body: FutureBuilder(
         // 비동기 데이터를 기다리고 UI를 구성
         future: getParentData(),

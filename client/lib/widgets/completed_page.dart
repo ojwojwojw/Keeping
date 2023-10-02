@@ -69,6 +69,7 @@ class CompletedAndGoPage extends StatelessWidget {
   final String text;
   final Widget? content;
   final Widget targetPage;
+  final String? routeNameToBeRemovedUntil; // 라우트 이름을 저장하는 변수 추가
 
   CompletedAndGoPage({
     super.key,
@@ -76,6 +77,7 @@ class CompletedAndGoPage extends StatelessWidget {
     required this.text,
     this.content,
     required this.targetPage,
+    this.routeNameToBeRemovedUntil, // 생성자에서 라우트 이름을 받을 수 있도록 수정
   });
 
   @override
@@ -106,10 +108,18 @@ class CompletedAndGoPage extends StatelessWidget {
             SizedBox(height: 50),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => targetPage),
-                );
+                if (routeNameToBeRemovedUntil != null) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => targetPage),
+                    ModalRoute.withName(routeNameToBeRemovedUntil!),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => targetPage),
+                  );
+                }
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -118,7 +128,7 @@ class CompletedAndGoPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: Text(
-                  "확인", // 원하는 텍스트로 변경하세요.
+                  "확인",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
