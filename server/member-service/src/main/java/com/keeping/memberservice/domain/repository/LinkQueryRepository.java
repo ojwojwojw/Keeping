@@ -2,6 +2,7 @@ package com.keeping.memberservice.domain.repository;
 
 import com.keeping.memberservice.api.controller.response.ChildKeyResponse;
 import com.keeping.memberservice.api.controller.response.ChildrenResponse;
+import com.keeping.memberservice.api.controller.response.LinkResponse;
 import com.keeping.memberservice.domain.Parent;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,19 @@ public class LinkQueryRepository {
 
     public LinkQueryRepository(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
+    }
+
+    /**
+     * 모든 링크 쌍
+     *
+     * @return
+     */
+    public List<LinkResponse> getAllLink() {
+        return queryFactory.select(constructor(LinkResponse.class,
+                        link.child.member.memberKey,
+                        link.parent.member.memberKey))
+                .from(link)
+                .fetch();
     }
 
     public List<ChildKeyResponse> getChildKeyList(String memberKey) {

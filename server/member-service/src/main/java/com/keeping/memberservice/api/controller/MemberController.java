@@ -3,10 +3,7 @@ package com.keeping.memberservice.api.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keeping.memberservice.api.ApiResponse;
 import com.keeping.memberservice.api.controller.request.*;
-import com.keeping.memberservice.api.controller.response.ChildKeyResponse;
-import com.keeping.memberservice.api.controller.response.QuestionTimeResponse;
-import com.keeping.memberservice.api.controller.response.RelationshipCheckResponse;
-import com.keeping.memberservice.api.controller.response.TypeCheckResult;
+import com.keeping.memberservice.api.controller.response.*;
 import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.MemberService;
 import com.keeping.memberservice.api.service.member.dto.AddMemberDto;
@@ -35,9 +32,9 @@ public class MemberController {
     private final SmsService smsService;
     private final MemberService memberService;
 
-    @GetMapping("/child-keys")
-    public ApiResponse<List<String>> getAllChildKey() {
-        List<String> response = memberService.getAllChildKey();
+    @GetMapping("/links")
+    public ApiResponse<List<LinkResponse>> getAllChildKey() {
+        List<LinkResponse> response = memberService.getAllLinks();
         return ApiResponse.ok(response);
     }
 
