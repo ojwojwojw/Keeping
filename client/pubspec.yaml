@@ -102,6 +102,9 @@ flutter:
     - assets/image/n_face.png
     - assets/image/right_arrow.png
     - assets/image/sms.png
+    - assets/image/make_quest.png
+    - assets/image/send_quest.png
+    - assets/image/today_quest.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

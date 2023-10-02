@@ -7,6 +7,7 @@ import 'package:keeping/screens/question_page/question_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/widgets/bottom_nav.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -70,18 +71,38 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
             return Center(
               child: Column(
                 children: [
+                  Container(
+                    height: 10,
+                    width: 410,
+                    color: Color(0xFFD9D9D9).withOpacity(0.5),
+                    child: SizedBox(),
+                  ),
+
                   ///일기 데이터 띄울 곳
                   _diaryData(data),
-                  //일기 생성버튼
-                  _diaryCreateBtn(),
-                  //오늘의 질문 보기 버튼
-                  _todayQuestionBtn()
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      //일기 생성버튼
+                      _diaryCreateBtn(),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      //오늘의 질문 보기 버튼
+                      _todayQuestionBtn(),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
                 ],
               ),
             );
           }
         },
       ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 
@@ -92,45 +113,48 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
       itemCount: data.length,
       itemBuilder: (BuildContext context, int index) {
         final item = data[index];
-        return InkWell(
-          onTap: () {
-            // 컨테이너를 탭했을 때 실행할 동작 정의
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          child: InkWell(
+            onTap: () {
+              // 컨테이너를 탭했을 때 실행할 동작 정의
 
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ChildDiaryDetailPage(
-                    item: item), // DetailPage는 새로운 페이지의 위젯입니다.
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ChildDiaryDetailPage(
+                      item: item), // DetailPage는 새로운 페이지의 위젯입니다.
+                ),
+              );
+            },
+            child: Container(
+              padding: EdgeInsets.all(8.0), // 여백 추가
+              margin: EdgeInsets.symmetric(vertical: 2.0), // 위 아래 여백 추가
+              decoration: BoxDecoration(
+                color: Colors.white, // 하얀색 배경
+                borderRadius: BorderRadius.circular(10.0), // 모서리 둥글게 만들기
               ),
-            );
-          },
-          child: Container(
-            padding: EdgeInsets.all(16.0), // 여백 추가
-            margin: EdgeInsets.symmetric(vertical: 2.0), // 위 아래 여백 추가
-            decoration: BoxDecoration(
-              color: Colors.white, // 하얀색 배경
-              borderRadius: BorderRadius.circular(10.0), // 모서리 둥글게 만들기
-            ),
-            child: Column(
-              children: [
-                Text('#' + (index + 1).toString()),
-                Text(
-                  item["content"],
-                  style: TextStyle(
-                    fontSize: 18.0, // 텍스트 크기 변경
-                    fontWeight: FontWeight.bold, // 텍스트 굵게 만들기
+              child: Column(
+                children: [
+                  Text('#' + (index + 1).toString()),
+                  Text(
+                    item["content"],
+                    style: TextStyle(
+                      fontSize: 18.0, // 텍스트 크기 변경
+                      fontWeight: FontWeight.bold, // 텍스트 굵게 만들기
+                    ),
                   ),
-                ),
-                SizedBox(height: 16.0), // 텍스트 사이에 간격 추가
-                Text(
-                  (item["createdDate"] is String
-                      ? item["createdDate"].substring(0, 10) + "일 생성"
-                      : ""),
-                  style: TextStyle(
-                    fontSize: 8.0,
-                    color: Colors.grey,
+                  SizedBox(height: 8.0), // 텍스트 사이에 간격 추가
+                  Text(
+                    (item["createdDate"] is String
+                        ? item["createdDate"].substring(0, 10) + "일 생성"
+                        : ""),
+                    style: TextStyle(
+                      fontSize: 8.0,
+                      color: Colors.grey,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -138,41 +162,34 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
     )));
   }
 
-  // 일기 생성 버튼
+// 일기 생성 버튼
   Widget _diaryCreateBtn() {
-    return (ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        primary: Color(0xFF8320E7), // 짙은 보라색 배경
-      ),
-      onPressed: () async {
+    return InkWell(
+      onTap: () async {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => (QuestionSendPage()),
+            builder: (context) => QuestionSendPage(),
           ),
         );
       },
-      child:
-          (Center(child: Text('새로운 질문 만들기', style: TextStyle(fontSize: 20)))),
-    ));
+      child: Image.asset('assets/image/make_quest.png'), // 이미지 경로를 여기에 설정하세요.
+    );
   }
 
-  //오늘의 질문 보기 버튼
+//오늘의 질문 보기 버튼
   Widget _todayQuestionBtn() {
-    return (ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        primary: Color(0xFF8320E7), // 짙은 보라색 배경
-      ),
-      onPressed: () async {
+    return InkWell(
+      onTap: () async {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => (QuestionPage()),
+            builder: (context) => QuestionPage(),
           ),
         );
       },
-      child: (Center(child: Text('오늘의 질문', style: TextStyle(fontSize: 20)))),
-    ));
+      child: Image.asset('assets/image/today_quest.png'), // 이미지 경로를 여기에 설정하세요.
+    );
   }
 }
 
@@ -215,7 +232,11 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyHeader(text: "일기상세조회(자녀)" ,bgColor: Color(0xFF6E2FD5), elementColor: Colors.white,),
+      appBar: MyHeader(
+        text: "일기상세조회(자녀)",
+        bgColor: Color(0xFF6E2FD5),
+        elementColor: Colors.white,
+      ),
       body: FutureBuilder(
         // 비동기 데이터를 기다리고 UI를 구성
         future: getData(),
@@ -272,19 +293,37 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                         )
                       ]),
 
-                      SizedBox(height: 20,),
+                      SizedBox(
+                        height: 20,
+                      ),
 
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center, // Row의 내용을 가운데 정렬
-                        children: 
-                        [
-                          Column(children: [SizedBox(height: 8,), Image.asset( 'assets/image/c_face.png', width: 51.0, height: 51.0, fit: BoxFit.cover, )]),
-                          Image.asset( 'assets/image/m_face.png', width: 60.0, height: 60.0, fit: BoxFit.cover, )
+                        mainAxisAlignment:
+                            MainAxisAlignment.center, // Row의 내용을 가운데 정렬
+                        children: [
+                          Column(children: [
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Image.asset(
+                              'assets/image/c_face.png',
+                              width: 51.0,
+                              height: 51.0,
+                              fit: BoxFit.cover,
+                            )
+                          ]),
+                          Image.asset(
+                            'assets/image/m_face.png',
+                            width: 60.0,
+                            height: 60.0,
+                            fit: BoxFit.cover,
+                          )
                         ],
                       ),
 
-                      
-                      SizedBox(height: 60,),
+                      SizedBox(
+                        height: 60,
+                      ),
 
                       Text(
                         data["content"],
@@ -293,7 +332,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      
+
                       Text(
                         "생성 날짜: ${data["createdDate"].toString().substring(0, 10)}",
                         style: TextStyle(
@@ -313,8 +352,6 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
 
                       SizedBox(height: 8.0),
 
-                      
-
                       Row(
                         children: [
                           Text(
@@ -323,8 +360,8 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                           ),
                         ],
                       ),
-                      
-                       SizedBox(height: 40.0),
+
+                      SizedBox(height: 40.0),
                       Text(
                         "자녀 대답",
                         style: TextStyle(
@@ -342,8 +379,6 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                           ),
                         ],
                       ),
-
-                      
 
                       // Text(
                       //   "생성 여부: ${data["isCreated"] == null ? "정보 없음" : (data["isCreated"] ? "true" : "false")}",
@@ -421,18 +456,37 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
             return Center(
               child: Column(
                 children: [
+                  Container(
+                    height: 10,
+                    width: 410,
+                    color: Color(0xFFD9D9D9).withOpacity(0.5),
+                    child: SizedBox(),
+                  ),
+
                   ///일기 데이터 띄울 곳
                   _diaryData(data),
-                  //일기 생성버튼
-                  _diaryCreateBtn(),
-                  //오늘의 질문 보기 버튼
-                  _todayQuestionBtn()
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      //일기 생성버튼
+                      _diaryCreateBtn(),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      //오늘의 질문 보기 버튼
+                      _todayQuestionBtn(),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
                 ],
               ),
             );
           }
         },
       ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 
@@ -443,45 +497,48 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
       itemCount: data.length,
       itemBuilder: (BuildContext context, int index) {
         final item = data[index];
-        return InkWell(
-          onTap: () {
-            // 컨테이너를 탭했을 때 실행할 동작 정의
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          child: InkWell(
+            onTap: () {
+              // 컨테이너를 탭했을 때 실행할 동작 정의
 
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ParentDiaryDetailPage(
-                    item: item), // DetailPage는 새로운 페이지의 위젯입니다.
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ParentDiaryDetailPage(
+                      item: item), // DetailPage는 새로운 페이지의 위젯입니다.
+                ),
+              );
+            },
+            child: Container(
+              padding: EdgeInsets.all(8), // 여백 추가
+              margin: EdgeInsets.symmetric(vertical: 2.0), // 위 아래 여백 추가
+              decoration: BoxDecoration(
+                color: Colors.white, // 하얀색 배경
+                borderRadius: BorderRadius.circular(10.0), // 모서리 둥글게 만들기
               ),
-            );
-          },
-          child: Container(
-            padding: EdgeInsets.all(16.0), // 여백 추가
-            margin: EdgeInsets.symmetric(vertical: 2.0), // 위 아래 여백 추가
-            decoration: BoxDecoration(
-              color: Colors.white, // 하얀색 배경
-              borderRadius: BorderRadius.circular(10.0), // 모서리 둥글게 만들기
-            ),
-            child: Column(
-              children: [
-                Text('#' + (index + 1).toString()),
-                Text(
-                  item["content"],
-                  style: TextStyle(
-                    fontSize: 18.0, // 텍스트 크기 변경
-                    fontWeight: FontWeight.bold, // 텍스트 굵게 만들기
+              child: Column(
+                children: [
+                  Text('#' + (index + 1).toString()),
+                  Text(
+                    item["content"],
+                    style: TextStyle(
+                      fontSize: 18.0, // 텍스트 크기 변경
+                      fontWeight: FontWeight.bold, // 텍스트 굵게 만들기
+                    ),
                   ),
-                ),
-                SizedBox(height: 16.0), // 텍스트 사이에 간격 추가
-                Text(
-                  (item["createdDate"] is String
-                      ? item["createdDate"].substring(0, 10) + "일 생성"
-                      : ""),
-                  style: TextStyle(
-                    fontSize: 8.0,
-                    color: Colors.grey,
+                  SizedBox(height: 8.0), // 텍스트 사이에 간격 추가
+                  Text(
+                    (item["createdDate"] is String
+                        ? item["createdDate"].substring(0, 10) + "일 생성"
+                        : ""),
+                    style: TextStyle(
+                      fontSize: 8.0,
+                      color: Colors.grey,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -491,39 +548,32 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
 
   // 일기 생성 버튼
   Widget _diaryCreateBtn() {
-    return (ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        primary: Color(0xFF8320E7), // 짙은 보라색 배경
-      ),
-      onPressed: () async {
+    return InkWell(
+      onTap: () async {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => (ParentQuestionSendPage()),
+            builder: (context) => ParentQuestionSendPage(),
           ),
         );
       },
-      child:
-          (Center(child: Text('새로운 질문 만들기', style: TextStyle(fontSize: 20)))),
-    ));
+      child: Image.asset('assets/image/make_quest.png'), // 이미지 경로를 여기에 설정하세요.
+    );
   }
 
-  //오늘의 질문 보기 버튼
+//오늘의 질문 보기 버튼
   Widget _todayQuestionBtn() {
-    return (ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        primary: Color(0xFF8320E7), // 짙은 보라색 배경
-      ),
-      onPressed: () async {
+    return InkWell(
+      onTap: () async {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => (ParentQuestionPage()),
+            builder: (context) => ParentQuestionPage(),
           ),
         );
       },
-      child: (Center(child: Text('오늘의 질문', style: TextStyle(fontSize: 20)))),
-    ));
+      child: Image.asset('assets/image/today_quest.png'), // 이미지 경로를 여기에 설정하세요.
+    );
   }
 }
 
@@ -565,7 +615,11 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyHeader(text: "일기상세조회(부모)" ,bgColor: Color(0xFF6E2FD5), elementColor: Colors.white,),
+      appBar: MyHeader(
+        text: "일기상세조회(부모)",
+        bgColor: Color(0xFF6E2FD5),
+        elementColor: Colors.white,
+      ),
       body: FutureBuilder(
         // 비동기 데이터를 기다리고 UI를 구성
         future: getData(),
@@ -579,7 +633,12 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container( height: 10, width: 410, color: Color(0xFF9271C8), child: SizedBox(),),
+                Container(
+                  height: 10,
+                  width: 410,
+                  color: Color(0xFF9271C8),
+                  child: SizedBox(),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -624,19 +683,37 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                         ////// 이쁜 보라색 박스
                       ]),
 
-                      SizedBox(height: 20,),
+                      SizedBox(
+                        height: 20,
+                      ),
 
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center, // Row의 내용을 가운데 정렬
-                        children: 
-                        [
-                          Column(children: [SizedBox(height: 8,), Image.asset( 'assets/image/c_face.png', width: 51.0, height: 51.0, fit: BoxFit.cover, )]),
-                          Image.asset( 'assets/image/m_face.png', width: 60.0, height: 60.0, fit: BoxFit.cover, )
+                        mainAxisAlignment:
+                            MainAxisAlignment.center, // Row의 내용을 가운데 정렬
+                        children: [
+                          Column(children: [
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Image.asset(
+                              'assets/image/c_face.png',
+                              width: 51.0,
+                              height: 51.0,
+                              fit: BoxFit.cover,
+                            )
+                          ]),
+                          Image.asset(
+                            'assets/image/m_face.png',
+                            width: 60.0,
+                            height: 60.0,
+                            fit: BoxFit.cover,
+                          )
                         ],
                       ),
-                      
 
-                      SizedBox(height: 60,),
+                      SizedBox(
+                        height: 60,
+                      ),
 
                       Text(
                         data["content"],
@@ -646,7 +723,6 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                         ),
                       ),
 
-                      
                       Text(
                         "생성 날짜: ${data["createdDate"].toString().substring(0, 10)}",
                         style: TextStyle(
@@ -674,10 +750,9 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                           ),
                         ],
                       ),
-                      
+
                       SizedBox(height: 40.0),
 
-                    
                       Text(
                         "아이 대답",
                         style: TextStyle(
@@ -692,7 +767,6 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                         style: TextStyle(fontSize: 18.0),
                       ),
 
-                      
                       SizedBox(height: 16.0),
                       // Text(
                       //   "생성 여부: ${data["isCreated"] == null ? "정보 없음" : (data["isCreated"] ? "true" : "false")}",
