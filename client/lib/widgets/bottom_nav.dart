@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:keeping/screens/keyboard_test/keyboard_test.dart';
+import 'package:keeping/screens/diary_page/diary_page.dart';
 import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/my_page/child_my_page.dart';
@@ -10,77 +10,100 @@ import 'package:keeping/provider/user_info.dart';
 
 // 하단 내비게이션 클래스
 class BottomNav extends StatelessWidget {
-  BottomNav({Key? key});
+  final bool home;
+  final bool diary;
+  final bool notification;
+  final bool myPage;
+
+  BottomNav({
+    super.key,
+    this.home = false,
+    this.diary = false,
+    this.notification = false,
+    this.myPage = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // UserInfoProvider에서 isParent 값을 가져오기 위해 Provider.of를 사용합니다.
-    bool _isParent =
-        Provider.of<UserInfoProvider>(context, listen: false).parent;
+    bool isParent = Provider.of<UserInfoProvider>(context, listen: false).parent;
 
-    return Container(
-      decoration: navStyle(),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          notificationBtn(context, _isParent),
-          homeBtn(context, _isParent),
-          myPageBtn(context, _isParent), // _isParent 변수를 myPageBtn에 전달합니다.
-        ],
+    return SizedBox(
+      child: Container(
+        height: 60,
+        decoration: navStyle(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(fit: FlexFit.tight, child: Center(child: homeBtn(context, isParent, home))),
+            Flexible(fit: FlexFit.tight, child: Center(child: diaryBtn(context, isParent, diary))),
+            Flexible(fit: FlexFit.tight, child: Center(child: notificationBtn(context, isParent, notification))),
+            Flexible(fit: FlexFit.tight, child: Center(child: myPageBtn(context, isParent, myPage))),
+          ],
+        ),
       ),
     );
   }
 }
 
-// 마이페이지로 이동하는 버튼
-Widget myPageBtn(BuildContext context, bool isParent) {
-  return IconButton(
-    onPressed: () {
-      // isParent에 따라 페이지를 다르게 이동하도록 조건을 설정합니다.
+// 홈으로 이동하는 버튼
+Widget homeBtn(BuildContext context, bool isParent, bool isSelected) {
+  return InkWell(
+    onTap: () {
       if (isParent) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => ParentMyPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ParentMainPage()));
       } else {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => ChildMyPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMainPage()));
       }
     },
-    icon: Icon(Icons.person),
-    color: Colors.black,
-    iconSize: 40.0,
+    child: _navBtnStyle(icon: Icons.home, text: '홈', isSelected: isSelected),
   );
 }
 
-// 페이지가 안 만들어진 관계로 임시로 경로를 부여함
+// 다이어리로 이동하는 버튼
+Widget diaryBtn(BuildContext context, bool isParent, bool isSelected) {
+  return InkWell(
+    onTap: () {
+      if (isParent) {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ParentDiaryPage()));
+      } else {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ChildDiaryPage()));
+      }
+    },
+    child: _navBtnStyle(icon: Icons.book, text: '다이어리', isSelected: isSelected),
+  );
+}
 
 // 푸시알림 페이지로 이동하는 버튼
-Widget notificationBtn(BuildContext context, bool isParent) {
-  return IconButton(
-    onPressed: () {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (_) => PushNotificationPage()));
+Widget notificationBtn(BuildContext context, bool isParent, bool isSelected) {
+  return InkWell(
+    onTap: () {
+      Navigator.push(context, MaterialPageRoute(builder: (_) => PushNotificationPage()));
     },
-    icon: Icon(Icons.notifications),
-    color: Colors.black,
-    iconSize: 40.0,
+    child: _navBtnStyle(icon: Icons.notifications, text: '알림', isSelected: isSelected),
   );
 }
 
-// 홈으로 이동하는 버튼
-Widget homeBtn(BuildContext context, bool isParent) {
-  return IconButton(
-    onPressed: () {
+// 마이페이지로 이동하는 버튼
+Widget myPageBtn(BuildContext context, bool isParent, bool isSelected) {
+  return InkWell(
+    onTap: () {
       if (isParent) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => ParentMainPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ParentMyPage()));
       } else {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => ChildMainPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMyPage()));
       }
     },
-    icon: Icon(Icons.home),
-    color: Colors.black,
-    iconSize: 40.0,
+    child: _navBtnStyle(icon: Icons.person, text: '마이페이지', isSelected: isSelected),
+  );
+}
+
+Widget _navBtnStyle({required IconData icon, required String text, bool isSelected = false}) {
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, size: 30, color: isSelected ? Color(0xFF8320E7) : Color(0xFFA5A5A5),),
+      Text(text, style: TextStyle(fontSize: 9, color: isSelected ? Color(0xFF8320E7) : Color(0xFFA5A5A5)),),
+    ],
   );
 }
 
