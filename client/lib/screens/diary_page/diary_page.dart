@@ -435,6 +435,7 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
   }
 }
 
+////////////////////////
 //부모 일기 상세조회 페이지 //
 
 class ParentDiaryDetailPage extends StatefulWidget {
@@ -446,90 +447,195 @@ class ParentDiaryDetailPage extends StatefulWidget {
 }
 
 class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
+  Map<String, dynamic> data = {};
+
+  Future<Map<String, dynamic>> getData() async {
+    final dio = Dio();
+    var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    var memberKey = userProvider.memberKey;
+    var accessToken = userProvider.accessToken;
+
+    try {
+      final response = await dio.get(
+        "$_baseUrl/question-service/api/$memberKey/questions/${widget.item["id"]}",
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      );
+      if (response.statusCode == 200) {
+        return response.data['resultBody']['question'];
+      } else {
+        throw Exception('Failed to fetch data');
+      }
+    } catch (error) {
+      print('Error: $error');
+      return {};
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(text: "일기상세조회(부모)"),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                // 좌측 상단 버튼을 눌렀을 때 실행할 동작 정의
-                // 예를 들어 새로운 일기 작성 페이지로 이동할 수 있습니다.
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ParentQeustionAnswerPage(
-                              questionText: widget.item["content"],
-                              questionId: widget.item["id"],
-                            )));
-              },
-              child: Text("작성"),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
+      body: FutureBuilder(
+        // 비동기 데이터를 기다리고 UI를 구성
+        future: getData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('에러 발생: ${snapshot.error}'));
+          } else {
+            data = snapshot.data ?? {}; // 여기에서 snapshot의 데이터를 받아옵니다.
+            return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "일기 내용",
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // 좌측 상단 버튼을 눌렀을 때 실행할 동작 정의
+                      // 예를 들어 새로운 일기 작성 페이지로 이동할 수 있습니다.
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ParentQeustionAnswerPage(
+                                    questionText: data["content"],
+                                    questionId: data["id"],
+                                  )));
+                    },
+                    child: Text("작성"),
                   ),
                 ),
-                SizedBox(height: 16.0),
-                Text(
-                  widget.item["content"],
-                  style: TextStyle(fontSize: 18.0),
-                ),
-                SizedBox(height: 24.0),
-                Text(
-                  "부모 응답",
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 16.0),
-                widget.item["parentAnswer"] != null
-                    ? Text(
-                        widget.item["parentAnswer"],
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "일기 내용",
+                        style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 16.0),
+                      Text(
+                        data["content"],
                         style: TextStyle(fontSize: 18.0),
-                      )
-                    : Container(), // or some other widget
-                SizedBox(height: 24.0),
-                Text(
-                  "자녀 응답",
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
+                      ),
+                      SizedBox(height: 24.0),
+                      Text(
+                        "부모 응답",
+                        style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 16.0),
+                      data["parentAnswer"] != null
+                          ? Text(
+                              widget.item["parentAnswer"],
+                              style: TextStyle(fontSize: 18.0),
+                            )
+                          : Container(), // or some other widget
+                      SizedBox(height: 24.0),
+                      Text(
+                        "자녀 응답",
+                        style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 16.0),
+                      Text(
+                        data["childAnswer"] ?? "기본 텍스트",
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(height: 24.0),
+                      Text(
+                        "생성 날짜: ${data["createdDate"].toString().substring(0, 12)}",
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(height: 16.0),
+                      // Text(
+                      //   "생성 여부: ${data["isCreated"] == null ? "정보 없음" : (data["isCreated"] ? "true" : "false")}",
+                      //   style: TextStyle(fontSize: 18.0),
+                      // )
+                    ],
                   ),
                 ),
-                SizedBox(height: 16.0),
-                Text(
-                  widget.item["childAnswer"] ?? "기본 텍스트",
-                  style: TextStyle(fontSize: 18.0),
-                ),
-                SizedBox(height: 24.0),
-                Text(
-                  "생성 날짜: ${widget.item["createdDate"]}",
-                  style: TextStyle(fontSize: 18.0),
-                ),
-                SizedBox(height: 16.0),
-                Text(
-                  "생성 여부: ${widget.item["isCreated"] == null ? "정보 없음" : (widget.item["isCreated"] ? "true" : "false")}",
-                  style: TextStyle(fontSize: 18.0),
-                )
               ],
-            ),
-          ),
-        ],
+            );
+          }
+        },
       ),
     );
   }
 }
+
+///////////////////
+//부모 일기 댓글 페이지 //
+
+class ParentDiaryCommentPage extends StatefulWidget {
+  const ParentDiaryCommentPage({super.key});
+
+  @override
+  State<ParentDiaryCommentPage> createState() => _ParentDiaryCommentPageState();
+}
+
+class _ParentDiaryCommentPageState extends State<ParentDiaryCommentPage> {
+  @override
+  Widget build(BuildContext context) {
+    late List<Map<String, dynamic>> data;
+
+    Future<List<Map<String, dynamic>>> getData() async {
+      // Dio 객체 생성
+      final dio = Dio();
+      var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+      var memberKey = userProvider.memberKey;
+      var accessToken = userProvider.accessToken;
+
+      try {
+        // GET 요청 보내기
+        final response = await dio.get(
+            "$_baseUrl/question-service/api/$memberKey/questions",
+            options:
+                Options(headers: {'Authorization': 'Bearer $accessToken'}));
+        // 요청이 성공했을 때 처리
+        if (response.statusCode == 200) {
+          return List<Map<String, dynamic>>.from(
+              response.data['resultBody']['questions']);
+        } else {
+          throw Exception('Failed to fetch data');
+        }
+      } catch (error) {
+        // 요청이 실패했을 때 처리
+        print('Error: $error');
+        return []; // 빈 리스트 반환
+      }
+    }
+
+    return Scaffold(
+      appBar: MyHeader(text: "일기댓글(부모)"),
+      body: FutureBuilder(
+        // 비동기 데이터를 기다리고 UI를 구성
+        future: getData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('에러 발생: ${snapshot.error}'));
+          } else {
+            data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
+            return Center(
+              child: Column(
+                children: [],
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+//자식 일기 댓글 페이지 //
