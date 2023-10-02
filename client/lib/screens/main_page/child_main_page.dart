@@ -3,6 +3,7 @@ import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/main_page/widgets/account_info.dart';
+import 'package:keeping/screens/main_page/widgets/greeting.dart';
 import 'package:keeping/screens/main_page/widgets/main_service_btn.dart';
 import 'package:keeping/screens/main_page/widgets/make_account_btn.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
@@ -25,6 +26,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
   String? _memberKey;
   String? _targetKey;
   bool? _hasAccount;
+  String _name = '';
 
   @override
   void initState() {
@@ -32,6 +34,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
     _hasAccount = context.read<AccountInfoProvider>().accountNumber.isNotEmpty ? true : false;
+    _name = context.read<UserInfoProvider>().name;
   }
 
   @override
@@ -45,11 +48,13 @@ class _ChildMainPageState extends State<ChildMainPage> {
             padding: const EdgeInsets.only(top: 24, left: 24, right: 24),
             child: Column(
               children: [
+                ChildGreeting(name: _name),
                 FutureBuilder(
                   future: getAccountInfo(
-                      accessToken: _accessToken,
-                      memberKey: _memberKey,
-                      targetKey: _targetKey ?? _memberKey),
+                    accessToken: _accessToken,
+                    memberKey: _memberKey,
+                    targetKey: _targetKey ?? _memberKey
+                  ),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var response = snapshot.data;

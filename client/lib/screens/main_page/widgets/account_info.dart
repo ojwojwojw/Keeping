@@ -1,32 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:keeping/provider/account_info_provider.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
+import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/make_account_page/make_account_page.dart';
-import 'package:keeping/screens/make_account_page/widgets/styles.dart';
-import 'package:keeping/screens/parent_accept_request_money/parent_accept_request_money.dart';
 import 'package:keeping/screens/request_pocket_money_page/child_request_money_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:provider/provider.dart';
 
-class AccountInfo extends StatelessWidget {
+class AccountInfo extends StatefulWidget {
   final int balance;
 
   AccountInfo({
     super.key,
     required this.balance,
   });
+
+  @override
+  State<AccountInfo> createState() => _AccountInfoState();
+}
+
+class _AccountInfoState extends State<AccountInfo> {
+  bool? _parent;
+  String? _accessToken;
+  String? _memberKey;
+  String? _accountNumber;
+  String? _childKey;
+
+  @override
+  void initState() {
+    super.initState();
+    _parent = context.read<UserInfoProvider>().parent;
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
+    _accountNumber = context.read<AccountInfoProvider>().accountNumber;
+    _childKey = context.read<ChildInfoProvider>().memberKey;
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool _parent = context.read<UserInfoProvider>().parent;
-    String _accountNumber = context.read<AccountInfoProvider>().accountNumber;
-    print(_parent);
-    print(_accountNumber);
     return InkWell(
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => AllowanceLedgerPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => AllowanceLedgerPage()));
       },
       child: Padding(
         padding: const EdgeInsets.only(top: 24, bottom: 12),
@@ -50,8 +68,36 @@ class AccountInfo extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              formattedMoney(balance),
+                              formattedMoney(widget.balance),
                               style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                            ),
+                            FutureBuilder(
+                              future: getMonthTotalExpense(
+                                accessToken: _accessToken,
+                                memberKey: _memberKey,
+                                targetKey: _parent != null && _parent! ? _childKey : _memberKey,
+                                date: DateFormat('yyyy-MM').format(DateTime.now()),
+                              ), 
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  if (snapshot.data['resultStatus']['resultCode'] == '503') {
+                                    return Text(
+                                      '${DateTime.now().month}월 총 지출액: 0원',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white
+                                      ),
+                                    );
+                                  }
+                                  var response = snapshot.data['resultBody'];
+                                  return Text(
+                                    '${DateTime.now().month}월 총 지출액: ${formattedMoney(response)}',
+                                    style: TextStyle(fontSize: 20, color: Colors.white),
+                                  );
+                                } else {
+                                  return Text('로딩중');
+                                }
+                              },
                             ),
                             Text(
                               '${DateTime.now().month}월 총 지출액:'
@@ -69,7 +115,7 @@ class AccountInfo extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Container(height: 1.2, color: Color.fromARGB(255, 204, 204, 204),),
                 ),
-                !_parent ? 
+                _parent != null && !_parent! ? 
                   InkWell(
                     onTap: () {
                       Navigator.push(context, MaterialPageRoute(
