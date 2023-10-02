@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
@@ -115,21 +116,25 @@ class _MakeAccountEnterAuthPasswordPageState
         text: '만들기',
         action: () async {
           var response = await makeAccount(
-              accessToken: _accessToken!,
-              memberKey: _memberKey!,
-              authPassword: _authPassword!);
+            accessToken: _accessToken!,
+            memberKey: _memberKey!,
+            authPassword: _authPassword!
+          );
           if (response == 0) {
+            // Provider.of<AccountInfoProvider>(context, listen: false).setAccountInfo({
+            // });
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => CompletedPage(
-                          text: '계좌가\n개설되었습니다.',
-                          button: ConfirmBtn(
-                            action: _parent != null && _parent == true
-                                ? ParentMainPage()
-                                : ChildMainPage(),
-                          ),
-                        )));
+              context, 
+              MaterialPageRoute(
+                builder: (_) => CompletedPage(
+                  text: '계좌가\n개설되었습니다.',
+                  button: ConfirmBtn(
+                    action: _parent != null && _parent == true
+                      ? ParentMainPage() : ChildMainPage(),
+                  ),
+                )
+              )
+            );
           } else if (response == 1) {
             roundedModal(context: context, title: '핸드폰 번호가 인증되지 않았습니다.');
           } else {

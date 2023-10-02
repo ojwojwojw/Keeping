@@ -45,7 +45,7 @@ class BottomDoubleBtn extends StatelessWidget {
               fit: FlexFit.tight,
               child: Container(
                 height: 70,
-                color: isDisabled ? Colors.black38 : firstBgColor,
+                color: isDisabled ? Colors.black26 : firstBgColor,
                 child: TextButton(
                   onPressed: () {
                     if (!isDisabled) {
@@ -58,7 +58,7 @@ class BottomDoubleBtn extends StatelessWidget {
                       }
                     }
                   },
-                  style: _bottomBtnStyle(firstTextColor),
+                  style: _bottomBtnStyle(isDisabled ? Colors.white : firstTextColor),
                   child: Text(firstText, style: TextStyle(fontSize: firstTextSize),),
                 ),
               ),

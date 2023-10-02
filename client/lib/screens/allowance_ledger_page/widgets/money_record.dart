@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_detail_create_page.dart';
@@ -185,12 +187,18 @@ Row moneyRecordModalBtns(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      moneyRecordModalBtn(Icons.receipt_long, '영수증 찍기', context, CameraTest()),
       moneyRecordModalBtn(
-          Icons.create,
-          '직접 쓰기',
-          context,
-          AllowanceLedgerDetailCreatePage())
+        Icons.receipt_long, 
+        '영수증 찍기', 
+        context, 
+        CameraTest()
+      ),
+      moneyRecordModalBtn(
+        Icons.create,
+        '직접 쓰기',
+        context,
+        AllowanceLedgerDetailCreatePage()
+      )
     ],
   );
 }
@@ -232,4 +240,16 @@ BoxDecoration _moneyRecordModalBtnStyle() {
       width: 2.0, // 테두리 두께
     ),
   );
+}
+
+void _takePhoto() async {
+  ImagePicker().pickImage(source: ImageSource.camera).then((value) {
+    if (value != null && value.path != null) {
+      print("저장경로 : ${value.path}");
+
+      GallerySaver.saveImage(value.path).then((value) {
+        print("사진이 저장되었습니다");
+      });
+    }
+  });
 }
