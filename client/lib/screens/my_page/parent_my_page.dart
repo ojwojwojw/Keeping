@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/my_page/util/handle_logout.dart';
+import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/header.dart';
-import 'package:keeping/screens/my_page/select_theme_page.dart';
 import 'package:keeping/screens/my_page/password_edit_page.dart';
 import 'package:keeping/screens/my_page/phonenum_edit_page.dart';
 import 'package:keeping/screens/my_page/child_management_page.dart';
@@ -15,12 +15,6 @@ Dio dio = Dio();
 class ParentMyPage extends StatelessWidget {
   const ParentMyPage({Key? key}) : super(key: key);
   final name = 'Parent';
-
-  void gotoSelectTheme(BuildContext context) {
-    // 매개변수로 BuildContext 추가
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => SelectThemePage()));
-  }
 
   void gotoEditPwd(BuildContext context) {
     Navigator.push(
@@ -64,18 +58,12 @@ class ParentMyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(text: '마이페이지', elementColor: Colors.black),
-      // appBar: MyHeader(text: '마이페이지', elementColor: Colors.black),
       body: Center(
         child: Container(
           width: 300,
           child: Column(
             children: [
               userInfoBox(),
-              _MyPageDetailedFunctionPage(
-                context,
-                '테마 변경',
-                () => gotoSelectTheme(context), // BuildContext를 전달
-              ),
               _MyPageDetailedFunctionPage(
                 context,
                 '비밀번호 변경',
@@ -103,6 +91,9 @@ class ParentMyPage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNav(
+        myPage: true,
       ),
     );
   }
@@ -208,14 +199,22 @@ class ParentMyPage extends StatelessWidget {
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
+            handlelogout();
           },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF8320E7), // 배경색 설정
+          ),
           child: Text('확인'),
         ),
         SizedBox(width: 20),
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
+            handlelogout();
           },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF8320E7), // 배경색 설정
+          ),
           child: Text('취소'),
         ),
       ],
