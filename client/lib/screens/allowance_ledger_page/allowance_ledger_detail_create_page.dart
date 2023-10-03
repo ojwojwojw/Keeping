@@ -144,7 +144,7 @@ class _AllowanceLedgerDetailCreatePageState
                   type: false,
                   largeCategory: _largeCategory,
                 ),
-                Text(_accountDetailList.toString())
+                // Text(_accountDetailList.toString())
               ],
             ),
             Form(
