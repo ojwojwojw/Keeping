@@ -5,7 +5,6 @@ import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
-import 'package:keeping/screens/piggy_page/make_piggy_test.dart';
 import 'package:keeping/screens/signup_page/signup_user_type_select_page.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/header.dart';
