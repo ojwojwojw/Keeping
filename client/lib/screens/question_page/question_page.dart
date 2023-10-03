@@ -31,10 +31,10 @@ class _QuestionPageState extends State<QuestionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF8320E7),
+      backgroundColor: Color(0xFFA086EE),
       appBar: MyHeader(
-        text: '자식질문',
-        bgColor: Color(0xFF8320E7),
+        text: '',
+        bgColor: Color(0xFFA086EE),
         elementColor: Colors.white,
         backPath: ChildMainPage(),
       ),
@@ -49,33 +49,32 @@ class _QuestionPageState extends State<QuestionPage> {
               data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
               return Center(
                 child: Column(children: [
-                  Container(
-                    height: 10,
-                    width: 410,
-                    color: Color(0xFFD9D9D9).withOpacity(0.5),
-                    child: SizedBox(),
+                  //
+
+                  Image.asset(
+                    'assets/image/question/maintitle.png',
+                    width: 250.0,
+                    height: 100.0,
+                    fit: BoxFit.cover,
                   ),
-                  SizedBox(
-                    height: 100,
+
+                  Image.asset(
+                    'assets/image/question/micandfaces.png',
+                    width: 275.0,
+                    height: 270.0,
+                    fit: BoxFit.cover,
                   ),
-                  Text(
-                    '오늘의 질문에 답해보세요',
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.white,
-                    ),
-                  ),
+
                   SizedBox(
                     height: 15,
                   ),
+
                   GestureDetector(
                     onTap: () {
                       if (data.length >= 1) {
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ChildDiaryDetailPage(
-                            item: data[0],
-                            index: 0
-                          ),
+                          builder: (context) =>
+                              ChildDiaryDetailPage(item: data[0], index: 0),
                         ));
                       } else {
                         showDialog(
@@ -98,7 +97,7 @@ class _QuestionPageState extends State<QuestionPage> {
                     child: Container(
                       width: double.infinity,
                       margin: EdgeInsets.symmetric(horizontal: 24),
-                      height: 150,
+                      height: 250,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(color: Colors.white, width: 2.0),
@@ -116,106 +115,27 @@ class _QuestionPageState extends State<QuestionPage> {
                         mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
                         crossAxisAlignment: CrossAxisAlignment.center, // 가운데 정렬
                         children: [
-                          Text(
-                            DateFormat('yyyy년 MM월 dd일').format(DateTime.now()) +
-                                "의 질문",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
+                          // Text(DateFormat('yyyy년 MM월 dd일').format(DateTime.now()) + "의 질문",
+                          //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                           data != null && data.isNotEmpty
                               ? Text(
-                                  "Q." + data[0]["content"],
+                                  data[0]["content"],
                                   style: TextStyle(fontSize: 20),
                                 )
                               : Text("오늘의 질문이 없습니다. "),
+                          Row(
+                            children: [
+                              _ansBtn(),
+                              _diaryBtn(),
+                            ],
+                          ),
                         ],
                       ),
                     ),
                   ),
+
                   SizedBox(
                     height: 16,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: 24),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => QuestionSendPage()));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        onPrimary: Colors.black,
-                        padding: EdgeInsets.symmetric(horizontal: 24),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: Text('내일의 질문 생성하기'),
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: 24),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ChildDiaryPage()));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        onPrimary: Colors.black,
-                        padding: EdgeInsets.symmetric(horizontal: 24),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: Text('일기 페이지'),
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: 24),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (data != null &&
-                            data.isNotEmpty &&
-                            data[0]["content"] != null &&
-                            data[0]["id"] != null) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => QeustionAnswerPage(
-                              questionText: data[0]["content"]!,
-                              questionId: data[0]["id"]!,
-                            ),
-                          ));
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text('알림'),
-                              content: Text('오늘의 질문이 없습니다.'),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text('확인'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        onPrimary: Colors.black,
-                        padding: EdgeInsets.symmetric(horizontal: 24),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: Text('오늘의 질문 대답하기'),
-                    ),
                   ),
                 ]),
               );
@@ -225,6 +145,67 @@ class _QuestionPageState extends State<QuestionPage> {
     );
   }
 
+  Widget _ansBtn() {
+    return Container(
+      width: 100,
+      child: ElevatedButton(
+        onPressed: () {
+          if (data != null &&
+              data.isNotEmpty &&
+              data[0]["content"] != null &&
+              data[0]["id"] != null) {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => QeustionAnswerPage(
+                questionText: data[0]["content"]!,
+                questionId: data[0]["id"]!,
+              ),
+            ));
+          } else {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text('알림'),
+                content: Text('오늘의 질문이 없습니다.'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('확인'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            );
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          primary : Colors.red.withOpacity(0.0), 
+          elevation: 0,  // 투명한 빨간색 배경
+        ),
+        child :Image.asset( 'assets/image/question/answer.png', width: 80.0, height: 80.0, fit: BoxFit.cover, ),
+      ),
+    );
+  }
+
+  Widget _diaryBtn() {
+    return Container(
+      width: 100,
+      margin: EdgeInsets.symmetric(horizontal: 24),
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => ChildDiaryPage()));
+        },
+        style: ElevatedButton.styleFrom(
+          primary : Colors.red.withOpacity(0.0), 
+          elevation: 0,  // 투명한 빨간색 배경
+        ),
+        child: Image.asset( 'assets/image/question/folder.png', width: 80.0, height: 80.0, fit: BoxFit.cover, ),
+      ),
+    );
+  }
+
+  //비동기 요청
   Future<List<Map<String, dynamic>>> getData() async {
     // Dio 객체 생성
     final dio = Dio();
@@ -359,10 +340,9 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                       if (data.length >= 1) {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => ParentDiaryDetailPage(
-                            // 여기는 부모 페이지를 나타내는 클래스로 변경해야 합니다.
-                            item: data[0],
-                            index: 0
-                          ),
+                              // 여기는 부모 페이지를 나타내는 클래스로 변경해야 합니다.
+                              item: data[0],
+                              index: 0),
                         ));
                       } else {
                         showDialog(

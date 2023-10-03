@@ -439,7 +439,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
 }
 
 //부모 일기 페이지
-class ParentDiaryPage extends StatefulWidget {
+class ParentDiaryPage extends StatefulWidget { 
   const ParentDiaryPage({super.key});
 
   @override
