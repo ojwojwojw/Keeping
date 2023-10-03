@@ -26,6 +26,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
   String? _memberKey;
   String? _targetKey;
   String _name = '';
+  String? _profileImage;
 
   @override
   void initState() {
@@ -33,6 +34,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
     _name = context.read<UserInfoProvider>().name;
+    _profileImage = context.read<UserInfoProvider>().profileImage;
   }
 
   @override
@@ -46,7 +48,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
             padding: const EdgeInsets.only(top: 24, left: 24, right: 24),
             child: Column(
               children: [
-                ChildGreeting(name: _name),
+                ChildGreeting(name: _name, profileImage: _profileImage),
                 FutureBuilder(
                   future: getAccountInfo(
                     accessToken: _accessToken,
