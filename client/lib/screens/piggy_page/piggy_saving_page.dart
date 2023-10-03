@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/screens/piggy_page/piggy_enter_auth_password_page.dart';
+import 'package:keeping/styles.dart';
+import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/number_keyboard.dart';
@@ -88,24 +90,71 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 32),
+            child: Column(
+              children: [
+                Text(widget.piggyDetailInfo['content'], style: TextStyle(fontSize: 24),),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: roundedMemoryImg(img: widget.piggyDetailInfo['savedImage'], size: 150),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      amount,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: validateText != '' ? Colors.red : Colors.black),
+                    ),
+                    Text(
+                      '원', 
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: validateText != '' ? Colors.red : Colors.black
+                      ),
+                    )
+                  ],
+                ),
+                Text(
+                  validateText,
+                  style: TextStyle(color: Colors.red),
+                )
+              ],
+            ),
+          ),
           Column(
             children: [
-              Text(widget.piggyDetailInfo['content']),
-              Text(widget.piggyDetailInfo['balance'].toString()),
-              Text(
-                amount,
-                style: TextStyle(
-                    color: validateText != '' ? Colors.red : Colors.black),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Container(
+                  width: double.infinity,
+                  decoration: roundedBoxWithShadowStyle(
+                    shadow: false, bgColor: Color(0xffF0F0F0), borderRadius: 10
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('남은 목표 금액', style: TextStyle(color: Color(0xff757575), fontSize: 16),),
+                        Row(
+                          children: [
+                            Text(formattedMoney(widget.piggyDetailInfo['balance']).toString()),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              Text(
-                validateText,
-                style: TextStyle(color: Colors.red),
-              )
+              NumberKeyboard(
+                onNumberPress: onNumberPress,
+                onBackspacePress: onBackspacePress,
+              ),
             ],
-          ),
-          NumberKeyboard(
-            onNumberPress: onNumberPress,
-            onBackspacePress: onBackspacePress,
           )
         ],
       ),

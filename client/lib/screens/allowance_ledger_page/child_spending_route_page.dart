@@ -129,6 +129,7 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                             e['latitude'] as double,
                             e['longitude'] as double,
                           ),
+                          // markerImageSrc: 'assets/image/category/${e['largeCategory']}.png'
                         ),
                       ),
                     ],
@@ -143,6 +144,8 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                           ), 
                           yAnchor: 1.6,
                           content: '<div style="height: 60px; padding: 10px; display: flex; align-items: center; border-radius: 20px; border: 2px solid #F0F0F0; background: #FFF;"><div><span style="font-size: 18px; font-weight: 500;">${e['storeName']}</span></br><span style="color: #696969; font-size: 15px;">${formattedTime(DateTime.parse(e['createdDate']))}</span></div></div>'
+                          // content: '<div style="height: 60px; padding: 10px; display: flex; align-items: center; border-radius: 20px; border: 2px solid #F0F0F0; background: #FFF;"><div><div><img src="assets/image/category/${e['largeCategory']}.png" alt="예시 이미지" height="50"></div><div><span style="font-size: 18px; font-weight: 500;">${e['storeName']}</span></br><span style="color: #696969; font-size: 15px;">${formattedTime(DateTime.parse(e['createdDate']))}</span></div></div></div>'
+
                         )
                       )
                     ],
@@ -179,3 +182,20 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
     );
   }
 }
+
+// '''
+// <div style="height: 60px; padding: 10px; display: flex; align-items: center; border-radius: 20px; border: 2px solid #F0F0F0; background: #FFF;">
+//   <div>
+//     <div>
+//       <img src="assets/image/category/${e['largeCategory']}.png" alt="예시 이미지" height="50">
+//     </div>
+//     <div>
+//       <span style="font-size: 18px; font-weight: 500;">${e['storeName']}</span>
+//       </br>
+//       <span style="color: #696969; font-size: 15px;">${formattedTime(DateTime.parse(e['createdDate']))}</span>
+//     </div>
+//   </div>
+// </div>'
+// '''
+
+// <div style="height: 60px; padding: 10px; display: flex; align-items: center; border-radius: 20px; border: 2px solid #F0F0F0; background: #FFF;"><div><div><img src="assets/image/category/${e['largeCategory']}.png" alt="예시 이미지" height="50"></div><div><span style="font-size: 18px; font-weight: 500;">${e['storeName']}</span></br><span style="color: #696969; font-size: 15px;">${formattedTime(DateTime.parse(e['createdDate']))}</span></div></div></div>'
