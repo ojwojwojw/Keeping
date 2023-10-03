@@ -74,6 +74,7 @@ class _QuestionPageState extends State<QuestionPage> {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => ChildDiaryDetailPage(
                             item: data[0],
+                            index: 0
                           ),
                         ));
                       } else {
@@ -360,6 +361,7 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                           builder: (context) => ParentDiaryDetailPage(
                             // 여기는 부모 페이지를 나타내는 클래스로 변경해야 합니다.
                             item: data[0],
+                            index: 0
                           ),
                         ));
                       } else {
