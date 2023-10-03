@@ -642,7 +642,7 @@ class ParentDiaryDetailPage extends StatefulWidget {
   final Map<String, dynamic> item;
   const ParentDiaryDetailPage(
       {Key? key, required this.item, required this.index})
-      : super(key: key);
+      : super(key: key); 
 
   @override
   State<ParentDiaryDetailPage> createState() => _ParentDiaryDetailPageState();

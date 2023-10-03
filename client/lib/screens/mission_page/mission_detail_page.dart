@@ -90,7 +90,19 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
                         child: Text(widget.item['cheeringMessage']),
                       ),
-                    )
+                    ),
+
+                    Text('요청메시지', style: TextStyle(color: Color(0xff808080)),),
+                    SizedBox(height: 4,),
+                    Container(
+                      width: double.infinity,
+                      decoration: roundedBoxWithShadowStyle(),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                        child: Text(widget.item['childRequestComment'] ?? ''),
+                      ),
+                    ),
+                    
                   ],
                 ),
                 SizedBox(height: 24,),
@@ -235,6 +247,12 @@ void handleChildButtonClick(BuildContext context, dynamic item, String status) {
         break;
       case "FINISH":
         // 미션 확인 로직
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => MissionCompleteCommentPage(
+                      missionId: item["id"],
+                    ))); //미션 id 넘겨주는곳
         break;
       default:
         // 기본 로직
