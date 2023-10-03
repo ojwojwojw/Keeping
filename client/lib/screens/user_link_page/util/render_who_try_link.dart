@@ -31,10 +31,11 @@ Future<String> renderWhoTryLink(BuildContext context, userCode) async {
         context,
         MaterialPageRoute(builder: (context) => const AfterUserLinkPage()),
       );
+    } else if (response['resultStatus']['resultCode'] == '404') {
+      return Future.value(
+          response['resultStatus']['resultMessage']);
     }
   }
 
-  print('키키');
-  return Future.value(response['resultStatus']
-      ['resultMessage']); // You can customize the error message.
+  return Future.value(response['resultStatus']['resultMessage']); // You can customize the error message.
 }
