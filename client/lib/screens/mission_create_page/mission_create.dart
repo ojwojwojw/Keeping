@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
+import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/number_keyboard.dart';
@@ -76,98 +77,70 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF8320E7),
       appBar: MyHeader(
         text: '미션생성',
-        elementColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(children: [
-            Container(
-              height: 10,
-              width: 410,
-              color: Color(0xFFD9D9D9).withOpacity(0.5),
-              child: SizedBox(),
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Text(
-              isParent ? '아이에게 어떤 미션을 줘볼까요?' : '부모님에게 미션을 요청해볼까요?',
-              style: TextStyle(color: Colors.white, fontSize: 24),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.symmetric(horizontal: 24), // 좌우 여백 24
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2), // 검정색으로 변경
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: renderTextFormFieldNonLabel(
-                  hintText: '내용을 입력해주세요.',
-                  onChange: (value) {
-                    setState(() {
-                      missionTitle = value;
-                    });
-                  }),
-            ),
-            SizedBox(
-              height: 100,
-            ),
-            Text(
-              '미션 마감일을 정해줘요.',
-              style: TextStyle(color: Colors.white, fontSize: 24),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 24), // 좌우 여백 24
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2), // 검정색으로 변경
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
               child: Column(
                 children: [
                   Text(
-                    "선택한 날짜: $missionDueDate",
-                    style: TextStyle(color: Colors.black, fontSize: 18),
+                    isParent ? '아이에게 어떤 미션을 줄까요?' : '부모님에게 미션을 요청해볼까요?',
+                    style: TextStyle(color: Colors.black, fontSize: 24),
                   ),
-                  ElevatedButton(
-                    onPressed: datePicker,
-                    child: Text('날짜를 선택해주세요.'),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.purple,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 32),
+                    child: Image.asset('assets/image/mission/what_mission.png'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Container(// 좌우 여백 24
+                      decoration: roundedBoxWithShadowStyle(),
+                      child: renderTextFormFieldNonUnderLine(
+                          hintText: '미션 제목을 입력해주세요.',
+                          onChange: (value) {
+                            setState(() {
+                              missionTitle = value;
+                            });
+                          }),
                     ),
                   ),
                 ],
               ),
             ),
+            SizedBox(height: 16,),
+            Column(
+              children: [
+                Text(
+                  '미션 마감일을 정해주세요!',
+                  style: TextStyle(color: Colors.black, fontSize: 24),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24,),
+                  child: InkWell(
+                    onTap: datePicker,
+                    child: Container(
+                      width: double.infinity,
+                      decoration: roundedBoxWithShadowStyle(),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
+                        child: missionDueDate != "" ? Text(missionDueDate,) : Text('누르면 달력이 나와요!', style: TextStyle(color: Color(0xff757575)),),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
           ]),
         ),
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '다음',
         action: () {
           saveAndMove(context, missionTitle, missionDueDate); // 함수 호출
@@ -225,54 +198,44 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: '미션생성2',
-        bgColor: Color(0xFF8320E7),
-        elementColor: Colors.white,
+        text: '미션 생성',
       ),
       body: Center(
-        child: Column(children: [
-          Container(
-            height: 10,
-            width: 410,
-            color: Color.fromARGB(255, 182, 109, 255).withOpacity(0.5),
-            child: SizedBox(),
-          ),
-
-          SizedBox(
-            height: 20,
-          ),
-          Text(
-            '성공하면 얼마를 줄까요?',
-            style: TextStyle(fontSize: 25),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-
-          // 예시 이미지 파일
-          Image.asset(
-            'assets/image/money_bag.png',
-            width: 100.0,
-            height: 100.0,
-          ),
-
-          SizedBox(
-            height: 75,
-          ),
-          Text(
-            '${"'"}' + amount.toString() + '${"'"}' + '원을 줄게요!',
-            style: TextStyle(fontSize: 25),
-          ),
-          SizedBox(
-            height: 75,
-          ),
-
-          // 숫자패드
-          NumberKeyboard(
-            onNumberPress: onNumberPress,
-            onBackspacePress: onBackspacePress,
-          ),
-        ]),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 32),
+              child: Column(
+                children: [
+                  Text(
+                    '성공하면 얼마를 줄까요?',
+                    style: TextStyle(fontSize: 25),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Image.asset(
+                      'assets/image/mission/how_much.png',
+                      width: 120.0,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(amount.toString(), style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
+                      Text('원', style: TextStyle(fontSize: 25),)
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            // 숫자패드
+            NumberKeyboard(
+              onNumberPress: onNumberPress,
+              onBackspacePress: onBackspacePress,
+            ),
+          ]
+        ),
       ),
       bottomNavigationBar: BottomBtn(
         text: '다음',
@@ -302,8 +265,10 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
 
 //미션 생성페이지 3 (자녀)
 class MissionCreatePage3 extends StatefulWidget {
+  MissionCreatePage3({super.key});
+
   @override
-  _MissionCreatePage3State createState() => _MissionCreatePage3State();
+  State<MissionCreatePage3> createState() => _MissionCreatePage3State();
 }
 
 class _MissionCreatePage3State extends State<MissionCreatePage3> {
@@ -387,14 +352,17 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: '미션생성3(자녀)',
-        bgColor: Color(0xFF8320E7),
-        elementColor: Colors.white,
+        text: '미션 생성',
       ),
       body: Column(
         children: [
+          SizedBox(height: 30,),
+          Text(
+            '부모님께 보낼 메시지를 적어봐요!',
+            style: TextStyle(fontSize: 20),
+          ),
           renderBoxFormField(
-              label: '부모님께 메세지를 보내봐요',
+              noLabel: true,
               onChange: (value) {
                 setState(() {
                   comment = value;
@@ -490,78 +458,82 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: '미션생성3(부모)',
-        bgColor: Color(0xFF8320E7),
-        elementColor: Colors.white,
+        text: '미션생성',
       ),
       body: Column(
         children: [
-          Container(
-            height: 10,
-            width: 410,
-            color: Color.fromARGB(255, 182, 109, 255).withOpacity(0.5),
-            child: SizedBox(),
-          ),
 
           SizedBox(
             height: 50,
           ),
           
           //예쁜 드롭다운
-          Container(
-            width: 360,
-            height: 60,
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.purple), // 테두리 색상 설정
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: DropdownButtonHideUnderline(
-              // 아래쪽의 기본 테두리를 숨깁니다.
-              child: DropdownButton<String>(
-                value: selectedMemberKey.isNotEmpty ? selectedMemberKey : null,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedMemberKey = newValue ?? '';
-                  });
-                },
-                dropdownColor: Colors.white, // 배경색
-                iconEnabledColor: Colors.purple, // 아이콘 색상
-                style: TextStyle(color: Colors.black), // 선택된 항목의 텍스트 색상
-                items: childrenList.map<DropdownMenuItem<String>>(
-                    (Map<String, dynamic> child) {
-                  return DropdownMenuItem<String>(
-                    value: child["memberKey"].toString(),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          'assets/image/n_face.png',
-                          width: 20,
-                        ), // 이미지 경로를 지정해야 합니다.
-                        SizedBox(
-                          width: 10,
-                        ), // 이미지와 텍스트 사이의 간격
-                        Text(child["name"].toString()),
-                      ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              children: [
+                Text(
+                  '누구에게 미션을 줄까요?',
+                  style: TextStyle(fontSize: 25),
+                ),
+                SizedBox(height: 16,),
+                Container(
+                  width: double.infinity,
+                  height: 80,
+                  decoration: roundedBoxWithShadowStyle(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: DropdownButtonHideUnderline(
+                      // 아래쪽의 기본 테두리를 숨깁니다.
+                      child: DropdownButton<String>(
+                        value: selectedMemberKey.isNotEmpty ? selectedMemberKey : null,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedMemberKey = newValue ?? '';
+                          });
+                        },
+                        dropdownColor: Colors.white, // 배경색
+                        iconEnabledColor: Colors.purple, // 아이콘 색상
+                        style: TextStyle(color: Colors.black), // 선택된 항목의 텍스트 색상
+                        items: childrenList.map<DropdownMenuItem<String>>(
+                            (Map<String, dynamic> child) {
+                          return DropdownMenuItem<String>(
+                            value: child["memberKey"].toString(),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  'assets/image/n_face.png',
+                                  width: 50,
+                                ), // 이미지 경로를 지정해야 합니다.
+                                SizedBox(
+                                  width: 10,
+                                ), // 이미지와 텍스트 사이의 간격
+                                Text(child["name"].toString(), style: TextStyle(fontSize: 20),),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     ),
-                  );
-                }).toList(),
-              ),
+                  ),
+                ),
+              ],
             ),
           ),
-
-          ///
           renderBoxFormField(
-              label: '아이에게 응원메세지를 보내봐요',
-              onChange: (value) {
-                setState(() {
-                  comment = value;
-                });
-              }),
+            label: '',
+            onChange: (value) {
+              setState(() {
+                comment = value;
+              });
+            },
+            hintText: '아이에게 응원 메시지를 보내주세요!',
+            maxLines: 5
+          ),
         ],
       ),
       bottomNavigationBar: BottomBtn(
-        text: "미션 등록 하기",
+        text: "만들기",
         action: () {
           _sendMissionData();
         },

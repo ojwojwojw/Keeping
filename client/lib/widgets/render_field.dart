@@ -53,7 +53,8 @@ Padding renderTextFormField({
 }
 
 Padding renderBoxFormField({
-  required String label,
+  String? label,
+  bool noLabel = false,
   String? hintText,
   FormFieldSetter? onSaved,
   FormFieldValidator? validator,
@@ -69,17 +70,23 @@ Padding renderBoxFormField({
               width: width,
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        label,
-                        style: labelStyle(),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  !noLabel ?
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              label!,
+                              style: labelStyle(),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  : Container(),
                   Container(
                       width: 340,
                       decoration: roundedBoxWithShadowStyle(
@@ -346,4 +353,42 @@ Padding renderTextFormFieldNonLabel({
                           : null)
                 ],
               ))));
+}
+
+Padding renderTextFormFieldNonUnderLine({
+  String? hintText,
+  FormFieldSetter? onSaved,
+  FormFieldValidator? validator,
+  TextEditingController? controller,
+  FormFieldSetter? onChange,
+  isPassword = false,
+  isNumber = false,
+}) {
+  return Padding(
+    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+    child: Center(
+      child: Column(
+        children: [
+          TextFormField(
+            onSaved: onSaved,
+            validator: validator,
+            onChanged: onChange,
+            textInputAction: TextInputAction.next,
+            controller: controller,
+            keyboardType: isNumber ? TextInputType.number : null,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            cursorColor: Color(0xFF8320E7),
+            decoration: InputDecoration(
+              hintText: hintText,
+              hintStyle: TextStyle(
+                color: Color(0xff757575)
+              ),
+              focusedBorder: InputBorder.none,
+              border: InputBorder.none,
+            ),
+            obscureText: isPassword,
+            inputFormatters: isNumber
+                ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))] : null)
+        ],
+      )));
 }
