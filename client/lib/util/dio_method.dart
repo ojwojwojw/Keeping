@@ -21,8 +21,17 @@ Future<dynamic> dioPost({
     var response = await dio.post(url, data: data);
     print('dioPost 성공');
     return response.data;
-  } catch (e) {
+  } on DioException catch (e) {
     print('Error during DIO request: $e');
+    if (e.response != null) {
+      print('에에에러러러러데데데이이이터터터ㅓ ${e.response?.data}');
+      print(e.response?.headers);
+      print(e.response?.requestOptions);
+    } else {
+      // Something happened in setting up or sending the request that triggered an Error
+      print(e.requestOptions);
+      print(e.message);
+    }
     return null;
   }
 }
@@ -55,46 +64,29 @@ Future<dynamic> dioPostForCLOVA({
 }) async {
   var dio = Dio();
   try {
-    dio.options.baseUrl = 'https://pjz2waj74v.apigw.ntruss.com/custom/v1/25090/f0d9e8175108a40aa63f310f3e37669b8de04e970078648956ebe38c1ffd7285';
+    dio.options.baseUrl = dotenv.env['CLOVA_URL']!;
     dio.options.contentType = contentType;
     // dio.options.maxRedirects.isFinite;
     // dio.options.connectTimeout = Duration(seconds: 5);
     // dio.options.receiveTimeout = Duration(seconds: 3);
 
     dio.options.headers = {
-      'X-OCR-SECRET': 'QnlFZlFOR21SanpIVElRU0FFc2RaZmZlbXRhTnRrSW0=',
+      'X-OCR-SECRET': dotenv.env['CLOVA_KEY']!,
     };
     var response = await dio.post(url, data: data);
     print('dioPost 성공');
     return response;
-  } catch (e) {
+  } on DioException catch (e) {
     print('Error during DIO request: $e');
+    if (e.response != null) {
+      print('에에에러러러러데데데이이이터터터ㅓ ${e.response?.data}');
+      print(e.response?.headers);
+      print(e.response?.requestOptions);
+    } else {
+      // Something happened in setting up or sending the request that triggered an Error
+      print(e.requestOptions);
+      print(e.message);
+    }
     return null;
   }
 }
-
-// Future<dynamic> dioPostForCLOVA({
-//   required String url,
-//   String contentType = 'multipart/form-data',
-//   dynamic data,
-// }) async {
-//   var dio = Dio();
-//   try {
-//     dio.options.baseUrl = 'https://pjz2waj74v.apigw.ntruss.com/custom/v1/25090/f0d9e8175108a40aa63f310f3e37669b8de04e970078648956ebe38c1ffd7285';
-//     dio.options.contentType = contentType;
-//     // dio.options.maxRedirects.isFinite;
-//     // dio.options.connectTimeout = Duration(seconds: 5);
-//     // dio.options.receiveTimeout = Duration(seconds: 3);
-
-//     dio.options.headers = {
-//       'X-OCR-SECRET': 'QnlFZlFOR21SanpIVElRU0FFc2RaZmZlbXRhTnRrSW0=',
-//     };
-//     var response = await dio.post(url, data: data);
-//     print('dioPost 성공');
-//     return response.data;
-//   } catch (e) {
-//     print('Error during DIO request: $e');
-//     return null;
-//   }
-// }
-

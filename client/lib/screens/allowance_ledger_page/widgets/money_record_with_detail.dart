@@ -51,7 +51,7 @@ class _MoneyRecordWithDetail extends State<MoneyRecordWithDetail> {
           content: moneyRecordModalContent(
             context, widget.date, widget.storeName, widget.money, widget.balance, widget.accountHistoryId, widget.type, widget.largeCategory
           ),
-          button: moneyRecordModalBtns(context),
+          button: moneyRecordModalBtns(context, widget.accountHistoryId),
         );
       },
       child: Padding(

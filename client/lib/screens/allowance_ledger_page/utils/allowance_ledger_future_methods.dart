@@ -27,10 +27,11 @@ Future<dynamic> getAccountList(
 }
 
 // 거래 상세 내용 입력(여러 개)
-Future<dynamic> createAccountDetail(
-    {required String? accessToken,
-    required String? memberKey,
-    required List<Map<String, dynamic>>? accountDetailList}) async {
+Future<dynamic> createAccountDetail({
+  required String? accessToken, required String? memberKey,
+  required List<dynamic>? accountDetailList
+  // required List<Map<String, dynamic>>? accountDetailList
+}) async {
   if (accessToken != null && memberKey != null && accountDetailList != null) {
     try {
       print(
