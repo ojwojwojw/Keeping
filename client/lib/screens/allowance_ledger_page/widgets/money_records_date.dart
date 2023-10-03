@@ -18,16 +18,18 @@ class _MoneyRecordsDateState extends State<MoneyRecordsDate> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 15, bottom: 8),
-      child: SizedBox(
-        width: 360,
-        child: Text(
-          formattedMDDate(widget.date),
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w400
-          ),
-        )  
+      padding: EdgeInsets.only(top: 15, bottom: 8, left: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            formattedMDDate(widget.date),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w400
+            ),
+          )
+        ]
       )
     );
   }

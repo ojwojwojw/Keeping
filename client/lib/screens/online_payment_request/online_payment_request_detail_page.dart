@@ -6,6 +6,7 @@ import 'package:keeping/screens/online_payment_request/reject_online_payment_req
 import 'package:keeping/screens/online_payment_request/utils/online_payment_request_future_methods.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/bottom_double_btn.dart';
+import 'package:keeping/widgets/color_info_card_elements.dart';
 import 'package:keeping/widgets/color_info_detail_card.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
@@ -84,7 +85,7 @@ class _OnlinePaymentRequestDetailPageState
               return Text('로딩중');
             }
           }),
-      bottomSheet: _parent != null && _parent! && widget.status == 'WAIT'
+      bottomNavigationBar: _parent != null && _parent! && widget.status == 'WAIT'
           ? BottomDoubleBtn(
               firstText: '거절하기',
               firstAction:
@@ -114,7 +115,7 @@ class _OnlinePaymentRequestDetailPageState
               },
               isDisabled: false,
             )
-          : BottomBtn(text: '확인', isDisabled: false),
+          : BottomBtn(text: '확인', isDisabled: false, bgColor: requestStatusBgColor(widget.status!),),
     );
   }
 }

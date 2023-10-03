@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/main_page/child_main_page.dart';
+import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/piggy_page/make_piggy_page.dart';
 import 'package:keeping/screens/piggy_page/piggy_detail_page.dart';
 import 'package:keeping/screens/piggy_page/utils/piggy_future_methods.dart';
@@ -39,26 +41,27 @@ class _PiggyPageState extends State<PiggyPage> {
     return Scaffold(
       appBar: MyHeader(
         text: '저금통',
-        bgColor: const Color(0xFF8320E7),
-        elementColor: Colors.white,
+        backPath: _parent != null && _parent! ? ParentMainPage() : ChildMainPage(),
+        // bgColor: const Color(0xFF8320E7),
+        // elementColor: Colors.white,
       ),
-      body: FutureBuilder(
-        future: getPiggyList(
-          accessToken: _accessToken, 
-          memberKey: _memberKey,
-          targetKey: _parent != null && _parent == true ? _childKey : _memberKey,
-        ),
-        builder: (context, snapshot) {
-          print('저금통 페이지 ${snapshot.toString()}');
-          if (snapshot.hasData) {
-            var response = snapshot.data;
-            if (response['resultBody'] != null && response['resultBody'].isEmpty) {
-              return Text('거래내역이 없습니다.');
-            }
-            return Column(
-              children: [
-                PiggyInfo(),
-                Expanded(
+      body: Column(
+        children: [
+          PiggyInfo(parent: _parent),
+          FutureBuilder(
+            future: getPiggyList(
+              accessToken: _accessToken, 
+              memberKey: _memberKey,
+              targetKey: _parent != null && _parent == true ? _childKey : _memberKey,
+            ),
+            builder: (context, snapshot) {
+              print('저금통 페이지 ${snapshot.toString()}');
+              if (snapshot.hasData) {
+                var response = snapshot.data;
+                if (response['resultBody'] != null && response['resultBody'].isEmpty) {
+                  return Text('거래내역이 없습니다.');
+                }
+                return Expanded(
                   child: Container(
                     decoration: lightGreyBgStyle(),
                     width: double.infinity,
@@ -86,13 +89,13 @@ class _PiggyPageState extends State<PiggyPage> {
                       ),
                     ),
                   )
-                )
-              ],
-            );
-          } else {
-            return const Text('로딩중');
-          }
-        }
+                );
+              } else {
+                return const Text('로딩중');
+              }
+            }
+          ),
+        ],
       ),
       floatingActionButton: _parent != null && _parent! == true ? null : FloatingBtn(
         text: '만들기',

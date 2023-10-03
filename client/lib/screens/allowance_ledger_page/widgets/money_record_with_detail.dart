@@ -55,10 +55,9 @@ class _MoneyRecordWithDetail extends State<MoneyRecordWithDetail> {
         );
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 5),
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 24),
         child: Center(
           child: Container(
-            width: 360,
             decoration: roundedBoxWithShadowStyle(),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),

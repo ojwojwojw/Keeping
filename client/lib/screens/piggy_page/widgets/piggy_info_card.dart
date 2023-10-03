@@ -25,9 +25,8 @@ class _PiggyInfoCardState extends State<PiggyInfoCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 7),
+      padding: EdgeInsets.symmetric(vertical: 7, horizontal: 24),
       child: Container(
-        width: 360,
         height: 160,
         decoration: roundedBoxWithShadowStyle(),
         child: Padding(

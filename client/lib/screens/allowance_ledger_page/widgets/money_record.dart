@@ -61,9 +61,8 @@ class _MoneyRecordState extends State<MoneyRecord> {
         );
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 5),
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 24),
         child: Container(
-          width: 360,
           height: 90,
           alignment: Alignment.center,
           decoration: roundedBoxWithShadowStyle(),
