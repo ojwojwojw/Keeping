@@ -135,7 +135,7 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
                         Text('남은 목표 금액', style: TextStyle(color: Color(0xff757575), fontSize: 16),),
                         Row(
                           children: [
-                            Text(formattedMoney(widget.piggyDetailInfo['balance']).toString()),
+                            Text(formattedMoney(widget.piggyDetailInfo['goalMoney']-widget.piggyDetailInfo['balance']).toString()),
                           ],
                         )
                       ],

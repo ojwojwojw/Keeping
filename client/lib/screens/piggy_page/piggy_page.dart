@@ -38,7 +38,7 @@ class _PiggyPageState extends State<PiggyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: '\u{1F437} 저금통',
+        text: '저금통',
         bgColor: const Color(0xFF8320E7),
         elementColor: Colors.white,
       ),
