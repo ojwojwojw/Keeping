@@ -45,34 +45,51 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                       Center(
                         child: Container(
                           decoration: roundedBoxWithShadowStyle(
-                            shadow: false,
-                            bgColor: missionRequestStatusBgColor(widget.item['completed'])
-                          ),
+                              shadow: false,
+                              bgColor: missionRequestStatusBgColor(
+                                  widget.item['completed'])),
                           child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 6, horizontal: 12),
                             child: Text(
-                              missionRequestStatusText(widget.item['completed']),
+                              missionRequestStatusText(
+                                  widget.item['completed']),
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 8,),
-                      Text(widget.item['todo'], style: TextStyle(fontSize: 22),),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        widget.item['todo'],
+                        style: TextStyle(fontSize: 22),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             widget.item['money'].toString(),
-                            style: TextStyle(color: missionRequestStatusBgColor(widget.item['completed']), fontSize: 22, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                color: missionRequestStatusBgColor(
+                                    widget.item['completed']),
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold),
                           ),
-                          Text('원', style: TextStyle(fontSize: 22),)
+                          Text(
+                            '원',
+                            style: TextStyle(fontSize: 22),
+                          )
                         ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 16,),
-                  roundedAssetImg(imgPath: 'assets/image/temp_image.jpg', size: 100)
+                  SizedBox(
+                    height: 16,
+                  ),
+                  roundedAssetImg(
+                      imgPath: 'assets/image/temp_image.jpg', size: 100)
                 ],
               ),
             ),
@@ -81,36 +98,86 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('응원메시지', style: TextStyle(color: Color(0xff808080)),),
-                    SizedBox(height: 4,),
-                    Container(
-                      width: double.infinity,
-                      decoration: roundedBoxWithShadowStyle(),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-                        child: Text(widget.item['cheeringMessage']),
-                      ),
+                    Row(
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              '응원메시지',
+                              style: TextStyle(color: Color(0xff808080)),
+                            ),
+                            roundedAssetImg(
+                                imgPath: 'assets/image/temp_image.jpg',
+                                size: 50),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              decoration: roundedBoxWithShadowStyle(),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 16),
+                                child: Text(widget.item['cheeringMessage']),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-
-                    Text('요청메시지', style: TextStyle(color: Color(0xff808080)),),
-                    SizedBox(height: 4,),
-                    Container(
-                      width: double.infinity,
-                      decoration: roundedBoxWithShadowStyle(),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-                        child: Text(widget.item['childRequestComment'] ?? ''),
-                      ),
+                    Row(
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              '요청메시지',
+                              style: TextStyle(color: Color(0xff808080)),
+                            ),
+                            roundedAssetImg(
+                                imgPath: 'assets/image/temp_image.jpg',
+                                size: 50),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              decoration: roundedBoxWithShadowStyle(),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 16),
+                                child: Text(
+                                    widget.item['childRequestComment'] ?? ''),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    
                   ],
                 ),
-                SizedBox(height: 24,),
+                SizedBox(
+                  height: 24,
+                ),
                 Container(
                   width: double.infinity,
                   decoration: roundedBoxWithShadowStyle(),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16),
                     child: Column(
                       children: [
                         Row(
@@ -118,12 +185,18 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.keyboard_tab, textDirection: TextDirection.rtl, color: missionRequestStatusBgColor(widget.item['completed'])),
-                                SizedBox(width: 4,),
+                                Icon(Icons.keyboard_tab,
+                                    textDirection: TextDirection.rtl,
+                                    color: missionRequestStatusBgColor(
+                                        widget.item['completed'])),
+                                SizedBox(
+                                  width: 4,
+                                ),
                                 Text('만든 날'),
                               ],
                             ),
-                            Text(formattedYMDDate(DateTime.parse(widget.item['startDate'])))
+                            Text(formattedYMDDate(
+                                DateTime.parse(widget.item['startDate'])))
                           ],
                         ),
                         Row(
@@ -131,12 +204,17 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.keyboard_tab, color: missionRequestStatusBgColor(widget.item['completed'])),
-                                SizedBox(width: 4,),
+                                Icon(Icons.keyboard_tab,
+                                    color: missionRequestStatusBgColor(
+                                        widget.item['completed'])),
+                                SizedBox(
+                                  width: 4,
+                                ),
                                 Text('완료하는 날'),
                               ],
                             ),
-                            Text(formattedYMDDate(DateTime.parse(widget.item['endDate'])))
+                            Text(formattedYMDDate(
+                                DateTime.parse(widget.item['endDate'])))
                           ],
                         )
                       ],
@@ -144,7 +222,30 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                   ),
                 ),
               ],
-            )
+            ),
+
+            /// 소감 작성하기 버튼 /// /// 소감 작성하기 버튼 ///
+            GestureDetector(
+              onTap: () {
+                if (widget.item["completed"] == "FINISH") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MissionCompleteCommentPage(missionId: widget.item["id"], item: widget.item)),
+                  );
+                }
+              },
+              child: Opacity(
+                opacity: widget.item["completed"] == "FINISH" ? 1 : 0,
+                child: IgnorePointer(
+                  ignoring: widget.item["completed"] != "FINISH",
+                    child: Center(child: Text("완료소감적기!")),
+                  )
+                ),
+              ),
+            
+            Text(widget.item["finishedComment"] ?? '')
+
+            /// 소감 작성하기 버튼 /// /// 소감 작성하기 버튼 ///
           ],
         ),
       ),
@@ -153,10 +254,11 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
         text: _getBottomButtonText(widget.item["completed"]),
         action: () {
           if (isParent == null) return;
-          isParent! ?
-          handleParentButtonClick(context, widget.item, widget.item["completed"])
-          :
-          handleChildButtonClick(context, widget.item, widget.item["completed"]);
+          isParent!
+              ? handleParentButtonClick(
+                  context, widget.item, widget.item["completed"])
+              : handleChildButtonClick(
+                  context, widget.item, widget.item["completed"]);
         },
         isDisabled: () {
           String status = widget.item["completed"];
@@ -177,26 +279,25 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
       ),
     );
   }
-
-  
 }
 
 String _getBottomButtonText(String status) {
   switch (status) {
     case "CREATE_WAIT":
-      return "미션 생성 승인";
+      return "미션생성을 승인해요.";
     case "YET":
-      return "미션 완료 요청";
+      return "미션을 완료했어요!";
     case "FINISH_WAIT":
-      return "미션 완료 승인";
+      return "참 잘했어요 꾸욱 :)";
     case "FINISH":
-      return "완료된 미션입니다.";
+      return "기억하기 .";
     default:
       return "미션 승인하기";
   }
 }
 
-void handleParentButtonClick(BuildContext context, dynamic item, String status) {
+void handleParentButtonClick(
+    BuildContext context, dynamic item, String status) {
   switch (status) {
     case "CREATE_WAIT":
       // 미션 생성 승인 로직
@@ -229,33 +330,34 @@ void handleParentButtonClick(BuildContext context, dynamic item, String status) 
 }
 
 void handleChildButtonClick(BuildContext context, dynamic item, String status) {
-    switch (status) {
-      case "CREATE_WAIT":
-        // 미션 생성 승인 로직
-        break;
-      case "YET":
-        // 미션 진행 확인 로직
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => MissionCompleteRequestPage(
-                      missionId: item["id"],
-                    ))); //미션 id 넘겨주는곳
-        break;
-      case "FINISH_WAIT":
-        // 미션 완료 승인 로직
-        break;
-      case "FINISH":
-        // 미션 확인 로직
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => MissionCompleteCommentPage(
-                      missionId: item["id"],
-                    ))); //미션 id 넘겨주는곳
-        break;
-      default:
-        // 기본 로직
-        break;
-    }
+  switch (status) {
+    case "CREATE_WAIT":
+      // 미션 생성 승인 로직
+      break;
+    case "YET":
+      // 미션 진행 확인 로직
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => MissionCompleteRequestPage(
+                    missionId: item["id"],
+                  ))); //미션 id 넘겨주는곳
+      break;
+    case "FINISH_WAIT":
+      // 미션 완료 승인 로직
+      break;
+    case "FINISH":
+      // 미션 확인 로직
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => MissionCompleteCommentPage(
+                    missionId: item["id"],
+                    item: item,
+                  ))); //미션 id 넘겨주는곳
+      break;
+    default:
+      // 기본 로직
+      break;
   }
+}
