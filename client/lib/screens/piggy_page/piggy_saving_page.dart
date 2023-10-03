@@ -91,10 +91,10 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 32),
+            padding: const EdgeInsets.only(top: 24),
             child: Column(
               children: [
-                Text(widget.piggyDetailInfo['content'], style: TextStyle(fontSize: 24),),
+                Text(widget.piggyDetailInfo['content'], style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: roundedMemoryImg(img: widget.piggyDetailInfo['savedImage'], size: 150),
@@ -103,19 +103,12 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      amount,
+                      amount != '' ? formattedMoney(int.parse(amount)) : '원',
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 30,
                         fontWeight: FontWeight.bold,
                         color: validateText != '' ? Colors.red : Colors.black),
                     ),
-                    Text(
-                      '원', 
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: validateText != '' ? Colors.red : Colors.black
-                      ),
-                    )
                   ],
                 ),
                 Text(
