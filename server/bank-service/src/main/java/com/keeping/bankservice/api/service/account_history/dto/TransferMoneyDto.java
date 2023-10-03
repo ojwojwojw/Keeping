@@ -27,4 +27,11 @@ public class TransferMoneyDto {
                 .money(request.getMoney())
                 .build();
     }
+
+    public static TransferMoneyDto toDto(String childKey, int money) {
+        return TransferMoneyDto.builder()
+                .childKey(childKey)
+                .money(money)
+                .build();
+    }
 }

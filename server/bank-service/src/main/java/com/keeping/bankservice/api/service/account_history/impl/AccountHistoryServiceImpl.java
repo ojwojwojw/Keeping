@@ -37,6 +37,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -278,7 +279,10 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         Long total = 0l;
         for (Account account : accounts) {
             Long result = accountHistoryQueryRepository.countMonthExpense(account, startDateTime, endDateTime);
-            total += result;
+
+            if(result != null) {
+                total += result;
+            }
         }
 
         return total;
@@ -311,7 +315,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
         List<MemberKeyResponse> memberKeyResponseList = memberFeignClient.getChildMemberKey().getResultBody();
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         LocalDateTime startDateTime = today.minusDays(1).atStartOfDay();
         LocalDateTime endDateTime = today.minusDays(1).atTime(LocalTime.MAX);
 
@@ -342,7 +346,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
                 transactionList.add(showAccountHistoryResponse);
             }
 
-            ShowChildHistoryResponse showChildHistoryResponse = ShowChildHistoryResponse.toResponse(childKey, memberKeyResponse.getParentKey(), transactionList);
+            ShowChildHistoryResponse showChildHistoryResponse = ShowChildHistoryResponse.toResponse(memberKeyResponse.getParentKey(), childKey, transactionList);
             response.add((showChildHistoryResponse));
         }
 

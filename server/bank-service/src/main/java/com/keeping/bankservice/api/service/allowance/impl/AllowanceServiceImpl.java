@@ -1,6 +1,8 @@
 package com.keeping.bankservice.api.service.allowance.impl;
 
 import com.keeping.bankservice.api.controller.allowance.response.ShowAllowanceResponse;
+import com.keeping.bankservice.api.service.account_history.AccountHistoryService;
+import com.keeping.bankservice.api.service.account_history.dto.TransferMoneyDto;
 import com.keeping.bankservice.api.service.allowance.AllowanceService;
 import com.keeping.bankservice.api.service.allowance.dto.AddAllowanceDto;
 import com.keeping.bankservice.api.service.allowance.dto.ApproveAllowanceDto;
@@ -14,6 +16,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.keeping.bankservice.global.common.Approve.APPROVE;
@@ -24,6 +32,7 @@ import static com.keeping.bankservice.global.common.Approve.WAIT;
 @RequiredArgsConstructor
 public class AllowanceServiceImpl implements AllowanceService {
 
+    private final AccountHistoryService accountHistoryService;
     private final AllowanceRepository allowanceRepository;
     private final AllowanceQueryRepository allowanceQueryRepository;
 
@@ -41,7 +50,7 @@ public class AllowanceServiceImpl implements AllowanceService {
     }
 
     @Override
-    public void approveAllowance(String memberKey, ApproveAllowanceDto dto) {
+    public void approveAllowance(String memberKey, ApproveAllowanceDto dto) throws URISyntaxException {
         // TODO: 요청을 보낸 사용자가 부모인지 확인하는 부분 필요
 
         Allowance allowance = allowanceRepository.findById(dto.getAllowanceId())
@@ -50,7 +59,8 @@ public class AllowanceServiceImpl implements AllowanceService {
         allowance.updateApproveStatus(dto.getApprove());
 
         if(dto.getApprove() == APPROVE) {
-            // TODO: 자녀에게 용돈 주는 부분 필요
+            TransferMoneyDto transferMoneyDto = TransferMoneyDto.toDto(dto.getChildKey(), allowance.getMoney());
+            accountHistoryService.transferMoney(memberKey, transferMoneyDto);
         }
     }
 
@@ -74,5 +84,21 @@ public class AllowanceServiceImpl implements AllowanceService {
         List<ShowAllowanceResponse> result = allowanceQueryRepository.showTypeAllowances(targetKey, approve);
 
         return result;
+    }
+
+    @Override
+    public int countMonthAllowance(String memberKey, String targetKey) {
+        if(!targetKey.equals(memberKey)) {
+            // TODO: 타켓키가 멤버키의 자식인지 확인하는 부분 필요
+        }
+
+        YearMonth month = YearMonth.now(ZoneId.of("Asia/Seoul"));
+        LocalDate startDate = month.atDay(1);
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = startDate.plusMonths(1).atStartOfDay().minusSeconds(1);
+
+        int count = allowanceQueryRepository.countMonthAllowance(targetKey, startDateTime, endDateTime);
+
+        return count;
     }
 }
