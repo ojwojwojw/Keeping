@@ -274,6 +274,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => QeustionAnswerPage(
+                                  questionDate: data["createdDate"].toString().substring(0,10),
                                   questionText: data["content"],
                                   questionId: data["id"],
                                 ),
@@ -713,6 +714,7 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ParentQeustionAnswerPage(
+                                  questionDate: data['createdDate'].toString().substring(0,10),
                                   questionText: data["content"],
                                   questionId: data["id"],
                                 ),
