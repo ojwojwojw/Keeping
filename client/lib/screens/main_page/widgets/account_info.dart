@@ -8,6 +8,7 @@ import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_fut
 import 'package:keeping/screens/make_account_page/make_account_page.dart';
 import 'package:keeping/screens/parent_accept_request_money/parent_accept_request_money.dart';
 import 'package:keeping/screens/request_pocket_money_page/child_request_money_page.dart';
+import 'package:keeping/screens/send_money_regular_page/send_money_regular_page.dart';
 import 'package:keeping/screens/send_pocket_money_page/send_pocket_money_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
@@ -215,7 +216,7 @@ Row sendTypeBtns(BuildContext context) {
         ),        
         '정기로\n보내기', 
         context, 
-        SendPocketMoneyPage()
+        SendMoneyRegularPage()
       ),
       sendTypeModalBtn(
         Icon(

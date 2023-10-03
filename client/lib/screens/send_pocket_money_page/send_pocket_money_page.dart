@@ -8,6 +8,7 @@ import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/completed_page.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/number_keyboard.dart'; // 새로 추가된 키보드 위젯 임포트
 import 'package:provider/provider.dart';
@@ -87,30 +88,40 @@ class _SendPocketMoneyPageState extends State<SendPocketMoneyPage> {
       appBar: MyHeader(
         text: '용돈 보내기',
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              SizedBox(height: 60),
-              renderWhoReceiveMoney(),
-              SizedBox(height: 70),
-              sendMoneyField(),
-              SizedBox(height: 30),
-              Text(
-                validateText,
-                style: TextStyle(color: Colors.grey[800]),
+      body: Center(
+        child: Column(
+          children: [
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                    child: Column(
+                      children: [
+                        SizedBox(height: 40),
+                        renderWhoReceiveMoney(),
+                        SizedBox(height: 50),
+                        sendMoneyField(),
+                        SizedBox(height: 30),
+                        Text(
+                          validateText,
+                          style: TextStyle(color: Colors.grey[800]),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  renderAvailableWithdrawalBalance(formattedBalance),
+                  SizedBox(height: 30), // 이 부분을 조정하여 원하는 간격을 만듭니다.
+                  NumberKeyboard(
+                    onNumberPress: onNumberPress,
+                    onBackspacePress: onBackspacePress,
+                  ),
+                ],
               ),
-              SizedBox(
-                height: 10,
-              ),
-              renderAvailableWithdrawalBalance(formattedBalance),
-              SizedBox(height: 20),
-              NumberKeyboard(
-                onNumberPress: onNumberPress,
-                onBackspacePress: onBackspacePress,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: BottomBtn(
@@ -124,12 +135,14 @@ class _SendPocketMoneyPageState extends State<SendPocketMoneyPage> {
               childKey: _childKey);
           if (response['resultStatus']['successCode'] == 0) {
             Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CompletedAndGoPage(
-                      text: "용돈을 보냈어요!",
-                      targetPage: ParentMainPage(),
-                    )));
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CompletedPage(
+                          text: "용돈을 보냈어요!",
+                          button: ConfirmBtn(
+                            action: ParentMainPage(),
+                          ),
+                        )));
           }
           print('용돈 송금 완');
         },

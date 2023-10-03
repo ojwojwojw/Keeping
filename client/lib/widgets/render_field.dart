@@ -4,7 +4,7 @@ import 'package:keeping/screens/allowance_ledger_page/widgets/category_dropdown_
 import 'package:keeping/styles.dart';
 
 Padding renderTextFormField({
-  required String label,
+  String? label,
   String? hintText,
   FormFieldSetter? onSaved,
   FormFieldValidator? validator,
@@ -21,14 +21,15 @@ Padding renderTextFormField({
               width: width,
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        label,
-                        style: labelStyle(),
-                      )
-                    ],
-                  ),
+                  if (label != null) // label이 null이 아닌 경우에만 렌더링
+                    Row(
+                      children: [
+                        Text(
+                          label,
+                          style: labelStyle(),
+                        )
+                      ],
+                    ),
                   TextFormField(
                       onSaved: onSaved,
                       validator: validator,
@@ -227,9 +228,8 @@ Padding renderCategoryField(Function selectCategory, String selectedCategory,
             height: 20,
           ),
           CategoryDropdownBtn(
-            selectedCategory: selectedCategory,
-            selectCategory: selectCategory
-          )
+              selectedCategory: selectedCategory,
+              selectCategory: selectCategory)
         ],
       ),
     )),
@@ -304,10 +304,8 @@ class BirthdayFormatter extends TextInputFormatter {
   }
 }
 
-
 // 라벨 없이//
 Padding renderTextFormFieldNonLabel({
-  
   String? hintText,
   FormFieldSetter? onSaved,
   FormFieldValidator? validator,
@@ -324,7 +322,6 @@ Padding renderTextFormFieldNonLabel({
               width: width,
               child: Column(
                 children: [
-                  
                   TextFormField(
                       onSaved: onSaved,
                       validator: validator,

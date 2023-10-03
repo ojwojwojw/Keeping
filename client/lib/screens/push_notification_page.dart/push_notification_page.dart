@@ -170,11 +170,8 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
         if (noti['createdDate'] == null) {
           final now = DateTime.now();
           FormatDate = formattedMDDate(now);
-          // final formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-          // FormatDate = formatter.format(now);
         } else {
-          FormatDate = formattedMDDate(noti['createdDate']);
-          // FormatDate = noti['createdDate'];
+          FormatDate = formattedMDDate(DateTime.parse(noti['createdDate']));
         }
 
         // 알림을 랩핑하는 컨테이너
