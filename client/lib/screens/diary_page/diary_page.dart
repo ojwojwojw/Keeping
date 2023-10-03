@@ -273,7 +273,8 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ParentQeustionAnswerPage(
+                                builder: (context) => QeustionAnswerPage(
+                                  questionDate: data["createdDate"].toString().substring(0,10),
                                   questionText: data["content"],
                                   questionId: data["id"],
                                 ),
@@ -439,7 +440,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
 }
 
 //부모 일기 페이지
-class ParentDiaryPage extends StatefulWidget {
+class ParentDiaryPage extends StatefulWidget { 
   const ParentDiaryPage({super.key});
 
   @override
@@ -713,6 +714,7 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ParentQeustionAnswerPage(
+                                  questionDate: data['createdDate'].toString().substring(0,10),
                                   questionText: data["content"],
                                   questionId: data["id"],
                                 ),
