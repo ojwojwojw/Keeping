@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -122,6 +123,7 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => ChildDiaryDetailPage(
+                      index: index + 1,
                       item: item), // DetailPage는 새로운 페이지의 위젯입니다.
                 ),
               );
@@ -196,8 +198,11 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
 //자녀 일기 상세 조회 페이지 //
 
 class ChildDiaryDetailPage extends StatefulWidget {
+  final int index;
   final Map<String, dynamic> item;
-  const ChildDiaryDetailPage({Key? key, required this.item}) : super(key: key);
+  const ChildDiaryDetailPage(
+      {Key? key, required this.item, required this.index})
+      : super(key: key);
 
   @override
   State<ChildDiaryDetailPage> createState() => _ChildDiaryDetailPageState();
@@ -250,6 +255,12 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  height: 10,
+                  width: 410,
+                  color: Color(0xFF9271C8),
+                  child: SizedBox(),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -340,6 +351,16 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                           color: Colors.grey[500],
                         ),
                       ),
+
+                      Text(
+                        "${widget.index}번째 질문",
+                        style: TextStyle(
+                          fontSize: 10.0,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                      SizedBox(height: 16.0),
+
                       SizedBox(height: 16.0),
 
                       Text(
@@ -380,6 +401,26 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                         ],
                       ),
 
+                      SizedBox(
+                        height: 145,
+                      ),
+                      //댓글페이지로 가는버튼 //
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DiaryCommentPage(
+                                    questionId: data["id"],
+                                    index: widget.index),
+                              ),
+                            );
+                          },
+                          child: Image.asset('assets/image/sms.png',
+                              width: 40.0, height: 40.0),
+                        ),
+                      ]),
                       // Text(
                       //   "생성 여부: ${data["isCreated"] == null ? "정보 없음" : (data["isCreated"] ? "true" : "false")}",
                       //   style: TextStyle(fontSize: 18.0),
@@ -392,6 +433,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
           }
         },
       ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 }
@@ -406,6 +448,15 @@ class ParentDiaryPage extends StatefulWidget {
 
 class _ParentDiaryPageState extends State<ParentDiaryPage> {
   List<Map<String, dynamic>> data = [];
+  late String? selectedMemberKey;
+  late ChildInfoProvider childInfoProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    childInfoProvider = Provider.of<ChildInfoProvider>(context, listen: false);
+    selectedMemberKey = childInfoProvider.memberKey;
+  }
 
   //일기 보관함 데이터를 가져오는 비동기 요청
   Future<List<Map<String, dynamic>>> getData() async {
@@ -422,8 +473,14 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
       // 요청이 성공했을 때 처리
       if (response.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(
-            response.data['resultBody']['questions']);
+        // return List<Map<String, dynamic>>.from(
+        //     response.data['resultBody']['questions']);
+        // 멤버키를 기반으로 필터링 수행
+        var filteredData = List<Map<String, dynamic>>.from(
+                response.data['resultBody']['questions'])
+            .where((item) => item['childMemberKey'] == selectedMemberKey)
+            .toList();
+        return filteredData;
       } else {
         throw Exception('Failed to fetch data');
       }
@@ -506,7 +563,8 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => ParentDiaryDetailPage(
-                      item: item), // DetailPage는 새로운 페이지의 위젯입니다.
+                      item: item,
+                      index: index + 1), // DetailPage는 새로운 페이지의 위젯입니다.
                 ),
               );
             },
@@ -579,8 +637,11 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
 
 //부모 일기 상세조회 페이지 //
 class ParentDiaryDetailPage extends StatefulWidget {
+  final int index;
   final Map<String, dynamic> item;
-  const ParentDiaryDetailPage({Key? key, required this.item}) : super(key: key);
+  const ParentDiaryDetailPage(
+      {Key? key, required this.item, required this.index})
+      : super(key: key);
 
   @override
   State<ParentDiaryDetailPage> createState() => _ParentDiaryDetailPageState();
@@ -724,6 +785,14 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                       ),
 
                       Text(
+                        "${widget.index}번째 질문",
+                        style: TextStyle(
+                          fontSize: 10.0,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+
+                      Text(
                         "생성 날짜: ${data["createdDate"].toString().substring(0, 10)}",
                         style: TextStyle(
                           fontSize: 10.0,
@@ -767,7 +836,26 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                         style: TextStyle(fontSize: 18.0),
                       ),
 
-                      SizedBox(height: 16.0),
+                      SizedBox(height: 145.0),
+
+                      //댓글페이지로 가는버튼 //
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DiaryCommentPage(
+                                  questionId: data["id"],
+                                  index: widget.index,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Image.asset('assets/image/sms.png',
+                              width: 40.0, height: 40.0),
+                        ),
+                      ]),
                       // Text(
                       //   "생성 여부: ${data["isCreated"] == null ? "정보 없음" : (data["isCreated"] ? "true" : "false")}",
                       //   style: TextStyle(fontSize: 18.0),
@@ -780,52 +868,157 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
           }
         },
       ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 }
 
 //일기 댓글 페이지 // //자식부모 유저 둘다 사용 가능하게 로직 짜기!
-class ParentDiaryCommentPage extends StatefulWidget {
-  const ParentDiaryCommentPage({super.key});
+class DiaryCommentPage extends StatefulWidget {
+  final questionId;
+  final index;
+  const DiaryCommentPage(
+      {super.key, required this.questionId, required this.index});
+
+  //질문 아이디 받아오기
 
   @override
-  State<ParentDiaryCommentPage> createState() => _ParentDiaryCommentPageState();
+  State<DiaryCommentPage> createState() => _DiaryCommentPageState();
 }
 
-class _ParentDiaryCommentPageState extends State<ParentDiaryCommentPage> {
+class _DiaryCommentPageState extends State<DiaryCommentPage> {
   @override
   Widget build(BuildContext context) {
-    late List<Map<String, dynamic>> data;
+    late Map<String, dynamic> data;
+    String? memberKey; //로그인한 유저의 멤버키
 
-    Future<List<Map<String, dynamic>>> getData() async {
+    //몇분전인지 출력하는 함수//
+    String timeAgo(String timeString) {
+      DateTime givenTime = DateTime.parse(timeString).toUtc();
+      DateTime currentTime = DateTime.now().toUtc();
+      Duration difference = currentTime.difference(givenTime);
+
+      int differenceInMinutes = difference.inMinutes - 540;
+
+      if (differenceInMinutes < 60) {
+        return "$differenceInMinutes분 전";
+      } else if (differenceInMinutes < 24 * 60) {
+        return "${differenceInMinutes ~/ 60}시간 전";
+      } else {
+        return "${differenceInMinutes ~/ (24 * 60)}일 전";
+      }
+    }
+
+    TextEditingController _commentController = TextEditingController();
+    //댓글 작성하는 함수
+    _submitComment() async {
+      // 로그인한 유저의 멤버키 및 액세스 토큰 가져오기
+      var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+      var memberKey = userProvider.memberKey;
+      var accessToken = userProvider.accessToken;
+
+      // Dio 객체 생성
+      final dio = Dio();
+
+      // 요청 본문
+      final requestBody = {
+        "questionId": widget.questionId, // 알맞은 질문 ID를 사용하세요.
+        "content": _commentController.text, // 사용자가 입력한 댓글 내용
+      };
+
+      try {
+        final response = await dio.post(
+          "$_baseUrl/question-service/api/$memberKey/comment",
+          data: requestBody,
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+        );
+
+        if (response.statusCode == 200) {
+          print("댓글 작성 성공");
+          _commentController.clear();
+          // 댓글 목록을 업데이트하려면 setState를 호출합니다.
+          setState(() {});
+        } else {
+          print("댓글 작성 실패: ${response.data}");
+        }
+      } catch (error) {
+        print("댓글 작성 중 오류 발생: $error");
+      }
+    }
+
+    _deleteComment(int commentId) async {
+      // 로그인한 유저의 멤버키 및 액세스 토큰 가져오기
+      var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+      var memberKey = userProvider.memberKey;
+      var accessToken = userProvider.accessToken;
+
+      // Dio 객체 생성
+      final dio = Dio();
+
+      try {
+        final response = await dio.delete(
+          "$_baseUrl/question-service/api/$memberKey/comment/$commentId",
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+        );
+
+        if (response.statusCode == 200) {
+          print("댓글 삭제 성공");
+          // 댓글 목록을 업데이트하려면 setState를 호출합니다.
+          setState(() {});
+        } else {
+          print("댓글 삭제 실패: ${response.data}");
+        }
+      } catch (error) {
+        print("댓글 삭제 중 오류 발생: $error");
+      }
+    }
+
+    //댓글 데이터 비동기 요청
+    Future<Map<String, dynamic>> getData() async {
       // Dio 객체 생성
       final dio = Dio();
       var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
-      var memberKey = userProvider.memberKey;
+      memberKey = userProvider.memberKey; // 현재 로그인한 유저의 멤버키
       var accessToken = userProvider.accessToken;
 
       try {
         // GET 요청 보내기
         final response = await dio.get(
-            "$_baseUrl/question-service/api/$memberKey/questions",
+            "$_baseUrl/question-service/api/$memberKey/questions/${widget.questionId}",
             options:
                 Options(headers: {'Authorization': 'Bearer $accessToken'}));
         // 요청이 성공했을 때 처리
         if (response.statusCode == 200) {
-          return List<Map<String, dynamic>>.from(
-              response.data['resultBody']['questions']);
+          print('댓글정보 요청 성공 200');
+          print(response.data['resultBody']['comments']);
+
+          var commentsData = response.data['resultBody']['comments'];
+          var questionData = response.data['resultBody']['question'];
+          return {
+            'comments': commentsData != null
+                ? List<Map<String, dynamic>>.from(commentsData)
+                : [],
+            'question': questionData != null
+                ? questionData // 직접적인 Map으로 반환합니다.
+                : {}
+          };
         } else {
           throw Exception('Failed to fetch data');
         }
       } catch (error) {
         // 요청이 실패했을 때 처리
         print('Error: $error');
-        return []; // 빈 리스트 반환
+        return {}; // 빈 리스트 반환
       }
     }
 
+    //퓨터빌더의 결과로 리턴 하는 페이지//
     return Scaffold(
-      appBar: MyHeader(text: "일기댓글(부모)"),
+      appBar: MyHeader(
+        text: "일기댓글",
+        bgColor: Color(0xFF6E2FD5),
+        elementColor: Colors.white,
+      ),
       body: FutureBuilder(
         // 비동기 데이터를 기다리고 UI를 구성
         future: getData(),
@@ -835,14 +1028,163 @@ class _ParentDiaryCommentPageState extends State<ParentDiaryCommentPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('에러 발생: ${snapshot.error}'));
           } else {
-            data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
-            return Center(
-              child: Column(
-                children: [],
+            data = snapshot.data ?? {};
+
+            return SingleChildScrollView(
+              child: Center(
+                child: Column(
+                  children: [
+                    Container(
+                      height: 10,
+                      width: 410,
+                      color: Color(0xFF9271C8),
+                      child: SizedBox(),
+                    ),
+
+                    SizedBox(
+                      height: 15,
+                    ),
+                    // Question data
+                    Text(
+                      "#" + widget.index.toString() + "번째 질문",
+                      style: TextStyle(fontSize: 25, color: Colors.grey[400]),
+                    ),
+
+                    Text(
+                      data['question']['content'],
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    SizedBox(
+                      height: 15,
+                    ),
+
+                    //댓글 데이터//
+                    ListView.builder(
+                        shrinkWrap:
+                            true, // ListView를 Column 내부에서 사용하기 위해 필요합니다.
+                        physics:
+                            NeverScrollableScrollPhysics(), // ListView 내부 스크롤을 비활성화합니다.
+                        itemCount:
+                            data['comments']?.length ?? 0, // 댓글 리스트의 길이를 사용합니다.
+                        itemBuilder: (context, index) {
+                          var comment = data['comments'][index];
+                          bool isCurrentUserComment =
+                              comment['memberKey'] == memberKey;
+
+                          // 공통으로 사용할 날짜 위젯
+                          var dateWidget = Text(
+                            "${timeAgo(comment['createdDate'])}",
+                            style: TextStyle(
+                                color: isCurrentUserComment
+                                    ? Color.fromARGB(255, 136, 136, 136)
+                                    : const Color.fromARGB(255, 128, 128, 128)),
+                          );
+
+                          // 댓글 텍스트 위젯
+                          var commentWidget = Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: isCurrentUserComment
+                                  ? Color(0xFF6E2FD5)
+                                  : Color(0xFFE0E0E0),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              comment['content'],
+                              style: TextStyle(
+                                color: isCurrentUserComment
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                          );
+
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: 8,
+                              ),
+                              GestureDetector(
+                                onLongPress: () {
+                                  if (isCurrentUserComment) {
+                                    // 꾸욱 누르면 삭제 확인 모달 표시
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: Text('댓글 삭제'),
+                                        content: Text('댓글을 삭제하시겠습니까?'),
+                                        actions: [
+                                          TextButton(
+                                            child: Text('취소'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: Text('확인'),
+                                            onPressed: () {
+                                              _deleteComment(comment[
+                                                  'commentId']); // 댓글 삭제 함수 호출
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Row(
+                                  mainAxisAlignment: isCurrentUserComment
+                                      ? MainAxisAlignment.end
+                                      : MainAxisAlignment.start,
+                                  children: [
+                                    if (isCurrentUserComment)
+                                      dateWidget, // 왼쪽 정렬일 때 날짜를 먼저 표시
+                                    SizedBox(width: 8),
+                                    commentWidget,
+                                    if (!isCurrentUserComment)
+                                      dateWidget, // 오른쪽 정렬일 때 날짜를 나중에 표시
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        })
+
+                    ///
+                  ],
+                ),
               ),
             );
           }
         },
+      ),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _commentController,
+                  decoration: InputDecoration(
+                    hintText: '댓글을 작성하세요...',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.send),
+                onPressed: _submitComment,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
