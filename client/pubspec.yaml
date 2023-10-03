@@ -100,7 +100,9 @@ flutter:
     - assets/image/mission/new_mission.png
     - assets/image/question/answer.png
     - assets/image/question/folder.png
+    - assets/image/question/maintitle.png
     - assets/image/question/mic.png
+    - assets/image/question/micandfaces.png
     - assets/image/question/pencil.png
     - assets/image/question/reply.png
     - assets/image/question/send_question.png

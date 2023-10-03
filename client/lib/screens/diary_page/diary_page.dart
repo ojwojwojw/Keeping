@@ -273,7 +273,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ParentQeustionAnswerPage(
+                                builder: (context) => QeustionAnswerPage(
                                   questionText: data["content"],
                                   questionId: data["id"],
                                 ),
@@ -439,7 +439,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
 }
 
 //부모 일기 페이지
-class ParentDiaryPage extends StatefulWidget {
+class ParentDiaryPage extends StatefulWidget { 
   const ParentDiaryPage({super.key});
 
   @override
