@@ -87,28 +87,30 @@ class _SendPocketMoneyPageState extends State<SendPocketMoneyPage> {
       appBar: MyHeader(
         text: '용돈 보내기',
       ),
-      body: Center(
-        child: Column(
-          children: [
-            SizedBox(height: 60),
-            renderWhoReceiveMoney(),
-            SizedBox(height: 80),
-            sendMoneyField(),
-            SizedBox(height: 50),
-            Text(
-              validateText,
-              style: TextStyle(color: Colors.grey[800]),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            renderAvailableWithdrawalBalance(formattedBalance),
-            SizedBox(height: 20),
-            NumberKeyboard(
-              onNumberPress: onNumberPress,
-              onBackspacePress: onBackspacePress,
-            )
-          ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              SizedBox(height: 60),
+              renderWhoReceiveMoney(),
+              SizedBox(height: 70),
+              sendMoneyField(),
+              SizedBox(height: 30),
+              Text(
+                validateText,
+                style: TextStyle(color: Colors.grey[800]),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              renderAvailableWithdrawalBalance(formattedBalance),
+              SizedBox(height: 20),
+              NumberKeyboard(
+                onNumberPress: onNumberPress,
+                onBackspacePress: onBackspacePress,
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomBtn(

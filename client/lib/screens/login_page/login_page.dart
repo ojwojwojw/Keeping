@@ -58,6 +58,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     _userId = TextEditingController();
     _userPw = TextEditingController();
+    _loginResult = '';
   }
 
   // 페이지가 파기될 때 컨트롤러를 해제
