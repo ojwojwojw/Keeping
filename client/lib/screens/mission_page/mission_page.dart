@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
+import 'package:keeping/styles.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -567,7 +568,9 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
 // 미션 완료 커멘트 폼 페이지
 class MissionCompleteCommentPage extends StatefulWidget {
   final int? missionId;
-  const MissionCompleteCommentPage({super.key, required this.missionId});
+  final Map<String, dynamic> item;
+  const MissionCompleteCommentPage(
+      {super.key, required this.missionId, required this.item});
 
   @override
   State<MissionCompleteCommentPage> createState() =>
@@ -629,8 +632,13 @@ class _MissionCompleteCommentPageState
       body: Center(
         child: Column(
           children: [
-            renderTextFormField(
-                label: "완료 커멘트를 남겨봐요",
+
+
+
+            roundedAssetImg(imgPath: 'assets/image/temp_image.jpg' ,size: 200), //프로필 이미지 들어갈 곳
+
+
+            violetBoxFormField(
                 hintText: "완료 커멘트를 남겨봐요",
                 onChange: (value) {
                   setState(() {
@@ -641,7 +649,7 @@ class _MissionCompleteCommentPageState
         ),
       ),
       bottomNavigationBar: BottomBtn(
-        text: "미션 완료 커멘트 남기기",
+        text: "기억하기",
         action: _sendData,
         isDisabled: comment.isEmpty,
       ),

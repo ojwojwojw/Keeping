@@ -285,7 +285,7 @@ Widget _changeChildrenList(BuildContext context, List<dynamic> childrenList) {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 12, right: 8),
-                          child: roundedAssetImg(imgPath: 'assets/image/temp_image.jpg'),
+                          child: roundedAssetImg(imgPath: 'assets/image/temp_image.jpg' , size: 50),
                         ),
                         Text(e['name'], style: TextStyle(fontSize: 20),)
                       ],

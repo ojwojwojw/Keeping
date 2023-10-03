@@ -70,7 +70,7 @@ class _MissionFiltersState
               text: '이전 미션',
               isSelected: widget.Idx == 4,
               onPressed: () {
-                widget.setIdx(4);
+                widget.setIdx(4);  
                 widget.setFilter('FINISH');
               },
             ),
