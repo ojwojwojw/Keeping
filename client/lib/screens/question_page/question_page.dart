@@ -47,98 +47,142 @@ class _QuestionPageState extends State<QuestionPage> {
               return Center(child: Text('에러 발생: ${snapshot.error}'));
             } else {
               data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
-              return Center(
-                child: Column(children: [
-                  //
-
-                  Image.asset(
-                    'assets/image/question/maintitle.png',
-                    width: 250.0,
-                    height: 100.0,
-                    fit: BoxFit.cover,
-                  ),
-
-                  Image.asset(
-                    'assets/image/question/micandfaces.png',
-                    width: 275.0,
-                    height: 270.0,
-                    fit: BoxFit.cover,
-                  ),
-
-                  SizedBox(
-                    height: 15,
-                  ),
-
-                  GestureDetector(
-                    onTap: () {
-                      if (data.length >= 1) {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              ChildDiaryDetailPage(item: data[0], index: 0),
-                        ));
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('알림'),
-                            content: Text('오늘의 질문이 없습니다. 페이지로 이동할 수 없습니다.'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('확인'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.symmetric(horizontal: 24),
-                      height: 250,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.white, width: 2.0),
-                        borderRadius: BorderRadius.circular(10.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
-                        crossAxisAlignment: CrossAxisAlignment.center, // 가운데 정렬
-                        children: [
-                          // Text(DateFormat('yyyy년 MM월 dd일').format(DateTime.now()) + "의 질문",
-                          //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                          data != null && data.isNotEmpty
-                              ? Text(
-                                  data[0]["content"],
-                                  style: TextStyle(fontSize: 20),
-                                )
-                              : Text("오늘의 질문이 없습니다. "),
-                          Row(
-                            children: [
-                              _ansBtn(),
-                              _diaryBtn(),
-                            ],
-                          ),
-                        ],
-                      ),
+              return Stack(children: [
+                // 배경 이미지
+                Positioned(
+                  top: 50, // top 위치 조절
+                  left: 0,
+                  right: 0,
+                  child: Align(
+                    alignment: Alignment.center, // 좌우로 가운데 정렬
+                    child: Image.asset(
+                      'assets/image/question/micandfaces.png',
+                      width: 350,
+                      height: 350,
+                      fit: BoxFit.cover,
                     ),
                   ),
+                ),
 
-                  SizedBox(
-                    height: 16,
+                Positioned(
+                  top: 15, // 바닥에서 50픽셀만큼 떨어지게 위치
+                  left: 0,
+                  right: 0,
+                  child: Image.asset(
+                    'assets/image/question/maintitle.png',
+                    width: 220.0,
+                    height: 120.0,
+                    fit: BoxFit.cover,
                   ),
-                ]),
-              );
+                ),
+
+                Positioned(
+                  bottom: 50, // 바닥에서 50픽셀만큼 떨어지게 위치
+                  left: 0,
+                  right: 0,
+                  child: Column(children: [
+                    //
+
+                    SizedBox(
+                      height: 15,
+                    ),
+
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end, //하단에 정렬
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (data.length >= 1) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ChildDiaryDetailPage(
+                                    item: data[0], index: 0),
+                              ));
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text('알림'),
+                                  content:
+                                      Text('오늘의 질문이 없습니다. 페이지로 이동할 수 없습니다.'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('확인'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            margin: EdgeInsets.symmetric(horizontal: 24),
+                            height: 350,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.7),
+                              borderRadius: BorderRadius.circular(10.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color.fromARGB(255, 0, 0, 0)
+                                      .withOpacity(0.15),
+                                  spreadRadius: 3,
+                                  blurRadius: 3,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 15), // 좌우 여백 15
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      '  Q',
+                                      style: TextStyle(
+                                          fontSize: 32,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10), // 간격 조정
+                                  data != null && data.isNotEmpty
+                                      ? Text(
+                                          data[0]["content"],
+                                          style: TextStyle(fontSize: 20),
+                                          textAlign: TextAlign.center,
+                                        )
+                                      : Text(
+                                          "오늘의 질문이 없습니다.",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                  SizedBox(height: 10), // 간격 조정
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      _ansBtn(),
+                                      SizedBox(width: 10), // 버튼 간 간격
+                                      _diaryBtn(),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(
+                      height: 16,
+                    ),
+                  ]),
+                ),
+              ]);
             }
           }),
       bottomNavigationBar: BottomNav(),
@@ -147,7 +191,7 @@ class _QuestionPageState extends State<QuestionPage> {
 
   Widget _ansBtn() {
     return Container(
-      width: 100,
+      width: 120,
       child: ElevatedButton(
         onPressed: () {
           if (data != null &&
@@ -179,17 +223,22 @@ class _QuestionPageState extends State<QuestionPage> {
           }
         },
         style: ElevatedButton.styleFrom(
-          primary : Colors.red.withOpacity(0.0), 
-          elevation: 0,  // 투명한 빨간색 배경
+            primary: Colors.red.withOpacity(0.0),
+            elevation: 0, // 투명한 빨간색 배경
+            padding: EdgeInsets.zero),
+        child: Image.asset(
+          'assets/image/question/answer.png',
+          width: 140.0,
+          height: 160.0,
+          fit: BoxFit.cover,
         ),
-        child :Image.asset( 'assets/image/question/answer.png', width: 80.0, height: 80.0, fit: BoxFit.cover, ),
       ),
     );
   }
 
   Widget _diaryBtn() {
     return Container(
-      width: 100,
+      width: 120,
       margin: EdgeInsets.symmetric(horizontal: 24),
       child: ElevatedButton(
         onPressed: () {
@@ -197,10 +246,15 @@ class _QuestionPageState extends State<QuestionPage> {
               .push(MaterialPageRoute(builder: (context) => ChildDiaryPage()));
         },
         style: ElevatedButton.styleFrom(
-          primary : Colors.red.withOpacity(0.0), 
-          elevation: 0,  // 투명한 빨간색 배경
+            primary: Colors.red.withOpacity(0.0),
+            elevation: 0, // 투명한 빨간색 배경
+            padding: EdgeInsets.zero),
+        child: Image.asset(
+          'assets/image/question/folder.png',
+          width: 140.0,
+          height: 160.0,
+          fit: BoxFit.cover,
         ),
-        child: Image.asset( 'assets/image/question/folder.png', width: 80.0, height: 80.0, fit: BoxFit.cover, ),
       ),
     );
   }
@@ -298,12 +352,12 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF8320E7),
+      backgroundColor: Color(0xFFA086EE),
       appBar: MyHeader(
-        text: '부모질문',
-        bgColor: Color(0xFF8320E7),
-        backPath: ParentMainPage(),
+        text: '',
+        bgColor: Color(0xFFA086EE),
         elementColor: Colors.white,
+        backPath: ChildMainPage(),
       ),
       body: FutureBuilder(
           future: getData(),
@@ -314,175 +368,215 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
               return Center(child: Text('에러 발생: ${snapshot.error}'));
             } else {
               data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
-              return Center(
-                child: Column(children: [
-                  Container(
-                    height: 10,
-                    width: 410,
-                    color: Color(0xFFD9D9D9).withOpacity(0.5),
-                    child: SizedBox(),
-                  ),
-                  SizedBox(
-                    height: 100,
-                  ),
-                  Text(
-                    '오늘의 질문에 답해보세요',
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.white,
+              return Stack(children: [
+                // 배경 이미지
+                Positioned(
+                  top: 50, // top 위치 조절
+                  left: 0,
+                  right: 0,
+                  child: Align(
+                    alignment: Alignment.center, // 좌우로 가운데 정렬
+                    child: Image.asset(
+                      'assets/image/question/micandfaces.png',
+                      width: 350,
+                      height: 350,
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  SizedBox(
-                    height: 16,
+                ),
+
+                Positioned(
+                  top: 15, // 바닥에서 50픽셀만큼 떨어지게 위치
+                  left: 0,
+                  right: 0,
+                  child: Image.asset(
+                    'assets/image/question/maintitle.png',
+                    width: 220.0,
+                    height: 120.0,
+                    fit: BoxFit.cover,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      if (data.length >= 1) {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ParentDiaryDetailPage(
-                              // 여기는 부모 페이지를 나타내는 클래스로 변경해야 합니다.
-                              item: data[0],
-                              index: 0),
-                        ));
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('알림'),
-                            content: Text('오늘의 질문이 없습니다. 페이지로 이동할 수 없습니다.'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('확인'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.symmetric(horizontal: 24),
-                      height: 150,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.white, width: 2.0),
-                        borderRadius: BorderRadius.circular(10.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            DateFormat('yyyy년 MM월 dd일').format(DateTime.now()) +
-                                "의 질문",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          data != null && data.isNotEmpty
-                              ? Text(
-                                  "Q." + data[0]["content"],
-                                  style: TextStyle(fontSize: 20),
-                                )
-                              : Text("오늘의 질문이 없습니다. "),
-                        ],
-                      ),
+                ),
+
+                Positioned(
+                  bottom: 50, // 바닥에서 50픽셀만큼 떨어지게 위치
+                  left: 0,
+                  right: 0,
+                  child: Column(children: [
+                    //
+
+                    SizedBox(
+                      height: 15,
                     ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: 24),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.white),
-                        foregroundColor:
-                            MaterialStateProperty.all(Colors.black),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ParentQuestionSendPage()));
-                      },
-                      child: Text('내일의 질문 생성하기'),
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: 24),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.white),
-                        foregroundColor:
-                            MaterialStateProperty.all(Colors.black),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ParentDiaryPage()));
-                      },
-                      child: Text('일기 페이지'),
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: 24),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.white),
-                        foregroundColor:
-                            MaterialStateProperty.all(Colors.black),
-                      ),
-                      onPressed: () {
-                        if (data != null &&
-                            data.isNotEmpty &&
-                            data[0]["content"] != null &&
-                            data[0]["id"] != null) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ParentQeustionAnswerPage(
-                              questionText: data[0]["content"]!,
-                              questionId: data[0]["id"]!,
-                            ),
-                          ));
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text('알림'),
-                              content: Text('오늘의 질문이 없습니다.'),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text('확인'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
+
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end, //하단에 정렬
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (data.length >= 1) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ChildDiaryDetailPage(
+                                    item: data[0], index: 0),
+                              ));
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text('알림'),
+                                  content:
+                                      Text('오늘의 질문이 없습니다. 페이지로 이동할 수 없습니다.'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('확인'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            margin: EdgeInsets.symmetric(horizontal: 24),
+                            height: 350,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.7),
+                              borderRadius: BorderRadius.circular(10.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color.fromARGB(255, 0, 0, 0)
+                                      .withOpacity(0.15),
+                                  spreadRadius: 3,
+                                  blurRadius: 3,
+                                  offset: Offset(0, 3),
                                 ),
                               ],
                             ),
-                          );
-                        }
-                      },
-                      child: Text('오늘의 질문 대답하기'),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 15), // 좌우 여백 15
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      '  Q',
+                                      style: TextStyle(
+                                          fontSize: 32,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10), // 간격 조정
+                                  data != null && data.isNotEmpty
+                                      ? Text(
+                                          data[0]["content"],
+                                          style: TextStyle(fontSize: 20),
+                                          textAlign: TextAlign.center,
+                                        )
+                                      : Text(
+                                          "오늘의 질문이 없습니다.",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                  SizedBox(height: 10), // 간격 조정
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      _ansBtn(),
+                                      SizedBox(width: 10), // 버튼 간 간격
+                                      _diaryBtn(),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ]),
-              );
+
+                    SizedBox(
+                      height: 16,
+                    ),
+                  ]),
+                ),
+              ]);
             }
           }),
       bottomNavigationBar: BottomNav(),
+    );
+  }
+
+  Widget _ansBtn() {
+    return Container(
+      width: 120,
+      child: ElevatedButton(
+        onPressed: () {
+          if (data != null &&
+              data.isNotEmpty &&
+              data[0]["content"] != null &&
+              data[0]["id"] != null) {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ParentQeustionAnswerPage(
+                questionText: data[0]["content"]!,
+                questionId: data[0]["id"]!,
+              ),
+            ));
+          } else {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text('알림'),
+                content: Text('오늘의 질문이 없습니다.'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('확인'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            );
+          }
+        },
+        style: ElevatedButton.styleFrom(
+            primary: Colors.red.withOpacity(0.0),
+            elevation: 0, // 투명한 빨간색 배경
+            padding: EdgeInsets.zero),
+        child: Image.asset(
+          'assets/image/question/answer.png',
+          width: 140.0,
+          height: 160.0,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  Widget _diaryBtn() {
+    return Container(
+      width: 120,
+      margin: EdgeInsets.symmetric(horizontal: 24),
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => ParentDiaryPage()));
+        },
+        style: ElevatedButton.styleFrom(
+            primary: Colors.red.withOpacity(0.0),
+            elevation: 0, // 투명한 빨간색 배경
+            padding: EdgeInsets.zero),
+        child: Image.asset(
+          'assets/image/question/folder.png',
+          width: 140.0,
+          height: 160.0,
+          fit: BoxFit.cover,
+        ),
+      ),
     );
   }
 }
