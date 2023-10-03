@@ -21,11 +21,13 @@ class ParentMyPage extends StatefulWidget {
 
 class _ParentMyPageState extends State<ParentMyPage> {
   String? _name;
+  String? profileImage;
 
   @override
   void initState() {
     super.initState();
     _name = Provider.of<UserInfoProvider>(context, listen: false).name;
+    profileImage = context.read<UserInfoProvider>().profileImage;
   }
 
   void gotoEditPwd(BuildContext context) {
@@ -123,7 +125,9 @@ class _ParentMyPageState extends State<ParentMyPage> {
         padding: EdgeInsets.all(15.0), // 모든 방향에 간격을 줍니다.
         child: Row(
           children: [
-            roundedAssetImg(imgPath: 'assets/image/temp_image.jpg', size: 80),
+            roundedAssetImg(
+                imgPath: profileImage ?? 'assets/image/profile/parent1.png',
+                size: 64),
             SizedBox(
               width: 30,
             ),
