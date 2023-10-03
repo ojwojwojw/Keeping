@@ -122,11 +122,13 @@ class CompletedAndGoPage extends StatelessWidget {
                 }
               },
               child: Container(
+                width: 200,
                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 decoration: BoxDecoration(
-                  color: Colors.purple,
+                  color: const Color(0xFF8320E7),
                   borderRadius: BorderRadius.circular(30),
                 ),
+                alignment: Alignment.center, // 추가된 부분
                 child: Text(
                   "확인",
                   style: TextStyle(

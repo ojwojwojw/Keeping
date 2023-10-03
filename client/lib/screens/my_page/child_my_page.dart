@@ -1,15 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/my_page/util/handle_logout.dart';
+import 'package:keeping/screens/user_link_page/before_user_link_page.dart';
+import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/screens/my_page/password_edit_page.dart';
 import 'package:keeping/screens/my_page/phonenum_edit_page.dart';
 
 import 'package:keeping/widgets/bottom_modal.dart';
+import 'package:provider/provider.dart';
 
-class ChildMyPage extends StatelessWidget {
+class ChildMyPage extends StatefulWidget {
   const ChildMyPage({Key? key}) : super(key: key);
-  final name = 'Child';
+
+  @override
+  _ChildMyPageState createState() => _ChildMyPageState();
+}
+
+class _ChildMyPageState extends State<ChildMyPage> {
+  String? _name;
+
+  @override
+  void initState() {
+    super.initState();
+    _name = context.read<UserInfoProvider>().name;
+  }
 
   void gotoEditPwd(BuildContext context) {
     Navigator.push(
@@ -23,6 +39,12 @@ class ChildMyPage extends StatelessWidget {
 
   void logout(BuildContext context) {
     showLogoutConfirmationDialog(context);
+  }
+
+  void handleUserLink(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => BeforeUserLinkPage(), // UserLinkPage로 이동하는 부분
+    ));
   }
 
 // 로그아웃 모달 다이얼로그
@@ -47,34 +69,45 @@ class ChildMyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyHeader(text: '마이페이지', elementColor: Colors.black),
-      body: Center(
-        // 화면 가운데 정렬
-        child: Container(
-          width: 300,
-          child: Column(
-            children: [
-              userInfoBox(),
-              _MyPageDetailedFunctionPage(
-                context,
-                '비밀번호 변경',
-                () => gotoEditPwd(context),
-              ),
-              _MyPageDetailedFunctionPage(
-                context,
-                '휴대폰 번호 변경',
-                () => gotoEditPhone(context),
-              ),
-              _MyPageDetailedFunctionPage(
-                context,
-                '로그아웃',
-                () => logout(context),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              _deleteAccount(context),
-            ],
+      appBar: MyHeader(
+        text: '마이페이지',
+        elementColor: Colors.black,
+      ),
+      body: SingleChildScrollView(
+        // SingleChildScrollView 추가
+        child: Center(
+          // 화면 가운데 정렬
+          child: Container(
+            width: 300,
+            child: Column(
+              children: [
+                userInfoBox(),
+                _MyPageDetailedFunctionPage(
+                  context,
+                  '비밀번호 변경',
+                  () => gotoEditPwd(context),
+                ),
+                _MyPageDetailedFunctionPage(
+                  context,
+                  '휴대폰 번호 변경',
+                  () => gotoEditPhone(context),
+                ),
+                _MyPageDetailedFunctionPage(
+                  context,
+                  '유저 연결하기',
+                  () => handleUserLink(context),
+                ),
+                _MyPageDetailedFunctionPage(
+                  context,
+                  '로그아웃',
+                  () => logout(context),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                _deleteAccount(context),
+              ],
+            ),
           ),
         ),
       ),
@@ -88,22 +121,28 @@ class ChildMyPage extends StatelessWidget {
     return Center(
       child: Container(
         width: 300,
-        height: 150,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Color.fromARGB(255, 185, 185, 185), // 테두리 색상
-            width: 2.0, // 테두리 두께
-          ),
-          borderRadius: BorderRadius.circular(10.0), // 모서리 반경
-        ),
+        height: 120,
+        decoration: roundedBoxWithShadowStyle(),
+        padding: EdgeInsets.all(15.0), // 모든 방향에 간격을 줍니다.
         child: Row(
           children: [
-            Image.asset(
-              'assets/image/temp_image.jpg',
-              width: 100.0,
-              height: 100.0,
+            roundedAssetImg(imgPath: 'assets/image/temp_image.jpg', size: 80),
+            SizedBox(
+              width: 30,
             ),
-            Text('$name 님'),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
+              mainAxisAlignment: MainAxisAlignment.center, // 중앙 정렬
+              children: [
+                Row(children: [
+                  Text('$_name',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text('님,', style: TextStyle(fontSize: 20)),
+                ]),
+                Text('안녕하세요💞', style: TextStyle(fontSize: 17))
+              ],
+            )
           ],
         ),
       ),
@@ -229,12 +268,12 @@ ButtonStyle _detailFunctionBtnStyle() {
   return ButtonStyle(
       backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
       foregroundColor:
-          MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
+          MaterialStateProperty.all<Color>(Color.fromARGB(255, 39, 39, 39)),
       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
         side: BorderSide(
-          color: const Color(0xFF8320E7), // 테두리 색상 설정
+          color: Color.fromARGB(255, 207, 207, 207), // 테두리 색상 설정
           width: 2.0, // 테두리 두께 설정
         ),
       )),
