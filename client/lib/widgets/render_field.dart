@@ -303,3 +303,47 @@ class BirthdayFormatter extends TextInputFormatter {
         selection: TextSelection.collapsed(offset: string.length));
   }
 }
+
+
+// 라벨 없이//
+Padding renderTextFormFieldNonLabel({
+  
+  String? hintText,
+  FormFieldSetter? onSaved,
+  FormFieldValidator? validator,
+  TextEditingController? controller,
+  FormFieldSetter? onChange,
+  isPassword = false,
+  isNumber = false,
+  double width = 340,
+}) {
+  return Padding(
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Center(
+          child: SizedBox(
+              width: width,
+              child: Column(
+                children: [
+                  
+                  TextFormField(
+                      onSaved: onSaved,
+                      validator: validator,
+                      onChanged: onChange,
+                      textInputAction: TextInputAction.next,
+                      controller: controller,
+                      keyboardType: isNumber ? TextInputType.number : null,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      cursorColor: Color(0xFF8320E7),
+                      decoration: InputDecoration(
+                        hintText: hintText,
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF8320E7)),
+                        ),
+                      ),
+                      obscureText: isPassword,
+                      inputFormatters: isNumber
+                          ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))]
+                          : null)
+                ],
+              ))));
+}
