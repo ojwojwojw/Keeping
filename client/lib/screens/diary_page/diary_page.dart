@@ -273,7 +273,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ParentQeustionAnswerPage(
+                                builder: (context) => QeustionAnswerPage(
                                   questionText: data["content"],
                                   questionId: data["id"],
                                 ),

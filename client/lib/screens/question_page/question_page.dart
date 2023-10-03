@@ -228,8 +228,8 @@ class _QuestionPageState extends State<QuestionPage> {
             padding: EdgeInsets.zero),
         child: Image.asset(
           'assets/image/question/answer.png',
-          width: 140.0,
-          height: 160.0,
+          width: 100.0,
+          height: 100.0,
           fit: BoxFit.cover,
         ),
       ),
@@ -251,8 +251,8 @@ class _QuestionPageState extends State<QuestionPage> {
             padding: EdgeInsets.zero),
         child: Image.asset(
           'assets/image/question/folder.png',
-          width: 140.0,
-          height: 160.0,
+          width: 100.0,
+          height: 100.0,
           fit: BoxFit.cover,
         ),
       ),
@@ -549,8 +549,8 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
             padding: EdgeInsets.zero),
         child: Image.asset(
           'assets/image/question/answer.png',
-          width: 140.0,
-          height: 160.0,
+          width: 100.0,
+          height: 100.0,
           fit: BoxFit.cover,
         ),
       ),
@@ -572,8 +572,8 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
             padding: EdgeInsets.zero),
         child: Image.asset(
           'assets/image/question/folder.png',
-          width: 140.0,
-          height: 160.0,
+          width: 100.0,
+          height: 100.0,
           fit: BoxFit.cover,
         ),
       ),
@@ -992,46 +992,28 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
     }
   }
 
+  //위젯 빌드
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: '질문 답하기(자녀)',
-        bgColor: Color(0xFF6E2FD5),
-        elementColor: Colors.white,
+        text: '질문 답하기',
       ),
       body: Column(
         children: [
           SizedBox(
             height: 15,
           ),
-          //////////////////////////
-          Padding(
-            padding: EdgeInsets.only(left: 0.0), // 왼쪽 패딩만 설정
-            child: Container(
-              padding: EdgeInsets.all(10.0), // 내부 패딩
-              decoration: BoxDecoration(
-                color: Colors.deepPurple[100], // 연보라색 배경
-                borderRadius: BorderRadius.circular(10.0), // 둥근 테두리
-              ),
-              child: Text(
-                "질문 답하기",
-                style: TextStyle(
-                  color: Colors.purple, // 보라색 글씨
-                  fontSize: 16.0, // 글씨 크기
-                ),
-              ),
-            ),
-          ),
-          ///////////////////
-          ///
+          
+
+
 
           SizedBox(
             height: 15,
           ),
 
           Image.asset(
-            'assets/image/c_face.png',
+            'assets/image/question/answer.png',
             width: 100.0,
             height: 100.0,
             fit: BoxFit.cover,
