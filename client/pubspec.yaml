@@ -94,6 +94,16 @@ flutter:
     - lib/.env
     - assets/image/temp_image.jpg
     - assets/image/money_coins.png
+    - assets/image/diary/diary.png
+    - assets/image/mission/how_much.png
+    - assets/image/mission/what_mission.png
+    - assets/image/mission/new_mission.png
+    - assets/image/question/answer.png
+    - assets/image/question/folder.png
+    - assets/image/question/mic.png
+    - assets/image/question/pencil.png
+    - assets/image/question/reply.png
+    - assets/image/question/send_question.png
     - assets/image/c_face.png
     - assets/image/edit_square.png
     - assets/image/m_face.png

@@ -4,9 +4,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_detail_create_page.dart';
+import 'package:keeping/screens/allowance_ledger_page/select_ocr_img_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/camera_test2.dart';
 import 'package:keeping/util/display_format.dart';
+import 'package:keeping/util/ocr_test.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
 import 'package:provider/provider.dart';
 
@@ -188,13 +190,14 @@ Row moneyRecordModalBtns(BuildContext context) {
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       moneyRecordModalBtn(
-        Icons.receipt_long, 
+        '🧾', 
         '영수증 찍기', 
         context, 
-        CameraTest()
+        'camera',
       ),
+      SizedBox(width: 16,),
       moneyRecordModalBtn(
-        Icons.create,
+        '🖊️',
         '직접 쓰기',
         context,
         AllowanceLedgerDetailCreatePage()
@@ -204,31 +207,45 @@ Row moneyRecordModalBtns(BuildContext context) {
 }
 
 // 용돈기입장 내역 클릭시 나오는 모달에 들어가는 버튼 한 개
-InkWell moneyRecordModalBtn(
-    IconData icon, String text, BuildContext context, Widget path) {
-  return InkWell(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => path));
-      },
-      child: Container(
-        width: 150,
-        height: 150,
-        decoration: _moneyRecordModalBtnStyle(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 50,
-            ),
-            Text(
-              text,
-              style: TextStyle(fontSize: 20),
-            )
-          ],
-        ),
-      ));
+Widget moneyRecordModalBtn(
+    String icon, String text, BuildContext context, dynamic path) {
+  return Expanded(
+    child: InkWell(
+        onTap: path is Widget ?
+          () {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => path));
+          }
+        :
+          () {
+            Navigator.pop(context);
+            bottomModal(
+              context: context, 
+              title: '영수증 찍기', 
+              content: _selectCameraOrGallery(context),
+              button: Container()
+            );
+          },
+        child: Container(
+          width: 150,
+          height: 150,
+          decoration: _moneyRecordModalBtnStyle(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                icon,
+                style: TextStyle(fontSize: 50),
+              ),
+              SizedBox(height: 4,),
+              Text(
+                text,
+                style: TextStyle(fontSize: 16),
+              )
+            ],
+          ),
+        )),
+  );
 }
 
 // 용돈기입장 내역 클릭시 나오는 모달 버튼 스타일
@@ -252,4 +269,82 @@ void _takePhoto() async {
       });
     }
   });
+}
+
+Widget _selectCameraOrGallery(BuildContext context) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Expanded(
+        child: InkWell(
+          onTap: () async {
+            final file = await ImagePicker().pickImage(source: ImageSource.camera);
+            if (file == null) return;
+            Navigator.push(context, MaterialPageRoute(builder: (_) => SelectOCRImgPage(imgPath: file.path)));
+          },
+          child: Container(
+            height: 150,
+            decoration: _moneyRecordModalBtnStyle(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Text(
+                  '📷',
+                  style: TextStyle(fontSize: 50),
+                ),
+                SizedBox(height: 4,),
+                Text(
+                  '촬영하기',
+                  style: TextStyle(fontSize: 16),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      SizedBox(width: 16,),
+      Expanded(
+        child: InkWell(
+          onTap: () async {
+            final imgPath = await _getFromGallery();
+            if (imgPath == null) return;
+            Navigator.push(context, MaterialPageRoute(builder: (_) => SelectOCRImgPage(imgPath: imgPath)));
+          },
+          child: Container(
+            height: 150,
+            decoration: _moneyRecordModalBtnStyle(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Text(
+                  '🖼️',
+                  style: TextStyle(fontSize: 50),
+                ),
+                SizedBox(height: 4,),
+                Text(
+                  '선택하기',
+                  style: TextStyle(fontSize: 16),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+Future<dynamic> _getFromGallery() async {
+  final pickedFile =
+    await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
+  if (pickedFile == null) {
+    return null;
+  }
+  dynamic imgPath = pickedFile.path;
+
+  return imgPath;
 }
