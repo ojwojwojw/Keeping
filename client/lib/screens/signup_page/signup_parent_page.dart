@@ -101,8 +101,6 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
     return Scaffold(
       appBar: MyHeader(
         text: '회원가입',
-        elementColor: Colors.black,
-        icon: Icon(Icons.arrow_circle_up),
       ),
       body: SingleChildScrollView(
         child: Form(

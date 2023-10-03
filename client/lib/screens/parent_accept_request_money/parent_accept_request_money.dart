@@ -7,6 +7,7 @@ import 'package:keeping/screens/request_pocket_money_page/child_request_money_de
 import 'package:keeping/screens/request_pocket_money_page/request_pocket_money_second_page.dart';
 import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_box.dart';
 import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_filter.dart';
+import 'package:keeping/screens/send_pocket_money_page/send_pocket_money_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/color_info_card.dart';

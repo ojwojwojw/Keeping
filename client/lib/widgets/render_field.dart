@@ -4,7 +4,7 @@ import 'package:keeping/screens/allowance_ledger_page/widgets/category_dropdown_
 import 'package:keeping/styles.dart';
 
 Padding renderTextFormField({
-  required String label,
+  String? label,
   String? hintText,
   FormFieldSetter? onSaved,
   FormFieldValidator? validator,
@@ -21,14 +21,15 @@ Padding renderTextFormField({
               width: width,
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        label,
-                        style: labelStyle(),
-                      )
-                    ],
-                  ),
+                  if (label != null) // label이 null이 아닌 경우에만 렌더링
+                    Row(
+                      children: [
+                        Text(
+                          label,
+                          style: labelStyle(),
+                        )
+                      ],
+                    ),
                   TextFormField(
                       onSaved: onSaved,
                       validator: validator,
@@ -70,23 +71,23 @@ Padding renderBoxFormField({
               width: width,
               child: Column(
                 children: [
-                  !noLabel ?
-                    Column(
-                      children: [
-                        Row(
+                  !noLabel
+                      ? Column(
                           children: [
-                            Text(
-                              label!,
-                              style: labelStyle(),
-                            ),
-                            SizedBox(
-                              height: 10,
+                            Row(
+                              children: [
+                                Text(
+                                  label!,
+                                  style: labelStyle(),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                              ],
                             ),
                           ],
-                        ),
-                      ],
-                    )
-                  : Container(),
+                        )
+                      : Container(),
                   Container(
                       width: 340,
                       decoration: roundedBoxWithShadowStyle(
@@ -234,9 +235,8 @@ Padding renderCategoryField(Function selectCategory, String selectedCategory,
             height: 20,
           ),
           CategoryDropdownBtn(
-            selectedCategory: selectedCategory,
-            selectCategory: selectCategory
-          )
+              selectedCategory: selectedCategory,
+              selectCategory: selectCategory)
         ],
       ),
     )),
@@ -311,10 +311,8 @@ class BirthdayFormatter extends TextInputFormatter {
   }
 }
 
-
 // 라벨 없이//
 Padding renderTextFormFieldNonLabel({
-  
   String? hintText,
   FormFieldSetter? onSaved,
   FormFieldValidator? validator,
@@ -331,7 +329,6 @@ Padding renderTextFormFieldNonLabel({
               width: width,
               child: Column(
                 children: [
-                  
                   TextFormField(
                       onSaved: onSaved,
                       validator: validator,
@@ -365,30 +362,29 @@ Padding renderTextFormFieldNonUnderLine({
   isNumber = false,
 }) {
   return Padding(
-    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-    child: Center(
-      child: Column(
+      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      child: Center(
+          child: Column(
         children: [
           TextFormField(
-            onSaved: onSaved,
-            validator: validator,
-            onChanged: onChange,
-            textInputAction: TextInputAction.next,
-            controller: controller,
-            keyboardType: isNumber ? TextInputType.number : null,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            cursorColor: Color(0xFF8320E7),
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: TextStyle(
-                color: Color(0xff757575)
+              onSaved: onSaved,
+              validator: validator,
+              onChanged: onChange,
+              textInputAction: TextInputAction.next,
+              controller: controller,
+              keyboardType: isNumber ? TextInputType.number : null,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              cursorColor: Color(0xFF8320E7),
+              decoration: InputDecoration(
+                hintText: hintText,
+                hintStyle: TextStyle(color: Color(0xff757575)),
+                focusedBorder: InputBorder.none,
+                border: InputBorder.none,
               ),
-              focusedBorder: InputBorder.none,
-              border: InputBorder.none,
-            ),
-            obscureText: isPassword,
-            inputFormatters: isNumber
-                ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))] : null)
+              obscureText: isPassword,
+              inputFormatters: isNumber
+                  ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))]
+                  : null)
         ],
       )));
 }

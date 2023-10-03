@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/main_page/child_main_page.dart';
+import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/user_link_page/util/render_my_number.dart';
 import 'package:keeping/screens/user_link_page/util/render_who_try_link.dart';
 import 'package:keeping/styles.dart';
@@ -205,8 +207,7 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
             context: context,
             title: '연결 완료',
             content: Text('$partner님과 연결되었습니다!'), // Text 위젯으로 감싸기
-            // ignore: use_build_context_synchronously
-            button: linkAcceptedBtn(context),
+            button: linkAcceptedBtn(context, isParent),
           );
         } else {
           // 다음 단계
@@ -222,14 +223,24 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
     }
   }
 
-  Widget linkAcceptedBtn(BuildContext context) {
+  Widget linkAcceptedBtn(BuildContext context, bool isParent) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(
           onPressed: () {
-            Navigator.of(context).pop();
-          },
+          if (isParent) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ParentMainPage()),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChildMainPage()),
+            );
+          }
+        },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFF8320E7),
             textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),

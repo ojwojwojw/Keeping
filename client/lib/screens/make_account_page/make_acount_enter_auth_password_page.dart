@@ -102,7 +102,7 @@ class _MakeAccountEnterAuthPasswordPageState
                 ),
                 passwordCircles(
                     _authPassword != null ? _authPassword!.length : 0),
-                Text(_authPassword.toString())
+                // Text(_authPassword.toString())
               ],
             ),
           ),

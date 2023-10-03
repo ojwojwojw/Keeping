@@ -3,7 +3,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:keeping/firebase_options.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart'; // 추가: MaterialApp과 navigatorKey에 필요
+
+// 앱 전체에서 Navigator에 액세스할 수 있는 key를 생성
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // await Firebase.initializeApp();
@@ -53,8 +58,9 @@ Future<String?> fcmSetting(UserInfoProvider userInfoProvider) async {
       InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       ),
-      onDidReceiveNotificationResponse:
-          (NotificationResponse response) async {});
+      onDidReceiveNotificationResponse: (NotificationResponse response) async {
+    // Get.to(NotificationDetailsPage(), arguments: payload);
+  });
 
 // foreground 푸시 알림 핸들링
   FirebaseMessaging.onMessage.listen(
@@ -77,11 +83,27 @@ Future<String?> fcmSetting(UserInfoProvider userInfoProvider) async {
               icon: android.smallIcon,
             ),
           ),
+          //경로 처리
+          payload: message.data['argument'],
         );
       }
     },
   );
 
+  await flutterLocalNotificationsPlugin.initialize(
+      InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      ),
+      onDidReceiveNotificationResponse: (NotificationResponse response) async {
+    final String? payload = response.payload; // 수정된 부분
+    print('페이로드');
+    print(payload);
+    // if (payload != null) {
+    //   // navigatorKey를 사용하여 원하는 화면으로 이동
+    //   navigatorKey.currentState!
+    //       .push(MaterialPageRoute(builder: (context) => ChildMainPage()));
+    // }
+  });
   String? firebaseToken = await messaging.getToken();
   userInfoProvider.updateFcmToken(fcmToken: firebaseToken);
 
