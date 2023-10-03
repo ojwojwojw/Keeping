@@ -22,7 +22,7 @@ class ChildInfoProvider with ChangeNotifier {
     print('자녀 정보 저장 $childInfo');
     _memberKey = childInfo['memberKey'];
     _name = childInfo['name'];
-    _profileImage = childInfo['profileImage'];
+    _profileImage = childInfo['profileImage'] ?? 'assets/image/profile/child1.png';
   }
 
   void setChildAccount(Map<String, dynamic>? childAccount) {
