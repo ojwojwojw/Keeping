@@ -122,22 +122,23 @@ String requestStatusText(String service, String status) {
 
 Color requestStatusBgColor(String status) {
   if (status == 'APPROVE') {
-    return Color(0xFFE0FBD6);
+    return Color(0xFFFFC754);
   } else if (status == 'REJECT') {
-    return Color(0xFFFFDDDD);
+    return Color(0xFFFF5993);
   } else {
-    return Color(0xFFD5D5D5);
+    return Color(0xFF805AF1);
   }
 }
 
 Color requestStatusTextColor(String status) {
-  if (status == 'APPROVE') {
-    return Color(0xFF62D00B);
-  } else if (status == 'REJECT') {
-    return Color(0xFFFF0000);
-  } else {
-    return Color(0xFF000000);
-  }
+  // if (status == 'APPROVE') {
+  //   return Color(0xFF62D00B);
+  // } else if (status == 'REJECT') {
+  //   return Color(0xFFFF0000);
+  // } else {
+  //   return Color(0xFF000000);
+  // }
+  return Colors.white;
 }
 
 String missionRequestStatusText(String status) {

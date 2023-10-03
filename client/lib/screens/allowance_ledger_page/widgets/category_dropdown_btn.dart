@@ -78,7 +78,7 @@ Row _dropdownBtn(String? category) {
     children: [
       Padding(
         padding: EdgeInsets.only(right: 10),
-        child: categoryImg('assets/image/temp_image.jpg'),
+        child: categoryImg('assets/image/category/$category.png'),
       ),
       _categories[category] == null ? Text(_categories["ETC"]!) : Text(_categories[category]!, style: _selectedCategoryTextStyle(),),
     ],

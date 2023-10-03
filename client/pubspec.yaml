@@ -95,6 +95,9 @@ flutter:
     - assets/image/temp_image.jpg
     - assets/image/money_coins.png
     - assets/image/diary/diary.png
+    - assets/image/diary/key.png
+    - assets/image/diary/rocket.png
+    - assets/image/diary/todayquestion.png
     - assets/image/mission/how_much.png
     - assets/image/mission/what_mission.png
     - assets/image/mission/new_mission.png
@@ -121,6 +124,27 @@ flutter:
     - assets/image/profile/parent2.png
     - assets/image/profile/child1.png
     - assets/image/profile/child2.png
+    - assets/image/category/MART.png
+    - assets/image/category/CONVENIENCE.png
+    - assets/image/category/FOOD.png
+    - assets/image/category/SCHOOL.png
+    - assets/image/category/CAFE.png
+    - assets/image/category/CLOTH.png
+    - assets/image/category/CULTURE.png
+    - assets/image/category/PLAY.png
+    - assets/image/category/SUBWAY.png
+    - assets/image/category/BUS.png
+    - assets/image/category/TAXI.png
+    - assets/image/category/DIGGING.png
+    - assets/image/category/GIFT.png
+    - assets/image/category/OTT.png
+    - assets/image/category/CONTENT.png
+    - assets/image/category/ACADEMY.png
+    - assets/image/category/TOUR.png
+    - assets/image/category/BANK.png
+    - assets/image/category/HOSPITAL.png
+    - assets/image/category/PHARMACY.png
+    - assets/image/category/ETC.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -8,6 +8,8 @@ import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart'
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record_with_detail.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
 import 'package:keeping/screens/allowance_ledger_page/child_spending_route_page.dart';
+import 'package:keeping/screens/main_page/child_main_page.dart';
+import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
@@ -49,8 +51,9 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
     return Scaffold(
       appBar: MyHeader(
         text: '용돈기입장',
-        bgColor: const Color(0xFF8320E7),
-        elementColor: Colors.white,
+        backPath: _parent != null && _parent! ? ParentMainPage() : ChildMainPage(),
+        // bgColor: const Color(0xFF8320E7),
+        // elementColor: Colors.white,
       ),
       body: Column(
         children: [

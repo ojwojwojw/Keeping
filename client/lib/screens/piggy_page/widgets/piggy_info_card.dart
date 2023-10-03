@@ -7,7 +7,6 @@ class PiggyInfoCard extends StatefulWidget {
   final num balance;
   final num goalMoney;
   final String img;
-  final String imgPath;
 
   PiggyInfoCard({
     super.key,
@@ -15,7 +14,6 @@ class PiggyInfoCard extends StatefulWidget {
     required this.balance,
     required this.goalMoney,
     required this.img,
-    this.imgPath = 'assets/image/temp_image.jpg',
   });
 
   @override
@@ -27,9 +25,8 @@ class _PiggyInfoCardState extends State<PiggyInfoCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 7),
+      padding: EdgeInsets.symmetric(vertical: 7, horizontal: 24),
       child: Container(
-        width: 360,
         height: 160,
         decoration: roundedBoxWithShadowStyle(),
         child: Padding(
