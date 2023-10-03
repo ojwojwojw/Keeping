@@ -129,7 +129,7 @@ class _QuestionPageState extends State<QuestionPage> {
                             margin: EdgeInsets.symmetric(horizontal: 24),
                             height: 350,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.7),
+                              color: Colors.white.withOpacity(0.5),
                               borderRadius: BorderRadius.circular(10.0),
                               boxShadow: [
                                 BoxShadow(
@@ -151,7 +151,7 @@ class _QuestionPageState extends State<QuestionPage> {
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      '  Q',
+                                      '  Q.',
                                       style: TextStyle(
                                           fontSize: 32,
                                           fontWeight: FontWeight.bold),
@@ -161,18 +161,21 @@ class _QuestionPageState extends State<QuestionPage> {
                                   data != null && data.isNotEmpty
                                       ? Text(
                                           data[0]["content"],
-                                          style: TextStyle(fontSize: 20),
+                                          style: TextStyle(fontSize: 20 ,fontWeight: FontWeight.bold),
                                           textAlign: TextAlign.center,
                                         )
                                       : Text(
                                           "오늘의 질문이 없습니다.",
                                           textAlign: TextAlign.center,
                                         ),
-                                  SizedBox(height: 10), // 간격 조정
+                                  SizedBox(height: 25), // 간격 조정
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
+                                      
+                                        
                                       _ansBtn(),
+                                        
                                       SizedBox(width: 10), // 버튼 간 간격
                                       _diaryBtn(),
                                     ],
@@ -235,11 +238,16 @@ class _QuestionPageState extends State<QuestionPage> {
             primary: Colors.red.withOpacity(0.0),
             elevation: 0, // 투명한 빨간색 배경
             padding: EdgeInsets.zero),
-        child: Image.asset(
-          'assets/image/question/answer.png',
-          width: 100.0,
-          height: 100.0,
-          fit: BoxFit.cover,
+        child: Column(
+          children: [
+            Text('답하기' ,style: TextStyle(color: Colors.black),),
+            Image.asset(
+              'assets/image/question/answer.png',
+              width: 100.0,
+              height: 100.0,
+              fit: BoxFit.cover,
+            ),
+          ],
         ),
       ),
     );
@@ -258,11 +266,16 @@ class _QuestionPageState extends State<QuestionPage> {
             primary: Colors.red.withOpacity(0.0),
             elevation: 0, // 투명한 빨간색 배경
             padding: EdgeInsets.zero),
-        child: Image.asset(
-          'assets/image/question/folder.png',
-          width: 100.0,
-          height: 100.0,
-          fit: BoxFit.cover,
+        child: Column(
+          children: [
+            Text('보관함' ,style: TextStyle(color: Colors.black),),
+            Image.asset(
+              'assets/image/question/folder.png',
+              width: 100.0,
+              height: 100.0,
+              fit: BoxFit.cover,
+            ),
+          ],
         ),
       ),
     );
@@ -313,7 +326,6 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
   late UserInfoProvider userProvider;
   late ChildInfoProvider childInfoProvider;
   String formattedDate = '';
-
 
   @override
   void initState() {
@@ -561,11 +573,16 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
             primary: Colors.red.withOpacity(0.0),
             elevation: 0, // 투명한 빨간색 배경
             padding: EdgeInsets.zero),
-        child: Image.asset(
-          'assets/image/question/answer.png',
-          width: 100.0,
-          height: 100.0,
-          fit: BoxFit.cover,
+        child: Column(
+          children: [
+            Text('답하기' ,style: TextStyle(color: Colors.black),),
+            Image.asset(
+              'assets/image/question/answer.png',
+              width: 100.0,
+              height: 100.0,
+              fit: BoxFit.cover,
+            ),
+          ],
         ),
       ),
     );
@@ -584,18 +601,23 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
             primary: Colors.red.withOpacity(0.0),
             elevation: 0, // 투명한 빨간색 배경
             padding: EdgeInsets.zero),
-        child: Image.asset(
-          'assets/image/question/folder.png',
-          width: 100.0,
-          height: 100.0,
-          fit: BoxFit.cover,
+        child: Column(
+          children: [
+            Text('보관함 ' ,style: TextStyle(color: Colors.black),),
+            Image.asset(
+              'assets/image/question/folder.png',
+              width: 100.0,
+              height: 100.0,
+              fit: BoxFit.cover,
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-//자식 질문 보내는 페이지
+//자식 질문 보내는 페이지 (자식은 질문을 보내지 못한다.)
 class QuestionSendPage extends StatefulWidget {
   const QuestionSendPage({super.key});
 
@@ -765,7 +787,7 @@ class ParentQuestionSendPage extends StatefulWidget {
   State<ParentQuestionSendPage> createState() => _ParentQuestionSendPageState();
 }
 
-class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
+class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> { 
   String selectedMemberKey = '';
   String comment = "";
   late Dio dio;
@@ -844,55 +866,28 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: '질문 보내기(부모)',
-        bgColor: Color(0xFF6E2FD5),
-        elementColor: Colors.white,
+        text: '질문 보내기',
+        
       ),
       body: Column(
         children: [
-          Container(
-            height: 10,
-            width: 410,
-            color: Color(0xFF9271C8),
-            child: SizedBox(),
+          
+          SizedBox(
+            height: 15,
           ),
+
+
 
           SizedBox(
             height: 15,
           ),
 
-          ////////
-          Padding(
-            padding: EdgeInsets.only(left: 0.0), // 왼쪽 패딩만 설정
-            child: Container(
-              padding: EdgeInsets.all(10.0), // 내부 패딩
-              decoration: BoxDecoration(
-                color: Colors.deepPurple[100], // 연보라색 배경
-                borderRadius: BorderRadius.circular(10.0), // 둥근 테두리
-              ),
-              child: Text(
-                "질문 보내기",
-                style: TextStyle(
-                  color: Colors.purple, // 보라색 글씨
-                  fontSize: 16.0, // 글씨 크기
-                ),
-              ),
-            ),
-          ),
-          ////// 이쁜 보라색 박스
-          Image.asset(
-            'assets/image/m_face.png',
-            width: 100.0,
-            height: 100.0,
-            fit: BoxFit.cover,
-          ),
+          Text('누구에게 질문을 보낼까요?',style: TextStyle(fontSize: 24 ,fontWeight: FontWeight.bold),),
+
 
           SizedBox(
             height: 15,
           ),
-
-          Text('어느 자녀에게 보낼까요?'),
-
           /// 자녀를 고르는 드랍다운
           Container(
             width: 380,
@@ -935,7 +930,8 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
           ),
 
           ///
-          renderTextFormFieldNonLabel(
+          SizedBox(height: 100,),
+          violetBoxFormField(
               hintText: '질문 내용을 입력하세요',
               onChange: (value) {
                 setState(() {
@@ -1022,6 +1018,9 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
           SizedBox(
             height: 15,
           ),
+          //////////////////////////
+
+          ///
 
           SizedBox(
             height: 15,
@@ -1035,28 +1034,38 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
           ),
 
           ///
-          Text(widget.questionDate ?? '기본날짜'),
+          Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 24.0),
+                child: Text(widget.questionDate ?? '기본 날짜'),
+              ),
+            ],
+          ),
 
           ///
+
           SizedBox(
-            height: 15,
+            height: 5,
           ),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.center, // Row의 내용을 가운데 정렬
             children: [
               Text(
-                widget.questionText.toString(),
+                'Q.' + widget.questionText.toString(),
                 style: TextStyle(
                   fontWeight: FontWeight.bold, // 글씨를 굵게
-                  fontSize: 14.0, // 글씨 크기를 14포인트로 설정
+                  fontSize: 20.0, // 글씨 크기를 14포인트로 설정
                 ),
               ),
             ],
           ),
 
-          renderTextFormFieldNonLabel(
-              hintText: '질문에 대해 어떻게 생각하시나요?',
+          SizedBox(height: 100,),
+
+          violetBoxFormField(
+              hintText: '답변을 달아볼까요?',
               onChange: (value) {
                 setState(() {
                   comment = value;
@@ -1079,7 +1088,10 @@ class ParentQeustionAnswerPage extends StatefulWidget {
   final String? questionText;
   final int? questionId;
   const ParentQeustionAnswerPage(
-      {super.key, required this.questionText, required this.questionId ,required this.questionDate});
+      {super.key,
+      required this.questionText,
+      required this.questionId,
+      required this.questionDate});
 
   @override
   State<ParentQeustionAnswerPage> createState() =>
@@ -1141,24 +1153,7 @@ class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
             height: 15,
           ),
           //////////////////////////
-          Padding(
-            padding: EdgeInsets.only(left: 0.0), // 왼쪽 패딩만 설정
-            child: Container(
-              padding: EdgeInsets.all(10.0), // 내부 패딩
-              decoration: BoxDecoration(
-                color: Colors.deepPurple[100], // 연보라색 배경
-                borderRadius: BorderRadius.circular(10.0), // 둥근 테두리
-              ),
-              child: Text(
-                "질문 답하기",
-                style: TextStyle(
-                  color: Colors.purple, // 보라색 글씨
-                  fontSize: 16.0, // 글씨 크기
-                ),
-              ),
-            ),
-          ),
-          ///////////////////
+
           ///
 
           SizedBox(
@@ -1166,35 +1161,45 @@ class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
           ),
 
           Image.asset(
-            'assets/image/m_face.png',
+            'assets/image/question/answer.png',
             width: 100.0,
             height: 100.0,
             fit: BoxFit.cover,
           ),
 
           ///
-          Text(widget.questionDate ?? '기본 날짜'),
+          Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 24.0),
+                child: Text(widget.questionDate ?? '기본 날짜'),
+              ),
+            ],
+          ),
+
           ///
 
           SizedBox(
-            height: 15,
+            height: 5,
           ),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.center, // Row의 내용을 가운데 정렬
             children: [
               Text(
-                widget.questionText.toString(),
+                'Q.' + widget.questionText.toString(),
                 style: TextStyle(
                   fontWeight: FontWeight.bold, // 글씨를 굵게
-                  fontSize: 14.0, // 글씨 크기를 14포인트로 설정
+                  fontSize: 20.0, // 글씨 크기를 14포인트로 설정
                 ),
               ),
             ],
           ),
 
-          renderTextFormFieldNonLabel(
-              hintText: '질문에 대해 어떻게 생각하시나요?',
+          SizedBox(height: 100,),
+
+          violetBoxFormField(
+              hintText: '답변을 달아볼까요?',
               onChange: (value) {
                 setState(() {
                   comment = value;

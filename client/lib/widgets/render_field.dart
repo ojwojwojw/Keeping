@@ -392,3 +392,31 @@ Padding renderTextFormFieldNonUnderLine({
         ],
       )));
 }
+
+
+
+
+//힌트텍스트가 보라색인 입력 폼 박스
+class violetBoxFormField extends StatelessWidget {
+  final String hintText;
+  final Function(String) onChange;
+
+  violetBoxFormField({required this.hintText, required this.onChange});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      textAlign: TextAlign.center,
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle: TextStyle(color: Color(0xFF6E2FD5)),
+        
+        border: InputBorder.none, // 테두리 없애기
+        focusedBorder: OutlineInputBorder( // 포커스 상태에서의 테두리 설정
+          borderSide: BorderSide(color: Color(0xFF6E2FD5), width: 2.0), // 보라색 설정
+        ),
+      ),
+      onChanged: onChange,
+    );
+  }
+}

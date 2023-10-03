@@ -17,7 +17,6 @@ import 'package:keeping/provider/child_info_provider.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
-
 //미션 생성페이지 1
 class MissionCreatePage1 extends StatefulWidget {
   const MissionCreatePage1({Key? key}) : super(key: key);
@@ -97,7 +96,8 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Container(// 좌우 여백 24
+                    child: Container(
+                      // 좌우 여백 24
                       decoration: roundedBoxWithShadowStyle(),
                       child: renderTextFormFieldNonUnderLine(
                           hintText: '미션 제목을 입력해주세요.',
@@ -111,7 +111,9 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
                 ],
               ),
             ),
-            SizedBox(height: 16,),
+            SizedBox(
+              height: 16,
+            ),
             Column(
               children: [
                 Text(
@@ -122,15 +124,25 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
                   height: 16,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24,),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                  ),
                   child: InkWell(
                     onTap: datePicker,
                     child: Container(
                       width: double.infinity,
                       decoration: roundedBoxWithShadowStyle(),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
-                        child: missionDueDate != "" ? Text(missionDueDate,) : Text('누르면 달력이 나와요!', style: TextStyle(color: Color(0xff757575)),),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 16),
+                        child: missionDueDate != ""
+                            ? Text(
+                                missionDueDate,
+                              )
+                            : Text(
+                                '누르면 달력이 나와요!',
+                                style: TextStyle(color: Color(0xff757575)),
+                              ),
                       ),
                     ),
                   ),
@@ -150,8 +162,6 @@ class _MissionCreatePage1State extends State<MissionCreatePage1> {
     );
   }
 }
-
-
 
 //미션 생성페이지 2
 class MissionCreatePage2 extends StatefulWidget {
@@ -202,40 +212,46 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 32),
-              child: Column(
-                children: [
-                  Text(
-                    '성공하면 얼마를 줄까요?',
-                    style: TextStyle(fontSize: 25),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24),
-                    child: Image.asset(
-                      'assets/image/mission/how_much.png',
-                      width: 120.0,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 32),
+                child: Column(
+                  children: [
+                    Text(
+                      '성공하면 얼마를 줄까요?',
+                      style: TextStyle(fontSize: 25),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(amount.toString(), style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
-                      Text('원', style: TextStyle(fontSize: 25),)
-                    ],
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      child: Image.asset(
+                        'assets/image/mission/how_much.png',
+                        width: 120.0,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          amount.toString(),
+                          style: TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          '원',
+                          style: TextStyle(fontSize: 25),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            // 숫자패드
-            NumberKeyboard(
-              onNumberPress: onNumberPress,
-              onBackspacePress: onBackspacePress,
-            ),
-          ]
-        ),
+              // 숫자패드
+              NumberKeyboard(
+                onNumberPress: onNumberPress,
+                onBackspacePress: onBackspacePress,
+              ),
+            ]),
       ),
       bottomNavigationBar: BottomBtn(
         text: '다음',
@@ -259,9 +275,6 @@ class _MissionCreatePage2State extends State<MissionCreatePage2> {
     );
   }
 }
-
-
-
 
 //미션 생성페이지 3 (자녀)
 class MissionCreatePage3 extends StatefulWidget {
@@ -315,6 +328,7 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
     };
 
     try {
+      print(data);
       final response = await dio.post(
           "$_baseUrl/mission-service/api/$memberKey",
           data: data,
@@ -322,6 +336,7 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
 
       if (response.statusCode == 200) {
         print('미션생성 데이터 전송 성공!');
+        print(data);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -356,7 +371,9 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
       ),
       body: Column(
         children: [
-          SizedBox(height: 30,),
+          SizedBox(
+            height: 30,
+          ),
           Text(
             '부모님께 보낼 메시지를 적어봐요!',
             style: TextStyle(fontSize: 20),
@@ -381,10 +398,6 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
   }
 }
 
-
-
-
-
 //미션 생성페이지 3 (부모)
 class ParentMissionCreatePage3 extends StatefulWidget {
   @override
@@ -400,7 +413,6 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
   late ChildInfoProvider childInfoProvider;
   late List<Map<String, dynamic>> childrenList;
   String selectedMemberKey = '';
-
 
   // 데이터를 보낼 아이의 멤버키를 불러오는 로직//
   @override
@@ -462,11 +474,10 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
       ),
       body: Column(
         children: [
-
           SizedBox(
             height: 50,
           ),
-          
+
           //예쁜 드롭다운
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -476,7 +487,9 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
                   '누구에게 미션을 줄까요?',
                   style: TextStyle(fontSize: 25),
                 ),
-                SizedBox(height: 16,),
+                SizedBox(
+                  height: 16,
+                ),
                 Container(
                   width: double.infinity,
                   height: 80,
@@ -486,7 +499,9 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
                     child: DropdownButtonHideUnderline(
                       // 아래쪽의 기본 테두리를 숨깁니다.
                       child: DropdownButton<String>(
-                        value: selectedMemberKey.isNotEmpty ? selectedMemberKey : null,
+                        value: selectedMemberKey.isNotEmpty
+                            ? selectedMemberKey
+                            : null,
                         onChanged: (String? newValue) {
                           setState(() {
                             selectedMemberKey = newValue ?? '';
@@ -508,7 +523,10 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
                                 SizedBox(
                                   width: 10,
                                 ), // 이미지와 텍스트 사이의 간격
-                                Text(child["name"].toString(), style: TextStyle(fontSize: 20),),
+                                Text(
+                                  child["name"].toString(),
+                                  style: TextStyle(fontSize: 20),
+                                ),
                               ],
                             ),
                           );
@@ -521,15 +539,14 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
             ),
           ),
           renderBoxFormField(
-            label: '',
-            onChange: (value) {
-              setState(() {
-                comment = value;
-              });
-            },
-            hintText: '아이에게 응원 메시지를 보내주세요!',
-            maxLines: 5
-          ),
+              label: '',
+              onChange: (value) {
+                setState(() {
+                  comment = value;
+                });
+              },
+              hintText: '아이에게 응원 메시지를 보내주세요!',
+              maxLines: 5),
         ],
       ),
       bottomNavigationBar: BottomBtn(
