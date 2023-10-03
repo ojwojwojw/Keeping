@@ -139,3 +139,37 @@ Color requestStatusTextColor(String status) {
     return Color(0xFF000000);
   }
 }
+
+String missionRequestStatusText(String status) {
+  if (status == 'YET') {
+    return '미션 대기';
+  } else if (status == 'FINISH_WAIT') {
+    return '미션 완료';
+  } else if (status == 'FINISH') {
+    return '이전 미션';
+  } else {
+    return '진행 중';
+  }
+}
+
+Color missionRequestStatusBgColor(String status) {
+  if (status == 'YET') {
+    return Color(0xFFFF5993);
+  } else if (status == 'FINISH_WAIT') {
+    return Color(0xFFFF8F67);
+  } else if (status == 'FINISH') {
+    return Color(0xFFFFC754);
+  } else {
+    return Color(0xFF805AF1);
+  }
+}
+
+// Color missionRequestStatusTextColor(String status) {
+//   if (status == 'APPROVE') {
+//     return Color(0xFF62D00B);
+//   } else if (status == 'REJECT') {
+//     return Color(0xFFFF0000);
+//   } else {
+//     return Color(0xFF000000);
+//   }
+// }
