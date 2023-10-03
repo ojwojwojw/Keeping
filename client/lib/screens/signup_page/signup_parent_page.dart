@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/login_page/login_page.dart';
 import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/header.dart';
@@ -360,33 +361,24 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
       'phone': _userPhoneNumber.text,
       'birth': _userBirth.text
     };
-    print('유효성 검사 통과 kk');
     BuildContext currentContext = context;
-    print(data);
-    try {
-      var response = await dio.post(
-        'http://j9c207.p.ssafy.io:8000/member-service/api/join/parent',
-        data: data,
+    final response = await dioPost(
+      url: '/member-service/api/join/parent',
+      data: data,
+    );
+    print(response);
+    if (response['resultStatus']['successCode'] == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginPage(),
+        ),
       );
-      print(response);
-      final jsonResponse = json.decode(response.toString());
-      print(jsonResponse);
-      if (jsonResponse['resultStatus']['successCode'] == 0) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MainPage(),
-          ),
-        );
-      } else if (jsonResponse['resultStatus']['resultCode'] == 409) {
-        print('이미 가입한 회원입니다.');
-      } else {
-        print('유효성 검사 실패');
-      }
-    } catch (err) {
-      print(err);
+    } else if (response['resultStatus']['resultCode'] == 409) {
+      print('이미 가입한 회원입니다.');
+    } else {
+      print('유효성 검사 실패');
     }
-    // }
   }
 }
 
