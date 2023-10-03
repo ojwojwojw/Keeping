@@ -7,7 +7,6 @@ class PiggyInfoCard extends StatefulWidget {
   final num balance;
   final num goalMoney;
   final String img;
-  final String imgPath;
 
   PiggyInfoCard({
     super.key,
@@ -15,7 +14,6 @@ class PiggyInfoCard extends StatefulWidget {
     required this.balance,
     required this.goalMoney,
     required this.img,
-    this.imgPath = 'assets/image/temp_image.jpg',
   });
 
   @override

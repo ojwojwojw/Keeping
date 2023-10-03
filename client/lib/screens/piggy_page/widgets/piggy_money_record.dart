@@ -44,7 +44,7 @@ class _PiggyMoneyRecordState extends State<PiggyMoneyRecord> {
               children: [
                 Padding(
                   padding: EdgeInsets.all(10),
-                  child: categoryImg('assets/image/temp_image.jpg'),
+                  child: categoryImg('assets/image/category/BANK.png'),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
