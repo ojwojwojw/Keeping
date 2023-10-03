@@ -58,6 +58,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     _userId = TextEditingController();
     _userPw = TextEditingController();
+    _loginResult = '';
   }
 
   // 페이지가 파기될 때 컨트롤러를 해제
@@ -74,8 +75,8 @@ class _LoginPageState extends State<LoginPage> {
       appBar: MyHeader(
         text: '로그인',
         elementColor: Colors.black,
-        icon: Icon(Icons.arrow_circle_up),
-        path: LoginPage(),
+        // icon: Icon(Icons.arrow_circle_up),
+        // path: LoginPage(),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -232,6 +233,18 @@ class _LoginPageState extends State<LoginPage> {
       }
 
       bool? _parent = jsonResponse['resultBody']['parent'];
+
+      if (_profileImage == null) {
+        if (_parent != null) {
+          if (_parent) {
+            _profileImage = 'assets/image/profile/parent1.png';
+          } else {
+            _profileImage = 'assets/image/profile/child1.png';
+          }
+        } else {
+          _profileImage = 'assets/image/profile/parent2';
+        }
+      }
 
       userInfoProvider.updateUserInfo(
         name: _name,

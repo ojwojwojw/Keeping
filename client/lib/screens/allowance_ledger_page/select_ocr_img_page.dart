@@ -4,20 +4,44 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
 import 'package:keeping/screens/allowance_ledger_page/select_ocr_text_page.dart';
+import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/receipt_ocr_page/receipt_ocr_page.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_double_btn.dart';
+import 'package:keeping/widgets/completed_page.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:keeping/widgets/rounded_modal.dart';
 import 'package:path/path.dart' as path;
+import 'package:provider/provider.dart';
 
-class SelectOCRImgPage extends StatelessWidget {
+class SelectOCRImgPage extends StatefulWidget {
   final String imgPath;
+  final int accountHistoryId;
 
   SelectOCRImgPage({
     super.key,
     required this.imgPath,
+    required this.accountHistoryId,
   });
+
+  @override
+  State<SelectOCRImgPage> createState() => _SelectOCRImgPageState();
+}
+
+class _SelectOCRImgPageState extends State<SelectOCRImgPage> {
+  String? _accessToken;
+  String? _memberKey;
+
+  @override
+  void initState() {
+    super.initState();
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,19 +50,45 @@ class SelectOCRImgPage extends StatelessWidget {
         text: '영수증 등록하기',
       ),
       body: Container(
-        child: Image.file(File(imgPath)),
+        child: Image.file(File(widget.imgPath)),
       ),
       bottomNavigationBar: BottomDoubleBtn(
         firstText: '등록하기',
         firstAction: () async {
-          final response = await _getOCRData(imgPath: imgPath);
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SelectOCRTextPage(textList: textList)));
+          final response = await _getOCRData(imgPath: widget.imgPath);
+          List accountDetailList = response.data['images'][0]['receipt']['result']['subResults'][0]['items'].map((e) =>
+            {
+              "accountHistoryId": widget.accountHistoryId,
+              "content": e['name']['formatted']['value'].toString(),
+              "money": e['price']['price']['formatted']['value'],
+              "smallCategory": null,
+            }
+          ).toList();
+          final detailResponse = await createAccountDetail(
+            accessToken: _accessToken, 
+            memberKey: _memberKey, 
+            accountDetailList: accountDetailList
+          );
+          if (detailResponse == 0) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => CompletedPage(
+                          text: '상세 내용이\n등록되었습니다.',
+                          button: ConfirmBtn(
+                            action: AllowanceLedgerPage(),
+                          ),
+                        )));
+          } else {
+            roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
+          }
+          // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SelectOCRTextPage(response: response, accountHistoryId: accountHistoryId,)));
         },
         secondText: '다시하기',
         secondAction: () async {
           final imgPath = await _getFromGallery();
           if (imgPath == null) return;
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SelectOCRImgPage(imgPath: imgPath)));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SelectOCRImgPage(imgPath: imgPath, accountHistoryId: widget.accountHistoryId,)));
         },
         isDisabled: false,
       ),
@@ -52,80 +102,32 @@ Future<dynamic> _getOCRData({
   try {
     final uploadImageFile = await MultipartFile.fromFile(imgPath);
     final response = await dioPostForCLOVA(
-      url: '/general',
-      // url: '/document/receipt',
+      url: '/document/receipt',
       data: {
-        "version": "V1",
+        "version": "V2",
         "requestId": "test",
         "timestamp": DateTime.now().millisecondsSinceEpoch,
-        "lang": "ko",
         "images": [
           {
-            "format": "jpg",
-            "url": null,
+            "format": path.extension(imgPath).replaceAll('.', ''),
             "data": base64Encode(File(imgPath).readAsBytesSync()),
             "name": "test",
           }
         ],
-        "enableTableDetection": false
       }
     );
     print('OCR 요청 응답 $response');
     if (response.statusCode == 200) {
-      OCRResponse ocrResponse = OCRResponse.fromJson(response.data);
-      // OCRResponse를 이용하여 원하는 데이터에 접근할 수 있습니다.
-      print("Parsed Text:");
-      ocrResponse.images.forEach((image) {
-        image.fields.forEach((field) {
-          print("Value Type: ${field.valueType}");
-          print("Infer Text: ${field.inferText}");
-          // 여기에 \field.inferText 를 전역변수 리스트인 textList에 push 하는 로직 \\\
-          textList.add(field.inferText);
-          print("Infer Confidence: ${field.inferConfidence}");
-        });
-      });
-      print("parsedtext:");
-      print(ocrResponse);
-      return textList;
+      return response;
     } else {
       print("Error: ${response.statusCode}");
       // 오류 처리 코드 추가
     }
-    return response;
+    return null;
   } catch (e) {
     print('OCR 요청 에러 $e');
   }
 }
-
-// Future<dynamic> _getOCRData({
-//   required String imgPath
-// }) async {
-//   try {
-//     final uploadImageFile = await MultipartFile.fromFile(imgPath);
-//     final response = await dioPostForCLOVA(
-//       url: '/general',
-//       // url: '/document/receipt',
-//       data: FormData.fromMap({
-//         'message': {
-//           'version': 'V2',
-//           'requestId': '영수증찍기',
-//           'timestamp': DateTime.now().millisecondsSinceEpoch,
-//           'images': [
-//             {
-//               'format': path.extension(imgPath),
-//               'name': '영수증찍기',
-//             },
-//           ],
-//         },
-//         'file': uploadImageFile,
-//       })
-//     );
-//     print('OCR 요청 응답 $response');
-//     return response;
-//   } catch (e) {
-//     print('OCR 요청 에러 $e');
-//   }
-// }
 
 Future<dynamic> _getFromGallery() async {
   final pickedFile =

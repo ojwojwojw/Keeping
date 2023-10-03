@@ -59,7 +59,7 @@ class _MoneyRecordState extends State<MoneyRecord> {
           content: moneyRecordModalContent(
             context, widget.date, widget.storeName, widget.money, widget.balance, widget.accountHistoryId, widget.type, widget.largeCategory
           ),
-          button: moneyRecordModalBtns(context),
+          button: moneyRecordModalBtns(context, widget.accountHistoryId),
         );
       },
       child: Padding(
@@ -185,7 +185,7 @@ Widget moneyRecordModalContent(
 }
 
 // 용돈기입장 내역 클릭시 나오는 모달에 들어갈 버튼(2개)
-Row moneyRecordModalBtns(BuildContext context) {
+Row moneyRecordModalBtns(BuildContext context, int accountHistoryId) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -194,13 +194,15 @@ Row moneyRecordModalBtns(BuildContext context) {
         '영수증 찍기', 
         context, 
         'camera',
+        accountHistoryId
       ),
       SizedBox(width: 16,),
       moneyRecordModalBtn(
         '🖊️',
         '직접 쓰기',
         context,
-        AllowanceLedgerDetailCreatePage()
+        AllowanceLedgerDetailCreatePage(),
+        accountHistoryId
       )
     ],
   );
@@ -208,7 +210,7 @@ Row moneyRecordModalBtns(BuildContext context) {
 
 // 용돈기입장 내역 클릭시 나오는 모달에 들어가는 버튼 한 개
 Widget moneyRecordModalBtn(
-    String icon, String text, BuildContext context, dynamic path) {
+    String icon, String text, BuildContext context, dynamic path, int accountHistoryId) {
   return Expanded(
     child: InkWell(
         onTap: path is Widget ?
@@ -221,7 +223,7 @@ Widget moneyRecordModalBtn(
             bottomModal(
               context: context, 
               title: '영수증 찍기', 
-              content: _selectCameraOrGallery(context),
+              content: _selectCameraOrGallery(context, accountHistoryId),
               button: Container()
             );
           },
@@ -271,7 +273,7 @@ void _takePhoto() async {
   });
 }
 
-Widget _selectCameraOrGallery(BuildContext context) {
+Widget _selectCameraOrGallery(BuildContext context, int accountHistoryId) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -280,7 +282,7 @@ Widget _selectCameraOrGallery(BuildContext context) {
           onTap: () async {
             final file = await ImagePicker().pickImage(source: ImageSource.camera);
             if (file == null) return;
-            Navigator.push(context, MaterialPageRoute(builder: (_) => SelectOCRImgPage(imgPath: file.path)));
+            Navigator.push(context, MaterialPageRoute(builder: (_) => SelectOCRImgPage(imgPath: file.path, accountHistoryId: accountHistoryId,)));
           },
           child: Container(
             height: 150,
@@ -309,7 +311,7 @@ Widget _selectCameraOrGallery(BuildContext context) {
           onTap: () async {
             final imgPath = await _getFromGallery();
             if (imgPath == null) return;
-            Navigator.push(context, MaterialPageRoute(builder: (_) => SelectOCRImgPage(imgPath: imgPath)));
+            Navigator.push(context, MaterialPageRoute(builder: (_) => SelectOCRImgPage(imgPath: imgPath, accountHistoryId: accountHistoryId,)));
           },
           child: Container(
             height: 150,

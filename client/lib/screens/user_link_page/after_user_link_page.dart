@@ -1,5 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/main_page/child_main_page.dart';
+import 'package:keeping/screens/main_page/main_page.dart';
+import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/screens/user_link_page/widgets/main_description_text.dart';
@@ -17,6 +23,8 @@ class _AfterUserLinkPageState extends State<AfterUserLinkPage> {
   int? _remainingTime; // 초기 남은 시간을 null로 설정
   late Timer _timer; // 타이머 변수
   String? _myCode;
+  bool? _parent;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -25,6 +33,7 @@ class _AfterUserLinkPageState extends State<AfterUserLinkPage> {
         Provider.of<UserLinkProvider>(context, listen: false).expire;
     _myCode = Provider.of<UserLinkProvider>(context, listen: false).myCode;
     _startTimer(); // 타이머 시작
+    _parent = context.read<UserInfoProvider>().parent;
   }
 
   @override
@@ -50,8 +59,13 @@ class _AfterUserLinkPageState extends State<AfterUserLinkPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isParent = _parent ?? false;
     return Scaffold(
-      appBar: MyHeader(text: '연결하기', elementColor: Colors.black),
+      appBar: MyHeader(
+        text: '연결하기',
+        elementColor: Colors.black,
+        backPath: isParent ? ParentMainPage() : ChildMainPage(),
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -64,7 +78,7 @@ class _AfterUserLinkPageState extends State<AfterUserLinkPage> {
                 if (_myCode != null) myCodeWidget(),
                 ConfirmBtn(
                   text: '상대방에게 알려주기',
-                  action: noticeToUser,
+                  action: () => noticeToUser(_myCode),
                 ),
                 doNotice(),
               ],
@@ -135,6 +149,15 @@ doNotice() {
   );
 }
 
-noticeToUser(BuildContext context) {
+noticeToUser(String? content) {
   print('알려주는 중');
+  if (content != null) {
+    Clipboard.setData(ClipboardData(text: content));
+    Fluttertoast.showToast(
+      msg: '복사되었습니다.',
+      gravity: ToastGravity.BOTTOM,
+      toastLength: Toast.LENGTH_SHORT,
+    );
+  }
 }
+
