@@ -188,7 +188,7 @@ class _ChildContentState extends State<ChildContent> {
             children: [
               MainServiceBtn(
                 hasAccount: context.read<ChildInfoProvider>().accountNumber != '' ? true : false,
-                path: MissionPage(),
+                path: ParentMissionPage(),
                 name: '미션',
                 text: '자녀 소비습관 쑥쑥!',
                 emoji: '💪',
@@ -211,7 +211,7 @@ class _ChildContentState extends State<ChildContent> {
             children: [
               MainServiceBtn(
                 hasAccount: context.read<ChildInfoProvider>().accountNumber != '' ? true : false,
-                path: QuestionPage(),
+                path: ParentQuestionPage(),
                 name: '질문',
                 text: '질문에 답하고\n자녀와 소통해요',
                 emoji: '📬',
