@@ -29,6 +29,7 @@ final FlutterLocalNotificationsPlugin notiPlugin =
 Future<void> cancelNotification() async {
   await notiPlugin.cancelAll();
 }
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> requestPermissions() async {
   await notiPlugin
@@ -68,6 +69,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 //여기에 프로바이더를 추가해
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   // String? firebaseToken = await fcmSetting();
   UserInfoProvider userInfoProvider = UserInfoProvider();
   await fcmSetting(userInfoProvider);
@@ -95,6 +97,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AccountDetailProvider()),
       ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
+
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           fontFamily: "NotoSansKR",

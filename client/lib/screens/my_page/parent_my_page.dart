@@ -26,9 +26,9 @@ class ParentMyPage extends StatelessWidget {
         context, MaterialPageRoute(builder: (context) => PhonenumEditPage()));
   }
 
-  void handleChild(BuildContext context) {
+  void handleUserLink(BuildContext context) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ChildManagementPage()));
+        MaterialPageRoute(builder: (context) => UserManagementPage()));
   }
 
   void logout(BuildContext context) {
@@ -76,8 +76,8 @@ class ParentMyPage extends StatelessWidget {
               ),
               _MyPageDetailedFunctionPage(
                 context,
-                '자녀 관리',
-                () => handleChild(context),
+                '유저 연결 관리',
+                () => handleUserLink(context),
               ),
               _MyPageDetailedFunctionPage(
                 context,

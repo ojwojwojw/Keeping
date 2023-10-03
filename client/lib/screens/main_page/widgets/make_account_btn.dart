@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/screens/make_account_page/make_account_page.dart';
+import 'package:keeping/screens/user_link_page/before_user_link_page.dart';
 import 'package:keeping/styles.dart';
 
 class MakeAccountBtn extends StatelessWidget {
@@ -44,7 +45,7 @@ class MakeAccountBtn extends StatelessWidget {
 Widget disabledAccountForParent(BuildContext context) {
   return InkWell(
     onTap: () {
-
+      Navigator.push(context, MaterialPageRoute(builder: (_) => BeforeUserLinkPage()));
     },
     child: Padding(
       padding: const EdgeInsets.only(top: 24, bottom: 12),

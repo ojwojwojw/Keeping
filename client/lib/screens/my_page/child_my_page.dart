@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/my_page/child_management_page.dart';
 import 'package:keeping/screens/my_page/util/handle_logout.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/header.dart';
@@ -24,7 +25,10 @@ class ChildMyPage extends StatelessWidget {
   void logout(BuildContext context) {
     showLogoutConfirmationDialog(context);
   }
-
+  void handleUserLink(BuildContext context) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => UserManagementPage()));
+  }
 // 로그아웃 모달 다이얼로그
   void showLogoutConfirmationDialog(BuildContext context) {
     bottomModal(
@@ -64,6 +68,11 @@ class ChildMyPage extends StatelessWidget {
                 context,
                 '휴대폰 번호 변경',
                 () => gotoEditPhone(context),
+              ),
+              _MyPageDetailedFunctionPage(
+                context,
+                '유저 연결 관리',
+                () => handleUserLink(context),
               ),
               _MyPageDetailedFunctionPage(
                 context,

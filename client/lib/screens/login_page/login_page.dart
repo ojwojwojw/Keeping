@@ -74,8 +74,8 @@ class _LoginPageState extends State<LoginPage> {
       appBar: MyHeader(
         text: '로그인',
         elementColor: Colors.black,
-        icon: Icon(Icons.arrow_circle_up),
-        path: LoginPage(),
+        // icon: Icon(Icons.arrow_circle_up),
+        // path: LoginPage(),
       ),
       body: SingleChildScrollView(
         child: Form(
