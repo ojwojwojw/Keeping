@@ -3,9 +3,8 @@ package com.keeping.questionservice.api.controller;
 import com.keeping.questionservice.api.ApiResponse;
 import com.keeping.questionservice.api.controller.request.*;
 import com.keeping.questionservice.api.controller.response.QuestionCommentResponse;
-import com.keeping.questionservice.api.controller.response.QuestionResponse;
 import com.keeping.questionservice.api.controller.response.QuestionResponseList;
-import com.keeping.questionservice.api.controller.response.TodayQuestionResponse;
+import com.keeping.questionservice.api.controller.response.TodayQuestionCommentResponse;
 import com.keeping.questionservice.api.service.QuestionService;
 import com.keeping.questionservice.api.service.dto.*;
 import com.keeping.questionservice.global.exception.AlreadyExistException;
@@ -15,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -25,10 +25,10 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @GetMapping("/questions/today")
-    public ApiResponse<TodayQuestionResponse> getQuestionToday(@PathVariable String memberKey){
+    public ApiResponse<List<TodayQuestionCommentResponse>> getQuestionToday(@PathVariable String memberKey){
         try {
-            TodayQuestionResponse todayQuestionResponse = questionService.showQuestionToday(memberKey);
-            return ApiResponse.ok(todayQuestionResponse);
+            List<TodayQuestionCommentResponse> todayQuestionCommentRespons = questionService.showQuestionToday(memberKey);
+            return ApiResponse.ok(todayQuestionCommentRespons);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage());
         }

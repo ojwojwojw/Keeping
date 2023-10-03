@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,27 +67,30 @@ public class QuestionServiceImpl implements QuestionService {
 
         // 레디스에 등록
         String registrationTimeStr = registrationTime.format(DateTimeFormatter.ofPattern("HH:mm"));
-        redisUtils.setRedisHash(registrationTimeStr, memberKey, dto.getContent(), ttl);
-        redisUtils.setRedisHash(registrationTimeStr, dto.getChildMemberKey(), dto.getContent(), ttl);
+        redisUtils.setRedisHash(registrationTimeStr, memberKey, "🫶질문을 확인해보세요", ttl);
+        redisUtils.setRedisHash(registrationTimeStr, dto.getChildMemberKey(), "🫶질문을 확인해보세요", ttl);
 
         return question.getId();
     }
 
     @Override
-    public TodayQuestionResponse showQuestionToday(String memberKey) {
+    public List<TodayQuestionCommentResponse> showQuestionToday(String memberKey) {
 
         // 오늘 날짜 구하기
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
 
         // 오늘 날짜의 질문이 있는지 확인, 없다면 예외 발생
-        QuestionResponse questionResponse = questionQueryRepository.findByChildKeyAndSceduledTime(memberKey, now)
-                .orElseThrow(() -> new NotFoundException("400", HttpStatus.BAD_REQUEST, "오늘 질문이 없습니다."));
+        List<TodayQuestionResponse> todayQuestionResponses = questionQueryRepository.findByChildKeyAndSceduledTimeAtNow(memberKey, now);
 
-        // 질문에 댓글 있는지 확인
-        List<CommentResponse> commentList = commentQueryRepository.findByIdAndIsActive(questionResponse.getId(), true);
-
-        // 오늘 날짜의 질문에 대한 상세 정보 반환
-        return TodayQuestionResponse.toDto(questionResponse.getId(), questionResponse.getContent(), questionResponse.isCreated(), questionResponse.getParentAnswer(), questionResponse.getChildAnswer(), commentList);
+        List<TodayQuestionCommentResponse> todayQuestionCommentRespons = new ArrayList<>();
+        for (TodayQuestionResponse questionResponse : todayQuestionResponses) {
+            // 질문에 댓글 있는지 확인
+            List<CommentResponse> commentList = commentQueryRepository.findByIdAndIsActive(questionResponse.getId(), true);
+            // 오늘 날짜의 질문에 대한 상세 정보 반환
+            TodayQuestionCommentResponse todayQuestionCommentResponse = TodayQuestionCommentResponse.toDto(questionResponse.getId(), questionResponse.getChildMemberKey(), questionResponse.getContent(), questionResponse.isCreated(), questionResponse.getParentAnswer(), questionResponse.getChildAnswer(), commentList);
+            todayQuestionCommentRespons.add(todayQuestionCommentResponse);
+        }
+        return todayQuestionCommentRespons;
     }
 
     @Override

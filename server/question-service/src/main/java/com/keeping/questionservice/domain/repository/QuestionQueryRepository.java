@@ -1,12 +1,12 @@
 package com.keeping.questionservice.domain.repository;
 
 import com.keeping.questionservice.api.controller.response.QuestionResponse;
+import com.keeping.questionservice.api.controller.response.TodayQuestionResponse;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +26,23 @@ public class QuestionQueryRepository {
         return Optional.ofNullable(queryFactory
                 .select(constructor(QuestionResponse.class,
                         question.id,
+                        question.childKey,
+                        question.content,
+                        question.parentAnswer,
+                        question.childAnswer,
+                        question.isCreated,
+                        question.createdDate))
+                .from(question)
+                .where(question.childKey.eq(memberKey),
+                        question.scheduledTime.between(scheduledTime.plusDays(1).atStartOfDay(), scheduledTime.plusDays(2).atStartOfDay()))
+                .fetchOne());
+    }
+
+    public List<TodayQuestionResponse> findByChildKeyAndSceduledTimeAtNow(String memberKey, LocalDate scheduledTime) {
+        return queryFactory
+                .select(constructor(TodayQuestionResponse.class,
+                        question.id,
+                        question.childKey,
                         question.content,
                         question.parentAnswer,
                         question.childAnswer,
@@ -34,29 +51,15 @@ public class QuestionQueryRepository {
                 .from(question)
                 .where(question.childKey.eq(memberKey)
                                 .or(question.parentKey.eq(memberKey)),
-                        question.scheduledTime.between(scheduledTime.plusDays(1).atStartOfDay(), scheduledTime.plusDays(2).atStartOfDay()))
-                .fetchOne());
-    }
-
-    public Optional<QuestionResponse> findByChildKeyAndSceduledTimeAtNow(String childKey, LocalDate scheduledTime) {
-        return Optional.ofNullable(queryFactory
-                .select(constructor(QuestionResponse.class,
-                        question.id,
-                        question.content,
-                        question.parentAnswer,
-                        question.childAnswer,
-                        question.isCreated,
-                        question.createdDate))
-                .from(question)
-                .where(question.childKey.eq(childKey),
                         question.scheduledTime.between(scheduledTime.atStartOfDay(), scheduledTime.plusDays(1).atStartOfDay()))
-                .fetchOne());
+                .fetch();
     }
     
     public List<QuestionResponse> getQuestionByMemberKey(String memberKey) {
         return queryFactory
                 .select(constructor(QuestionResponse.class,
                         question.id,
+                        question.childKey,
                         question.content,
                         question.parentAnswer,
                         question.childAnswer,
@@ -72,6 +75,7 @@ public class QuestionQueryRepository {
         return Optional.ofNullable(queryFactory
                 .select(constructor(QuestionResponse.class,
                         question.id,
+                        question.childKey,
                         question.content,
                         question.parentAnswer,
                         question.childAnswer,

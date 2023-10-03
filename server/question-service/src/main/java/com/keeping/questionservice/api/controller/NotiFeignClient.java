@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "noti-service")
 public interface NotiFeignClient {
     
-    @PostMapping("/noti-service/question-send")
+    @PostMapping("/noti-service/api/question-send")
     ApiResponse<Void> sendQuestionNoti(@RequestBody QuestionNotiRequestList request);
     
 }

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class QuestionResponse {
 
     private Long id;
+    private String childMemberKey;
     private String content;
     private String parentAnswer;
     private String childAnswer;
@@ -18,8 +19,9 @@ public class QuestionResponse {
     private LocalDateTime createdDate;
 
     @Builder
-    public QuestionResponse(Long id, String content, String parentAnswer, String childAnswer, boolean isCreated, LocalDateTime createdDate) {
+    public QuestionResponse(Long id, String childMemberKey, String content, String parentAnswer, String childAnswer, boolean isCreated, LocalDateTime createdDate) {
         this.id = id;
+        this.childMemberKey = childMemberKey;
         this.content = content;
         this.parentAnswer = parentAnswer;
         this.childAnswer = childAnswer;
