@@ -17,8 +17,6 @@ class SignUpPage extends StatelessWidget {
             MyHeader(
               text: '유형 선택',
               elementColor: Colors.black,
-              icon: Icon(Icons.arrow_circle_up),
-              path: SignUpPage(),
             ),
             SizedBox(height: 130,),
             Row(
@@ -63,13 +61,13 @@ Text selectText() {
 void _navigateToSignUpChildPage(BuildContext context) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => SignUpChildPage()),
+    MaterialPageRoute(builder: (context) => SignUpParentPage()),
   );
 }
 
 void _navigateToSignUpParentPage(BuildContext context) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => SignUpParentPage()),
+    MaterialPageRoute(builder: (context) => SignUpChildPage()),
   );
 }
