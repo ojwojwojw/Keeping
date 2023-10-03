@@ -143,13 +143,13 @@ Color requestStatusTextColor(String status) {
 
 String missionRequestStatusText(String status) {
   if (status == 'YET') {
-    return '미션 대기';
+    return '진행 중';
   } else if (status == 'FINISH_WAIT') {
     return '미션 완료';
   } else if (status == 'FINISH') {
     return '이전 미션';
   } else {
-    return '진행 중';
+    return '미션 대기';
   }
 }
 
