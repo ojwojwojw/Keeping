@@ -5,6 +5,8 @@ import 'package:keeping/screens/parent_accept_request_money/parent_accept_reques
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/bottom_double_btn.dart';
+import 'package:keeping/widgets/completed_page.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/request_info_detail_card.dart';
 import 'package:provider/provider.dart';
@@ -88,20 +90,38 @@ class _ParentRequestMoneyDetailPageState
       "approve": selectState,
     };
     print(data);
-    String url =
-        'http://j9c207.p.ssafy.io:8000/bank-service/api/$_memberKey/allowance/approve';
+    String url = '/bank-service/api/$_memberKey/allowance/approve';
     final response = await dioPost(
       accessToken: _accessToken,
       url: url,
       data: data,
     );
     if (response['resultStatus']['successCode'] == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => ParentRequestMoneyPage(),
-        ),
-      );
+      if (selectState == 'REJECT') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CompletedPage(
+              text: '$_name에게 \n 용돈 주기 거부!',
+              button: ConfirmBtn(
+                action: ParentRequestMoneyPage(),
+              ),
+            ),
+          ),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CompletedPage(
+              text: '$_name에게 \n 용돈 주기 승인!',
+              button: ConfirmBtn(
+                action: ParentRequestMoneyPage(),
+              ),
+            ),
+          ),
+        );
+      }
     }
     print(response);
     print('승인할 거예요');

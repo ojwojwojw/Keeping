@@ -4,6 +4,8 @@ import 'package:keeping/screens/request_pocket_money_page/child_request_money_pa
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
+import 'package:keeping/widgets/completed_page.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:provider/provider.dart';
@@ -91,7 +93,15 @@ class _RequestPocketMoneySecondPageState
     );
     print(response);
     if (response['resultStatus']['successCode'] == 0) {
-      showRequestMoneyResult(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CompletedPage(
+                text: '조르기 요청 완료!',
+                button: ConfirmBtn(
+                  action: ChildRequestMoneyPage(),
+                ))),
+      );
     }
   }
 

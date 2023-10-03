@@ -105,23 +105,22 @@ class _MissonPageState extends State<MissionPage> {
                   SizedBox(
                     height: 10,
                   ),
-                  MissionFilters(setFilter: changeFilter, setIdx: _setSelectedBtnIdx, Idx: _selectedBtnIdx),
+                  MissionFilters(
+                      setFilter: changeFilter,
+                      setIdx: _setSelectedBtnIdx,
+                      Idx: _selectedBtnIdx),
                   Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ...filteredData.map((e) => 
-                            MissionColorInfoCard(
-                              status: e["completed"],
-                              createdDate: DateTime.parse(e['startDate']),
-                              todo: e['todo'],
-                              item: e,
-                            )
-                          ), 
-                        ],
-                      )
-                    )
-                  ),
+                      child: SingleChildScrollView(
+                          child: Column(
+                    children: [
+                      ...filteredData.map((e) => MissionColorInfoCard(
+                            status: e["completed"],
+                            createdDate: DateTime.parse(e['startDate']),
+                            todo: e['todo'],
+                            item: e,
+                          )),
+                    ],
+                  ))),
                   // missionData(filteredData),
                 ],
               ),
@@ -228,24 +227,23 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
                   SizedBox(
                     height: 10,
                   ),
-                  MissionFilters(setFilter: changeFilter, setIdx: _setSelectedBtnIdx, Idx: _selectedBtnIdx),
+                  MissionFilters(
+                      setFilter: changeFilter,
+                      setIdx: _setSelectedBtnIdx,
+                      Idx: _selectedBtnIdx),
                   // filterBar(),
                   Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ...filteredData.map((e) => 
-                            MissionColorInfoCard(
-                              status: e["completed"],
-                              createdDate: DateTime.parse(e['startDate']),
-                              todo: e['todo'],
-                              item: e,
-                            )
-                          ), 
-                        ],
-                      )
-                    )
-                  ),
+                      child: SingleChildScrollView(
+                          child: Column(
+                    children: [
+                      ...filteredData.map((e) => MissionColorInfoCard(
+                            status: e["completed"],
+                            createdDate: DateTime.parse(e['startDate']),
+                            todo: e['todo'],
+                            item: e,
+                          )),
+                    ],
+                  ))),
                   // parentMissionData(filteredData),
                 ],
               ),
@@ -257,8 +255,6 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
     );
   }
 }
-
-
 
 // 새로운 미션 생성 버튼//
 class CreateMissonBox extends StatelessWidget {
@@ -276,7 +272,8 @@ class CreateMissonBox extends StatelessWidget {
           backgroundColor: MaterialStateProperty.all(Color(0xFF805AF1)),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // 원하는 둥글게 만들 모서리의 반지름 값. 15은 예시입니다.
+              borderRadius: BorderRadius.circular(
+                  10), // 원하는 둥글게 만들 모서리의 반지름 값. 15은 예시입니다.
             ),
           ),
         ),
@@ -293,7 +290,10 @@ class CreateMissonBox extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center, // 중앙에 배치하기 위해 사용
             children: [
-              Image.asset('assets/image/mission/new_mission.png', width: 100,),
+              Image.asset(
+                'assets/image/mission/new_mission.png',
+                width: 100,
+              ),
               Text('새로운 미션 만들기', style: TextStyle(fontSize: 20)),
             ],
           ),
@@ -317,7 +317,6 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
   late Dio dio;
   late UserInfoProvider userProvider;
   late List<Map<String, dynamic>> childrenList;
-
 
   @override
   void initState() {
@@ -361,8 +360,6 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
     }
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -391,7 +388,6 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
     );
   }
 }
-
 
 // 미션 완료 요청 폼 페이지
 class MissionCompleteRequestPage extends StatefulWidget {
@@ -452,8 +448,6 @@ class _MissionCompleteRequestPageState
     }
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -482,7 +476,6 @@ class _MissionCompleteRequestPageState
     );
   }
 }
-
 
 // 미션 완료 승인 폼 페이지
 class MissionCompletePage extends StatefulWidget {
@@ -564,6 +557,91 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
       ),
       bottomNavigationBar: BottomBtn(
         text: "미션 완료 승인 하기",
+        action: _sendData,
+        isDisabled: comment.isEmpty,
+      ),
+    );
+  }
+}
+
+// 미션 완료 커멘트 폼 페이지
+class MissionCompleteCommentPage extends StatefulWidget {
+  final int? missionId;
+  const MissionCompleteCommentPage({super.key, required this.missionId});
+
+  @override
+  State<MissionCompleteCommentPage> createState() =>
+      _MissionCompleteCommentPageState();
+}
+
+class _MissionCompleteCommentPageState
+    extends State<MissionCompleteCommentPage> {
+  String comment = '';
+  late Dio dio;
+  late UserInfoProvider userProvider;
+  late List<Map<String, dynamic>> childrenList;
+
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+  }
+
+  ///FINISH_WAIT 상태인 미션을 FINISH로 바꾸는 비동기 요청
+  Future<void> _sendData() async {
+    var accessToken = userProvider.accessToken;
+    var memberKey = userProvider.memberKey;
+    var userType = userProvider.parent ? "PARENT" : "CHILD";
+
+    var data = {"missionId": widget.missionId, "comment": comment};
+
+    try {
+      var response = await dio.patch(
+          "$_baseUrl/mission-service/api/$memberKey/comment",
+          data: data,
+          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
+      print(response);
+
+      if (response.statusCode == 200) {
+        print('커멘트 200');
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CompletedAndGoPage(
+                      text: "미션완료 승인완료!",
+                      targetPage: ParentMissionPage(),
+                    )));
+      }
+    } catch (e) {
+      print('Error: $e');
+      print(data);
+    }
+  }
+
+  //위젯 빌드,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: MyHeader(
+        text: "미션 완료 커멘트 작성",
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            renderTextFormField(
+                label: "완료 커멘트를 남겨봐요",
+                hintText: "완료 커멘트를 남겨봐요",
+                onChange: (value) {
+                  setState(() {
+                    comment = value;
+                  });
+                })
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomBtn(
+        text: "미션 완료 커멘트 남기기",
         action: _sendData,
         isDisabled: comment.isEmpty,
       ),

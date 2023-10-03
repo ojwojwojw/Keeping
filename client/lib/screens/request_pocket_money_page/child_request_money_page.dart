@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/piggy_page/make_piggy_test.dart';
 import 'package:keeping/screens/request_pocket_money_page/child_request_money_detail.dart';
 import 'package:keeping/screens/request_pocket_money_page/request_pocket_money_second_page.dart';
 import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_box.dart';
@@ -22,11 +23,13 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
   List<Map<String, dynamic>> _result = []; // 데이터를 저장할 변수
   int selectedBtnIdx = 0;
   late Future<List<Map<String, dynamic>>> _dataFuture;
+  bool _isParent = true;
 
   @override
   void initState() {
     super.initState();
     _dataFuture = renderTotalRequestMoney(context, selectedBtnIdx);
+    _isParent = context.read<UserInfoProvider>().parent;
   }
 
   final DateFormat dateFormat = DateFormat('MM월 dd일');
@@ -39,17 +42,13 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
         Provider.of<UserInfoProvider>(context, listen: false).accessToken;
     var url = '';
     if (selectedBtnIdx == 0) {
-      url =
-          'http://j9c207.p.ssafy.io:8000/bank-service/api/$memberKey/allowance/$memberKey';
+      url = '/bank-service/api/$memberKey/allowance/$memberKey';
     } else if (selectedBtnIdx == 1) {
-      url =
-          'http://j9c207.p.ssafy.io:8000/bank-service/api/$memberKey/allowance/$memberKey/WAIT';
+      url = '/bank-service/api/$memberKey/allowance/$memberKey/WAIT';
     } else if (selectedBtnIdx == 2) {
-      url =
-          'http://j9c207.p.ssafy.io:8000/bank-service/api/$memberKey/allowance/$memberKey/APPROVE';
+      url = '/bank-service/api/$memberKey/allowance/$memberKey/APPROVE';
     } else {
-      url =
-          'http://j9c207.p.ssafy.io:8000/bank-service/api/$memberKey/allowance/$memberKey/REJECT';
+      url = '/bank-service/api/$memberKey/allowance/$memberKey/REJECT';
     }
     final response = await dioGet(
       accessToken: accessToken,
@@ -77,6 +76,21 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
     totalRequestPockeyMoney(_result);
   }
 
+  renderRequestCount() async {
+    String memberKey =
+        Provider.of<UserInfoProvider>(context, listen: false).memberKey;
+    String accessToken =
+        Provider.of<UserInfoProvider>(context, listen: false).accessToken;
+
+    var response = await dioGet(
+      url: '/bank-service/api/$memberKey/allowance/$memberKey/count',
+      accessToken: accessToken,
+    );
+    if (response['resultStatus']['successCode'] == 0) {
+      return response['resultBody'];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,16 +98,31 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => RequestPocketMoneySecondPage()),
-                );
-              },
-              child: requestPocketMoneyBox(),
-            ),
+            FutureBuilder(
+                future: renderRequestCount(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return emptyBox();
+                  } else if (snapshot.hasError) {
+                    return Text('에러 발생: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    var responseData = snapshot.data;
+                    // responseData를 이용하여 필요한 UI 작업 수행
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  RequestPocketMoneySecondPage()),
+                        );
+                      },
+                      child: requestPocketMoneyBox(responseData, _isParent),
+                    );
+                  } else {
+                    return Text('용돈 조르기 내역이 없습니다.');
+                  }
+                }),
             RequestMoneyFilters(
               onPressed: (int idx) {
                 setState(() {
@@ -169,7 +198,6 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
       child: SingleChildScrollView(
         child: Column(
           children: requests.map((req) {
-            print(req);
             final DateTime createdDate = DateTime.parse(req['createdDate']);
             final String status = req['approve'];
             final int money = req['money'];
