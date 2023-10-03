@@ -374,11 +374,11 @@ String _getBottomButtonText(String status) {
     case "CREATE_WAIT":
       return "미션생성을 승인해요.";
     case "YET":
-      return "미션을 완료했어요!";
+      return "완료했어요!";
     case "FINISH_WAIT":
       return "참 잘했어요 꾸욱 :)";
     case "FINISH":
-      return "완료했어요!";
+      return "지난 미션이에요!";
     default:
       return "미션 승인하기";
   }
@@ -394,6 +394,7 @@ void handleParentButtonClick(
           MaterialPageRoute(
               builder: (_) => MissionApprovePage(
                     missionId: item["id"],
+                    item: item
                   ))); //미션 id 넘겨주는곳
       break;
     case "YET":
@@ -405,6 +406,7 @@ void handleParentButtonClick(
           MaterialPageRoute(
               builder: (_) => MissionCompletePage(
                     missionId: item["id"],
+                    item: item
                   ))); //미션 id 넘겨주는곳
       // 미션 완료 승인 로직
       break;
@@ -429,6 +431,7 @@ void handleChildButtonClick(BuildContext context, dynamic item, String status) {
           MaterialPageRoute(
               builder: (_) => MissionCompleteRequestPage(
                     missionId: item["id"],
+                    item: item,
                   ))); //미션 id 넘겨주는곳
       break;
     case "FINISH_WAIT":
