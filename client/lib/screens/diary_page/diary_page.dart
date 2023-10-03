@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/widgets/my_icons.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
@@ -53,11 +54,11 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF8320E7),
+      backgroundColor: Color.fromARGB(255, 238, 220, 255),
       appBar: MyHeader(
-        text: '다이어리(자녀)',
-        bgColor: Color(0xFF8320E7),
-        elementColor: Colors.white,
+        text: '추억 저장소',
+        bgColor: Color.fromARGB(255, 255, 255, 255),
+        elementColor: const Color.fromARGB(255, 0, 0, 0),
       ),
       body: FutureBuilder(
         // 비동기 데이터를 기다리고 UI를 구성
@@ -73,29 +74,23 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
               child: Column(
                 children: [
                   Container(
-                    height: 10,
+                    height: 70,
                     width: 410,
-                    color: Color(0xFFD9D9D9).withOpacity(0.5),
-                    child: SizedBox(),
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    child: Image.asset('assets/image/diary/key.png'), // 이미지 경로를 여기에 설정하세요.
                   ),
+                  SizedBox(height: 10,),
 
                   ///일기 데이터 띄울 곳
                   _diaryData(data),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      //일기 생성버튼
-                      _diaryCreateBtn(),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      //오늘의 질문 보기 버튼
-                      _todayQuestionBtn(),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 15,
+                  Expanded(child: SizedBox()), // 빈 공간을 채우기 위한 Expanded 위젯
+                  Align(
+                    alignment: Alignment.bottomRight, // 오른쪽 하단 정렬
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0), // 버튼과 화면 경계 사이의 여백 조절
+                      child: _todayQuestionBtn(),
+                    ),
                   ),
                 ],
               ),
@@ -103,9 +98,10 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
           }
         },
       ),
-      bottomNavigationBar: BottomNav(),
+      bottomNavigationBar: BottomNav(diary: true,),
     );
   }
+
 
   // 일기 데이터를 띄울 위젯
   Widget _diaryData(data) {
@@ -115,7 +111,7 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
       itemBuilder: (BuildContext context, int index) {
         final item = data[index];
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          padding: EdgeInsets.symmetric(horizontal: 15.0),
           child: InkWell(
             onTap: () {
               // 컨테이너를 탭했을 때 실행할 동작 정의
@@ -137,13 +133,26 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
               ),
               child: Column(
                 children: [
-                  Text('#' + (index + 1).toString()),
-                  Text(
-                    item["content"],
-                    style: TextStyle(
-                      fontSize: 18.0, // 텍스트 크기 변경
-                      fontWeight: FontWeight.bold, // 텍스트 굵게 만들기
-                    ),
+                  Row(
+                    children: [
+                      SizedBox(width: 10),
+                      Text('#' + (index + 1).toString()),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          item["content"],
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis, // 긴 텍스트 자르고 ...으로 표시
+                          maxLines: 1, // 최대 1줄까지 표시
+                        ),
+                      ),
+                      SizedBox(
+                        width: 30, child:Icon(MyIcons.arrowForward, size: 20, color: Colors.grey,),
+                      )
+                    ],
                   ),
                   SizedBox(height: 8.0), // 텍스트 사이에 간격 추가
                   Text(
@@ -175,13 +184,13 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
           ),
         );
       },
-      child: Image.asset('assets/image/make_quest.png'), // 이미지 경로를 여기에 설정하세요.
+      child: Image.asset('assets/image/make_quest.png'),
     );
   }
 
 //오늘의 질문 보기 버튼
   Widget _todayQuestionBtn() {
-    return InkWell(
+    return GestureDetector(
       onTap: () async {
         Navigator.push(
           context,
@@ -190,7 +199,37 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
           ),
         );
       },
-      child: Image.asset('assets/image/today_quest.png'), // 이미지 경로를 여기에 설정하세요.
+      child: Container(
+        width: 70, // 버튼의 너비
+        height: 70, // 버튼의 높이
+        decoration: BoxDecoration(
+          shape: BoxShape.circle, // 동그란 모양
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey, // 그림자 색상
+              offset: Offset(0, 1), // 그림자 위치 (가로: 0, 세로: 2)
+              blurRadius: 2, // 그림자 흐림 정도
+            ),
+          ],
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, // 수직 방향 가운데 정렬
+            children: [
+              Image.asset(
+                'assets/image/question/micandfaces.png',
+                width: 40, // 이미지의 너비
+                height: 40, // 이미지의 높이
+              ),
+              Text(
+                '오늘의 질문',
+                style: TextStyle(fontSize: 10),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -439,7 +478,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
   }
 }
 
-//부모 일기 페이지
+//부모 일기 페이지(이동할래용)
 class ParentDiaryPage extends StatefulWidget { 
   const ParentDiaryPage({super.key});
 
@@ -495,11 +534,11 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF8320E7),
+      backgroundColor: Color.fromARGB(255, 238, 220, 255),
       appBar: MyHeader(
-        text: '다이어리(부모)',
-        bgColor: Color(0xFF8320E7),
-        elementColor: Colors.white,
+        text: '추억 저장소',
+        bgColor: Color.fromARGB(255, 255, 255, 255),
+        elementColor: const Color.fromARGB(255, 0, 0, 0),
       ),
       body: FutureBuilder(
         // 비동기 데이터를 기다리고 UI를 구성
@@ -515,26 +554,26 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
               child: Column(
                 children: [
                   Container(
-                    height: 10,
+                    height: 70,
                     width: 410,
-                    color: Color(0xFFD9D9D9).withOpacity(0.5),
-                    child: SizedBox(),
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    child: Image.asset('assets/image/diary/key.png'), // 이미지 경로를 여기에 설정하세요.
                   ),
+                  SizedBox(height: 10,),
 
                   ///일기 데이터 띄울 곳
                   _diaryData(data),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      //일기 생성버튼
-                      _diaryCreateBtn(),
-                      SizedBox(
-                        width: 5,
+                      Expanded(
+                        child: _diaryCreateBtn(),
                       ),
-                      //오늘의 질문 보기 버튼
-                      _todayQuestionBtn(),
+                      Expanded(
+                        child: _todayQuestionBtn(),
+                      ),
                     ],
                   ),
+
                   SizedBox(
                     height: 15,
                   ),
@@ -544,7 +583,7 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
           }
         },
       ),
-      bottomNavigationBar: BottomNav(),
+      bottomNavigationBar: BottomNav(diary: true),
     );
   }
 
@@ -556,7 +595,7 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
       itemBuilder: (BuildContext context, int index) {
         final item = data[index];
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          padding: EdgeInsets.symmetric(horizontal: 15.0),
           child: InkWell(
             onTap: () {
               // 컨테이너를 탭했을 때 실행할 동작 정의
@@ -570,7 +609,7 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
               );
             },
             child: Container(
-              padding: EdgeInsets.all(8), // 여백 추가
+              padding: EdgeInsets.all(8.0), // 여백 추가
               margin: EdgeInsets.symmetric(vertical: 2.0), // 위 아래 여백 추가
               decoration: BoxDecoration(
                 color: Colors.white, // 하얀색 배경
@@ -578,13 +617,26 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
               ),
               child: Column(
                 children: [
-                  Text('#' + (index + 1).toString()),
-                  Text(
-                    item["content"],
-                    style: TextStyle(
-                      fontSize: 18.0, // 텍스트 크기 변경
-                      fontWeight: FontWeight.bold, // 텍스트 굵게 만들기
-                    ),
+                  Row(
+                    children: [
+                      SizedBox(width: 10),
+                      Text('#' + (index + 1).toString()),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          item["content"],
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis, // 긴 텍스트 자르고 ...으로 표시
+                          maxLines: 1, // 최대 1줄까지 표시
+                        ),
+                      ),
+                      SizedBox(
+                        width: 30, child:Icon(MyIcons.arrowForward, size: 20, color: Colors.grey,),
+                      )
+                    ],
                   ),
                   SizedBox(height: 8.0), // 텍스트 사이에 간격 추가
                   Text(
@@ -607,7 +659,7 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
 
   // 일기 생성 버튼
   Widget _diaryCreateBtn() {
-    return InkWell(
+    return GestureDetector(
       onTap: () async {
         Navigator.push(
           context,
@@ -616,22 +668,82 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
           ),
         );
       },
-      child: Image.asset('assets/image/make_quest.png'), // 이미지 경로를 여기에 설정하세요.
+      child: Container(
+        width: 70, // 버튼의 너비
+        height: 70, // 버튼의 높이
+        decoration: BoxDecoration(
+          shape: BoxShape.circle, // 동그란 모양
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey, // 그림자 색상
+              offset: Offset(0, 1), // 그림자 위치 (가로: 0, 세로: 2)
+              blurRadius: 2, // 그림자 흐림 정도
+            ),
+          ],
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, // 수직 방향 가운데 정렬
+            children: [
+              Image.asset(
+                'assets/image/diary/rocket.png',
+                width: 40, // 이미지의 너비
+                height: 40, // 이미지의 높이
+              ),
+              Text(
+                '질문 보내기',
+                style: TextStyle(fontSize: 10),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 
 //오늘의 질문 보기 버튼
   Widget _todayQuestionBtn() {
-    return InkWell(
+    return GestureDetector(
       onTap: () async {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ParentQuestionPage(),
+            builder: (context) => QuestionPage(),
           ),
         );
       },
-      child: Image.asset('assets/image/today_quest.png'), // 이미지 경로를 여기에 설정하세요.
+      child: Container(
+        width: 70, // 버튼의 너비
+        height: 70, // 버튼의 높이
+        decoration: BoxDecoration(
+          shape: BoxShape.circle, // 동그란 모양
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey, // 그림자 색상
+              offset: Offset(0, 1), // 그림자 위치 (가로: 0, 세로: 2)
+              blurRadius: 2, // 그림자 흐림 정도
+            ),
+          ],
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, // 수직 방향 가운데 정렬
+            children: [
+              Image.asset(
+                'assets/image/question/micandfaces.png',
+                width: 40, // 이미지의 너비
+                height: 40, // 이미지의 높이
+              ),
+              Text(
+                '오늘의 질문',
+                style: TextStyle(fontSize: 10),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

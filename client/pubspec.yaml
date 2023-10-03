@@ -95,9 +95,14 @@ flutter:
     - assets/image/temp_image.jpg
     - assets/image/money_coins.png
     - assets/image/diary/diary.png
+    - assets/image/diary/key.png
+    - assets/image/diary/rocket.png
+    - assets/image/diary/todayquestion.png
     - assets/image/mission/how_much.png
     - assets/image/mission/what_mission.png
     - assets/image/mission/new_mission.png
+    - assets/image/mission/target.png
+    - assets/image/mission/pencil.png
     - assets/image/question/answer.png
     - assets/image/question/folder.png
     - assets/image/question/maintitle.png

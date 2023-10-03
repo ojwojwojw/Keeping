@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/login_page/login_page.dart';
 import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/header.dart';
@@ -455,7 +456,6 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
       'parentPhone': _parentPhone.text,
       'birth': _userBirth.text
     };
-    print('유효성 검사 통과');
     BuildContext currentContext = context;
 
     final response = await dioPost(
@@ -468,7 +468,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => MainPage(),
+          builder: (context) => LoginPage(),
         ),
       );
     } else if (response['resultStatus']['resultCode'] == 409) {
