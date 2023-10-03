@@ -27,6 +27,14 @@ class QuestionPage extends StatefulWidget {
 
 class _QuestionPageState extends State<QuestionPage> {
   List<Map<String, dynamic>> data = [];
+  String formattedDate = '';
+
+  @override
+  void initState() {
+    super.initState();
+    DateTime now = DateTime.now();
+    formattedDate = DateFormat('yyyy-MM-dd').format(now);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -200,6 +208,7 @@ class _QuestionPageState extends State<QuestionPage> {
               data[0]["id"] != null) {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => QeustionAnswerPage(
+                questionDate: formattedDate,
                 questionText: data[0]["content"]!,
                 questionId: data[0]["id"]!,
               ),
@@ -303,6 +312,8 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
   late Dio dio;
   late UserInfoProvider userProvider;
   late ChildInfoProvider childInfoProvider;
+  String formattedDate = '';
+
 
   @override
   void initState() {
@@ -311,6 +322,8 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
     userProvider = Provider.of<UserInfoProvider>(context, listen: false);
     childInfoProvider = Provider.of<ChildInfoProvider>(context, listen: false);
     selectedMemberKey = childInfoProvider.memberKey;
+    DateTime now = DateTime.now();
+    formattedDate = DateFormat('yyyy-MM-dd').format(now);
   }
 
   //질문 데이터를 가져오는 비동기 요청
@@ -521,6 +534,7 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
               data[0]["id"] != null) {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ParentQeustionAnswerPage(
+                questionDate: formattedDate,
                 questionText: data[0]["content"]!,
                 questionId: data[0]["id"]!,
               ),
@@ -941,10 +955,14 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
 
 //자식 질문에 답하는 페이지
 class QeustionAnswerPage extends StatefulWidget {
+  final String? questionDate;
   final String? questionText;
   final int? questionId;
   const QeustionAnswerPage(
-      {Key? key, required this.questionText, required this.questionId})
+      {Key? key,
+      required this.questionText,
+      required this.questionId,
+      required this.questionDate})
       : super(key: key);
 
   @override
@@ -1004,9 +1022,6 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
           SizedBox(
             height: 15,
           ),
-          
-
-
 
           SizedBox(
             height: 15,
@@ -1020,7 +1035,9 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
           ),
 
           ///
+          Text(widget.questionDate ?? '기본날짜'),
 
+          ///
           SizedBox(
             height: 15,
           ),
@@ -1058,10 +1075,11 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
 
 //부모 질문에 답하는 페이지
 class ParentQeustionAnswerPage extends StatefulWidget {
+  final String? questionDate;
   final String? questionText;
   final int? questionId;
   const ParentQeustionAnswerPage(
-      {super.key, required this.questionText, required this.questionId});
+      {super.key, required this.questionText, required this.questionId ,required this.questionDate});
 
   @override
   State<ParentQeustionAnswerPage> createState() =>
@@ -1154,6 +1172,8 @@ class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
             fit: BoxFit.cover,
           ),
 
+          ///
+          Text(widget.questionDate ?? '기본 날짜'),
           ///
 
           SizedBox(
