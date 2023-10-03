@@ -31,6 +31,7 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
   String? _memberKey;
   String? _fcmToken;
   String _name = '';
+  String? _profileImage;
   String? _childKey;
   String? _childName;
   String? _childProfileImage;
@@ -75,7 +76,7 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                             _changeChildBtn(
                               context: context, childrenList: [], isDisabled: true
                             ),
-                            ParentGreeting(name: _name, childName: null),
+                            ParentGreeting(name: _name, childName: null, profileImage: _profileImage),
                             ChildContent(childInfo: null),
                           ],
                         );
@@ -85,7 +86,7 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                             _changeChildBtn(
                               context: context, childrenList: response['resultBody']['childrenList']
                             ),
-                            ParentGreeting(name: _name, childName: response['resultBody']['childrenList'].first['name']),
+                            ParentGreeting(name: _name, childName: response['resultBody']['childrenList'].first['name'], profileImage: _profileImage,),
                             ChildContent(childInfo: response['resultBody']['childrenList'].first),
                           ],
                         );
@@ -95,7 +96,7 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                           _changeChildBtn(
                             context: context, childrenList: response['resultBody']['childrenList']
                           ),
-                          ParentGreeting(name: _name, childName: _childName!,),
+                          ParentGreeting(name: _name, childName: _childName!, profileImage: _profileImage,),
                           ChildContent(childInfo: {
                             'memberKey': _childKey,
                             'name': _childName,

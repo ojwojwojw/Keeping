@@ -117,6 +117,10 @@ flutter:
     - assets/image/make_quest.png
     - assets/image/send_quest.png
     - assets/image/today_quest.png
+    - assets/image/profile/parent1.png
+    - assets/image/profile/parent2.png
+    - assets/image/profile/child1.png
+    - assets/image/profile/child2.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

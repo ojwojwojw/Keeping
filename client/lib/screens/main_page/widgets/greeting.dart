@@ -3,10 +3,12 @@ import 'package:keeping/styles.dart';
 
 class ChildGreeting extends StatelessWidget {
   final String name;
+  final String? profileImage;
 
   ChildGreeting({
     super.key,
-    required this.name
+    required this.name,
+    required this.profileImage,
   });
 
   @override
@@ -15,7 +17,7 @@ class ChildGreeting extends StatelessWidget {
       padding: EdgeInsets.only(top: 24),
       child: Row(
         children: [
-          roundedAssetImg(imgPath: 'assets/image/temp_image.jpg', size: 64),
+          roundedAssetImg(imgPath: profileImage ?? 'assets/image/profile/child1.png', size: 64),
           SizedBox(width: 12,),
           Row(
             children: [
@@ -32,11 +34,13 @@ class ChildGreeting extends StatelessWidget {
 class ParentGreeting extends StatelessWidget {
   final String name;
   final String? childName;
+  final String? profileImage;
 
   ParentGreeting({
     super.key,
     required this.name,
     required this.childName,
+    required this.profileImage,
   });
 
   @override
@@ -45,7 +49,7 @@ class ParentGreeting extends StatelessWidget {
       padding: EdgeInsets.only(top: 8),
       child: Row(
         children: [
-          roundedAssetImg(imgPath: 'assets/image/temp_image.jpg', size: 64),
+          roundedAssetImg(imgPath: profileImage ?? 'assets/image/profile/parent1.png', size: 64),
           SizedBox(width: 12,),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

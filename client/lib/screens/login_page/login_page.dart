@@ -234,6 +234,18 @@ class _LoginPageState extends State<LoginPage> {
 
       bool? _parent = jsonResponse['resultBody']['parent'];
 
+      if (_profileImage == null) {
+        if (_parent != null) {
+          if (_parent) {
+            _profileImage = 'assets/image/profile/parent1.png';
+          } else {
+            _profileImage = 'assets/image/profile/child1.png';
+          }
+        } else {
+          _profileImage = 'assets/image/profile/parent2';
+        }
+      }
+
       userInfoProvider.updateUserInfo(
         name: _name,
         profileImage: _profileImage,
