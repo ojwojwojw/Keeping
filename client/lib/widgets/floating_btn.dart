@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class FloatingBtn extends StatelessWidget {
   final String text;
-  final Icon icon;
+  final IconData icon;
   final Widget path;
   final Color bgColor;
   final Color elementColor;
@@ -24,8 +24,11 @@ class FloatingBtn extends StatelessWidget {
             MaterialPageRoute(builder: (context) => path));
       },
       label: Text(text, style: textStyle(elementColor),),
-      icon: icon,
+      icon: Icon(icon, color: Colors.white,),
       backgroundColor: bgColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(40.0), // 여기서 조절
+      ),
     );
   }
 }

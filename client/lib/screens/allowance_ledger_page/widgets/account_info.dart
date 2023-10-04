@@ -98,7 +98,7 @@ class _AccountInfoState extends State<AccountInfo> {
                       style: TextStyle(fontSize: 20, color: Colors.black),
                     );
                   } else {
-                    return Text('로딩중');
+                    return Text('');
                   }
                 },
               ),

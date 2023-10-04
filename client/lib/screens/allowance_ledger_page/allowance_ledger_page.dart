@@ -115,7 +115,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                   )
                 );
               } else {
-                return const Text('로딩중');
+                return const Text('');
               }
             }
           ),
@@ -124,7 +124,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
       ),   
       floatingActionButton: FloatingBtn(
         text: '소비지도',
-        icon: Icon(Icons.map),
+        icon: Icons.map,
         path: ChildSpendingRoutePage(),
       ),
       bottomNavigationBar: BottomNav(),
