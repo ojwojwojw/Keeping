@@ -28,8 +28,17 @@ class MissionPage extends StatefulWidget {
 
 class _MissonPageState extends State<MissionPage> {
   List<Map<String, dynamic>> data = [];
+  String? profileImage = '';
   String currentFilter = "ALL";
   int _selectedBtnIdx = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    var userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
+    profileImage = userInfoProvider.profileImage;
+  }
 
   void changeFilter(val) {
     setState(() {
@@ -120,6 +129,7 @@ class _MissonPageState extends State<MissionPage> {
                             createdDate: DateTime.parse(e['startDate']),
                             todo: e['todo'],
                             item: e,
+                            profileImage: profileImage,
                           )),
                     ],
                   ))),
@@ -147,6 +157,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
   List<Map<String, dynamic>> data = [];
   String currentFilter = "ALL";
   int _selectedBtnIdx = 0;
+  late String? profileImage;
 
   void changeFilter(val) {
     setState(() {
@@ -158,6 +169,14 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
     setState(() {
       _selectedBtnIdx = val;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    var childInfoProvider =
+        Provider.of<ChildInfoProvider>(context, listen: false);
+    profileImage = childInfoProvider.profileImage;
   }
 
   //데이터 비동기 요청
@@ -243,6 +262,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
                             createdDate: DateTime.parse(e['startDate']),
                             todo: e['todo'],
                             item: e,
+                            profileImage: profileImage,
                           )),
                     ],
                   ))),
@@ -309,7 +329,8 @@ class CreateMissonBox extends StatelessWidget {
 class MissionApprovePage extends StatefulWidget {
   final int? missionId;
   final Map<String, dynamic> item;
-  const MissionApprovePage({super.key, required this.missionId , required this.item});
+  const MissionApprovePage(
+      {super.key, required this.missionId, required this.item});
 
   @override
   State<MissionApprovePage> createState() => _MissionApprovePageState();
@@ -372,9 +393,7 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
       body: Center(
         child: Column(
           children: [
-            
-            
-            //둥근 모서리 박스 
+            //둥근 모서리 박스
             Container(
               padding: EdgeInsets.all(8), // 텍스트 주변의 패딩 추가
               decoration: BoxDecoration(
@@ -388,16 +407,25 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
                 ),
               ),
             ),
-            
-            SizedBox(height: 10,),
+
+            SizedBox(
+              height: 10,
+            ),
             roundedAssetImg(
-                imgPath: 'assets/image/temp_image.jpg',
-                size: 200), //프로필 이미지 들어갈 곳
+                imgPath: 'assets/image/mission/smile2.png',
+                size: 160), //이모지 이미지 들어갈 곳
 
-            SizedBox(height: 10,),
-            Text(widget.item['todo'] , style: TextStyle(fontSize: 28 , fontWeight: FontWeight.bold),),
-            Text(widget.item['startDate'] ,style: TextStyle(color: Colors.grey),),
-
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              widget.item['todo'],
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              widget.item['startDate'],
+              style: TextStyle(color: Colors.grey),
+            ),
 
             violetBoxFormField(
                 hintText: "응원 메시지를 적어봐요",
@@ -422,7 +450,8 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
 class MissionCompleteRequestPage extends StatefulWidget {
   final Map<String, dynamic> item;
   final int? missionId;
-  const MissionCompleteRequestPage({super.key, required this.missionId ,required this.item});
+  const MissionCompleteRequestPage(
+      {super.key, required this.missionId, required this.item});
 
   @override
   State<MissionCompleteRequestPage> createState() =>
@@ -487,7 +516,7 @@ class _MissionCompleteRequestPageState
       body: Center(
         child: Column(
           children: [
-            //둥근 모서리 박스 
+            //둥근 모서리 박스
             Container(
               padding: EdgeInsets.all(8), // 텍스트 주변의 패딩 추가
               decoration: BoxDecoration(
@@ -501,17 +530,25 @@ class _MissionCompleteRequestPageState
                 ),
               ),
             ),
-            
-            SizedBox(height: 10,),
+
+            SizedBox(
+              height: 10,
+            ),
             roundedAssetImg(
-                imgPath: 'assets/image/temp_image.jpg',
-                size: 200), //프로필 이미지 들어갈 곳
+                imgPath: 'assets/image/mission/smile2.png',
+                size: 160), //이모지 이미지 들어갈 곳
 
-            SizedBox(height: 10,),
-            Text(widget.item['todo'] , style: TextStyle(fontSize: 28 , fontWeight: FontWeight.bold),),
-            Text(widget.item['startDate'] ,style: TextStyle(color: Colors.grey),),
-
-
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              widget.item['todo'],
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              widget.item['startDate'],
+              style: TextStyle(color: Colors.grey),
+            ),
 
             // violetBoxFormField(
             //     hintText: "완료 메시지를 적어봐요",
@@ -536,7 +573,8 @@ class _MissionCompleteRequestPageState
 class MissionCompletePage extends StatefulWidget {
   final Map<String, dynamic> item;
   final int? missionId;
-  const MissionCompletePage({super.key, required this.missionId ,required this.item});
+  const MissionCompletePage(
+      {super.key, required this.missionId, required this.item});
 
   @override
   State<MissionCompletePage> createState() => _MissionCompletePageState();
@@ -600,7 +638,7 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
       body: Center(
         child: Column(
           children: [
-            //둥근 모서리 박스 
+            //둥근 모서리 박스
             Container(
               padding: EdgeInsets.all(8), // 텍스트 주변의 패딩 추가
               decoration: BoxDecoration(
@@ -614,16 +652,25 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
                 ),
               ),
             ),
-            
-            SizedBox(height: 10,),
+
+            SizedBox(
+              height: 10,
+            ),
             roundedAssetImg(
-                imgPath: 'assets/image/temp_image.jpg',
-                size: 200), //프로필 이미지 들어갈 곳
+                imgPath: 'assets/image/mission/smile2.png',
+                size: 160), //이모지 이미지 들어갈 곳
 
-            SizedBox(height: 10,),
-            Text(widget.item['todo'] , style: TextStyle(fontSize: 28 , fontWeight: FontWeight.bold),),
-            Text(widget.item['startDate'] ,style: TextStyle(color: Colors.grey),),
-
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              widget.item['todo'],
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              widget.item['startDate'],
+              style: TextStyle(color: Colors.grey),
+            ),
 
             // violetBoxFormField(
 
@@ -712,8 +759,7 @@ class _MissionCompleteCommentPageState
       body: Center(
         child: Column(
           children: [
-
-            //둥근 모서리 박스 
+            //둥근 모서리 박스
             Container(
               padding: EdgeInsets.all(8), // 텍스트 주변의 패딩 추가
               decoration: BoxDecoration(
@@ -727,15 +773,25 @@ class _MissionCompleteCommentPageState
                 ),
               ),
             ),
-            
-            SizedBox(height: 10,),
-            roundedAssetImg(
-                imgPath: 'assets/image/temp_image.jpg',
-                size: 200), //프로필 이미지 들어갈 곳
 
-            SizedBox(height: 10,),
-            Text(widget.item['todo'] , style: TextStyle(fontSize: 28 , fontWeight: FontWeight.bold),),
-            Text(widget.item['startDate'] ,style: TextStyle(color: Colors.grey),),
+            SizedBox(
+              height: 10,
+            ),
+            roundedAssetImg(
+                imgPath: 'assets/image/mission/smile2.png',
+                size: 160), //이모지 이미지 들어갈 곳
+
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              widget.item['todo'],
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              widget.item['startDate'],
+              style: TextStyle(color: Colors.grey),
+            ),
 
             violetBoxFormField(
                 hintText: "완료 커멘트를 남겨봐요",
