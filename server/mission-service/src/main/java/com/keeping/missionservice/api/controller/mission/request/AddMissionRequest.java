@@ -1,6 +1,5 @@
 package com.keeping.missionservice.api.controller.mission.request;
 
-import com.keeping.missionservice.domain.mission.MissionType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,20 +31,20 @@ public class AddMissionRequest {
     
     private String cheeringMessage; // 부모 응원 메시지
     
-    private String childRequestMessage; // 자녀 요청 메시지
+    private String childRequestComment; // 자녀 요청 메시지
 
     private LocalDate startDate; // 미션 시작일
 
     private LocalDate endDate; // 미션 마감일
 
     @Builder
-    public AddMissionRequest(String type, String to, String todo, int money, String cheeringMessage, String childRequestMessage, LocalDate startDate, LocalDate endDate) {
+    public AddMissionRequest(String type, String to, String todo, int money, String cheeringMessage, String childRequestComment, LocalDate startDate, LocalDate endDate) {
         this.type = type;
         this.to = to;
         this.todo = todo;
         this.money = money;
         this.cheeringMessage = cheeringMessage;
-        this.childRequestMessage = childRequestMessage;
+        this.childRequestComment = childRequestComment;
         this.startDate = startDate;
         this.endDate = endDate;
     }

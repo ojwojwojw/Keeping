@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    Optional<Comment> findByIdAndActive(Long id, boolean isActive);
+    Optional<Comment> findByIdAndIsActive(Long id, boolean isActive);
 }
