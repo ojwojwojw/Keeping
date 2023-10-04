@@ -5,9 +5,9 @@ import com.keeping.questionservice.api.controller.response.QuestionAiResponseLis
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@FeignClient(name = "/openai-service/api")
+@FeignClient(name = "openai-service")
 public interface OpenaiFeignClient {
     
-    @GetMapping("/transaction-question")
+    @GetMapping("/openai-service/transaction-question")
     ApiResponse<QuestionAiResponseList> createQuestion();
 }

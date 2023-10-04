@@ -12,23 +12,29 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class AccountDetailServiceImpl implements AccountDetailService {
 
-    private AccountHistoryService accountHistoryService;
-    private AccountDetailRepository accountDetailRepository;
+    private final AccountHistoryService accountHistoryService;
+    private final AccountDetailRepository accountDetailRepository;
 
     @Override
-    public Long addAccountDetail(String memberKey, AddAccountDetailDto dto) {
-        // 연결된 거래 내역 검증 -> remain, detailed 컬럼 값 갱신
-        AddAccountDetailValidationDto addAccountDetailValidationDto = AddAccountDetailValidationDto.toDto(dto.getAccountHistoryId(), dto.getMoney());
-        AccountHistory accountHistory = accountHistoryService.addAccountDetail(memberKey, addAccountDetailValidationDto);
+    public void addAccountDetail(String memberKey, List<AddAccountDetailDto> dtoList) {
+        for(AddAccountDetailDto dto: dtoList) {
+            // 연결된 거래 내역 검증 -> remain, detailed 컬럼 값 갱신
+            AddAccountDetailValidationDto addAccountDetailValidationDto = AddAccountDetailValidationDto.toDto(dto.getAccountHistoryId(), dto.getMoney());
+            AccountHistory accountHistory = accountHistoryService.addAccountDetail(memberKey, addAccountDetailValidationDto);
 
-        AccountDetail accountDetail = AccountDetail.toAccountDetail(accountHistory, dto.getContent(), dto.getMoney(), SmallCategory.valueOf(accountHistory.getLargeCategory().toString()));
-        AccountDetail saveAccountDetail = accountDetailRepository.save(accountDetail);
+            if(dto.getSmallCategory() == null) {
+                dto.setSmallCategory(SmallCategory.valueOf(accountHistory.getLargeCategory().toString()));
+            }
 
-        return saveAccountDetail.getId();
+            AccountDetail accountDetail = AccountDetail.toAccountDetail(accountHistory, dto.getContent(), dto.getMoney(), dto.getSmallCategory());
+            AccountDetail saveAccountDetail = accountDetailRepository.save(accountDetail);
+        }
     }
 }

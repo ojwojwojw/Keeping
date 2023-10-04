@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 import static lombok.AccessLevel.PROTECTED;
 
 @Data
@@ -20,10 +22,11 @@ public class ShowPiggyResponse {
     private int balance;
     private String savedImage;
     private Completed completed;
+    private LocalDateTime createdDate;
 
 
     @Builder
-    private ShowPiggyResponse(Long id, String childKey, String accountNumber, String content, int goalMoney, int balance, String savedImage, Completed completed) {
+    private ShowPiggyResponse(Long id, String childKey, String accountNumber, String content, int goalMoney, int balance, String savedImage, Completed completed, LocalDateTime createdDate) {
         this.id = id;
         this.childKey = childKey;
         this.accountNumber = accountNumber;
@@ -32,6 +35,7 @@ public class ShowPiggyResponse {
         this.balance = balance;
         this.savedImage = savedImage;
         this.completed = completed;
+        this.createdDate = createdDate;
     }
 
     public static ShowPiggyResponse toResponse(ShowPiggyDto dto, String base64Image) {
@@ -44,6 +48,7 @@ public class ShowPiggyResponse {
                 .balance(dto.getBalance())
                 .savedImage(base64Image)
                 .completed(dto.getCompleted())
+                .createdDate(dto.getCreatedDate())
                 .build();
     }
 }

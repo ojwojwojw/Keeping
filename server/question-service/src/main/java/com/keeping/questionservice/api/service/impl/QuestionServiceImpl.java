@@ -32,7 +32,7 @@ import java.util.Optional;
 @Slf4j
 public class QuestionServiceImpl implements QuestionService {
 
-    private MemberFeignClient memberFeignClient;
+    private final MemberFeignClient memberFeignClient;
     private final QuestionRepository questionRepository;
     private final QuestionQueryRepository questionQueryRepository;
     private final CommentRepository commentRepository;

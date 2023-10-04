@@ -33,9 +33,6 @@ public class Piggy extends TimeBaseEntity {
     @Column(name = "goal_money", nullable = false)
     private int goalMoney;
 
-    @Column(name = "auth_password", nullable = false)
-    private String authPassword;
-
     @Column(nullable = false)
     private int balance;
 
@@ -53,13 +50,12 @@ public class Piggy extends TimeBaseEntity {
 
 
     @Builder
-    private Piggy(Long id, String childKey, String accountNumber, String content, int goalMoney, String authPassword, int balance, String uploadImage, String savedImage, Completed completed, boolean active) {
+    private Piggy(Long id, String childKey, String accountNumber, String content, int goalMoney, int balance, String uploadImage, String savedImage, Completed completed, boolean active) {
         this.id = id;
         this.childKey = childKey;
         this.accountNumber = accountNumber;
         this.content = content;
         this.goalMoney = goalMoney;
-        this.authPassword = authPassword;
         this.balance = balance;
         this.uploadImage = uploadImage;
         this.savedImage = savedImage;
@@ -67,13 +63,12 @@ public class Piggy extends TimeBaseEntity {
         this.active = active;
     }
 
-    public static Piggy toPiggy(String childKey, String accountNumber, String content, int goalMoney, String authPassword, String uploadImage, String savedImage) {
+    public static Piggy toPiggy(String childKey, String accountNumber, String content, int goalMoney, String uploadImage, String savedImage) {
         return Piggy.builder()
                 .childKey(childKey)
                 .accountNumber(accountNumber)
                 .content(content)
                 .goalMoney(goalMoney)
-                .authPassword(authPassword)
                 .balance(0)
                 .uploadImage(uploadImage)
                 .savedImage(savedImage)
