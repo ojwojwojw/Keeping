@@ -87,6 +87,7 @@ class _SendMoneyRegularPageState extends State<SendMoneyRegularPage> {
     String formattedBalance = formattedMoney(_balance ?? 0); // 잔액을 문자열로 포맷팅
 
     return Scaffold(
+      backgroundColor: Color(0xFFFAFAFA),
       appBar: MyHeader(
         text: '용돈 보내기',
       ),
@@ -319,6 +320,7 @@ class _WhenSendPocketMoneyPageState extends State<WhenSendPocketMoneyPage> {
     // String formattedBalance = formattedMoney(_balance ?? 0); // 잔액을 문자열로 포맷팅
 
     return Scaffold(
+      backgroundColor: Color(0xFFFAFAFA),
       appBar: MyHeader(
         text: '용돈 보내기',
       ),
