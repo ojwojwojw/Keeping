@@ -45,7 +45,7 @@ class _ColorInfoCardState extends State<ColorInfoCard> {
             height: 110,
             decoration: roundedBoxWithShadowStyle(borderRadius: 30),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(25),
               child: Column(
                 children: [
                   _requestStatus(widget.status),

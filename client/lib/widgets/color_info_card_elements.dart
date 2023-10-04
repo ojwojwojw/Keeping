@@ -8,7 +8,7 @@ import 'package:text_scroll/text_scroll.dart';
 
 Widget colorInfoCardStatus(double width, String status) {
   return Container(
-    width: width,
+    width: double.infinity,
     height: 30,
     alignment: Alignment.center,
     decoration: BoxDecoration(color: requestStatusBgColor(status)),
