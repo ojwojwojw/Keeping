@@ -22,15 +22,29 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
   late bool isParent;
   String? profileImage = '';
   String? childProfileImage = '';
+  bool isFinishedCommentNull = true;
+
+  Future<void> _isFinishedCommentNull() async {
+    print('debug:');
+    print(widget.item['finishedComment']);
+    if (widget.item['finishedComment'] == null) {
+      setState(() {
+        isFinishedCommentNull = true;
+      }); 
+    } else {
+      isFinishedCommentNull = false;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    _isFinishedCommentNull();
     isParent = context.read<UserInfoProvider>().parent;
     var userInfoProvider =
         Provider.of<UserInfoProvider>(context, listen: false);
     profileImage = userInfoProvider.profileImage;
-    var childInfoProvider = 
+    var childInfoProvider =
         Provider.of<ChildInfoProvider>(context, listen: false);
     childProfileImage = childInfoProvider.profileImage;
   }
@@ -102,7 +116,8 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                           height: 16,
                         ),
                         roundedAssetImg(
-                            imgPath: 'assets/image/mission/smile1.png', size: 100)
+                            imgPath: 'assets/image/mission/smile1.png',
+                            size: 100)
                       ],
                     ),
                   ),
@@ -120,7 +135,8 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                                     style: TextStyle(color: Color(0xff808080)),
                                   ),
                                   roundedAssetImg(
-                                      imgPath: 'assets/image/profile/parent1.png',
+                                      imgPath:
+                                          'assets/image/profile/parent1.png',
                                       size: 50),
                                 ],
                               ),
@@ -155,11 +171,17 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                                     '요청메시지',
                                     style: TextStyle(color: Color(0xff808080)),
                                   ),
-                                  
-                                  isParent ?
-                                    roundedAssetImg(imgPath: childProfileImage ?? 'assets/image/profile/parent1.png',size: 50) :
-                                    roundedAssetImg(imgPath: profileImage ?? 'assets/image/profile/parent1.png',size: 50) , //프로필 이미지 넣는곳
-                                     //프로필 이미지 넣는곳
+
+                                  isParent
+                                      ? roundedAssetImg(
+                                          imgPath: childProfileImage ??
+                                              'assets/image/profile/parent1.png',
+                                          size: 50)
+                                      : roundedAssetImg(
+                                          imgPath: profileImage ??
+                                              'assets/image/profile/parent1.png',
+                                          size: 50), //프로필 이미지 넣는곳
+                                  //프로필 이미지 넣는곳
                                 ],
                               ),
                               SizedBox(
@@ -250,7 +272,7 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                   ),
 
                   /// 소감 작성하기 버튼 /// /// 소감 작성하기 버튼 ///
-                  _commentWriteBtn(),
+                  isFinishedCommentNull && !isParent ? _commentWriteBtn() : Container(),
                   _CompleteComment()
                 ],
               ),
@@ -308,7 +330,7 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
             ignoring: widget.item["completed"] != "FINISH",
             child: Container(
                 width: MediaQuery.of(context).size.width * 0.4,
-                height: 60,
+                height: 50,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
@@ -350,13 +372,21 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
         ignoring: widget.item["completed"] != "FINISH", // 조건에 따라 클릭 이벤트 제어
         child: Column(
           children: [
-            Text(
-              '완료소감',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  '완료소감',
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 5,
             ),
             Container(
               width: MediaQuery.of(context).size.width * 0.85,
-              height: 100,
+              height: 150,
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -404,9 +434,7 @@ void handleParentButtonClick(
           context,
           MaterialPageRoute(
               builder: (_) => MissionApprovePage(
-                    missionId: item["id"],
-                    item: item
-                  ))); //미션 id 넘겨주는곳
+                  missionId: item["id"], item: item))); //미션 id 넘겨주는곳
       break;
     case "YET":
       // 미션 진행 확인 로직
@@ -416,9 +444,7 @@ void handleParentButtonClick(
           context,
           MaterialPageRoute(
               builder: (_) => MissionCompletePage(
-                    missionId: item["id"],
-                    item: item
-                  ))); //미션 id 넘겨주는곳
+                  missionId: item["id"], item: item))); //미션 id 넘겨주는곳
       // 미션 완료 승인 로직
       break;
     case "FINISH":
@@ -450,13 +476,13 @@ void handleChildButtonClick(BuildContext context, dynamic item, String status) {
       break;
     case "FINISH":
       // 미션 확인 로직
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => MissionCompleteCommentPage(
-                    missionId: item["id"],
-                    item: item,
-                  ))); //미션 id 넘겨주는곳
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (_) => MissionCompleteCommentPage(
+      //               missionId: item["id"],
+      //               item: item,
+      //             ))); //미션 id 넘겨주는곳
       break;
     default:
       // 기본 로직
