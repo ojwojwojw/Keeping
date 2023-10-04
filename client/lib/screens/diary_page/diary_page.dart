@@ -211,8 +211,8 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
         );
       },
       child: Container(
-        width: 70, // 버튼의 너비
-        height: 70, // 버튼의 높이
+        width: 90, // 버튼의 너비
+        height: 90, // 버튼의 높이
         decoration: BoxDecoration(
           shape: BoxShape.circle, // 동그란 모양
           color: Colors.white,
@@ -230,12 +230,12 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
             children: [
               Image.asset(
                 'assets/image/question/micandfaces.png',
-                width: 40, // 이미지의 너비
-                height: 40, // 이미지의 높이
+                width: 50, // 이미지의 너비
+                height: 50, // 이미지의 높이
               ),
               Text(
                 '오늘의 질문',
-                style: TextStyle(fontSize: 10),
+                style: TextStyle(fontSize: 13),
               )
             ],
           ),
@@ -289,7 +289,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
     return Scaffold(
       backgroundColor: Color(0xFFFAF5FF),
       appBar: MyHeader(
-        text: "추억 저장소(자녀)",
+        text: "추억 저장소",
         bgColor: Color(0xFFFAF5FF),
         elementColor: const Color.fromARGB(255, 0, 0, 0),
       ),
@@ -407,128 +407,101 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                         width: double.infinity,
                         color: Colors.white,
                         child: Container(
-                            margin: EdgeInsets.all(30),
+                          margin: EdgeInsets.all(30),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        // Padding 위젯 추가
-                                        padding: EdgeInsets.only(
-                                            left: 10.0), // 왼쪽 마진 설정
-                                        child: Text(
-                                          "부모님",
-                                          style: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold,
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Container(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 10.0),
+                                          child: Text(
+                                            "부모님",
+                                            style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                        padding: EdgeInsets.all(
-                                            8.0), // 컨테이너의 내부 패딩 설정
-                                        decoration: BoxDecoration(
-                                          color:
-                                              Color(0xFF805AF1), // 컨테이너의 배경색 설정
-                                          borderRadius: BorderRadius.circular(
-                                              10.0), // 컨테이너의 모서리를 둥글게 만듭니다.
+                                        Container(
+                                          margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFF805AF1),
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                          child: Text(
+                                            data["parentAnswer"] ?? "부모님의 답을 기다리는 중입니다!",
+                                            style: TextStyle(fontSize: 15, color: Colors.white),
+                                          ),
                                         ),
-                                        child: Row(
-                                          children: [
-                                            SizedBox(
-                                                width: 8.0), // 아이콘과 텍스트 사이의 간격
-                                            Flexible(
-                                              child: Text(
-                                                data["parentAnswer"] ??
-                                                    "부모님의 답을 기다리는 중입니다!",
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 SizedBox(height: 25),
-                                Container(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Padding(
-                                        // Padding 위젯 추가
-                                        padding: EdgeInsets.only(
-                                            right: 10.0), // 왼쪽 마진 설정
-                                        child: Text(
-                                          "자녀",
-                                          style: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold,
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Container(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(right: 10.0),
+                                          child: Text(
+                                            "자녀",
+                                            style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                        padding: EdgeInsets.all(
-                                            8.0), // 컨테이너의 내부 패딩 설정
-                                        decoration: BoxDecoration(
-                                          color:
-                                              Color(0xFF805AF1), // 컨테이너의 배경색 설정
-                                          borderRadius: BorderRadius.circular(
-                                              10.0), // 컨테이너의 모서리를 둥글게 만듭니다.
+                                        Container(
+                                          margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFF805AF1),
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                          child: Text(
+                                            data["childAnswer"] ?? "답변을 적어주세요!",
+                                            style: TextStyle(fontSize: 15, color: Colors.white),
+                                          ),
                                         ),
-                                        child: Row(
-                                          children: [
-                                            SizedBox(
-                                                width: 8.0), // 아이콘과 텍스트 사이의 간격
-                                            Flexible(
-                                              child: Text(
-                                                data["childAnswer"] ??
-                                                    "질문에 답해주세요!",
-                                                style: TextStyle(
-                                                    fontSize: 15.0,
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 70,
-                                ),
+                                SizedBox(height: 70),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween, // 좌우 간격을 최대로 설정
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    _writeDiaryBtn(), // 첫 번째 버튼 (왼쪽)
-                                    _commentViewBtn(), // 두 번째 버튼 (오른쪽)
+                                    _writeDiaryBtn(),
+                                    _commentViewBtn(),
                                   ],
                                 )
                               ],
-                            )),
+                            ),
+                          ),
                       ),
                     ],
                   ),
                 ],
-              )                )
-);
-            }
-          },
-        );
-      }
-      ),
-      bottomNavigationBar: BottomNav(
-        diary: true,
-      ),
+              )                
+            )
+          );
+        }
+      },
+    );
+  }
+  ),
+  bottomNavigationBar: BottomNav(
+    diary: true,
+  ),
     );
   }
 
@@ -547,8 +520,8 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
           );
         },
         child: Container(
-          width: 70, // 버튼의 너비
-          height: 70, // 버튼의 높이
+          width: 90, // 버튼의 너비
+          height: 90, // 버튼의 높이
           decoration: BoxDecoration(
             shape: BoxShape.circle, // 동그란 모양
             color: Colors.white,
@@ -566,12 +539,12 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
               children: [
                 Image.asset(
                   'assets/image/question/pencil.png',
-                  width: 45, // 이미지의 너비
-                  height: 45, // 이미지의 높이
+                  width: 50, // 이미지의 너비
+                  height: 50, // 이미지의 높이
                 ),
                 Text(
                   '일기 쓰기',
-                  style: TextStyle(fontSize: 10),
+                  style: TextStyle(fontSize: 13),
                 )
               ],
             ),
@@ -595,8 +568,8 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
         );
       },
       child: Container(
-        width: 70, // 버튼의 너비
-        height: 70, // 버튼의 높이
+        width: 90, // 버튼의 너비
+        height: 90, // 버튼의 높이
         decoration: BoxDecoration(
           shape: BoxShape.circle, // 동그란 모양
           color: Colors.white,
@@ -614,12 +587,12 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
             children: [
               Image.asset(
                 'assets/image/question/reply.png',
-                width: 45, // 이미지의 너비
-                height: 45, // 이미지의 높이
+                width: 50, // 이미지의 너비
+                height: 50, // 이미지의 높이
               ),
               Text(
                 '댓글 보기',
-                style: TextStyle(fontSize: 10),
+                style: TextStyle(fontSize: 13),
               )
             ],
           ),
@@ -663,9 +636,6 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
       // 요청이 성공했을 때 처리
       if (response.statusCode == 200) {
-        // return List<Map<String, dynamic>>.from(
-        //     response.data['resultBody']['questions']);
-        // 멤버키를 기반으로 필터링 수행
         var filteredData = List<Map<String, dynamic>>.from(
                 response.data['resultBody']['questions'])
             .where((item) => item['childMemberKey'] == selectedMemberKey)
@@ -717,16 +687,12 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
                   ///일기 데이터 띄울 곳
                   _diaryData(data),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: _diaryCreateBtn(),
-                      ),
-                      Expanded(
-                        child: _todayQuestionBtn(),
-                      ),
+                      _diaryCreateBtn(),
+                      _todayQuestionBtn(),
                     ],
                   ),
-
                   SizedBox(
                     height: 15,
                   ),
@@ -827,8 +793,8 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
         );
       },
       child: Container(
-        width: 70, // 버튼의 너비
-        height: 70, // 버튼의 높이
+        width: 90, // 버튼의 너비
+        height: 90, // 버튼의 높이
         decoration: BoxDecoration(
           shape: BoxShape.circle, // 동그란 모양
           color: Colors.white,
@@ -846,12 +812,12 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
             children: [
               Image.asset(
                 'assets/image/diary/rocket.png',
-                width: 40, // 이미지의 너비
-                height: 40, // 이미지의 높이
+                width: 50, // 이미지의 너비
+                height: 50, // 이미지의 높이
               ),
               Text(
                 '질문 보내기',
-                style: TextStyle(fontSize: 10),
+                style: TextStyle(fontSize: 13),
               )
             ],
           ),
@@ -872,8 +838,8 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
         );
       },
       child: Container(
-        width: 70, // 버튼의 너비
-        height: 70, // 버튼의 높이
+        width: 90, // 버튼의 너비
+        height: 90, // 버튼의 높이
         decoration: BoxDecoration(
           shape: BoxShape.circle, // 동그란 모양
           color: Colors.white,
@@ -891,12 +857,12 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
             children: [
               Image.asset(
                 'assets/image/question/micandfaces.png',
-                width: 40, // 이미지의 너비
-                height: 40, // 이미지의 높이
+                width: 50, // 이미지의 너비
+                height: 50, // 이미지의 높이
               ),
               Text(
                 '오늘의 질문',
-                style: TextStyle(fontSize: 10),
+                style: TextStyle(fontSize: 13),
               )
             ],
           ),
@@ -944,208 +910,273 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
     }
   }
 
-  @override
+  // 부모 디테일 페이지
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFFAF5FF),
       appBar: MyHeader(
         text: "추억 저장소",
-        bgColor: Color.fromARGB(255, 255, 255, 255),
+        bgColor: Color(0xFFFAF5FF),
         elementColor: const Color.fromARGB(255, 0, 0, 0),
       ),
-      body: FutureBuilder(
-        // 비동기 데이터를 기다리고 UI를 구성
-        future: getData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('에러 발생: ${snapshot.error}'));
-          } else {
-            data = snapshot.data ?? {}; // 여기에서 snapshot의 데이터를 받아옵니다.
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 10,
-                  width: 410,
-                  color: Color(0xFF9271C8),
-                  child: SizedBox(),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+      body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints viewportConstraints) {
+        return FutureBuilder(
+          // 비동기 데이터를 기다리고 UI를 구성
+          future: getData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('에러 발생: ${snapshot.error}'));
+            } else {
+              data = snapshot.data ?? {}; // 여기에서 snapshot의 데이터를 받아옵니다.
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: viewportConstraints.maxHeight),
                   child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 좌측 상단 버튼을 눌렀을 때 실행할 동작 정의
-                      Row(children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ParentQeustionAnswerPage(
-                                  questionDate: data['createdDate']
-                                      .toString()
-                                      .substring(0, 10),
-                                  questionText: data["content"],
-                                  questionId: data["id"],
-                                ),
-                              ),
-                            );
-                          },
-                          child: Image.asset('assets/image/edit_square.png',
-                              width: 40.0, height: 40.0),
-                        ),
-                        ////////
-                        Padding(
-                          padding: EdgeInsets.only(left: 55.0), // 왼쪽 패딩만 설정
-                          child: Container(
-                            padding: EdgeInsets.all(10.0), // 내부 패딩
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center, // 이 부분을 추가
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(5), // 내부 패딩
                             decoration: BoxDecoration(
-                              color: Colors.deepPurple[100], // 연보라색 배경
-                              borderRadius:
-                                  BorderRadius.circular(10.0), // 둥근 테두리
+                              color: Color(0xFF805AF1),
+                              borderRadius: BorderRadius.circular(10), // 둥근 테두리
                             ),
                             child: Text(
                               "아이와 나의 질문일기",
                               style: TextStyle(
-                                color: Colors.purple, // 보라색 글씨
+                                color: Colors.white, // 보라색 글씨
                                 fontSize: 16.0, // 글씨 크기
                               ),
                             ),
                           ),
-                        )
-                        ////// 이쁜 보라색 박스
-                      ]),
-
+                        ],
+                      ),
                       SizedBox(
                         height: 20,
                       ),
-
-                      Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.center, // Row의 내용을 가운데 정렬
-                        children: [
-                          Column(children: [
-                            SizedBox(
-                              height: 8,
-                            ),
-                            Image.asset(
-                              'assets/image/c_face.png',
-                              width: 51.0,
-                              height: 51.0,
-                              fit: BoxFit.cover,
-                            )
-                          ]),
-                          Image.asset(
-                            'assets/image/m_face.png',
-                            width: 60.0,
-                            height: 60.0,
-                            fit: BoxFit.cover,
-                          )
-                        ],
-                      ),
-
-                      SizedBox(
-                        height: 60,
-                      ),
-
-                      Text(
-                        data["content"],
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      Text(
-                        "${widget.index}번째 질문",
-                        style: TextStyle(
-                          fontSize: 10.0,
-                          color: Colors.grey[500],
-                        ),
-                      ),
-
-                      Text(
-                        "생성 날짜: ${data["createdDate"].toString().substring(0, 10)}",
-                        style: TextStyle(
-                          fontSize: 10.0,
-                          color: Colors.grey[500],
-                        ),
-                      ),
-
-                      SizedBox(height: 24.0),
-                      Text(
-                        "부모 대답",
-                        style: TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      SizedBox(height: 8.0),
-
-                      Row(
-                        children: [
-                          Text(
-                            data["parentAnswer"] ?? "아직 부모의 대답이 없습니다.",
-                            style: TextStyle(fontSize: 18.0),
+                      Center(
+                        // Center 위젯 추가
+                        child: Container(
+                          height: 50,
+                          child: Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment.center, // Row의 내용을 가운데 배치
+                            children: [
+                              Image.asset(
+                                'assets/image/diary/smileface.png',
+                              ),
+                              Image.asset(
+                                'assets/image/diary/funnyface.png',
+                              )
+                            ],
                           ),
-                        ],
-                      ),
-
-                      SizedBox(height: 40.0),
-
-                      Text(
-                        "아이 대답",
-                        style: TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
-
-                      SizedBox(height: 8.0),
-                      Text(
-                        data["childAnswer"] ?? "아직 자녀의 대답이 없습니다",
-                        style: TextStyle(fontSize: 18.0),
+                      SizedBox(
+                        height: 30,
                       ),
+                      Container(
+                        margin:
+                            EdgeInsets.fromLTRB(20, 10, 20, 5), // 원하는 마진 값으로 조절
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              data["content"],
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5, // 필요하다면 간격을 주기 위한 SizedBox 추가
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "#${widget.index}번째 질문",
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "${data["createdDate"].toString().substring(0, 10)}",
+                                  style: TextStyle(
+                                    fontSize: 10.0,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        color: Colors.white,
+                        child: Container(
+                            margin: EdgeInsets.all(30),
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,  // 아이 컨테이너를 왼쪽에 배치
+                                  child: Container(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 10.0),
+                                          child: Text(
+                                            "아이",
+                                            style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFF805AF1),
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                          child: Text(
+                                            data["childAnswer"] ?? "아이의 답을 기다리는 중입니다!",
+                                            style: TextStyle(fontSize: 15, color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 25),
+                                Align(
+                                  alignment: Alignment.centerRight,  // 부모님 컨테이너를 오른쪽에 배치
+                                  child: Container(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(right: 10.0),
+                                          child: Text(
+                                            "부모님",
+                                            style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFF805AF1),
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                          child: Text(
+                                            data["parentAnswer"] ?? "답변을 적어주세요!",
+                                            style: TextStyle(fontSize: 15, color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 70),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    _writeDiaryBtn(),
+                                    _commentViewBtn(),
+                                  ],
+                                )
+                              ],
+                            ),
 
-                      SizedBox(height: 12.0),
-                      _commentViewBtn(),
-                      //댓글페이지로 가는버튼 //
-                      // Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      //   InkWell(
-                      //     onTap: () {
-                      //       Navigator.push(
-                      //         context,
-                      //         MaterialPageRoute(
-                      //           builder: (context) => DiaryCommentPage(
-                      //             questionId: data["id"],
-                      //             index: widget.index,
-                      //           ),
-                      //         ),
-                      //       );
-                      //     },
-                      //     child: Image.asset('assets/image/sms.png',
-                      //         width: 40.0, height: 40.0),
-                      //   ),
-                      // ]
-                      // ),
-                      // Text(
-                      //   "생성 여부: ${data["isCreated"] == null ? "정보 없음" : (data["isCreated"] ? "true" : "false")}",
-                      //   style: TextStyle(fontSize: 18.0),
-                      // )
+                          ),
+                      ),
                     ],
                   ),
-                ),
-              ],
-            );
-          }
-        },
-      ),
-      bottomNavigationBar: BottomNav(),
+                ],
+              )                
+            )
+          );
+        }
+      },
     );
+  }
+  ),
+  bottomNavigationBar: BottomNav(
+    diary: true,
+  ),
+    );
+  }
+
+  Widget _writeDiaryBtn() {
+    return GestureDetector(
+        onTap: () async {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => QeustionAnswerPage(
+                questionDate: data["createdDate"].toString().substring(0, 10),
+                questionText: data["content"],
+                questionId: data["id"],
+              ),
+            ),
+          );
+        },
+        child: Container(
+          width: 90, // 버튼의 너비
+          height: 90, // 버튼의 높이
+          decoration: BoxDecoration(
+            shape: BoxShape.circle, // 동그란 모양
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey, // 그림자 색상
+                offset: Offset(0, 1), // 그림자 위치 (가로: 0, 세로: 2)
+                blurRadius: 2, // 그림자 흐림 정도
+              ),
+            ],
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center, // 수직 방향 가운데 정렬
+              children: [
+                Image.asset(
+                  'assets/image/question/pencil.png',
+                  width: 50, // 이미지의 너비
+                  height: 50, // 이미지의 높이
+                ),
+                Text(
+                  '일기 쓰기',
+                  style: TextStyle(fontSize: 13),
+                )
+              ],
+            ),
+          ),
+        ));
   }
 
   Widget _commentViewBtn() {
@@ -1162,8 +1193,8 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
         );
       },
       child: Container(
-        width: 70, // 버튼의 너비
-        height: 70, // 버튼의 높이
+        width: 90, // 버튼의 너비
+        height: 90, // 버튼의 높이
         decoration: BoxDecoration(
           shape: BoxShape.circle, // 동그란 모양
           color: Colors.white,
@@ -1181,12 +1212,12 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
             children: [
               Image.asset(
                 'assets/image/question/reply.png',
-                width: 40, // 이미지의 너비
-                height: 40, // 이미지의 높이
+                width: 50, // 이미지의 너비
+                height: 50, // 이미지의 높이
               ),
               Text(
                 '댓글 보기',
-                style: TextStyle(fontSize: 10),
+                style: TextStyle(fontSize: 13),
               )
             ],
           ),
