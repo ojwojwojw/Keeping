@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -15,9 +16,8 @@ public class AddQuestionRequest {
     @NotBlank
     private String content;
 
-
     @Builder
-    private AddQuestionRequest(String childMemberKey, String content) {
+    public AddQuestionRequest(String childMemberKey, String content) {
         this.childMemberKey = childMemberKey;
         this.content = content;
     }

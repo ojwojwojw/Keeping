@@ -30,7 +30,6 @@ ext {
 dependencies {
 	//spring boot
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -43,7 +42,6 @@ dependencies {
 
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
 
 	//cloud config
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'

@@ -47,6 +47,7 @@ public class AddMissionDto {
                 .todo(request.getTodo())
                 .money(request.getMoney())
                 .cheeringMessage(request.getCheeringMessage())
+                .childRequestComment(request.getChildRequestComment())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .build();
