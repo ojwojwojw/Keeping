@@ -110,6 +110,7 @@ Widget disabledAccount() {
     padding: const EdgeInsets.only(top: 24, bottom: 12),
     child: SizedBox(
       height: 160,
+      width: double.infinity,
       child: DecoratedBox(
         decoration: roundedBoxWithShadowStyle(),
       ),

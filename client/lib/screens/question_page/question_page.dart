@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/display_format.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
@@ -686,9 +688,11 @@ class _QuestionSendPageState extends State<QuestionSendPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => CompletedAndGoPage(
+                  builder: (context) => CompletedPage(
                         text: "질문생성 완료!",
-                        targetPage: ParentQuestionPage(),
+                        button: ConfirmBtn(
+                          action: ParentQuestionPage(),
+                        ),
                       )));
         }
       } else {
@@ -844,9 +848,11 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => CompletedAndGoPage(
+                  builder: (context) => CompletedPage(
                         text: "질문생성 완료!",
-                        targetPage: ParentQuestionPage(),
+                        button: ConfirmBtn(
+                          action: ParentQuestionPage(),
+                        ),
                       )));
         }
       } else {
@@ -1016,10 +1022,11 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
         print('질문 답변 데이터 전송 성공!');
         Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => CompletedAndGoPage(
+            MaterialPageRoute(builder: (context) => CompletedPage(
                       text: "답변 작성 완료!",
-                      targetPage: ChildDiaryPage(),
+                      button: ConfirmBtn(
+                        action: ChildDiaryPage(),
+                      ),
                     )));
       } else {
         print('질문 답변 데이터 전송 실패.');
@@ -1038,66 +1045,68 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
       appBar: MyHeader(
         text: '질문 답하기',
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 15,
-          ),
-          //////////////////////////
-
-          ///
-
-          SizedBox(
-            height: 15,
-          ),
-
-          Image.asset(
-            'assets/image/question/answer.png',
-            width: 100.0,
-            height: 100.0,
-            fit: BoxFit.cover,
-          ),
-
-          ///
-          Row(
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom/2),
+          child: Column(
             children: [
-              Padding(
-                padding: EdgeInsets.only(left: 24.0),
-                child: Text(widget.questionDate ?? '기본 날짜'),
+              SizedBox(
+                height: 15,
               ),
-            ],
-          ),
-
-          ///
-
-          SizedBox(
-            height: 5,
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center, // Row의 내용을 가운데 정렬
-            children: [
-              Text(
-                'Q.' + widget.questionText.toString(), //기억
-                style: TextStyle(
-                  fontWeight: FontWeight.bold, // 글씨를 굵게
-                  fontSize: 20.0, // 글씨 크기를 14포인트로 설정
+              //////////////////////////
+              
+              ///
+              
+              SizedBox(
+                height: 15,
+              ),
+              
+              Image.asset(
+                'assets/image/question/answer.png',
+                width: 100.0,
+                height: 100.0,
+                fit: BoxFit.cover,
+              ),
+              
+              ///
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 24.0, bottom: 8, top: 24),
+                    child: Text(widget.questionDate != null ? formattedYMDDate(DateTime.parse(widget.questionDate!)) : '기본 날짜'),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      'Q. ${widget.questionText.toString()}', //기억
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold, // 글씨를 굵게
+                        fontSize: 20.0, // 글씨 크기를 14포인트로 설정
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              
+              renderBoxFormField(
+                label: '',
+                  hintText: '답변을 달아볼까요?',
+                  onChange: (value) {
+                    setState(() {
+                      comment = value;
+                    });
+                  },
+                  maxLines: 5
                 ),
-              ),
             ],
           ),
-
-          renderBoxFormField(
-            label: '',
-              hintText: '답변을 달아볼까요?',
-              onChange: (value) {
-                setState(() {
-                  comment = value;
-                });
-              }),
-        ],
+        ),
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '등록하기',
         action: _sendMissionData,
         isDisabled: comment.isEmpty,
@@ -1149,9 +1158,11 @@ class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CompletedAndGoPage(
+                builder: (context) => CompletedPage(
                       text: "답변 작성 완료!",
-                      targetPage: ParentDiaryPage(),
+                      button: ConfirmBtn(
+                        action: ParentDiaryPage(),
+                      ),
                     )));
       } else {
         print('질문 답변 데이터 전송 실패.');
@@ -1169,68 +1180,70 @@ class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
       appBar: MyHeader(
         text: '질문 답하기',
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 15,
-          ),
-          //////////////////////////
-
-          ///
-
-          SizedBox(
-            height: 15,
-          ),
-
-          Image.asset(
-            'assets/image/question/answer.png',
-            width: 100.0,
-            height: 100.0,
-            fit: BoxFit.cover,
-          ),
-
-          ///
-          Row(
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom/2),
+          child: Column(
             children: [
-              Padding(
-                padding: EdgeInsets.only(left: 24.0),
-                child: Text(widget.questionDate ?? '기본 날짜'),
+              SizedBox(
+                height: 15,
               ),
-            ],
-          ),
-
-          ///
-
-          SizedBox(
-            height: 5,
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center, // Row의 내용을 가운데 정렬
-            children: [
-              Text(
-                'Q.' + widget.questionText.toString(), //기억
-                style: TextStyle(
-                  fontWeight: FontWeight.bold, // 글씨를 굵게
-                  fontSize: 20.0, // 글씨 크기를 14포인트로 설정
+              //////////////////////////
+              
+              ///
+              
+              SizedBox(
+                height: 15,
+              ),
+              
+              Image.asset(
+                'assets/image/question/answer.png',
+                width: 100.0,
+                height: 100.0,
+                fit: BoxFit.cover,
+              ),
+              
+              ///
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 24.0, bottom: 8, top: 24),
+                    child: Text(widget.questionDate != null ? formattedYMDDate(DateTime.parse(widget.questionDate!)) : '기본 날짜'),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      'Q. ${widget.questionText.toString()}', //기억
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold, // 글씨를 굵게
+                        fontSize: 20.0, // 글씨 크기를 14포인트로 설정
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              
+              
+              
+              renderBoxFormField(
+                  label: '',
+                  hintText: '답변을 달아볼까요?',
+                  onChange: (value) {
+                    setState(() {
+                      comment = value;
+                    });
+                  },
+                  maxLines: 5
                 ),
-              ),
             ],
           ),
-
-          
-
-          renderBoxFormField(
-              label: '',
-              hintText: '답변을 달아볼까요?',
-              onChange: (value) {
-                setState(() {
-                  comment = value;
-                });
-              }),
-        ],
+        ),
       ),
-      bottomNavigationBar: BottomBtn(
+      bottomSheet: BottomBtn(
         text: '등록하기',
         action: _sendMissionData,
         isDisabled: comment.isEmpty,

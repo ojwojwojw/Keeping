@@ -57,7 +57,9 @@ class SelectTypeBtn extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(emoji, style: TextStyle(fontSize: 50),),
+                    // Text(emoji, style: TextStyle(fontSize: 50),),
+                    Image.asset(emoji, width: 70)
+                    // roundedAssetImg(imgPath: emoji, size: 70)
                   ],
                 )
               ],
