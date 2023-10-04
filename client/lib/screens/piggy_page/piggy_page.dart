@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/main_page/child_main_page.dart';
@@ -12,6 +13,7 @@ import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:keeping/widgets/rounded_modal.dart';
 import 'package:provider/provider.dart';
 
 class PiggyPage extends StatefulWidget {
@@ -26,6 +28,8 @@ class _PiggyPageState extends State<PiggyPage> {
   String? _accessToken;
   String? _memberKey;
   String? _childKey;
+  String? _accountNumber;
+  String? _childAccountNumber;
 
   @override
   void initState() {
@@ -34,6 +38,8 @@ class _PiggyPageState extends State<PiggyPage> {
     _accessToken = context.read<UserInfoProvider>().accessToken;
     _memberKey = context.read<UserInfoProvider>().memberKey;
     _childKey = context.read<ChildInfoProvider>().memberKey;
+    _accountNumber = context.read<AccountInfoProvider>().accountNumber;
+    _childAccountNumber = context.read<ChildInfoProvider>().accountNumber;
   }
 
   @override
@@ -59,7 +65,15 @@ class _PiggyPageState extends State<PiggyPage> {
               if (snapshot.hasData) {
                 var response = snapshot.data;
                 if (response['resultBody'] != null && response['resultBody'].isEmpty) {
-                  return Text('거래내역이 없습니다.');
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Column(
+                      children: [
+                        Image.asset('assets/image/main/piggy.png', width: 300,),
+                        Text('개설된 저금통이 없습니다.')
+                      ],
+                    ),
+                  );
                 }
                 return Expanded(
                   child: Container(
@@ -91,7 +105,16 @@ class _PiggyPageState extends State<PiggyPage> {
                   )
                 );
               } else {
-                return const Text('');
+                // return const Text('');
+                return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Column(
+                      children: [
+                        Image.asset('assets/image/main/piggy.png', width: 300,),
+                        Text('개설된 저금통이 없습니다.')
+                      ],
+                    ),
+                  );
               }
             }
           ),
@@ -100,7 +123,10 @@ class _PiggyPageState extends State<PiggyPage> {
       floatingActionButton: _parent != null && _parent! == true ? null : FloatingBtn(
         text: '만들기',
         icon: Icons.savings_rounded,
-        path: MakePiggyPage(),
+        path: _accountNumber != null && _accountNumber!.isNotEmpty ? MakePiggyPage() : null,
+        action: _accountNumber != null && _accountNumber!.isNotEmpty ? null : () {
+          roundedModal(context: context, title: '계좌 개설 후에 이용하실 수 있습니다.');
+        }
       ),
       bottomNavigationBar: BottomNav(),
     );

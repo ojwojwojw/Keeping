@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/color_info_card_elements.dart';
 
 class ColorInfoDetailCard extends StatefulWidget {
@@ -47,7 +48,7 @@ class _ColorInfoDetailCardState extends State<ColorInfoDetailCard> {
                   colorInfoDetailCardContents(
                     Column(
                       children: [
-                        colorInfoDetailCardContent('금액', '${widget.paidMoney} / ${widget.cost}'),
+                        colorInfoDetailCardContent('보낸 금액 / 총 금액', '${formattedMoney(widget.paidMoney)} / ${formattedMoney(widget.cost)}', leftAlign: false),
                         colorInfoDetailCardContent('구매 URL', widget.url, box: false),
                         colorInfoDetailCardContent('필요한 이유', widget.reason),
                       ],

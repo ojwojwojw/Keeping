@@ -104,7 +104,7 @@ Widget colorInfoDetailCardContents(Column content) {
 }
 
 Widget colorInfoDetailCardContent(String title, String content,
-    {bool box = true}) {
+    {bool box = true, bool leftAlign = true}) {
   return Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -115,7 +115,7 @@ Widget colorInfoDetailCardContent(String title, String content,
             height: 5,
           ),
           box
-              ? colorInfoDetailCardContentGreyBox(content)
+              ? colorInfoDetailCardContentGreyBox(content, leftAlign)
               : colorInfoDetailCardContentUnderLine(content),
         ],
       ));
@@ -128,14 +128,18 @@ Widget colorInfoDetailCardContentTitle(String title) {
   );
 }
 
-Widget colorInfoDetailCardContentGreyBox(String content) {
+Widget colorInfoDetailCardContentGreyBox(String content, bool leftAlign) {
   return Container(
       width: 280,
-      decoration: roundedBoxWithShadowStyle(
-          bgColor: const Color(0xFFF2F2F2), borderRadius: 20, shadow: false),
+      decoration: roundedBoxWithShadowStyle(bgColor: const Color(0xFFF2F2F2), borderRadius: 20, shadow: false),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-        child: Text(content),
+        child: Row(
+          mainAxisAlignment: leftAlign ? MainAxisAlignment.start : MainAxisAlignment.center,
+          children: [
+            Text(content),
+          ],
+        ),
       ));
 }
 
