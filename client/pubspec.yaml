@@ -165,6 +165,11 @@ flutter:
     - assets/image/main/cropped_onlineRequest.png
     - assets/image/main/cropped_piggy.png
     - assets/image/main/cropped_question.png
+    - assets/image/money/camera.png
+    - assets/image/money/coin.png
+    - assets/image/money/coins.png
+    - assets/image/money/pencil.png
+    - assets/image/money/receipt.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -66,7 +66,7 @@ class _AccountInfoState extends State<AccountInfo> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/image/money_coins.png', width: 100,),
+                      Image.asset('assets/image/money/coins.png', width: 90,),
                       Expanded(
                         child: Column(
                           children: [
