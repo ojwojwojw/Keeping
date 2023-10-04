@@ -1087,11 +1087,8 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
             ],
           ),
 
-          SizedBox(
-            height: 100,
-          ),
-
-          violetBoxFormField(
+          renderBoxFormField(
+            label: '',
               hintText: '답변을 달아볼까요?',
               onChange: (value) {
                 setState(() {
@@ -1171,8 +1168,6 @@ class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
     return Scaffold(
       appBar: MyHeader(
         text: '질문 답하기',
-        bgColor: Color(0xFF6E2FD5),
-        elementColor: Colors.white,
       ),
       body: Column(
         children: [
@@ -1223,11 +1218,10 @@ class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
             ],
           ),
 
-          SizedBox(
-            height: 100,
-          ),
+          
 
-          violetBoxFormField(
+          renderBoxFormField(
+              label: '',
               hintText: '답변을 달아볼까요?',
               onChange: (value) {
                 setState(() {
