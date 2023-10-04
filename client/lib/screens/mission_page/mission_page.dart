@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
+import 'package:keeping/styles.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -27,8 +28,17 @@ class MissionPage extends StatefulWidget {
 
 class _MissonPageState extends State<MissionPage> {
   List<Map<String, dynamic>> data = [];
+  String? profileImage = '';
   String currentFilter = "ALL";
   int _selectedBtnIdx = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    var userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
+    profileImage = userInfoProvider.profileImage;
+  }
 
   void changeFilter(val) {
     setState(() {
@@ -48,13 +58,13 @@ class _MissonPageState extends State<MissionPage> {
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
     var memberKey = userProvider.memberKey;
     var accessToken = userProvider.accessToken;
-
+    print(data);
     try {
       // GET 요청 보내기
       final response = await dio.get(
           "$_baseUrl/mission-service/api/$memberKey/$memberKey",
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
-
+      print(response.data);
       // 요청이 성공했을 때 처리
       if (response.statusCode == 200 && response.data['resultBody'] is List) {
         return List<Map<String, dynamic>>.from(response.data['resultBody']);
@@ -64,6 +74,7 @@ class _MissonPageState extends State<MissionPage> {
     } catch (error) {
       // 요청이 실패했을 때 처리
       print('Error: $error');
+      // print(response.data);
       return []; // 빈 리스트 반환
     }
   }
@@ -118,6 +129,7 @@ class _MissonPageState extends State<MissionPage> {
                             createdDate: DateTime.parse(e['startDate']),
                             todo: e['todo'],
                             item: e,
+                            profileImage: profileImage,
                           )),
                     ],
                   ))),
@@ -145,6 +157,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
   List<Map<String, dynamic>> data = [];
   String currentFilter = "ALL";
   int _selectedBtnIdx = 0;
+  late String? profileImage;
 
   void changeFilter(val) {
     setState(() {
@@ -156,6 +169,14 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
     setState(() {
       _selectedBtnIdx = val;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    var childInfoProvider =
+        Provider.of<ChildInfoProvider>(context, listen: false);
+    profileImage = childInfoProvider.profileImage;
   }
 
   //데이터 비동기 요청
@@ -241,6 +262,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
                             createdDate: DateTime.parse(e['startDate']),
                             todo: e['todo'],
                             item: e,
+                            profileImage: profileImage,
                           )),
                     ],
                   ))),
@@ -306,7 +328,9 @@ class CreateMissonBox extends StatelessWidget {
 // 미션 생성 승인 입력 폼 페이지
 class MissionApprovePage extends StatefulWidget {
   final int? missionId;
-  const MissionApprovePage({super.key, required this.missionId});
+  final Map<String, dynamic> item;
+  const MissionApprovePage(
+      {super.key, required this.missionId, required this.item});
 
   @override
   State<MissionApprovePage> createState() => _MissionApprovePageState();
@@ -369,8 +393,41 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
       body: Center(
         child: Column(
           children: [
-            renderTextFormField(
-                label: "응원 메시지를 적어봐요",
+            //둥근 모서리 박스
+            Container(
+              padding: EdgeInsets.all(8), // 텍스트 주변의 패딩 추가
+              decoration: BoxDecoration(
+                color: Color(0xFF6E2FD5), // 보라색 배경
+                borderRadius: BorderRadius.circular(15), // 모서리 둥글기
+              ),
+              child: Text(
+                '엄마와 나의 미션',
+                style: TextStyle(
+                  color: Colors.white, // 흰색 글씨
+                ),
+              ),
+            ),
+
+            SizedBox(
+              height: 10,
+            ),
+            roundedAssetImg(
+                imgPath: 'assets/image/mission/smile2.png',
+                size: 160), //이모지 이미지 들어갈 곳
+
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              widget.item['todo'],
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              widget.item['startDate'],
+              style: TextStyle(color: Colors.grey),
+            ),
+
+            violetBoxFormField(
                 hintText: "응원 메시지를 적어봐요",
                 onChange: (value) {
                   setState(() {
@@ -391,8 +448,10 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
 
 // 미션 완료 요청 폼 페이지
 class MissionCompleteRequestPage extends StatefulWidget {
+  final Map<String, dynamic> item;
   final int? missionId;
-  const MissionCompleteRequestPage({super.key, required this.missionId});
+  const MissionCompleteRequestPage(
+      {super.key, required this.missionId, required this.item});
 
   @override
   State<MissionCompleteRequestPage> createState() =>
@@ -452,26 +511,59 @@ class _MissionCompleteRequestPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: "미션 완료 요청 페이지",
+        text: "미션 완료 요청 !",
       ),
       body: Center(
         child: Column(
           children: [
-            renderTextFormField(
-                label: "완료 메시지를 적어봐요",
-                hintText: "완료 메시지를 적어봐요",
-                onChange: (value) {
-                  setState(() {
-                    comment = value;
-                  });
-                })
+            //둥근 모서리 박스
+            Container(
+              padding: EdgeInsets.all(8), // 텍스트 주변의 패딩 추가
+              decoration: BoxDecoration(
+                color: Color(0xFF6E2FD5), // 보라색 배경
+                borderRadius: BorderRadius.circular(15), // 모서리 둥글기
+              ),
+              child: Text(
+                '엄마와 나의 미션일기',
+                style: TextStyle(
+                  color: Colors.white, // 흰색 글씨
+                ),
+              ),
+            ),
+
+            SizedBox(
+              height: 10,
+            ),
+            roundedAssetImg(
+                imgPath: 'assets/image/mission/smile2.png',
+                size: 160), //이모지 이미지 들어갈 곳
+
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              widget.item['todo'],
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              widget.item['startDate'],
+              style: TextStyle(color: Colors.grey),
+            ),
+
+            // violetBoxFormField(
+            //     hintText: "완료 메시지를 적어봐요",
+            //     onChange: (value) {
+            //       setState(() {
+            //         comment = value;
+            //       });
+            //     })
           ],
         ),
       ),
       bottomNavigationBar: BottomBtn(
         text: "미션 완료 요청 하기",
         action: _sendData,
-        isDisabled: comment.isEmpty,
+        isDisabled: false,
       ),
     );
   }
@@ -479,8 +571,10 @@ class _MissionCompleteRequestPageState
 
 // 미션 완료 승인 폼 페이지
 class MissionCompletePage extends StatefulWidget {
+  final Map<String, dynamic> item;
   final int? missionId;
-  const MissionCompletePage({super.key, required this.missionId});
+  const MissionCompletePage(
+      {super.key, required this.missionId, required this.item});
 
   @override
   State<MissionCompletePage> createState() => _MissionCompletePageState();
@@ -539,26 +633,60 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: "미션 완료 요청 페이지",
+        text: "미션 완료 요청 !",
       ),
       body: Center(
         child: Column(
           children: [
-            renderTextFormField(
-                label: "완료 승인메세지를 적어봐요",
-                hintText: "완료 승인 메세지를 적어봐요",
-                onChange: (value) {
-                  setState(() {
-                    comment = value;
-                  });
-                })
+            //둥근 모서리 박스
+            Container(
+              padding: EdgeInsets.all(8), // 텍스트 주변의 패딩 추가
+              decoration: BoxDecoration(
+                color: Color(0xFF6E2FD5), // 보라색 배경
+                borderRadius: BorderRadius.circular(15), // 모서리 둥글기
+              ),
+              child: Text(
+                '엄마와 나의 미션일기',
+                style: TextStyle(
+                  color: Colors.white, // 흰색 글씨
+                ),
+              ),
+            ),
+
+            SizedBox(
+              height: 10,
+            ),
+            roundedAssetImg(
+                imgPath: 'assets/image/mission/smile2.png',
+                size: 160), //이모지 이미지 들어갈 곳
+
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              widget.item['todo'],
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              widget.item['startDate'],
+              style: TextStyle(color: Colors.grey),
+            ),
+
+            // violetBoxFormField(
+
+            //     hintText: "완료 승인 메세지를 적어봐요",
+            //     onChange: (value) {
+            //       setState(() {
+            //         comment = value;
+            //       });
+            //     })
           ],
         ),
       ),
       bottomNavigationBar: BottomBtn(
         text: "미션 완료 승인 하기",
         action: _sendData,
-        isDisabled: comment.isEmpty,
+        isDisabled: false,
       ),
     );
   }
@@ -567,7 +695,9 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
 // 미션 완료 커멘트 폼 페이지
 class MissionCompleteCommentPage extends StatefulWidget {
   final int? missionId;
-  const MissionCompleteCommentPage({super.key, required this.missionId});
+  final Map<String, dynamic> item;
+  const MissionCompleteCommentPage(
+      {super.key, required this.missionId, required this.item});
 
   @override
   State<MissionCompleteCommentPage> createState() =>
@@ -610,7 +740,7 @@ class _MissionCompleteCommentPageState
             MaterialPageRoute(
                 builder: (context) => CompletedAndGoPage(
                       text: "미션완료 승인완료!",
-                      targetPage: ParentMissionPage(),
+                      targetPage: MissionPage(),
                     )));
       }
     } catch (e) {
@@ -624,13 +754,46 @@ class _MissionCompleteCommentPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: "미션 완료 커멘트 작성",
+        text: "완료 소감을 작성해요!",
       ),
       body: Center(
         child: Column(
           children: [
-            renderTextFormField(
-                label: "완료 커멘트를 남겨봐요",
+            //둥근 모서리 박스
+            Container(
+              padding: EdgeInsets.all(8), // 텍스트 주변의 패딩 추가
+              decoration: BoxDecoration(
+                color: Color(0xFF6E2FD5), // 보라색 배경
+                borderRadius: BorderRadius.circular(15), // 모서리 둥글기
+              ),
+              child: Text(
+                '엄마와 나의 미션',
+                style: TextStyle(
+                  color: Colors.white, // 흰색 글씨
+                ),
+              ),
+            ),
+
+            SizedBox(
+              height: 10,
+            ),
+            roundedAssetImg(
+                imgPath: 'assets/image/mission/smile2.png',
+                size: 160), //이모지 이미지 들어갈 곳
+
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              widget.item['todo'],
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              widget.item['startDate'],
+              style: TextStyle(color: Colors.grey),
+            ),
+
+            violetBoxFormField(
                 hintText: "완료 커멘트를 남겨봐요",
                 onChange: (value) {
                   setState(() {
@@ -641,7 +804,7 @@ class _MissionCompleteCommentPageState
         ),
       ),
       bottomNavigationBar: BottomBtn(
-        text: "미션 완료 커멘트 남기기",
+        text: "기억하기",
         action: _sendData,
         isDisabled: comment.isEmpty,
       ),

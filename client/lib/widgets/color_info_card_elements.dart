@@ -23,24 +23,61 @@ Widget colorInfoCardContent() {
   return Container();
 }
 
-Widget colorInfoDetailCardHeader(DateTime date, String name) {
+Widget colorInfoDetailCardHeader(DateTime date, String name, String status) {
+  String setImgPath(status) {
+    if (status == 'APPROVE') {
+      return 'assets/image/face/face4.png';
+    } else if (status == 'REJECT') {
+      return 'assets/image/face/face6.png';
+    } else {
+      return 'assets/image/face/face1.png';
+    }
+  }
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 10),
-    child: Column(
-      children: [
-        colorInfoDetailDate(date),
-        Row(
-          children: [
-            Text(name),
-          ],
-        )
-      ],
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          colorInfoDetailDate(date),
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Row(
+              children: [
+                roundedAssetImg(imgPath: setImgPath(status), size: 90),
+                SizedBox(width: 8,),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(name, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        Text('을(를)', style: TextStyle(fontSize: 20),)
+                      ],
+                    ),
+                    Text('부탁했어요!', style: TextStyle(fontSize: 20),),
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     ),
   );
 }
 
 Widget colorInfoDetailDate(DateTime date) {
-  return Text(formattedYMDDate(date));
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Text(formattedYMDDate(date), style: TextStyle(color: Color(0xff838383)),),
+      ),
+    ],
+  );
 }
 
 Widget colorInfoDetailCardContents(Column content) {
@@ -122,33 +159,34 @@ String requestStatusText(String service, String status) {
 
 Color requestStatusBgColor(String status) {
   if (status == 'APPROVE') {
-    return Color(0xFFE0FBD6);
+    return Color(0xFFFFC754);
   } else if (status == 'REJECT') {
-    return Color(0xFFFFDDDD);
+    return Color(0xFFFF5993);
   } else {
-    return Color(0xFFD5D5D5);
+    return Color(0xFF805AF1);
   }
 }
 
 Color requestStatusTextColor(String status) {
-  if (status == 'APPROVE') {
-    return Color(0xFF62D00B);
-  } else if (status == 'REJECT') {
-    return Color(0xFFFF0000);
-  } else {
-    return Color(0xFF000000);
-  }
+  // if (status == 'APPROVE') {
+  //   return Color(0xFF62D00B);
+  // } else if (status == 'REJECT') {
+  //   return Color(0xFFFF0000);
+  // } else {
+  //   return Color(0xFF000000);
+  // }
+  return Colors.white;
 }
 
 String missionRequestStatusText(String status) {
   if (status == 'YET') {
-    return '미션 대기';
+    return '진행 중';
   } else if (status == 'FINISH_WAIT') {
     return '미션 완료';
   } else if (status == 'FINISH') {
     return '이전 미션';
   } else {
-    return '진행 중';
+    return '미션 대기';
   }
 }
 

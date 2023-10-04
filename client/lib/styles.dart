@@ -12,7 +12,7 @@ BoxDecoration lightGreyBgStyle() {
 
 // 은은한 그림자 있는 둥근 하얀 상자 스타일
 BoxDecoration roundedBoxWithShadowStyle({
-  Color bgColor = Colors.white, double borderRadius = 20, bool shadow = true, bool border = false, Color? borderColor, double borderWidth = 2
+  Color bgColor = Colors.white, double borderRadius = 20, bool shadow = true, bool border = false, Color? borderColor, double borderWidth = 2, double blurRadius = 5
 }) {
   return BoxDecoration(
     color: bgColor,
@@ -27,7 +27,7 @@ BoxDecoration roundedBoxWithShadowStyle({
         BoxShadow(
           color: Colors.grey.withOpacity(0.7),
           spreadRadius: 0,
-          blurRadius: 5.0,
+          blurRadius: blurRadius,
           offset: Offset(0, 0),
         ),
       ] : null,

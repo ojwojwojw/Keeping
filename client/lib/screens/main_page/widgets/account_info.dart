@@ -99,7 +99,7 @@ class _AccountInfoState extends State<AccountInfo> {
                                     ),
                                   );
                                 } else {
-                                  return Text('로딩중');
+                                  return Text('');
                                 }
                               },
                             ),

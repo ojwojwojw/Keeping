@@ -55,17 +55,16 @@ class _MoneyRecordWithDetail extends State<MoneyRecordWithDetail> {
         );
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 5),
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 24),
         child: Center(
           child: Container(
-            width: 360,
             decoration: roundedBoxWithShadowStyle(),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Column(
                 children: [
                   _mainMoneyRecord(
-                    widget.storeName, widget.date, widget.money, widget.balance, widget.type
+                    widget.storeName, widget.date, widget.money, widget.balance, widget.type, widget.largeCategory
                   ),
                   _detailMoneyRecords(widget.detail, widget.type),
                 ],
@@ -78,7 +77,7 @@ class _MoneyRecordWithDetail extends State<MoneyRecordWithDetail> {
   }
 }
 
-Widget _mainMoneyRecord(String storeName, DateTime date, num money, num balance, bool type) {
+Widget _mainMoneyRecord(String storeName, DateTime date, num money, num balance, bool type, String largeCategory) {
   return Container(
     height: 90,
     color: Colors.white,
@@ -90,7 +89,7 @@ Widget _mainMoneyRecord(String storeName, DateTime date, num money, num balance,
           children: [
             Padding(
               padding: EdgeInsets.all(10),
-              child: categoryImg('assets/image/temp_image.jpg'),
+              child: categoryImg('assets/image/category/$largeCategory.png'),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -129,14 +128,14 @@ Widget _detailMoneyRecords(List<dynamic> detail, bool type) {
     child: Column(
       children: detail.map((e) => 
         _detailMoneyRecord(
-          e['content'], e['money'], type
+          e['content'], e['money'], type, e['smallCategory']
         )
       ).toList()
     ),
   );
 }
 
-Widget _detailMoneyRecord(String content, int money, bool type) {
+Widget _detailMoneyRecord(String content, int money, bool type, String smallCategory) {
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 5),
     child: Container(
@@ -152,7 +151,7 @@ Widget _detailMoneyRecord(String content, int money, bool type) {
             children: [
               Padding(
                 padding: EdgeInsets.all(10),
-                child: categoryImg('assets/image/temp_image.jpg'),
+                child: categoryImg('assets/image/category/$smallCategory.png'),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,

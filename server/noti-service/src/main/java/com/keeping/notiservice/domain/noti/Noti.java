@@ -1,8 +1,8 @@
 package com.keeping.notiservice.domain.noti;
 
+import com.keeping.notiservice.global.common.TimeBaseEntity;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
@@ -30,6 +30,7 @@ public class Noti extends TimeBaseEntity {
     private String content;
     
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Type type;
 
     @Builder

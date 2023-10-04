@@ -1,6 +1,7 @@
 package com.keeping.notiservice.domain.noti.repository;
 
 import com.keeping.notiservice.api.controller.response.NotiResponse;
+import com.keeping.notiservice.domain.noti.Type;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
@@ -28,6 +29,20 @@ public class NotiQueryRepository {
                         noti.type))
                 .from(noti)
                 .where(noti.memberKey.eq(memberKey))
+                .fetch();
+    }
+
+
+    public List<NotiResponse> findByMemberKeyAndType(String memberKey, Type type) {
+        return queryFactory
+                .select(constructor(NotiResponse.class,
+                        noti.id,
+                        noti.title,
+                        noti.content,
+                        noti.type))
+                .from(noti)
+                .where(noti.memberKey.eq(memberKey),
+                        noti.type.eq(type))
                 .fetch();
     }
     

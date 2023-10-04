@@ -40,7 +40,7 @@ class _MissionFiltersState
             ),
             _OnlinePaymentRequestFilter(
               value: 1,
-              text: '미션 대기',
+              text: '진행 중',
               isSelected: widget.Idx == 1,
               onPressed: () {
                 widget.setIdx(1);
@@ -49,7 +49,7 @@ class _MissionFiltersState
             ),
             _OnlinePaymentRequestFilter(
               value: 2,
-              text: '진행 중',
+              text: '미션 대기',
               isSelected: widget.Idx == 2,
               onPressed: () {
                 widget.setIdx(2);
@@ -70,7 +70,7 @@ class _MissionFiltersState
               text: '이전 미션',
               isSelected: widget.Idx == 4,
               onPressed: () {
-                widget.setIdx(4);
+                widget.setIdx(4);  
                 widget.setFilter('FINISH');
               },
             ),

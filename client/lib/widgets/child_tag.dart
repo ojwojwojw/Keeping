@@ -18,7 +18,7 @@ class ChildTag extends StatelessWidget {
         decoration: _childTagStyle(),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          child: Text('$childName $text', style: TextStyle(fontSize: 18, color: Colors.white),),
+          child: Text('$childName $text', style: TextStyle(fontSize: 18, color: Colors.black),),
         )
       ),
     );
@@ -29,7 +29,7 @@ BoxDecoration _childTagStyle() {
   return BoxDecoration(
     borderRadius: BorderRadius.circular(50.0), // 둥근 테두리 반경 설정
     border: Border.all(
-      color: Colors.white, // 테두리 색상 설정
+      color: Colors.black, // 테두리 색상 설정
       width: 1.0, // 테두리 두께 설정
     ),
   );

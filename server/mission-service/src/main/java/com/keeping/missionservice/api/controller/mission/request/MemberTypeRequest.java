@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class MemberTypeRequest {
 
     private String memberKey;
-
     private MemberType type;
+
 
     @Builder
     public MemberTypeRequest(String memberKey, MemberType type) {

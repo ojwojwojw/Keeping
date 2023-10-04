@@ -11,6 +11,7 @@ class ColorInfoCard extends StatefulWidget {
   final String status;
   final DateTime createdDate;
   final Widget path;
+  final String profileImage;
 
   ColorInfoCard({
     super.key,
@@ -22,6 +23,7 @@ class ColorInfoCard extends StatefulWidget {
     required this.status,
     required this.createdDate,
     required this.path,
+    required this.profileImage,
   });
 
   @override
@@ -36,9 +38,8 @@ class _ColorInfoCardState extends State<ColorInfoCard> {
         Navigator.push(context, MaterialPageRoute(builder: (_) => widget.path));
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 7),
+        padding: EdgeInsets.symmetric(vertical: 7, horizontal: 24),
         child: Container(
-            width: 360,
             height: 110,
             decoration: roundedBoxWithShadowStyle(borderRadius: 30),
             child: ClipRRect(
@@ -46,7 +47,7 @@ class _ColorInfoCardState extends State<ColorInfoCard> {
               child: Column(
                 children: [
                   _requestStatus(widget.status),
-                  _requestContent(widget.name),
+                  _requestContent(widget.name, widget.profileImage),
                 ],
               ),
             )),
@@ -69,7 +70,7 @@ Widget _requestStatus(String status) {
   );
 }
 
-Widget _requestContent(String name) {
+Widget _requestContent(String name, String profileImage) {
   return Expanded(
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 17),
@@ -77,19 +78,26 @@ Widget _requestContent(String name) {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          categoryImg('assets/image/temp_image.jpg'),
-          SizedBox(
-            width: 250,
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text(
-                name,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-              Text(
-                '을(를) 부탁했어요!',
-                style: TextStyle(fontSize: 20),
-              )
-            ]),
+          categoryImg(profileImage),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center, 
+              children: [
+                SizedBox(width: 8,),
+                Flexible(
+                  child: Text(
+                    name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Text(
+                  '을(를) 부탁했어요!',
+                  style: TextStyle(fontSize: 20),
+                  overflow: TextOverflow.ellipsis,
+                )
+              ]
+            ),
           ),
         ],
       ),

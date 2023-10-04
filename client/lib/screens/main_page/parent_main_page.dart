@@ -105,7 +105,7 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                         ],
                       );
                     } else {
-                      return const Text('로딩중');
+                      return const Text('');
                     }
                   },
                 ),
@@ -192,7 +192,7 @@ class _ChildContentState extends State<ChildContent> {
                 path: ParentMissionPage(),
                 name: '미션',
                 text: '자녀 소비습관 쑥쑥!',
-                emoji: '💪',
+                service: 'mission',
                 parent: true,
               ),
               SizedBox(width: 12,),
@@ -201,7 +201,7 @@ class _ChildContentState extends State<ChildContent> {
                 path: OnlinePaymentRequestPage(),
                 name: '결제 부탁하기',
                 text: '자녀가 부탁한\n결제 목록이에요.',
-                emoji: '🙇‍♀️',
+                service: 'onlineRequest',
                 parent: true,
               ),
             ],
@@ -215,7 +215,7 @@ class _ChildContentState extends State<ChildContent> {
                 path: ParentQuestionPage(),
                 name: '질문',
                 text: '질문에 답하고\n자녀와 소통해요',
-                emoji: '📬',
+                service: 'question',
                 parent: true,
               ),
               SizedBox(width: 12,),
@@ -224,7 +224,7 @@ class _ChildContentState extends State<ChildContent> {
                 path: PiggyPage(),
                 name: '저금통',
                 text: '자녀의 위시리스트는?',
-                emoji: '🐷',
+                service: 'piggy',
                 parent: true,
               ),
             ],
@@ -285,7 +285,7 @@ Widget _changeChildrenList(BuildContext context, List<dynamic> childrenList) {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 12, right: 8),
-                          child: roundedAssetImg(imgPath: 'assets/image/temp_image.jpg'),
+                          child: roundedAssetImg(imgPath: 'assets/image/temp_image.jpg' , size: 50),
                         ),
                         Text(e['name'], style: TextStyle(fontSize: 20),)
                       ],

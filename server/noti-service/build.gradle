@@ -38,7 +38,6 @@ dependencies {
     //spring boot
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -49,15 +48,8 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    //h2
-    runtimeOnly 'com.h2database:h2'
-
-    //mariadb
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-
     //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
 
     //cloud config
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
@@ -106,6 +98,12 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
     inputs.dir snippetsDir
     dependsOn test
+}
+
+bootJar{
+    archivesBaseName = 'noti-service-1.0'
+    archiveFileName = 'noti-service-1.0.jar'
+    archiveVersion = "0.0.0"
 }
 
 def querydslDir = "$buildDir/generated/querydsl"

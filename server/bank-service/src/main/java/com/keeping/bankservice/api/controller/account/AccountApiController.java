@@ -2,16 +2,14 @@ package com.keeping.bankservice.api.controller.account;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keeping.bankservice.api.ApiResponse;
-import com.keeping.bankservice.api.controller.account.request.AddAccountRequest;
-import com.keeping.bankservice.api.controller.account.request.AuthPhoneRequest;
-import com.keeping.bankservice.api.controller.account.request.CheckPhoneRequest;
-import com.keeping.bankservice.api.controller.account.request.DepositAllowanceRequest;
-import com.keeping.bankservice.api.controller.account_history.response.ShowAccountHistoryResponse;
+import com.keeping.bankservice.api.controller.account.request.*;
+import com.keeping.bankservice.api.controller.account.response.ShowAccountResponse;
 import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.AddAccountDto;
 import com.keeping.bankservice.api.service.account.dto.AuthPhoneDto;
 import com.keeping.bankservice.api.service.account.dto.CheckPhoneDto;
 import com.keeping.bankservice.global.exception.NoAuthorizationException;
+import com.keeping.bankservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -80,6 +78,23 @@ public class AccountApiController {
         }
     }
 
+    @GetMapping("/{target-key}")
+    public ApiResponse<ShowAccountResponse> showAccount(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey) {
+        log.debug("ShowAccount");
+
+        try {
+            ShowAccountResponse response = accountService.showAccount(memberKey, targetKey);
+            return ApiResponse.ok(response);
+        }
+        catch (NotFoundException e) {
+            return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
+        }
+        catch (Exception e) {
+            log.debug("에러 발생 : {}", e.toString());
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "계좌 정보를 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
+        }
+    }
+
     @DeleteMapping("/{account-number}")
     public ApiResponse<Void> removeAccount(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
         log.debug("RemoveAccount={}, {}", memberKey, accountNumber);
@@ -100,4 +115,18 @@ public class AccountApiController {
 
         return null;
     }
+
+    @GetMapping("/balance")
+    public ApiResponse<Long> showBalance(@PathVariable("member-key") String memberKey) {
+        log.debug("ShowBalance");
+
+        try {
+            Long response = accountService.showBalance(memberKey);
+            return ApiResponse.ok(response);
+        }
+        catch (NotFoundException e) {
+            return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
+        }
+    }
+
 }

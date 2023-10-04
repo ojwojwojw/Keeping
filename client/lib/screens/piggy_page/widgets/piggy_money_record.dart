@@ -30,9 +30,8 @@ class _PiggyMoneyRecordState extends State<PiggyMoneyRecord> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5),
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 24),
       child: Container(
-        width: 360,
         height: 90,
         alignment: Alignment.center,
         decoration: roundedBoxWithShadowStyle(),
@@ -44,7 +43,7 @@ class _PiggyMoneyRecordState extends State<PiggyMoneyRecord> {
               children: [
                 Padding(
                   padding: EdgeInsets.all(10),
-                  child: categoryImg('assets/image/temp_image.jpg'),
+                  child: categoryImg('assets/image/category/BANK.png'),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,

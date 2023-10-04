@@ -47,8 +47,8 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
     return Scaffold(
       appBar: MyHeader(
         text: '저금통',
-        bgColor: const Color(0xFF8320E7),
-        elementColor: Colors.white,
+        // bgColor: const Color(0xFF8320E7),
+        // elementColor: Colors.white,
       ),
       body: Column(
         children: [
@@ -94,7 +94,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
                   )
                 );
               } else {
-                return Text('로딩중');
+                return Text('');
               }
             },
           ),
@@ -102,7 +102,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
       ),
       floatingActionButton: _parent != null && !_parent! ? FloatingBtn(
         text: '저금하기',
-        icon: Icon(Icons.savings_rounded),
+        icon: Icons.savings_rounded,
         path: PiggySavingPage(piggyDetailInfo: widget.piggyDetailInfo),
       ) : null,
       bottomNavigationBar: BottomNav(),

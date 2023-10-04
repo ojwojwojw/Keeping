@@ -70,23 +70,21 @@ Padding renderBoxFormField({
           child: SizedBox(
               width: width,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   !noLabel
                       ? Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  label!,
-                                  style: labelStyle(),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                              ],
-                            ),
-                          ],
-                        )
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            label!,
+                            style: labelStyle(),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      )
                       : Container(),
                   Container(
                       width: 340,

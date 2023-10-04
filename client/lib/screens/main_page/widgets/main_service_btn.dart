@@ -7,7 +7,7 @@ class MainServiceBtn extends StatelessWidget {
   final bool? hasAccount;
   final String name;
   final String text;
-  final String emoji;
+  final String service;
   final bool parent;
 
   MainServiceBtn({
@@ -16,7 +16,7 @@ class MainServiceBtn extends StatelessWidget {
     required this.hasAccount,
     required this.name,
     required this.text,
-    required this.emoji,
+    required this.service,
     this.parent = false,
   });
 
@@ -71,7 +71,8 @@ class MainServiceBtn extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(emoji, style: TextStyle(fontSize: 50),),
+                    Image.asset('assets/image/main/cropped_$service.png', height: 60,),
+                    // Text(emoji, style: TextStyle(fontSize: 50),),
                   ],
                 )
               ],

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/main_page/child_main_page.dart';
+import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/online_payment_request/make_online_payment_request_page.dart';
 import 'package:keeping/screens/online_payment_request/online_payment_request_detail_page.dart';
 import 'package:keeping/screens/online_payment_request/utils/online_payment_request_future_methods.dart';
@@ -28,6 +30,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
   String? _memberKey;
   String? _childKey;
   Future<dynamic>? _future;
+  String? _profileImage;
 
   void setFuture(String? status) {
     if (status == null) {
@@ -49,6 +52,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
     _memberKey = context.read<UserInfoProvider>().memberKey;
     _childKey = context.read<ChildInfoProvider>().memberKey;
     _future = getOnlinePaymentRequestList(accessToken: _accessToken, memberKey: _memberKey, targetKey: _parent != null && _parent! ? _childKey : _memberKey);
+    _profileImage = context.read<UserInfoProvider>().profileImage;
   }
 
   @override
@@ -56,12 +60,13 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
     return Scaffold(
       appBar: MyHeader(
         text: '온라인 결제 부탁하기',
-        bgColor: const Color(0xFF8320E7),
-        elementColor: Colors.white,
+        backPath: _parent != null && _parent! ? ParentMainPage() : ChildMainPage(),
+        // bgColor: const Color(0xFF8320E7),
+        // elementColor: Colors.white,
       ),
       body: Column(
         children: [
-          OnlinePaymentRequestInfo(),
+          OnlinePaymentRequestInfo(parent: _parent),
           OnlinePaymentRequestFilters(setFuture: setFuture),
           FutureBuilder(
             future: _future,
@@ -89,6 +94,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
                               status: e['approve'],
                               createdDate: DateTime.parse(e['createdDate']),
                               path: OnlinePaymentRequestDetailPage(onlineId: e['id'], status: e['approve']),
+                              profileImage: _profileImage ?? 'assets/image/profile/child1.png',
                             )                    
                           ),
                         ],
@@ -97,7 +103,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
                   )
                 );
               } else {
-                return Text('로딩중');
+                return Text('');
               }
             },
           ),
@@ -105,7 +111,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
       ),
       floatingActionButton: _parent != null && _parent! ? null : FloatingBtn(
         text: '부탁하기',
-        icon: Icon(Icons.face),
+        icon: Icons.face,
         path: MakeOnlinePaymentRequestFirstPage(),
       ),
       bottomNavigationBar: BottomNav(),

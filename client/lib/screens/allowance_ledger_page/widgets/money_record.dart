@@ -6,9 +6,7 @@ import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_detail_create_page.dart';
 import 'package:keeping/screens/allowance_ledger_page/select_ocr_img_page.dart';
 import 'package:keeping/styles.dart';
-import 'package:keeping/util/camera_test2.dart';
 import 'package:keeping/util/display_format.dart';
-import 'package:keeping/util/ocr_test.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
 import 'package:provider/provider.dart';
 
@@ -63,9 +61,8 @@ class _MoneyRecordState extends State<MoneyRecord> {
         );
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 5),
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 24),
         child: Container(
-          width: 360,
           height: 90,
           alignment: Alignment.center,
           decoration: roundedBoxWithShadowStyle(),
@@ -77,7 +74,7 @@ class _MoneyRecordState extends State<MoneyRecord> {
                 children: [
                   Padding(
                     padding: EdgeInsets.all(10),
-                    child: categoryImg('assets/image/temp_image.jpg'),
+                    child: categoryImg('assets/image/category/${widget.largeCategory}.png'),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,

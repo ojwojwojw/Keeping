@@ -9,5 +9,5 @@ import java.util.List;
 @Transactional
 public interface PiggyHistoryService {
     Long addPiggyHistory(String memberKey, AddPiggyHistoryDto dto);
-    List<ShowPiggyHistoryResponse> showPiggyHistory(String memberKey, Long piggyId);
+    List<ShowPiggyHistoryResponse> showPiggyHistory(String memberKey, String targetKey, Long piggyId);
 }
