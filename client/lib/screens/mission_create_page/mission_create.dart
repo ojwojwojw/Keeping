@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/number_keyboard.dart';
@@ -340,9 +341,11 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CompletedAndGoPage(
+                builder: (context) => CompletedPage(
                       text: "미션생성 완료!",
-                      targetPage: MissionPage(),
+                      button: ConfirmBtn(
+                        action: MissionPage(),
+                      ),
                     )));
       } else {
         print('미션생성 데이터 전송 실패.');
@@ -453,9 +456,11 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CompletedAndGoPage(
+                builder: (context) => CompletedPage(
                       text: "미션생성 완료!",
-                      targetPage: ParentMissionPage(),
+                      button: ConfirmBtn(
+                        action: ParentMissionPage(),
+                      ),
                     )));
       }
       print(response);

@@ -5,6 +5,7 @@ import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/online_payment_request/online_payment_request_page.dart';
 import 'package:keeping/screens/online_payment_request/utils/online_payment_request_future_methods.dart';
 import 'package:keeping/util/dio_method.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
@@ -136,7 +137,8 @@ class _MakeOnlinePaymentRequestFirstPageState
         action: () async {
           if (_formKey.currentState != null && _formKey.currentState!.validate()) {
             _formKey.currentState!.save();
-            Navigator.push(context, MaterialPageRoute(builder: (_) => MakeOnlinePaymentRequestSecondPage()));
+            noEffectReplacementTransition(context, MakeOnlinePaymentRequestSecondPage());
+            // Navigator.push(context, MaterialPageRoute(builder: (_) => MakeOnlinePaymentRequestSecondPage()));
             print('저장완료');
           } else {
             print('저장실패');
@@ -281,7 +283,7 @@ class _MakeOnlinePaymentRequestSecondPageState extends State<MakeOnlinePaymentRe
           );
           print('온라인 결제 요청 결과 $response');
           if (response == 0) {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => CompletedPage(
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => CompletedPage(
               text: '부탁이\n완료되었습니다.',
               button: ConfirmBtn(
                 action: OnlinePaymentRequestPage(),

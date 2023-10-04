@@ -87,14 +87,19 @@ Widget _requestContent(String name ,String profileImage) {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           roundedAssetImg(imgPath: profileImage ?? 'assets/image/profile/parent1.png', size: 64),
-          SizedBox(
-            width: 250,
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text(
-                name,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-            ]),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center, 
+              children: [
+                Flexible(
+                  child: Text(
+                    name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ]
+            ),
           ),
         ],
       ),

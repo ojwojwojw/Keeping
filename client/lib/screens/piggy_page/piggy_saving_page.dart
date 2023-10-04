@@ -3,6 +3,7 @@ import 'package:keeping/provider/account_info_provider.dart';
 import 'package:keeping/screens/piggy_page/piggy_enter_auth_password_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/number_keyboard.dart';
@@ -154,14 +155,21 @@ class _PiggySavingPageState extends State<PiggySavingPage> {
       bottomNavigationBar: BottomBtn(
         text: '다음',
         action: () async {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => PiggyEnterAuthPasswordPage(
-                        money: int.parse(amount),
-                        piggyAccountNumber:
-                            widget.piggyDetailInfo['accountNumber'],
-                      )));
+          noEffectTransition(
+            context, 
+            PiggyEnterAuthPasswordPage(
+              money: int.parse(amount),
+              piggyAccountNumber: widget.piggyDetailInfo['accountNumber'],
+            )
+          );
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (_) => PiggyEnterAuthPasswordPage(
+          //               money: int.parse(amount),
+          //               piggyAccountNumber:
+          //                   widget.piggyDetailInfo['accountNumber'],
+          //             )));
         },
         isDisabled: (amount.isNotEmpty &&
                 _balance != null &&
