@@ -5,6 +5,7 @@ import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/mission_page/widgets/mission_color_info_card.dart';
 import 'package:keeping/screens/mission_page/widgets/mission_filters.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/screens/mission_create_page/mission_create.dart';
 import 'package:dio/dio.dart';
@@ -30,7 +31,7 @@ class _MissonPageState extends State<MissionPage> {
   List<Map<String, dynamic>> data = [];
   String? profileImage = '';
   String currentFilter = "ALL";
-  int _selectedBtnIdx = 0;
+  int _selectedBtnIdx = 1;
 
   @override
   void initState() {
@@ -155,8 +156,8 @@ class ParentMissionPage extends StatefulWidget {
 
 class _ParentMissonPageState extends State<ParentMissionPage> {
   List<Map<String, dynamic>> data = [];
-  String currentFilter = "ALL";
-  int _selectedBtnIdx = 0;
+  String currentFilter = "YET";
+  int _selectedBtnIdx = 1;
   late String? profileImage;
 
   void changeFilter(val) {
@@ -316,7 +317,7 @@ class CreateMissonBox extends StatelessWidget {
                 'assets/image/mission/new_mission.png',
                 width: 100,
               ),
-              Text('새로운 미션 만들기', style: TextStyle(fontSize: 20)),
+              Text('새로운 미션 만들기', style: TextStyle(fontSize: 20, color: Colors.white)),
             ],
           ),
         ),
@@ -373,9 +374,11 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CompletedAndGoPage(
+                builder: (context) => CompletedPage(
                       text: "미션승인 완료!",
-                      targetPage: ParentMissionPage(),
+                      button: ConfirmBtn(
+                        action: ParentMissionPage(),
+                      ),
                     )));
       }
     } catch (e) {
@@ -496,9 +499,11 @@ class _MissionCompleteRequestPageState
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CompletedAndGoPage(
+                builder: (context) => CompletedPage(
                       text: "미션완료 요청완료!",
-                      targetPage: MissionPage(),
+                      button: ConfirmBtn(
+                        action: MissionPage(),
+                      ),
                     )));
       }
     } catch (e) {
@@ -617,9 +622,11 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CompletedAndGoPage(
+                builder: (context) => CompletedPage(
                       text: "미션완료 승인완료!",
-                      targetPage: ParentMissionPage(),
+                      button: ConfirmBtn(
+                        action: ParentMissionPage(),
+                      ),
                     )));
       }
     } catch (e) {
@@ -738,9 +745,11 @@ class _MissionCompleteCommentPageState
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CompletedAndGoPage(
+                builder: (context) => CompletedPage(
                       text: "미션완료 승인완료!",
-                      targetPage: MissionPage(),
+                      button: ConfirmBtn(
+                        action: MissionPage(),
+                      ),
                     )));
       }
     } catch (e) {
