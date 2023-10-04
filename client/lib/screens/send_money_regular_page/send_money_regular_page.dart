@@ -4,6 +4,7 @@ import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
+import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
@@ -80,6 +81,7 @@ class _SendMoneyRegularPageState extends State<SendMoneyRegularPage> {
     }
   }
 
+// 첫 페이지
   @override
   Widget build(BuildContext context) {
     String formattedBalance = formattedMoney(_balance ?? 0); // 잔액을 문자열로 포맷팅
@@ -88,9 +90,10 @@ class _SendMoneyRegularPageState extends State<SendMoneyRegularPage> {
       appBar: MyHeader(
         text: '용돈 보내기',
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
             children: [
               SizedBox(height: 60),
               renderWhoReceiveMoney(),
@@ -101,18 +104,46 @@ class _SendMoneyRegularPageState extends State<SendMoneyRegularPage> {
                 validateText,
                 style: TextStyle(color: Colors.grey[800]),
               ),
-              SizedBox(
-                height: 10,
+            ],
+          ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Container(
+                  width: double.infinity,
+                  decoration: roundedBoxWithShadowStyle(
+                      shadow: false,
+                      bgColor: Color(0xffF0F0F0),
+                      borderRadius: 10),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '출금 가능 잔액',
+                          style:
+                              TextStyle(color: Color(0xff757575), fontSize: 16),
+                        ),
+                        Row(
+                          children: [
+                            Text(formattedBalance),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              renderAvailableWithdrawalBalance(formattedBalance),
-              SizedBox(height: 20),
               NumberKeyboard(
                 onNumberPress: onNumberPress,
                 onBackspacePress: onBackspacePress,
               ),
             ],
-          ),
-        ),
+          )
+        ],
       ),
       bottomNavigationBar: BottomBtn(
           text: '다음',
@@ -127,6 +158,7 @@ class _SendMoneyRegularPageState extends State<SendMoneyRegularPage> {
                   childKey: _childKey,
                   amount: amount,
                   childName: _childName,
+                  balance: _balance,
                 ),
               ),
             );
@@ -201,12 +233,14 @@ class WhenSendPocketMoneyPage extends StatefulWidget {
   final String amount;
   final String? childKey;
   final String? childName;
+  final int? balance;
 
   const WhenSendPocketMoneyPage({
     Key? key,
     this.accessToken,
     this.memberKey,
     required this.amount,
+    required this.balance,
     this.childKey,
     this.childName,
   }) : super(key: key);
@@ -282,31 +316,70 @@ class _WhenSendPocketMoneyPageState extends State<WhenSendPocketMoneyPage> {
 
   @override
   Widget build(BuildContext context) {
+    // String formattedBalance = formattedMoney(_balance ?? 0); // 잔액을 문자열로 포맷팅
+
     return Scaffold(
       appBar: MyHeader(
         text: '용돈 보내기',
       ),
-      body: SingleChildScrollView(
-          child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              child: Column(children: [
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 40.0),
+            child: Column(
+              children: [
                 sendMoneyInfo(),
-                SizedBox(height: 30),
-                Text(validateText),
+                SizedBox(
+                  height: 30,
+                ),
                 MyDateField(day),
-              ]),
+                SizedBox(
+                  height: 15,
+                ),
+                Text(validateText),
+              ],
             ),
-            Spacer(), // 여기에 Spacer를 추가
-            NumberKeyboard(
-              onNumberPress: onNumberPress,
-              onBackspacePress: onBackspacePress,
-            ),
-          ],
-        ),
-      )),
+          ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Container(
+                  width: double.infinity,
+                  decoration: roundedBoxWithShadowStyle(
+                      shadow: false,
+                      bgColor: Color(0xffF0F0F0),
+                      borderRadius: 10),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '출금 가능 잔액',
+                          style:
+                              TextStyle(color: Color(0xff757575), fontSize: 16),
+                        ),
+                        Row(
+                          children: [
+                            Text(formattedMoney(widget.balance)),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              NumberKeyboard(
+                onNumberPress: onNumberPress,
+                onBackspacePress: onBackspacePress,
+              ),
+            ],
+          ),
+        ],
+      ),
       bottomNavigationBar: BottomBtn(
         text: '다음',
         isDisabled: BtnDisable,
