@@ -122,8 +122,10 @@ flutter:
     - assets/image/today_quest.png
     - assets/image/profile/parent1.png
     - assets/image/profile/parent2.png
+    - assets/image/profile/parent2_noBg.png
     - assets/image/profile/child1.png
     - assets/image/profile/child2.png
+    - assets/image/profile/child2_noBg.png
     - assets/image/category/MART.png
     - assets/image/category/CONVENIENCE.png
     - assets/image/category/FOOD.png

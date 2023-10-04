@@ -28,12 +28,12 @@ class SignUpPage extends StatelessWidget {
             SizedBox(height: 30,),
             Row(
               children: [
-                SizedBox(width: 12,),
-                SelectTypeBtn(path: SignUpParentPage(), name: '부모', text: '우리 아이 경제 교육!\n키핑으로 시작해요!', emoji: '👩🏻'),
-                SizedBox(width: 12,),
+                SizedBox(width: 24,),
+                SelectTypeBtn(path: SignUpParentPage(), name: '부모', text: '우리 아이 경제 교육!\n키핑으로 시작해요!', emoji: 'assets/image/profile/parent2_noBg.png'),
+                SizedBox(width: 8,),
 
-                SelectTypeBtn(path: SignUpChildPage(), name: '자녀', text: '어린이는 자녀로\n가입해주세요!', emoji: '👧🏻'),
-                SizedBox(width: 12,),
+                SelectTypeBtn(path: SignUpChildPage(), name: '자녀', text: '어린이는 자녀로\n가입해주세요!', emoji: 'assets/image/profile/child2_noBg.png'),
+                SizedBox(width: 24,),
               ],
             ),
           ],

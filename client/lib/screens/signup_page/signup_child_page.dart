@@ -347,6 +347,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 60,)
             ],
           ),
         ),
