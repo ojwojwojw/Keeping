@@ -6,6 +6,7 @@ import 'package:keeping/screens/piggy_page/piggy_detail_page.dart';
 import 'package:keeping/screens/piggy_page/piggy_page.dart';
 import 'package:keeping/screens/piggy_page/utils/piggy_future_methods.dart';
 import 'package:keeping/util/dio_method.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
@@ -105,7 +106,7 @@ class _PiggyEnterAuthPasswordPageState extends State<PiggyEnterAuthPasswordPage>
           ),
         ],
       ),
-      bottomSheet: BottomBtn(
+      bottomNavigationBar: BottomBtn(
         text: '저금하기',
         action: () async {
           final response = savePiggy(
@@ -117,17 +118,26 @@ class _PiggyEnterAuthPasswordPageState extends State<PiggyEnterAuthPasswordPage>
             authPassword: authPassword,
           );
           if (response != null) {
-            Navigator.push(
+            noEffectReplacementTransition(
               context, 
-              MaterialPageRoute(
-                builder: (context) => CompletedPage(
-                  text: '저금이\n완료되었습니다.',
-                  button: ConfirmBtn(
-                    action: PiggyDetailPage(piggyDetailInfo: context.read<PiggyDetailProvider>().selectedPiggyDetailInfo!), 
-                  ),
-                )
+              CompletedPage(
+                text: '저금이\n완료되었습니다.',
+                button: ConfirmBtn(
+                  action: PiggyDetailPage(piggyDetailInfo: context.read<PiggyDetailProvider>().selectedPiggyDetailInfo!), 
+                ),
               )
             );
+            // Navigator.push(
+            //   context, 
+            //   MaterialPageRoute(
+            //     builder: (context) => CompletedPage(
+            //       text: '저금이\n완료되었습니다.',
+            //       button: ConfirmBtn(
+            //         action: PiggyDetailPage(piggyDetailInfo: context.read<PiggyDetailProvider>().selectedPiggyDetailInfo!), 
+            //       ),
+            //     )
+            //   )
+            // );
           } else {
             roundedModal(context: context, title: '다시 시도해주세요.');
           }

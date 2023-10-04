@@ -5,6 +5,7 @@ import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/my_page/child_my_page.dart';
 import 'package:keeping/screens/my_page/parent_my_page.dart';
 import 'package:keeping/screens/push_notification_page.dart/push_notification_page.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:provider/provider.dart';
 import 'package:keeping/provider/user_info.dart';
 
@@ -50,9 +51,11 @@ Widget homeBtn(BuildContext context, bool isParent, bool isSelected) {
   return InkWell(
     onTap: () {
       if (isParent) {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ParentMainPage()));
+        noEffectTransition(context, ParentMainPage());
+        // Navigator.push(context, MaterialPageRoute(builder: (_) => ParentMainPage()));
       } else {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMainPage()));
+        noEffectTransition(context, ChildMainPage());
+        // Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMainPage()));
       }
     },
     child: _navBtnStyle(icon: Icons.home, text: '홈', isSelected: isSelected),
@@ -64,9 +67,11 @@ Widget diaryBtn(BuildContext context, bool isParent, bool isSelected) {
   return InkWell(
     onTap: () {
       if (isParent) {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ParentDiaryPage()));
+        noEffectReplacementTransition(context, ParentDiaryPage());
+        // Navigator.push(context, MaterialPageRoute(builder: (_) => ParentDiaryPage()));
       } else {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ChildDiaryPage()));
+        noEffectReplacementTransition(context, ChildDiaryPage());
+        // Navigator.push(context, MaterialPageRoute(builder: (_) => ChildDiaryPage()));
       }
     },
     child: _navBtnStyle(icon: Icons.book, text: '다이어리', isSelected: isSelected),
@@ -77,7 +82,8 @@ Widget diaryBtn(BuildContext context, bool isParent, bool isSelected) {
 Widget notificationBtn(BuildContext context, bool isParent, bool isSelected) {
   return InkWell(
     onTap: () {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => PushNotificationPage()));
+      noEffectReplacementTransition(context, PushNotificationPage());
+      // Navigator.push(context, MaterialPageRoute(builder: (_) => PushNotificationPage()));
     },
     child: _navBtnStyle(icon: Icons.notifications, text: '알림', isSelected: isSelected),
   );
@@ -88,9 +94,11 @@ Widget myPageBtn(BuildContext context, bool isParent, bool isSelected) {
   return InkWell(
     onTap: () {
       if (isParent) {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ParentMyPage()));
+        noEffectReplacementTransition(context, ParentMyPage());
+        // Navigator.push(context, MaterialPageRoute(builder: (_) => ParentMyPage()));
       } else {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMyPage()));
+        noEffectReplacementTransition(context, ChildMyPage());
+        // Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMyPage()));
       }
     },
     child: _navBtnStyle(icon: Icons.person, text: '마이페이지', isSelected: isSelected),

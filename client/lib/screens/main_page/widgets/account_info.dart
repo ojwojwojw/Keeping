@@ -12,6 +12,7 @@ import 'package:keeping/screens/send_money_regular_page/send_money_regular_page.
 import 'package:keeping/screens/send_pocket_money_page/send_pocket_money_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
 import 'package:provider/provider.dart';
 
@@ -48,7 +49,8 @@ class _AccountInfoState extends State<AccountInfo> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => AllowanceLedgerPage()));
+        noEffectReplacementTransition(context, AllowanceLedgerPage());
+        // Navigator.push(context, MaterialPageRoute(builder: (_) => AllowanceLedgerPage()));
       },
       child: Padding(
         padding: const EdgeInsets.only(top: 24, bottom: 12),
@@ -119,15 +121,19 @@ class _AccountInfoState extends State<AccountInfo> {
                 _parent != null && !_parent! ? 
                   InkWell(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (_) {
-                          if (_accountNumber != '') {
-                            return ChildRequestMoneyPage();
-                          } else {
-                            return MakeAccountPage();
-                          }
-                        },
-                      ),);
+                      noEffectReplacementTransition(
+                        context, 
+                        _accountNumber != '' ? ChildRequestMoneyPage() : MakeAccountPage()
+                      );
+                      // Navigator.push(context, MaterialPageRoute(
+                      //   builder: (_) {
+                      //     if (_accountNumber != '') {
+                      //       return ChildRequestMoneyPage();
+                      //     } else {
+                      //       return MakeAccountPage();
+                      //     }
+                      //   },
+                      // ),);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -152,12 +158,13 @@ class _AccountInfoState extends State<AccountInfo> {
                                   button: sendTypeBtns(context),
                                 );
                               } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => MakeAccountPage(),
-                                  ),
-                                );
+                                noEffectReplacementTransition(context, MakeAccountPage());
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (_) => MakeAccountPage(),
+                                //   ),
+                                // );
                               }
                             },
 
@@ -172,20 +179,24 @@ class _AccountInfoState extends State<AccountInfo> {
                         Expanded(
                           child: InkWell(
                             onTap: () {
-                              if (_accountNumber != '') {
-                                Navigator.push(context,
-                                  MaterialPageRoute(
-                                  builder: (_) => ParentRequestMoneyPage(),
-                                  ),
-                                );
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => MakeAccountPage(),
-                                  ),
-                                );
-                              }
+                              noEffectReplacementTransition(
+                                context, 
+                                _accountNumber != '' ? ParentRequestMoneyPage() : MakeAccountPage()  
+                              );
+                              // if (_accountNumber != '') {
+                              //   Navigator.push(context,
+                              //     MaterialPageRoute(
+                              //     builder: (_) => ParentRequestMoneyPage(),
+                              //     ),
+                              //   );
+                              // } else {
+                              //   Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (_) => MakeAccountPage(),
+                              //     ),
+                              //   );
+                              // }
                             },
                             child: Text(
                               '조르기 모아보기', 
