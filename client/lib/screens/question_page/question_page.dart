@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/child_info_provider.dart';
+import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
@@ -44,7 +45,7 @@ class _QuestionPageState extends State<QuestionPage> {
         text: '',
         bgColor: Color(0xFFA086EE),
         elementColor: Colors.white,
-        backPath: ChildMainPage(),
+        // backPath: ChildMainPage(),
       ),
       body: FutureBuilder(
           future: getData(),
@@ -142,43 +143,44 @@ class _QuestionPageState extends State<QuestionPage> {
                               ],
                             ),
                             child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 15), // 좌우 여백 15
+                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      '  Q.',
-                                      style: TextStyle(
-                                          fontSize: 32,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10), // 간격 조정
-                                  data != null && data.isNotEmpty
-                                      ? Text(
-                                          data[0]["content"],
-                                          style: TextStyle(fontSize: 20 ,fontWeight: FontWeight.bold),
-                                          textAlign: TextAlign.center,
-                                        )
-                                      : Text(
-                                          "오늘의 질문이 없습니다.",
-                                          textAlign: TextAlign.center,
-                                        ),
-                                  SizedBox(height: 25), // 간격 조정
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                  Column(
                                     children: [
-                                      
-                                        
-                                      _ansBtn(),
-                                        
-                                      SizedBox(width: 10), // 버튼 간 간격
-                                      _diaryBtn(),
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          '  Q.',
+                                          style: TextStyle(
+                                              fontSize: 32,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      data != null && data.isNotEmpty
+                                          ? Text(
+                                              data[0]["content"],
+                                              style: TextStyle(fontSize: 20 ,fontWeight: FontWeight.bold),
+                                              textAlign: TextAlign.center,
+                                            )
+                                          : Text(
+                                              "오늘의 질문이 없습니다.",
+                                              textAlign: TextAlign.center,
+                                            ),
                                     ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        _ansBtn(),
+                                        _diaryBtn(),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -202,9 +204,8 @@ class _QuestionPageState extends State<QuestionPage> {
 
   Widget _ansBtn() {
     return Container(
-      width: 120,
-      child: ElevatedButton(
-        onPressed: () {
+      child: InkWell(
+        onTap: () {
           if (data != null &&
               data.isNotEmpty &&
               data[0]["content"] != null &&
@@ -234,19 +235,14 @@ class _QuestionPageState extends State<QuestionPage> {
             );
           }
         },
-        style: ElevatedButton.styleFrom(
-            primary: Colors.red.withOpacity(0.0),
-            elevation: 0, // 투명한 빨간색 배경
-            padding: EdgeInsets.zero),
         child: Column(
           children: [
-            Text('답하기' ,style: TextStyle(color: Colors.black),),
             Image.asset(
               'assets/image/question/answer.png',
-              width: 100.0,
               height: 100.0,
               fit: BoxFit.cover,
             ),
+            Text('답하기' ,style: TextStyle(color: Colors.black, fontSize: 18),),
           ],
         ),
       ),
@@ -254,29 +250,19 @@ class _QuestionPageState extends State<QuestionPage> {
   }
 
   Widget _diaryBtn() {
-    return Container(
-      width: 120,
-      margin: EdgeInsets.symmetric(horizontal: 24),
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => ChildDiaryPage()));
-        },
-        style: ElevatedButton.styleFrom(
-            primary: Colors.red.withOpacity(0.0),
-            elevation: 0, // 투명한 빨간색 배경
-            padding: EdgeInsets.zero),
-        child: Column(
-          children: [
-            Text('보관함' ,style: TextStyle(color: Colors.black),),
-            Image.asset(
-              'assets/image/question/folder.png',
-              width: 100.0,
-              height: 100.0,
-              fit: BoxFit.cover,
-            ),
-          ],
-        ),
+    return InkWell(
+      onTap: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => ChildDiaryPage()));
+      },
+      child: Column(
+        children: [
+          Image.asset(
+            'assets/image/question/folder.png',
+            height: 100.0,
+          ),
+          Text('보관함' ,style: TextStyle(color: Colors.black, fontSize: 18),),
+        ],
       ),
     );
   }
@@ -320,6 +306,7 @@ class ParentQuestionPage extends StatefulWidget {
 
 class _ParentQuestionPageState extends State<ParentQuestionPage> {
   List<Map<String, dynamic>> data = [];
+  bool? _parent;
 
   late String? selectedMemberKey;
   late Dio dio;
@@ -336,6 +323,7 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
     selectedMemberKey = childInfoProvider.memberKey;
     DateTime now = DateTime.now();
     formattedDate = DateFormat('yyyy-MM-dd').format(now);
+    _parent = context.read<UserInfoProvider>().parent;
   }
 
   //질문 데이터를 가져오는 비동기 요청
@@ -382,7 +370,7 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
         text: '',
         bgColor: Color(0xFFA086EE),
         elementColor: Colors.white,
-        backPath: ChildMainPage(),
+        // backPath: _parent != null && _parent! ? ParentMainPage() : ChildMainPage(),
       ),
       body: FutureBuilder(
           future: getData(),
@@ -467,7 +455,7 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                             margin: EdgeInsets.symmetric(horizontal: 24),
                             height: 350,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.7),
+                              color: Colors.white.withOpacity(0.5),
                               borderRadius: BorderRadius.circular(10.0),
                               boxShadow: [
                                 BoxShadow(
@@ -480,40 +468,44 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                               ],
                             ),
                             child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 15), // 좌우 여백 15
+                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      '  Q',
-                                      style: TextStyle(
-                                          fontSize: 32,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10), // 간격 조정
-                                  data != null && data.isNotEmpty
-                                      ? Text(
-                                          data[0]["content"],
-                                          style: TextStyle(fontSize: 20),
-                                          textAlign: TextAlign.center,
-                                        )
-                                      : Text(
-                                          "오늘의 질문이 없습니다.",
-                                          textAlign: TextAlign.center,
-                                        ),
-                                  SizedBox(height: 10), // 간격 조정
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                  Column(
                                     children: [
-                                      _ansBtn(),
-                                      SizedBox(width: 10), // 버튼 간 간격
-                                      _diaryBtn(),
-                                    ],
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          '  Q',
+                                          style: TextStyle(
+                                              fontSize: 32,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10), // 간격 조정
+                                      data != null && data.isNotEmpty
+                                          ? Text(
+                                              data[0]["content"],
+                                              style: TextStyle(fontSize: 20),
+                                              textAlign: TextAlign.center,
+                                            )
+                                          : Text(
+                                              "오늘의 질문이 없습니다.",
+                                              textAlign: TextAlign.center,
+                                            ),
+                                    ]
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 30),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        _ansBtn(),
+                                        _diaryBtn(),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -537,9 +529,8 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
 
   Widget _ansBtn() {
     return Container(
-      width: 120,
-      child: ElevatedButton(
-        onPressed: () {
+      child: InkWell(
+        onTap: () {
           if (data != null &&
               data.isNotEmpty &&
               data[0]["content"] != null &&
@@ -569,19 +560,13 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
             );
           }
         },
-        style: ElevatedButton.styleFrom(
-            primary: Colors.red.withOpacity(0.0),
-            elevation: 0, // 투명한 빨간색 배경
-            padding: EdgeInsets.zero),
         child: Column(
           children: [
-            Text('답하기' ,style: TextStyle(color: Colors.black),),
             Image.asset(
               'assets/image/question/answer.png',
-              width: 100.0,
               height: 100.0,
-              fit: BoxFit.cover,
             ),
+            Text('답하기' ,style: TextStyle(color: Colors.black, fontSize: 18),),
           ],
         ),
       ),
@@ -589,29 +574,19 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
   }
 
   Widget _diaryBtn() {
-    return Container(
-      width: 120,
-      margin: EdgeInsets.symmetric(horizontal: 24),
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => ParentDiaryPage()));
-        },
-        style: ElevatedButton.styleFrom(
-            primary: Colors.red.withOpacity(0.0),
-            elevation: 0, // 투명한 빨간색 배경
-            padding: EdgeInsets.zero),
-        child: Column(
-          children: [
-            Text('보관함 ' ,style: TextStyle(color: Colors.black),),
-            Image.asset(
-              'assets/image/question/folder.png',
-              width: 100.0,
-              height: 100.0,
-              fit: BoxFit.cover,
-            ),
-          ],
-        ),
+    return InkWell(
+      onTap: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => ParentDiaryPage()));
+      },
+      child: Column(
+        children: [
+          Image.asset(
+            'assets/image/question/folder.png',
+            height: 100.0,
+          ),
+          Text('보관함 ' ,style: TextStyle(color: Colors.black, fontSize: 18),),
+        ],
       ),
     );
   }
@@ -867,77 +842,78 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
     return Scaffold(
       appBar: MyHeader(
         text: '질문 보내기',
-        
       ),
       body: Column(
         children: [
-          
           SizedBox(
-            height: 15,
+            height: 30,
           ),
-
-
-
-          SizedBox(
-            height: 15,
+          Container(
+            width: 340,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text('누구에게 질문을 보낼까요?',style: labelStyle(),),
+              ],
+            ),
           ),
-
-          Text('누구에게 질문을 보낼까요?',style: TextStyle(fontSize: 24 ,fontWeight: FontWeight.bold),),
-
-
           SizedBox(
             height: 15,
           ),
           /// 자녀를 고르는 드랍다운
-          Container(
-            width: 380,
-            height: 60,
-            padding: EdgeInsets.symmetric(
-                horizontal: 10.0, vertical: 5.0), // dropdown arrow와 padding 조절
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.purple),
-              borderRadius: BorderRadius.circular(4.0),
-            ),
-            child: DropdownButtonHideUnderline(
-              // underline 제거
-              child: DropdownButton<String>(
-                isExpanded: true, // 텍스트와 dropdown arrow 간에 공간을 최대로 활용
-                value: selectedMemberKey.isNotEmpty ? selectedMemberKey : null,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedMemberKey = newValue ?? '';
-                  });
-                },
-                items: childrenList.map<DropdownMenuItem<String>>(
-                    (Map<String, dynamic> child) {
-                  return DropdownMenuItem<String>(
-                    value: child["memberKey"].toString(),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          'assets/image/n_face.png',
-                          width: 100.0,
-                          height: 100.0,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Container(
+              width: double.infinity,
+              height: 80,
+              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0), // dropdown arrow와 padding 조절
+              decoration: roundedBoxWithShadowStyle(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: DropdownButtonHideUnderline(
+                  // underline 제거
+                  child: DropdownButton<String>(
+                    isExpanded: true, // 텍스트와 dropdown arrow 간에 공간을 최대로 활용
+                    value: selectedMemberKey.isNotEmpty ? selectedMemberKey : null,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedMemberKey = newValue ?? '';
+                      });
+                    },
+                    items: childrenList.map<DropdownMenuItem<String>>(
+                        (Map<String, dynamic> child) {
+                      return DropdownMenuItem<String>(
+                        value: child["memberKey"].toString(),
+                        child: Row(
+                          children: [
+                            roundedAssetImg(
+                              imgPath: 'assets/image/profile/child1.png',
+                              size: 50.0,
+                            ),
+                            SizedBox(width: 10.0), // 이미지와 텍스트 사이의 간격
+                            Text(
+                              child["name"].toString(),
+                              style: TextStyle(fontSize: 20)
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 10.0), // 이미지와 텍스트 사이의 간격
-                        Text(child["name"].toString()),
-                      ],
-                    ),
-                  );
-                }).toList(),
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
             ),
           ),
-
-          ///
-          SizedBox(height: 100,),
-          violetBoxFormField(
-              hintText: '질문 내용을 입력하세요',
-              onChange: (value) {
-                setState(() {
-                  comment = value;
-                });
-              }),
+          SizedBox(height: 25,),
+          renderBoxFormField(
+            label: '질문 내용을 입력하세요.',
+            onChange: (val) {
+              setState(() {
+                comment = val;
+              });
+            },
+            maxLines: 4
+          ),
         ],
       ),
       bottomNavigationBar: BottomBtn(
