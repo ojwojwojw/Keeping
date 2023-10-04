@@ -115,7 +115,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                   )
                 );
               } else {
-                return const Text('로딩중');
+                return const Text('');
               }
             }
           ),

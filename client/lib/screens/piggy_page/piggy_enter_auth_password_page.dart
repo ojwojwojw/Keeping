@@ -94,7 +94,7 @@ class _PiggyEnterAuthPasswordPageState extends State<PiggyEnterAuthPasswordPage>
                 SizedBox(height: 7,),
                 Text('결제 비밀번호를 입력해 주세요.', style: TextStyle(fontSize: 15, color: Colors.black54),),
                 passwordCircles(authPassword != null ? authPassword!.length : 0),
-                Text(authPassword.toString())
+                // Text(authPassword.toString())
               ],
             ),
           ),

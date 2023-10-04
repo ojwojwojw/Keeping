@@ -103,7 +103,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
                   )
                 );
               } else {
-                return Text('로딩중');
+                return Text('');
               }
             },
           ),

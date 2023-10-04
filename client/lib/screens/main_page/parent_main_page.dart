@@ -105,7 +105,7 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
                         ],
                       );
                     } else {
-                      return const Text('로딩중');
+                      return const Text('');
                     }
                   },
                 ),
