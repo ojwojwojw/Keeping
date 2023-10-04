@@ -1,20 +1,16 @@
 import 'package:keeping/util/dio_method.dart';
 
 // 계좌의 상세 내역 포함한 거래 내역 조회
-Future<dynamic> getAccountList(
-    {required String? accessToken,
-    required String? memberKey,
-    required String? accountNumber,
-    required String? targetKey}) async {
-  if (accessToken != null &&
-      memberKey != null &&
-      accountNumber != null &&
-      targetKey != null) {
+Future<dynamic> getAccountList({
+  required String? accessToken, required String? memberKey,
+  required String? accountNumber, required String? targetKey
+}) async {
+  print('계좌 상세 내역 포함 거래 내역 $accountNumber');
+  if (accessToken != null && memberKey != null && accountNumber != null && accountNumber.isNotEmpty && targetKey != null) {
     try {
       final response = await dioGet(
         accessToken: accessToken,
-        url:
-            '/bank-service/api/$memberKey/account-history/$targetKey/$accountNumber',
+        url: '/bank-service/api/$memberKey/account-history/$targetKey/$accountNumber',
       );
       print('계좌의 상세 내역 포함한 거래 내역 조회 응답 $response');
       return response;

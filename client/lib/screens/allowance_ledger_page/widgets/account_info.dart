@@ -48,21 +48,24 @@ class _AccountInfoState extends State<AccountInfo> {
           bgColor: Color.fromARGB(255, 255, 247, 222),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 30),
+          padding: EdgeInsets.only(
+            top: widget.parent != null && widget.parent! == true && _childName != null ? 10 : 30, 
+            bottom: 30
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (widget.parent != null &&
-                  widget.parent! == true &&
-                  _childName != null)
+              if (widget.parent != null && widget.parent! == true && _childName != null)
                 ChildTag(childName: _childName!, text: '용돈 잔액'),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    '🪙 ',
-                    style: TextStyle(fontSize: 35,),
-                  ),
+                  // Text(
+                  //   '🪙 ',
+                  //   style: TextStyle(fontSize: 35,),
+                  // ),
+                  Image.asset('assets/image/money/coin.png', height: 60,),
+                  SizedBox(width: 8,),
                   Text(
                     widget.balance == null ? '0원' : formattedMoney(widget.balance),
                     style: TextStyle(fontSize: 30, color: Colors.black),
