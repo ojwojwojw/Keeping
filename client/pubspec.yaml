@@ -103,6 +103,8 @@ flutter:
     - assets/image/mission/new_mission.png
     - assets/image/mission/target.png
     - assets/image/mission/pencil.png
+    - assets/image/mission/smile1.png
+    - assets/image/mission/smile2.png
     - assets/image/question/answer.png
     - assets/image/question/folder.png
     - assets/image/question/maintitle.png
