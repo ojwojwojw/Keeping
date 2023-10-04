@@ -29,34 +29,34 @@ class ColorInfoDetailCard extends StatefulWidget {
 class _ColorInfoDetailCardState extends State<ColorInfoDetailCard> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 40),
-      child: InkWell(
-        onTap: () {
-          // Navigator.push(context, MaterialPageRoute(builder: (_) => widget.path));
-        },
-        child: Container(
-          width: 300,
-          height: 450,
-          decoration: roundedBoxWithShadowStyle(borderRadius: 30, shadow: false, border: true, borderColor: requestStatusBgColor(widget.status)),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(30),
-            child: Column(
-              children: [
-                colorInfoCardStatus(300, widget.status),
-                colorInfoDetailCardHeader(widget.createdDate, widget.name),
-                colorInfoDetailCardContents(
-                  Column(
-                    children: [
-                      colorInfoDetailCardContent('금액', '${widget.paidMoney} / ${widget.cost}'),
-                      colorInfoDetailCardContent('구매 URL', widget.url, box: false),
-                      colorInfoDetailCardContent('필요한 이유', widget.reason),
-                    ],
-                  )
-                ),
-              ],
-            ),
-          ) 
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 45, bottom: 65, left: 48, right: 48),
+        child: InkWell(
+          onTap: () {
+            // Navigator.push(context, MaterialPageRoute(builder: (_) => widget.path));
+          },
+          child: Container(
+            decoration: roundedBoxWithShadowStyle(borderRadius: 30, shadow: false, border: true, borderColor: requestStatusBgColor(widget.status)),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: Column(
+                children: [
+                  colorInfoCardStatus(300, widget.status),
+                  colorInfoDetailCardHeader(widget.createdDate, widget.name, widget.status),
+                  colorInfoDetailCardContents(
+                    Column(
+                      children: [
+                        colorInfoDetailCardContent('금액', '${widget.paidMoney} / ${widget.cost}'),
+                        colorInfoDetailCardContent('구매 URL', widget.url, box: false),
+                        colorInfoDetailCardContent('필요한 이유', widget.reason),
+                      ],
+                    )
+                  ),
+                ],
+              ),
+            ) 
+          ),
         ),
       ),
     );
