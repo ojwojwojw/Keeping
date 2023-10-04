@@ -115,6 +115,8 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         renderTextFormField(
                             label: '아이디',
@@ -132,7 +134,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                               return null;
                             },
                             controller: _userId,
-                            width: 220,
+                            width: 210,
                             onChange: handleSignupDisable()),
                         _authenticationBtn(
                           context,
@@ -213,6 +215,8 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                       controller: _userBirth,
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         renderPhoneNumberFormField(
                             label: '휴대폰 번호',
@@ -226,7 +230,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                               }
                               return null;
                             },
-                            width: 220,
+                            width: 200,
                             controller: _userPhoneNumber),
                         _authenticationBtn(context, '인증번호 받기', () {
                           checkVerification(
@@ -237,6 +241,8 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                     //인증번호 관련 로직 - verification
                     Text(_verificationResult),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         renderTextFormField(
                           label: '인증번호 입력',
@@ -250,7 +256,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                             }
                             return null;
                           },
-                          width: 220,
+                          width: 200,
                           controller: _userVerificationNumber,
                           isNumber: true,
                         ),
@@ -402,11 +408,11 @@ ButtonStyle _authenticationBtnStyle() {
           MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(18),
         side: BorderSide(
           color: const Color(0xFF8320E7), // 테두리 색상 설정
           width: 2.0, // 테두리 두께 설정
         ),
       )),
-      fixedSize: MaterialStateProperty.all<Size>(Size(120, 40)));
+      minimumSize: MaterialStateProperty.all<Size>(Size(120, 40)));
 }
