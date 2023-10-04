@@ -29,7 +29,7 @@ class _OnlinePaymentRequestInfoState extends State<OnlinePaymentRequestInfo> {
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Row(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -42,15 +42,12 @@ class _OnlinePaymentRequestInfoState extends State<OnlinePaymentRequestInfo> {
                   color: Colors.black
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 50),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Image.asset('assets/image/main/cropped_onlineRequest.png', height: 100,),
-                  ],
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Image.asset('assets/image/main/cropped_onlineRequest.png', height: 100,),
+                ],
               )
             ],
           ),
