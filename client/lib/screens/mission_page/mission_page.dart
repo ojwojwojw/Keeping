@@ -156,7 +156,7 @@ class ParentMissionPage extends StatefulWidget {
 
 class _ParentMissonPageState extends State<ParentMissionPage> {
   List<Map<String, dynamic>> data = [];
-  String currentFilter = "ALL";
+  String currentFilter = "YET";
   int _selectedBtnIdx = 1;
   late String? profileImage;
 
