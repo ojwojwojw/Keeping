@@ -71,7 +71,12 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                 print('용돈기입장 페이지 ${snapshot.data}');
                 var response = snapshot.data;
                 if (response['resultBody'].isEmpty) {
-                  return Text('거래내역이 없습니다.');
+                  return Column(
+                    children: [
+                      Image.asset('assets/image/money/coins.png'),
+                      Text('거래내역이 없습니다.')
+                    ],
+                  );
                 } else if (response['resultStatus']['resultCode'] == '503') {
                   return Text('');
                 }

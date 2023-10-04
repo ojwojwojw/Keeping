@@ -207,7 +207,9 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                                     }
                                     return null;
                                   },
-                                  controller: _phoneController))),
+                                  controller: _phoneController,
+                                  width: 200
+                              ))),
                       _authenticationBtn(
                           widget._phonAuthFormKey, context, '인증번호 발송'),
                     ],
@@ -310,14 +312,14 @@ ButtonStyle _authenticationBtnStyle() {
         MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
       RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
         side: BorderSide(
           color: const Color(0xFF8320E7), // 테두리 색상 설정
           width: 2.0, // 테두리 두께 설정
         ),
       )
     ),
-    fixedSize: MaterialStateProperty.all<Size>(Size(120, 40)));
+    minimumSize: MaterialStateProperty.all<Size>(Size(120, 40)));
 }
 
 const String _termsAndConditionsText = '''

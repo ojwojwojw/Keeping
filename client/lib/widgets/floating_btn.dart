@@ -3,15 +3,17 @@ import 'package:flutter/material.dart';
 class FloatingBtn extends StatelessWidget {
   final String text;
   final IconData icon;
-  final Widget path;
+  final Widget? path;
   final Color bgColor;
   final Color elementColor;
+  final dynamic action;
 
   FloatingBtn({
     super.key,
     required this.text,
     required this.icon,
-    required this.path,
+    this.path,
+    this.action,
     this.bgColor = const Color(0xFF410083),
     this.elementColor = Colors.white
   });
@@ -20,8 +22,12 @@ class FloatingBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       onPressed: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => path));
+        if (path != null) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => path!));
+        } else if (action != null) {
+          action();
+        }
       },
       label: Text(text, style: textStyle(elementColor),),
       icon: Icon(icon, color: Colors.white,),
