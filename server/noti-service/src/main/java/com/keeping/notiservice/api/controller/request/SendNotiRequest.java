@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 public class SendNotiRequest {
     private String memberKey;
     
-    private String fcmToken;
-    
     private String title;
 
     private String content;
@@ -19,9 +17,8 @@ public class SendNotiRequest {
     private Type type;
 
     @Builder
-    public SendNotiRequest(String memberKey, String fcmToken, String title, String content, Type type) {
+    public SendNotiRequest(String memberKey, String title, String content, Type type) {
         this.memberKey = memberKey;
-        this.fcmToken = fcmToken;
         this.title = title;
         this.content = content;
         this.type = type;

@@ -17,19 +17,20 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/bank-service/api/piggy")
+@RequestMapping("/bank-service/api/{member-key}/piggy")
 public class PiggyApiController {
 
     private final PiggyService piggyService;
 
-    @PostMapping("/{member-key}")
-    public ApiResponse<Void> addPiggy(@PathVariable("member-key") String memberKey, @RequestParam("content") String content, @RequestParam("goalMoney") int goalMoney, @RequestParam("authPassword") String authPassword, @RequestParam("uploadImage") MultipartFile uploadImage) {
-        AddPiggyRequest request = AddPiggyRequest.toRequest(content, goalMoney, authPassword, uploadImage);
+    @PostMapping
+    public ApiResponse<Void> addPiggy(@PathVariable("member-key") String memberKey, @RequestParam("content") String content, @RequestParam("goalMoney") int goalMoney, @RequestParam("uploadImage") MultipartFile uploadImage) {
+        AddPiggyRequest request = AddPiggyRequest.toRequest(content, goalMoney, uploadImage);
         log.debug("AddPiggyRequest={}", request);
 
         AddPiggyDto dto = AddPiggyDto.toDto(request);
@@ -37,6 +38,7 @@ public class PiggyApiController {
         try {
             Long piggyId = piggyService.addPiggy(memberKey, dto);
         } catch (IOException e) {
+            log.debug("예외 발생 : {}", e.toString());
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "저금통 개설 과정 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
         } catch (NotFoundException e) {
             return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
@@ -45,19 +47,20 @@ public class PiggyApiController {
         return ApiResponse.ok(null);
     }
 
-    @GetMapping("/{member-key}")
-    public ApiResponse<List<ShowPiggyResponse>> showPiggy(@PathVariable("member-key") String memberKey) {
+    @GetMapping("/{target-key}")
+    public ApiResponse<List<ShowPiggyResponse>> showPiggy(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey) {
         log.debug("showPiggy");
 
         try {
-            List<ShowPiggyResponse> response = piggyService.showPiggy(memberKey);
+            List<ShowPiggyResponse> response = piggyService.showPiggy(memberKey, targetKey);
             return ApiResponse.ok(response);
         } catch (IOException e) {
+            log.debug("예외 발생 : {}", e.toString());
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "저금통 정보를 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
         }
     }
 
-    @PostMapping("/saving/{member-key}")
+    @PostMapping("/saving")
     public ApiResponse<Void> savingPiggy(@PathVariable("member-key") String memberKey, @RequestBody SavingPiggyRequest request) {
         log.debug("SavingPiggyRequest={}", request);
 
@@ -67,28 +70,31 @@ public class PiggyApiController {
             piggyService.savingPiggy(memberKey, dto);
         } catch (NotFoundException | NoAuthorizationException e) {
             return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
+        } catch (URISyntaxException e) {
+            log.debug("예외 발생 : {}", e.toString());
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "저금통에 저금하는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
         }
-        return null;
+        return ApiResponse.ok(null);
     }
 
-    @DeleteMapping("/{member-key}/{account-number}")
+    @DeleteMapping("/{account-number}")
     public ApiResponse<Void> removePiggy(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
         log.debug("RemovePiggy={}, {}", memberKey, accountNumber);
 
         return null;
     }
 
-    @DeleteMapping("/approve/{member-key}/{account-number}")
+    @DeleteMapping("/approve/{account-number}")
     public ApiResponse<Void> approveRemovePiggy(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
         log.debug("ApproveRemovePiggy={}, {}", memberKey, accountNumber);
 
         return null;
     }
 
-    @GetMapping("/{member-key}/{account-number}")
-    public ApiResponse<ShowPiggyHistoryResponse> showPiggyHistory(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
-        log.debug("ShowPiggyHistory={}, {}", memberKey, accountNumber);
-
-        return null;
-    }
+//    @GetMapping("/{account-number}")
+//    public ApiResponse<ShowPiggyHistoryResponse> showPiggyHistory(@PathVariable("member-key") String memberKey, @PathVariable("account-number") String accountNumber) {
+//        log.debug("ShowPiggyHistory={}, {}", memberKey, accountNumber);
+//
+//        return null;
+//    }
 }

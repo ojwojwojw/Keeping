@@ -40,47 +40,52 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF8320E7),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 30),
-              child: Column(
-                children: [
-                  if (widget.parent != null && widget.parent! && childName != null) ChildTag(childName: childName!, text: '저금통',),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      roundedMemoryImg(img: widget.img),
-                      Column(
-                        children: [
-                          SizedBox(
-                            width: 200,
-                            child: Center(
-                              child: TextScroll(
-                                widget.content,
-                                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white,),
-                                intervalSpaces: 10,
-                                velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
-                              ),
-                            )
-                          ),
-                          Text(formattedMoney(widget.balance), style: TextStyle(fontSize: 40, color: Colors.white),),
-                        ],
-                      )
-                    ],
-                  ),
-                ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      child: Container(
+        width: double.infinity,
+        decoration: roundedBoxWithShadowStyle(
+          blurRadius: 1.5,
+          bgColor: Color.fromARGB(255, 242, 230, 255),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: Column(
+                  children: [
+                    if (widget.parent != null && widget.parent! && childName != null) ChildTag(childName: childName!, text: '저금통',),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        roundedMemoryImg(img: widget.img),
+                        Column(
+                          children: [
+                            SizedBox(
+                              width: 180,
+                              child: Center(
+                                child: TextScroll(
+                                  widget.content,
+                                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black,),
+                                  intervalSpaces: 10,
+                                  velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
+                                ),
+                              )
+                            ),
+                            Text(formattedMoney(widget.balance), style: TextStyle(fontSize: 32, color: Colors.black),),
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            PiggyDetailChart(balance: widget.balance, goalMoney: widget.goalMoney, createdDate: widget.createdDate,)
-          ],
+              PiggyDetailChart(balance: widget.balance, goalMoney: widget.goalMoney, createdDate: widget.createdDate,)
+            ],
+          ),
         ),
       ),
     );

@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 public class SendNotiDto {
 
     private String memberKey;
-    
-    private String fcmToken;
 
     private String title;
 
@@ -21,9 +19,8 @@ public class SendNotiDto {
     private Type type;
 
     @Builder
-    public SendNotiDto(String memberKey, String fcmToken, String title, String content, Type type) {
+    public SendNotiDto(String memberKey, String title, String content, Type type) {
         this.memberKey = memberKey;
-        this.fcmToken = fcmToken;
         this.title = title;
         this.content = content;
         this.type = type;
@@ -32,7 +29,6 @@ public class SendNotiDto {
     public static SendNotiDto toDto(SendNotiRequest request) {
         return SendNotiDto.builder()
                 .memberKey(request.getMemberKey())
-                .fcmToken(request.getFcmToken())
                 .title(request.getTitle())
                 .content(request.getContent())
                 .type(request.getType())

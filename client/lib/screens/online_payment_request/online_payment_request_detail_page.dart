@@ -82,7 +82,7 @@ class _OnlinePaymentRequestDetailPageState
                 ),
               );
             } else {
-              return Text('로딩중');
+              return Text('');
             }
           }),
       bottomNavigationBar: _parent != null && _parent! && widget.status == 'WAIT'

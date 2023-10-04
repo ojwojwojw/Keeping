@@ -46,7 +46,7 @@ public class Allowance extends TimeBaseEntity {
 
     public static Allowance toAllowance(String childKey, String content, int money, Approve approve) {
         return Allowance.builder()
-                .content(childKey)
+                .childKey(childKey)
                 .content(content)
                 .money(money)
                 .approve(approve)

@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "member_service")
 public interface MemberFeignClient {
 
-    @GetMapping("/{member_key}")
+    @GetMapping("/member_service/api/{member_key}/type")
     ApiResponse<MemberTypeResponse> getMemberType(@PathVariable(name = "member_key") String memberKey);
 
-    @GetMapping("/{member_key}")
+    @GetMapping("/member-service/api/{member_key}")
     ApiResponse<MemberTimeResponse> getMemberTime(@PathVariable(name = "member_key") String memberKey);
 
 }
