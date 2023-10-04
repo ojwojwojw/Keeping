@@ -1338,9 +1338,7 @@ class _DiaryCommentPageState extends State<DiaryCommentPage> {
     //퓨터빌더의 결과로 리턴 하는 페이지//
     return Scaffold(
       appBar: MyHeader(
-        text: "일기댓글",
-        bgColor: Color(0xFF6E2FD5),
-        elementColor: Colors.white,
+        text: "댓글",
       ),
       body: FutureBuilder(
         // 비동기 데이터를 기다리고 UI를 구성
@@ -1357,27 +1355,33 @@ class _DiaryCommentPageState extends State<DiaryCommentPage> {
               child: Center(
                 child: Column(
                   children: [
-                    Container(
-                      height: 10,
-                      width: 410,
-                      color: Color(0xFF9271C8),
-                      child: SizedBox(),
-                    ),
+                    
+
 
                     SizedBox(
                       height: 15,
                     ),
                     // Question data
-                    Text(
-                      "#" + widget.index.toString() + "번째 질문",
-                      style: TextStyle(fontSize: 25, color: Colors.grey[400]),
-                    ),
+
+
+
 
                     Text(
-                      data['question']['content'],
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                      "#" + widget.index.toString() + "번째 질문",
+                      style: TextStyle(fontSize: 25, color: Colors.grey),
+                    ),
+
+
+                    SizedBox(height: 10,),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        data['question']['content'],
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
 
@@ -1407,14 +1411,17 @@ class _DiaryCommentPageState extends State<DiaryCommentPage> {
                                     : const Color.fromARGB(255, 128, 128, 128)),
                           );
 
+                          bool isLongComment = comment.length > 50;
+
                           // 댓글 텍스트 위젯
                           var commentWidget = Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
+                                horizontal: 12, 
+                                vertical: isLongComment ? 16 : 8 ),
                             decoration: BoxDecoration(
                               color: isCurrentUserComment
-                                  ? Color(0xFF6E2FD5)
-                                  : Color(0xFFE0E0E0),
+                                  ? Color(0xFF805AF1 )
+                                  : Color.fromARGB(255, 243, 243, 243),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
@@ -1467,11 +1474,11 @@ class _DiaryCommentPageState extends State<DiaryCommentPage> {
                                       : MainAxisAlignment.start,
                                   children: [
                                     if (isCurrentUserComment)
-                                      dateWidget, // 왼쪽 정렬일 때 날짜를 먼저 표시
-                                    SizedBox(width: 8),
-                                    commentWidget,
+                                      dateWidget, // 오른 정렬일 때 날짜를 먼저 표시
+                                      SizedBox(width: 8),
+                                      commentWidget,
                                     if (!isCurrentUserComment)
-                                      dateWidget, // 오른쪽 정렬일 때 날짜를 나중에 표시
+                                      dateWidget, // 왼정렬일 때 날짜를 나중에 표시
                                   ],
                                 ),
                               ),
