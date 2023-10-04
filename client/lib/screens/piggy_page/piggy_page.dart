@@ -123,8 +123,8 @@ class _PiggyPageState extends State<PiggyPage> {
       floatingActionButton: _parent != null && _parent! == true ? null : FloatingBtn(
         text: '만들기',
         icon: Icons.savings_rounded,
-        path: _accountNumber != null && _accountNumber!.isNotEmpty ? MakePiggyPage() : null,
-        action: _accountNumber != null && _accountNumber!.isNotEmpty ? null : () {
+        path: _accountNumber != null && _accountNumber! != '' ? MakePiggyPage() : null,
+        action: _accountNumber != null && _accountNumber! != '' ? null : () {
           roundedModal(context: context, title: '계좌 개설 후에 이용하실 수 있습니다.');
         }
       ),

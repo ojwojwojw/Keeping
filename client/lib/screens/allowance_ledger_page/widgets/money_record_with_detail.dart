@@ -92,22 +92,21 @@ Widget _mainMoneyRecord(String storeName, DateTime date, num money, num balance,
                 padding: EdgeInsets.all(10),
                 child: categoryImg('assets/image/category/$largeCategory.png'),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 170,
-                    child: Text(
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
                       storeName, 
                       style: bigStyle(),
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Text(
-                    formattedTime(date),
-                  )
-                ],
+                    Text(
+                      formattedTime(date),
+                    )
+                  ],
+                ),
               ),
             ],
           ),
@@ -160,19 +159,18 @@ Widget _detailMoneyRecord(String content, int money, bool type, String smallCate
                   padding: EdgeInsets.all(10),
                   child: categoryImg('assets/image/category/$smallCategory.png'),
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 170,
-                      child: Text(
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
                         content, 
                         style: bigStyle(),
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

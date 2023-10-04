@@ -77,24 +77,23 @@ class _MoneyRecordState extends State<MoneyRecord> {
                       padding: EdgeInsets.all(10),
                       child: categoryImg('assets/image/category/${widget.largeCategory}.png'),
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 170,
-                          child: Text(
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
                             widget.storeName,
                             style: bigStyle(),
                             overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        Text(
-                          widget.onlyTime
-                              ? formattedTime(widget.date)
-                              : formattedFullDate(widget.date),
-                        )
-                      ],
+                          Text(
+                            widget.onlyTime
+                                ? formattedTime(widget.date)
+                                : formattedFullDate(widget.date),
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 ),
