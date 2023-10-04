@@ -170,6 +170,7 @@ flutter:
     - assets/image/money/coins.png
     - assets/image/money/pencil.png
     - assets/image/money/receipt.png
+    - assets/image/pocketmoney/calendar.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
