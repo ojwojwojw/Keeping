@@ -268,6 +268,7 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 60,)
             ],
           ),
         ),

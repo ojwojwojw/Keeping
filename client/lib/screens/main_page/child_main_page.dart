@@ -64,8 +64,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
                           '503') {
                         return AccountInfo(balance: 0);
                       } else {
-                        Provider.of<AccountInfoProvider>(context, listen: false)
-                            .setAccountInfo(response['resultBody']);
+                        Provider.of<AccountInfoProvider>(context, listen: false).setAccountInfo(response['resultBody']);
                         return AccountInfo(
                           balance: response['resultBody']['balance'],
                         );
