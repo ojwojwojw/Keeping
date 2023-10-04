@@ -33,8 +33,7 @@ class BottomDoubleBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      elevation: 0,
+    return Container(
       child: SizedBox(
         // height: 70,
         width: double.infinity,

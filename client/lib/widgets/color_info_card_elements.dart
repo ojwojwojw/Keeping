@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 Widget colorInfoCardStatus(double width, String status) {
   return Container(
@@ -52,7 +53,17 @@ Widget colorInfoDetailCardHeader(DateTime date, String name, String status) {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(name, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        Container(
+                          constraints: BoxConstraints(
+                            maxWidth: 100.0,
+                          ),
+                          child: TextScroll(
+                            name, 
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            intervalSpaces: 10,
+                            velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
+                          ),
+                        ),
                         Text('을(를)', style: TextStyle(fontSize: 20),)
                       ],
                     ),
