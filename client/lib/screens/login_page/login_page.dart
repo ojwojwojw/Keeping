@@ -15,6 +15,8 @@ import 'package:keeping/widgets/render_field.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'package:keeping/util/page_transition_effects.dart';
+
 final _baseUrl = dotenv.env['BASE_URL'];
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();
@@ -71,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,  // 이 부분에 원하는 색상을 설정하세요.
+      backgroundColor: Colors.white, // 이 부분에 원하는 색상을 설정하세요.
 
       appBar: MyHeader(
         text: '로그인',
@@ -86,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -106,7 +108,6 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                       controller: _userId,
-                      width: 300,
                     ),
                     Container(
                       height: 20,
@@ -125,7 +126,6 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       controller: _userPw,
                       isPassword: true,
-                      width: 300,
                     ),
                     Container(
                       height: 20,
@@ -256,11 +256,9 @@ class _LoginPageState extends State<LoginPage> {
       );
       print('Parent $_parent');
       if (_parent == true) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => ParentMainPage()));
+        noEffectTransition(context, ParentMainPage());
       } else {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => ChildMainPage()));
+        noEffectTransition(context, ChildMainPage());
       }
     } catch (err) {
       print(err);

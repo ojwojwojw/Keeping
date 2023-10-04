@@ -4,6 +4,7 @@ import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
+import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
@@ -83,52 +84,68 @@ class _SendPocketMoneyPageState extends State<SendPocketMoneyPage> {
   @override
   Widget build(BuildContext context) {
     String formattedBalance = formattedMoney(_balance ?? 0); // 잔액을 문자열로 포맷팅
-
     return Scaffold(
+      backgroundColor: Color(0xFFFAFAFA),
       appBar: MyHeader(
         text: '용돈 보내기',
       ),
-      body: Center(
-        child: Column(
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                    child: Column(
-                      children: [
-                        SizedBox(height: 40),
-                        renderWhoReceiveMoney(),
-                        SizedBox(height: 50),
-                        sendMoneyField(),
-                        SizedBox(height: 30),
-                        Text(
-                          validateText,
-                          style: TextStyle(color: Colors.grey[800]),
-                        ),
-                      ],
+            Padding(
+              padding: const EdgeInsets.only(top: 40),
+              child : Column(
+                  children: [
+                    SizedBox(height: 40),
+                    renderWhoReceiveMoney(),
+                    SizedBox(height: 50),
+                    sendMoneyField(),
+                    SizedBox(height: 30),
+                    Text(
+                      validateText,
+                      style: TextStyle(color: Colors.grey[800]),
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  renderAvailableWithdrawalBalance(formattedBalance),
-                  SizedBox(height: 30), // 이 부분을 조정하여 원하는 간격을 만듭니다.
-                  NumberKeyboard(
-                    onNumberPress: onNumberPress,
-                    onBackspacePress: onBackspacePress,
-                  ),
-                ],
+                  ],
               ),
             ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: roundedBoxWithShadowStyle(
+                      shadow: false, bgColor: Color(0xffF0F0F0), borderRadius: 10
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('출금 가능 잔액', style: TextStyle(color: Color(0xff757575), fontSize: 16),),
+                          Row(
+                            children: [
+                              Text(formattedBalance),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                NumberKeyboard(
+                  onNumberPress: onNumberPress,
+                  onBackspacePress: onBackspacePress,
+                ),
+              ],
+            )
           ],
         ),
-      ),
-      bottomNavigationBar: BottomBtn(
-        text: '확인',
-        isDisabled: BtnDisable,
-        action: () async {
-          var response = await sendMoney(
+        bottomNavigationBar: BottomBtn(
+          text: '확인',
+          isDisabled: BtnDisable,
+          action: () async {
+            var response = await sendMoney(
               accessToken: _accessToken!,
               memberKey: _memberKey!,
               money: amount,

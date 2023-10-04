@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:keeping/screens/login_page/login_page.dart';
 import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/util/dio_method.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'dart:convert';
@@ -465,12 +466,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
 
     if (response['resultStatus']['successCode'] == 0) {
       handleIsParentVerificationChecked(true);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginPage(),
-        ),
-      );
+      noEffectTransition(context, LoginPage());
     } else if (response['resultStatus']['resultCode'] == 409) {
       print('이미 가입한 회원입니다.');
     } else {
