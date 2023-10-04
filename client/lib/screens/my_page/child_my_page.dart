@@ -71,6 +71,8 @@ class _ChildMyPageState extends State<ChildMyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,  // 이 부분에 원하는 색상을 설정하세요.
+
       appBar: MyHeader(
         text: '마이페이지',
         elementColor: Colors.black,

@@ -6,6 +6,7 @@ import 'package:keeping/screens/user_link_page/util/render_who_try_link.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
+import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/screens/user_link_page/after_user_link_page.dart';
@@ -99,7 +100,7 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
           ],
         ),
       ),
-      bottomSheet: BottomAppBar(),
+      bottomSheet: BottomNav(),
     );
   }
 

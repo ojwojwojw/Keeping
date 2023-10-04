@@ -5,7 +5,7 @@ Widget requestPocketMoneyBox(responseData, bool isParent, {String? childName}) {
     width: 300,
     height: 150,
     decoration: BoxDecoration(
-      color: Color(0xFF8320E7),
+      color: Color(0xFF805AF1),
       borderRadius: BorderRadius.circular(20),
     ),
     child: Center(
@@ -17,7 +17,6 @@ Widget requestPocketMoneyBox(responseData, bool isParent, {String? childName}) {
             style: TextStyle(
               color: Colors.white,
               fontSize: 18,
-              backgroundColor: Color(0xFF8320E7),
             ),
             textAlign: TextAlign.center,
           ),
@@ -26,7 +25,6 @@ Widget requestPocketMoneyBox(responseData, bool isParent, {String? childName}) {
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
-              backgroundColor: Color(0xFF8320E7),
             ),
             textAlign: TextAlign.center,
           ),
@@ -41,7 +39,7 @@ Widget emptyBox() {
     width: 300,
     height: 150,
     decoration: BoxDecoration(
-      color: Color(0xFF8320E7),
+      color: Color(0xFF805AF1),
       borderRadius: BorderRadius.circular(20),
     ),
     child: Center(
@@ -50,7 +48,6 @@ Widget emptyBox() {
       style: TextStyle(
         color: Colors.white,
         fontSize: 20,
-        backgroundColor: Color(0xFF8320E7),
       ),
     )),
   );
