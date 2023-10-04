@@ -22,15 +22,29 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
   late bool isParent;
   String? profileImage = '';
   String? childProfileImage = '';
+  bool isFinishedCommentNull = true;
+
+  Future<void> _isFinishedCommentNull() async {
+    print('debug:');
+    print(widget.item['finishedComment']);
+    if (widget.item['finishedComment'] == null) {
+      setState(() {
+        isFinishedCommentNull = true;
+      }); 
+    } else {
+      isFinishedCommentNull = false;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    _isFinishedCommentNull();
     isParent = context.read<UserInfoProvider>().parent;
     var userInfoProvider =
         Provider.of<UserInfoProvider>(context, listen: false);
     profileImage = userInfoProvider.profileImage;
-    var childInfoProvider = 
+    var childInfoProvider =
         Provider.of<ChildInfoProvider>(context, listen: false);
     childProfileImage = childInfoProvider.profileImage;
   }
@@ -102,7 +116,8 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                           height: 16,
                         ),
                         roundedAssetImg(
-                            imgPath: 'assets/image/mission/smile1.png', size: 100)
+                            imgPath: 'assets/image/mission/smile1.png',
+                            size: 100)
                       ],
                     ),
                   ),
@@ -111,79 +126,76 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          Column(
                             children: [
-                              Column(
-                                children: [
+                              Row(
+                                children: const [
                                   Text(
                                     '응원메시지',
-                                    style: TextStyle(color: Color(0xff808080)),
+                                    style: TextStyle(color: Color(0xff808080), fontSize: 14),
                                   ),
-                                  roundedAssetImg(
-                                      imgPath: 'assets/image/profile/parent1.png',
-                                      size: 50),
                                 ],
                               ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Column(
+                              SizedBox(height: 8,),
+                              Row(
                                 children: [
-                                  SizedBox(
-                                    height: 20,
+                                  roundedAssetImg(
+                                    imgPath: 'assets/image/profile/parent1.png',
+                                    size: 50
                                   ),
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.7,
-                                    decoration: roundedBoxWithShadowStyle(),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8.0, horizontal: 16),
-                                      child:
-                                          Text(widget.item['cheeringMessage']),
+                                  SizedBox(width: 16,),
+                                  Expanded(
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: roundedBoxWithShadowStyle(),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                                        child: Text(widget.item['cheeringMessage']),
+                                      )
                                     ),
-                                  ),
+                                  )
+                                    
                                 ],
-                              ),
+                              )
                             ],
                           ),
-                          Row(
+                          SizedBox(height: 16,),
+                          Column(
                             children: [
-                              Column(
-                                children: [
+                              Row(
+                                children: const [
                                   Text(
                                     '요청메시지',
-                                    style: TextStyle(color: Color(0xff808080)),
+                                    style: TextStyle(color: Color(0xff808080), fontSize: 14),
                                   ),
-                                  
-                                  isParent ?
-                                    roundedAssetImg(imgPath: childProfileImage ?? 'assets/image/profile/parent1.png',size: 50) :
-                                    roundedAssetImg(imgPath: profileImage ?? 'assets/image/profile/parent1.png',size: 50) , //프로필 이미지 넣는곳
-                                     //프로필 이미지 넣는곳
                                 ],
                               ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Column(
+                              SizedBox(height: 8,),
+                              Row(
                                 children: [
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.7,
-                                    decoration: roundedBoxWithShadowStyle(),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8.0, horizontal: 16),
-                                      child: Text(
-                                          widget.item['childRequestComment'] ??
-                                              ''),
+                                  isParent
+                                      ? roundedAssetImg(
+                                          imgPath: childProfileImage ??
+                                              'assets/image/profile/parent1.png',
+                                          size: 50)
+                                      : roundedAssetImg(
+                                          imgPath: profileImage ??
+                                              'assets/image/profile/parent1.png',
+                                          size: 50),
+                                  SizedBox(width: 16,),
+                                  Expanded(
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: roundedBoxWithShadowStyle(),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                                        child: Text(widget.item['childRequestComment'] ?? ''),
+                                      )
                                     ),
-                                  ),
+                                  )
+                                    
                                 ],
-                              ),
+                              )
                             ],
                           ),
                         ],
@@ -212,11 +224,11 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                                       SizedBox(
                                         width: 4,
                                       ),
-                                      Text('만든 날'),
+                                      Text('만든 날', style: TextStyle(fontSize: 16),),
                                     ],
                                   ),
                                   Text(formattedYMDDate(
-                                      DateTime.parse(widget.item['startDate'])))
+                                      DateTime.parse(widget.item['startDate'])), style: TextStyle(fontSize: 16),)
                                 ],
                               ),
                               Row(
@@ -231,11 +243,11 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                                       SizedBox(
                                         width: 4,
                                       ),
-                                      Text('완료하는 날'),
+                                      Text('완료하는 날', style: TextStyle(fontSize: 16),),
                                     ],
                                   ),
                                   Text(formattedYMDDate(
-                                      DateTime.parse(widget.item['endDate'])))
+                                      DateTime.parse(widget.item['endDate'])), style: TextStyle(fontSize: 16),)
                                 ],
                               )
                             ],
@@ -244,14 +256,10 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                       ),
                     ],
                   ),
-
-                  SizedBox(
-                    height: 30,
-                  ),
-
                   /// 소감 작성하기 버튼 /// /// 소감 작성하기 버튼 ///
-                  _commentWriteBtn(),
-                  _CompleteComment()
+                  isFinishedCommentNull && !isParent ? _commentWriteBtn() : Container(),
+                  !isFinishedCommentNull ? _CompleteComment() : Container(),
+                  SizedBox(height: 50,)
                 ],
               ),
             );
@@ -302,82 +310,104 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
           );
         }
       },
-      child: Opacity(
-          opacity: widget.item["completed"] == "FINISH" ? 1 : 0,
-          child: IgnorePointer(
-            ignoring: widget.item["completed"] != "FINISH",
-            child: Container(
-                width: MediaQuery.of(context).size.width * 0.4,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5), // 그림자의 색상 및 불투명도 조절
-                      spreadRadius: 5, // 그림자의 확산 범위
-                      blurRadius: 7, // 그림자의 흐림 정도
-                      offset: Offset(0, 3), // 그림자의 위치 (수평, 수직)
-                    ),
-                  ],
-                  borderRadius: BorderRadius.circular(15), // 모서리 둥글기
-                ),
-                child: Center(
-                    child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Image.asset(
-                          'assets/image/mission/pencil.png',
-                          width: 50.0,
-                          height: 50.0,
-                          fit: BoxFit.cover,
-                        ),
-                        Text("완료소감적기!"),
-                      ],
-                    ),
-                  ],
-                ))),
-          )),
+      child: Padding(
+        padding: EdgeInsets.only(top: 18),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/image/mission/pencil.png',
+              width: 50.0,
+            ),
+            Text("완료 소감 적기!", style: TextStyle(fontSize: 18),),
+          ],
+        )
+      ),
     );
 
     /// 소감 작성하기 버튼 /// /// 소감 작성하기 버튼 ///
   }
 
   Widget _CompleteComment() {
-    return Opacity(
-      opacity: widget.item["completed"] == "FINISH" ? 1 : 0, // 조건에 따라 투명도 조절
-      child: IgnorePointer(
-        ignoring: widget.item["completed"] != "FINISH", // 조건에 따라 클릭 이벤트 제어
-        child: Column(
-          children: [
-            Text(
-              '완료소감',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.85,
-              height: 100,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3),
-                  ),
+    return Stack(
+      children: [
+        Image.asset('assets/image/mission/target.png', height: 300,),
+        SizedBox(
+          height: 300,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: const [
+                  Text('완료소감', style: TextStyle(fontSize: 20),)
                 ],
-                borderRadius: BorderRadius.circular(15),
               ),
-              child: Center(
-                child: Text(widget.item["finishedComment"] ?? ''),
-              ),
-            ),
-          ],
-        ),
-      ),
+              SizedBox(height: 8,),
+              SingleChildScrollView(
+                child: Container(
+                  width: double.infinity,
+                  height: 130,
+                  decoration: roundedBoxWithShadowStyle(),
+                  // child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      child: Text(widget.item["finishedComment"] ?? ''
+                                        ),
+                    ),
+                  // ),
+                ),
+              )
+            ],
+          ),
+        )
+      ],
     );
   }
+
+  // Widget _CompleteComment() {
+  //   return Opacity(
+  //     opacity: widget.item["completed"] == "FINISH" ? 1 : 0, // 조건에 따라 투명도 조절
+  //     child: IgnorePointer(
+  //       ignoring: widget.item["completed"] != "FINISH", // 조건에 따라 클릭 이벤트 제어
+  //       child: Column(
+  //         children: [
+  //           Row(
+  //             mainAxisAlignment: MainAxisAlignment.end,
+  //             children: [
+  //               Text(
+  //                 '완료소감',
+  //                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+  //               ),
+  //             ],
+  //           ),
+  //           SizedBox(
+  //             height: 5,
+  //           ),
+  //           Container(
+  //             width: MediaQuery.of(context).size.width * 0.85,
+  //             height: 150,
+  //             decoration: BoxDecoration(
+  //               color: Colors.white,
+  //               boxShadow: [
+  //                 BoxShadow(
+  //                   color: Colors.grey.withOpacity(0.5),
+  //                   spreadRadius: 5,
+  //                   blurRadius: 7,
+  //                   offset: Offset(0, 3),
+  //                 ),
+  //               ],
+  //               borderRadius: BorderRadius.circular(15),
+  //             ),
+  //             child: Center(
+  //               child: Text(widget.item["finishedComment"] ?? ''),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }
 
 String _getBottomButtonText(String status) {
@@ -404,9 +434,7 @@ void handleParentButtonClick(
           context,
           MaterialPageRoute(
               builder: (_) => MissionApprovePage(
-                    missionId: item["id"],
-                    item: item
-                  ))); //미션 id 넘겨주는곳
+                  missionId: item["id"], item: item))); //미션 id 넘겨주는곳
       break;
     case "YET":
       // 미션 진행 확인 로직
@@ -416,9 +444,7 @@ void handleParentButtonClick(
           context,
           MaterialPageRoute(
               builder: (_) => MissionCompletePage(
-                    missionId: item["id"],
-                    item: item
-                  ))); //미션 id 넘겨주는곳
+                  missionId: item["id"], item: item))); //미션 id 넘겨주는곳
       // 미션 완료 승인 로직
       break;
     case "FINISH":
@@ -450,13 +476,13 @@ void handleChildButtonClick(BuildContext context, dynamic item, String status) {
       break;
     case "FINISH":
       // 미션 확인 로직
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => MissionCompleteCommentPage(
-                    missionId: item["id"],
-                    item: item,
-                  ))); //미션 id 넘겨주는곳
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (_) => MissionCompleteCommentPage(
+      //               missionId: item["id"],
+      //               item: item,
+      //             ))); //미션 id 넘겨주는곳
       break;
     default:
       // 기본 로직

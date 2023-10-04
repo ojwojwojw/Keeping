@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/color_info_card_elements.dart';
 
 class ColorInfoCard extends StatefulWidget {
@@ -35,7 +36,8 @@ class _ColorInfoCardState extends State<ColorInfoCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => widget.path));
+        noEffectTransition(context, widget.path);
+        // Navigator.push(context, MaterialPageRoute(builder: (_) => widget.path));
       },
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 7, horizontal: 24),
@@ -43,7 +45,7 @@ class _ColorInfoCardState extends State<ColorInfoCard> {
             height: 110,
             decoration: roundedBoxWithShadowStyle(borderRadius: 30),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(25),
               child: Column(
                 children: [
                   _requestStatus(widget.status),

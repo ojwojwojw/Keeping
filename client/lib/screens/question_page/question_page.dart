@@ -15,6 +15,7 @@ import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -102,10 +103,14 @@ class _QuestionPageState extends State<QuestionPage> {
                         GestureDetector(
                           onTap: () {
                             if (data.length >= 1) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ChildDiaryDetailPage(
-                                    item: data[0], index: 0),
-                              ));
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //   builder: (context) => ChildDiaryDetailPage(
+                              //       item: data[0], index: 0),
+                              // ));
+                              noEffectTransition(
+                                  context,
+                                  ChildDiaryDetailPage(
+                                      item: data[0], index: 0));
                             } else {
                               showDialog(
                                 context: context,
@@ -143,9 +148,11 @@ class _QuestionPageState extends State<QuestionPage> {
                               ],
                             ),
                             child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 30),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Column(
@@ -163,7 +170,9 @@ class _QuestionPageState extends State<QuestionPage> {
                                       data != null && data.isNotEmpty
                                           ? Text(
                                               data[0]["content"],
-                                              style: TextStyle(fontSize: 20 ,fontWeight: FontWeight.bold),
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold),
                                               textAlign: TextAlign.center,
                                             )
                                           : Text(
@@ -173,9 +182,11 @@ class _QuestionPageState extends State<QuestionPage> {
                                     ],
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         _ansBtn(),
                                         _diaryBtn(),
@@ -210,13 +221,21 @@ class _QuestionPageState extends State<QuestionPage> {
               data.isNotEmpty &&
               data[0]["content"] != null &&
               data[0]["id"] != null) {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => QeustionAnswerPage(
-                questionDate: formattedDate,
-                questionText: data[0]["content"]!,
-                questionId: data[0]["id"]!,
-              ),
-            ));
+            // Navigator.of(context).push(MaterialPageRoute(
+            //   builder: (context) => QeustionAnswerPage(
+            //     questionDate: formattedDate,
+            //     questionText: data[0]["content"]!,
+            //     questionId: data[0]["id"]!,
+            //   ),
+            // ));
+
+            noEffectTransition(
+                context,
+                QeustionAnswerPage(
+                  questionDate: formattedDate,
+                  questionText: data[0]["content"]!,
+                  questionId: data[0]["id"]!,
+                ));
           } else {
             showDialog(
               context: context,
@@ -242,7 +261,10 @@ class _QuestionPageState extends State<QuestionPage> {
               height: 100.0,
               fit: BoxFit.cover,
             ),
-            Text('답하기' ,style: TextStyle(color: Colors.black, fontSize: 18),),
+            Text(
+              '답하기',
+              style: TextStyle(color: Colors.black, fontSize: 18),
+            ),
           ],
         ),
       ),
@@ -252,8 +274,10 @@ class _QuestionPageState extends State<QuestionPage> {
   Widget _diaryBtn() {
     return InkWell(
       onTap: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => ChildDiaryPage()));
+        // Navigator.of(context)
+        //     .push(MaterialPageRoute(builder: (context) => ChildDiaryPage()));
+
+        noEffectTransition(context, ChildDiaryPage());
       },
       child: Column(
         children: [
@@ -261,7 +285,10 @@ class _QuestionPageState extends State<QuestionPage> {
             'assets/image/question/folder.png',
             height: 100.0,
           ),
-          Text('보관함' ,style: TextStyle(color: Colors.black, fontSize: 18),),
+          Text(
+            '보관함',
+            style: TextStyle(color: Colors.black, fontSize: 18),
+          ),
         ],
       ),
     );
@@ -427,10 +454,14 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                         GestureDetector(
                           onTap: () {
                             if (data.length >= 1) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ChildDiaryDetailPage(
-                                    item: data[0], index: 0),
-                              ));
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //   builder: (context) => ParentDiaryDetailPage(
+                              //       item: data[0], index: 0),
+                              // ));
+                              noEffectTransition(
+                                  context,
+                                  ParentDiaryDetailPage(
+                                      item: data[0], index: 0));
                             } else {
                               showDialog(
                                 context: context,
@@ -468,39 +499,43 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
                               ],
                             ),
                             child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 30),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Column(
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          '  Q',
-                                          style: TextStyle(
-                                              fontSize: 32,
-                                              fontWeight: FontWeight.bold),
-                                        ),
+                                  Column(children: [
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        '  Q.',
+                                        style: TextStyle(
+                                            fontSize: 32,
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                      SizedBox(height: 10), // 간격 조정
-                                      data != null && data.isNotEmpty
-                                          ? Text(
-                                              data[0]["content"],
-                                              style: TextStyle(fontSize: 20),
-                                              textAlign: TextAlign.center,
-                                            )
-                                          : Text(
-                                              "오늘의 질문이 없습니다.",
-                                              textAlign: TextAlign.center,
-                                            ),
-                                    ]
-                                  ),
+                                    ),
+                                    SizedBox(height: 10), // 간격 조정
+                                    data != null && data.isNotEmpty
+                                        ? Text(
+                                            data[0]["content"],
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                            textAlign: TextAlign.center,
+                                          )
+                                        : Text(
+                                            "오늘의 질문이 없습니다.",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                  ]),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 30),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 30),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         _ansBtn(),
                                         _diaryBtn(),
@@ -566,7 +601,10 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
               'assets/image/question/answer.png',
               height: 100.0,
             ),
-            Text('답하기' ,style: TextStyle(color: Colors.black, fontSize: 18),),
+            Text(
+              '답하기',
+              style: TextStyle(color: Colors.black, fontSize: 18),
+            ),
           ],
         ),
       ),
@@ -576,8 +614,10 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
   Widget _diaryBtn() {
     return InkWell(
       onTap: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => ParentDiaryPage()));
+        // Navigator.of(context)
+        //     .push(MaterialPageRoute(builder: (context) => ParentDiaryPage()));
+
+        noEffectTransition(context, ParentDiaryPage());
       },
       child: Column(
         children: [
@@ -585,7 +625,10 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
             'assets/image/question/folder.png',
             height: 100.0,
           ),
-          Text('보관함 ' ,style: TextStyle(color: Colors.black, fontSize: 18),),
+          Text(
+            '보관함 ',
+            style: TextStyle(color: Colors.black, fontSize: 18),
+          ),
         ],
       ),
     );
@@ -762,7 +805,7 @@ class ParentQuestionSendPage extends StatefulWidget {
   State<ParentQuestionSendPage> createState() => _ParentQuestionSendPageState();
 }
 
-class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> { 
+class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
   String selectedMemberKey = '';
   String comment = "";
   late Dio dio;
@@ -853,20 +896,26 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text('누구에게 질문을 보낼까요?',style: labelStyle(),),
+                Text(
+                  '누구에게 질문을 보낼까요?',
+                  style: labelStyle(),
+                ),
               ],
             ),
           ),
           SizedBox(
             height: 15,
           ),
+
           /// 자녀를 고르는 드랍다운
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Container(
               width: double.infinity,
               height: 80,
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0), // dropdown arrow와 padding 조절
+              padding: EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                  vertical: 5.0), // dropdown arrow와 padding 조절
               decoration: roundedBoxWithShadowStyle(),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -874,7 +923,8 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
                   // underline 제거
                   child: DropdownButton<String>(
                     isExpanded: true, // 텍스트와 dropdown arrow 간에 공간을 최대로 활용
-                    value: selectedMemberKey.isNotEmpty ? selectedMemberKey : null,
+                    value:
+                        selectedMemberKey.isNotEmpty ? selectedMemberKey : null,
                     onChanged: (String? newValue) {
                       setState(() {
                         selectedMemberKey = newValue ?? '';
@@ -891,10 +941,8 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
                               size: 50.0,
                             ),
                             SizedBox(width: 10.0), // 이미지와 텍스트 사이의 간격
-                            Text(
-                              child["name"].toString(),
-                              style: TextStyle(fontSize: 20)
-                            ),
+                            Text(child["name"].toString(),
+                                style: TextStyle(fontSize: 20)),
                           ],
                         ),
                       );
@@ -904,16 +952,17 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
               ),
             ),
           ),
-          SizedBox(height: 25,),
-          renderBoxFormField(
-            label: '질문 내용을 입력하세요.',
-            onChange: (val) {
-              setState(() {
-                comment = val;
-              });
-            },
-            maxLines: 4
+          SizedBox(
+            height: 25,
           ),
+          renderBoxFormField(
+              label: '질문 내용을 입력하세요.',
+              onChange: (val) {
+                setState(() {
+                  comment = val;
+                });
+              },
+              maxLines: 4),
         ],
       ),
       bottomNavigationBar: BottomBtn(
@@ -1029,7 +1078,7 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
             mainAxisAlignment: MainAxisAlignment.center, // Row의 내용을 가운데 정렬
             children: [
               Text(
-                'Q.' + widget.questionText.toString(),
+                'Q.' + widget.questionText.toString(), //기억
                 style: TextStyle(
                   fontWeight: FontWeight.bold, // 글씨를 굵게
                   fontSize: 20.0, // 글씨 크기를 14포인트로 설정
@@ -1038,7 +1087,9 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
             ],
           ),
 
-          SizedBox(height: 100,),
+          SizedBox(
+            height: 100,
+          ),
 
           violetBoxFormField(
               hintText: '답변을 달아볼까요?',
@@ -1119,7 +1170,7 @@ class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: '질문 답하기(부모)',
+        text: '질문 답하기',
         bgColor: Color(0xFF6E2FD5),
         elementColor: Colors.white,
       ),
@@ -1163,7 +1214,7 @@ class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
             mainAxisAlignment: MainAxisAlignment.center, // Row의 내용을 가운데 정렬
             children: [
               Text(
-                'Q.' + widget.questionText.toString(),
+                'Q.' + widget.questionText.toString(), //기억
                 style: TextStyle(
                   fontWeight: FontWeight.bold, // 글씨를 굵게
                   fontSize: 20.0, // 글씨 크기를 14포인트로 설정
@@ -1172,7 +1223,9 @@ class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
             ],
           ),
 
-          SizedBox(height: 100,),
+          SizedBox(
+            height: 100,
+          ),
 
           violetBoxFormField(
               hintText: '답변을 달아볼까요?',

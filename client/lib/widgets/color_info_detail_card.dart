@@ -39,7 +39,7 @@ class _ColorInfoDetailCardState extends State<ColorInfoDetailCard> {
           child: Container(
             decoration: roundedBoxWithShadowStyle(borderRadius: 30, shadow: false, border: true, borderColor: requestStatusBgColor(widget.status)),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(25),
               child: Column(
                 children: [
                   colorInfoCardStatus(300, widget.status),

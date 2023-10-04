@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/rounded_modal.dart';
 
 class MainServiceBtn extends StatelessWidget {
@@ -27,7 +28,8 @@ class MainServiceBtn extends StatelessWidget {
         onTap: () {
           if (hasAccount != null) {
             // if (hasAccount!) {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => path));
+              noEffectTransition(context, path);
+              // Navigator.push(context, MaterialPageRoute(builder: (_) => path));
             // } else {
             //   if (parent) {
             //     roundedModal(context: context, title: '자녀 연결 후에 이용하실 수 있습니다.');

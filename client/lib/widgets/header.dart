@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 
 // body에 들어가는 상단 헤더 클래스
 class MyHeader extends StatelessWidget implements PreferredSizeWidget {
@@ -59,7 +60,8 @@ Widget backBtn(BuildContext context, Color elementColor, dynamic backPath) {
   return IconButton(
     onPressed: () {
       if (backPath is Widget) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => backPath));
+        noEffectReplacementTransition(context, backPath);
+        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => backPath));
       } else if (backPath is Function) {
         backPath();
       } else {

@@ -45,7 +45,7 @@ class _ChildMainPageState extends State<ChildMainPage> {
           width: double.infinity,
           decoration: lightGreyBgStyle(),
           child: Padding(
-            padding: const EdgeInsets.only(top: 24, left: 24, right: 24),
+            padding: const EdgeInsets.only(top: 40, left: 24, right: 24),
             child: Column(
               children: [
                 ChildGreeting(name: _name, profileImage: _profileImage),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
-import 'package:keeping/widgets/bottom_btn.dart';
 
 class CompletedPage extends StatelessWidget {
   final String image;
@@ -10,7 +9,7 @@ class CompletedPage extends StatelessWidget {
 
   CompletedPage({
     super.key,
-    this.image = 'assets/image/temp_image.jpg',
+    this.image = 'assets/image/face/face1.png',
     required this.text,
     this.content,
     this.button = const ConfirmBtn(),
