@@ -4,14 +4,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @NoArgsConstructor
 public class QuestionNotiRequest {
-    
+
+    @NotNull
     private String memberKey;
-    
+
+    @NotNull
     private String title;
-    
+
+    @NotNull
     private String body;
 
     @Builder

@@ -12,24 +12,25 @@ import javax.validation.constraints.NotNull;
 public class AddAnswerDto {
 
 
+    private boolean isParent;
+
     private Long questionId;
     
     private String answer;
-    
-    private boolean isCreated;
+
 
     @Builder
-    public AddAnswerDto(Long questionId, String answer, boolean isCreated) {
+    public AddAnswerDto(boolean isParent, Long questionId, String answer) {
+        this.isParent = isParent;
         this.questionId = questionId;
         this.answer = answer;
-        this.isCreated = isCreated;
     }
 
     public static AddAnswerDto toDto(AddAnswerRequest request) {
         return AddAnswerDto.builder()
+                .isParent(request.isParent())
                 .questionId(request.getQuestionId())
                 .answer(request.getAnswer())
-                .isCreated(request.isCreated())
                 .build();
     }
 }

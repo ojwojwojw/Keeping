@@ -4,43 +4,28 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 public class TodayQuestionResponse {
 
     private Long id;
-
+    private String childMemberKey;
     private String content;
-
-    private boolean isCreated;
-
     private String parentAnswer;
-
     private String childAnswer;
-
-    private List<CommentResponse> commentResponseList;
+    private boolean isCreated;
+    private LocalDateTime createdDate;
 
     @Builder
-    public TodayQuestionResponse(Long id, String content, boolean isCreated, String parentAnswer, String childAnswer, List<CommentResponse> commentResponseList) {
+    public TodayQuestionResponse(Long id, String childMemberKey, String content, String parentAnswer, String childAnswer, boolean isCreated, LocalDateTime createdDate) {
         this.id = id;
+        this.childMemberKey = childMemberKey;
         this.content = content;
-        this.isCreated = isCreated;
         this.parentAnswer = parentAnswer;
         this.childAnswer = childAnswer;
-        this.commentResponseList = commentResponseList;
+        this.isCreated = isCreated;
+        this.createdDate = createdDate;
     }
-
-    public static TodayQuestionResponse toDto(Long id, String content, boolean isCreated, String parentAnswer, String childAnswer, List<CommentResponse> commentResponseList) {
-        return TodayQuestionResponse.builder()
-                .id(id)
-                .content(content)
-                .isCreated(isCreated)
-                .parentAnswer(parentAnswer)
-                .childAnswer(childAnswer)
-                .commentResponseList(commentResponseList)
-                .build();
-    }
-
 }

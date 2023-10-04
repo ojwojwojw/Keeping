@@ -10,17 +10,18 @@ import javax.validation.constraints.NotNull;
 @Data
 public class AddAnswerRequest {
 
-    @NotBlank
+    @NotNull
+    private boolean isParent;
+
+    @NotNull
     private Long questionId;
     @NotBlank
     private String answer;
-    @NotNull
-    private boolean isCreated;
 
     @Builder
-    public AddAnswerRequest(Long questionId, String answer, boolean isCreated) {
+    public AddAnswerRequest(boolean isParent, Long questionId, String answer) {
+        this.isParent = isParent;
         this.questionId = questionId;
         this.answer = answer;
-        this.isCreated = isCreated;
     }
 }
