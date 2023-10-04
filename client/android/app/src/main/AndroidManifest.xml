@@ -16,7 +16,8 @@
         <activity
         android:name="com.yalantis.ucrop.UCropActivity"
         android:screenOrientation="portrait"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        />
+        <!-- android:theme="@style/Theme.AppCompat.Light.NoActionBar" 원래 위에 들어있었음 -->
         <activity
 
             android:name=".MainActivity"
