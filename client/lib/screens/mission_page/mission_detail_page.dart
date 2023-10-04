@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/styles.dart';
@@ -18,12 +19,20 @@ class MissionDetailPage extends StatefulWidget {
 }
 
 class _MissionDetailPageState extends State<MissionDetailPage> {
-  bool? isParent;
+  late bool isParent;
+  String? profileImage = '';
+  String? childProfileImage = '';
 
   @override
   void initState() {
     super.initState();
     isParent = context.read<UserInfoProvider>().parent;
+    var userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
+    profileImage = userInfoProvider.profileImage;
+    var childInfoProvider = 
+        Provider.of<ChildInfoProvider>(context, listen: false);
+    childProfileImage = childInfoProvider.profileImage;
   }
 
   @override
@@ -93,7 +102,7 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                           height: 16,
                         ),
                         roundedAssetImg(
-                            imgPath: 'assets/image/temp_image.jpg', size: 100)
+                            imgPath: 'assets/image/mission/smile1.png', size: 100)
                       ],
                     ),
                   ),
@@ -111,7 +120,7 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                                     style: TextStyle(color: Color(0xff808080)),
                                   ),
                                   roundedAssetImg(
-                                      imgPath: 'assets/image/temp_image.jpg',
+                                      imgPath: 'assets/image/profile/parent1.png',
                                       size: 50),
                                 ],
                               ),
@@ -146,9 +155,11 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                                     '요청메시지',
                                     style: TextStyle(color: Color(0xff808080)),
                                   ),
-                                  roundedAssetImg(
-                                      imgPath: 'assets/image/temp_image.jpg',
-                                      size: 50),
+                                  
+                                  isParent ?
+                                    roundedAssetImg(imgPath: childProfileImage ?? 'assets/image/profile/parent1.png',size: 50) :
+                                    roundedAssetImg(imgPath: profileImage ?? 'assets/image/profile/parent1.png',size: 50) , //프로필 이미지 넣는곳
+                                     //프로필 이미지 넣는곳
                                 ],
                               ),
                               SizedBox(

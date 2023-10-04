@@ -9,6 +9,7 @@ class MissionColorInfoCard extends StatefulWidget {
   final DateTime createdDate;
   final dynamic todo;
   final dynamic item;
+  final dynamic profileImage;
 
   MissionColorInfoCard({
     super.key,
@@ -16,6 +17,7 @@ class MissionColorInfoCard extends StatefulWidget {
     required this.createdDate,
     required this.todo,
     required this.item,
+    required this.profileImage
   });
 
   @override
@@ -39,11 +41,11 @@ class _MissionColorInfoCardState extends State<MissionColorInfoCard> {
         child: Column(
           children: [
             Row(
-              children: [
-                Text(formattedMDDate(widget.createdDate))
-              ],
+              children: [Text(formattedMDDate(widget.createdDate))],
             ),
-            SizedBox(height: 4,),
+            SizedBox(
+              height: 4,
+            ),
             Container(
                 height: 110,
                 decoration: roundedBoxWithShadowStyle(borderRadius: 30),
@@ -52,7 +54,7 @@ class _MissionColorInfoCardState extends State<MissionColorInfoCard> {
                   child: Column(
                     children: [
                       _requestStatus(widget.status),
-                      _requestContent(widget.todo),
+                      _requestContent(widget.todo , widget.profileImage),
                     ],
                   ),
                 )),
@@ -71,13 +73,12 @@ Widget _requestStatus(String status) {
     decoration: BoxDecoration(color: missionRequestStatusBgColor(status)),
     child: Text(
       missionRequestStatusText(status),
-      style: TextStyle(
-          color: Colors.white, fontWeight: FontWeight.bold),
+      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
     ),
   );
 }
 
-Widget _requestContent(String name) {
+Widget _requestContent(String name ,String profileImage) {
   return Expanded(
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 17),
@@ -85,7 +86,7 @@ Widget _requestContent(String name) {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          categoryImg('assets/image/temp_image.jpg'),
+          roundedAssetImg(imgPath: profileImage ?? 'assets/image/profile/parent1.png', size: 64),
           SizedBox(
             width: 250,
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
