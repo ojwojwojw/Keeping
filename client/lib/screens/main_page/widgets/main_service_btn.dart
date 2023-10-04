@@ -28,7 +28,7 @@ class MainServiceBtn extends StatelessWidget {
         onTap: () {
           if (hasAccount != null) {
             // if (hasAccount!) {
-              noEffectReplacementTransition(context, path);
+              noEffectTransition(context, path);
               // Navigator.push(context, MaterialPageRoute(builder: (_) => path));
             // } else {
             //   if (parent) {
