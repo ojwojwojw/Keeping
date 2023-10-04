@@ -8,7 +8,6 @@ import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
 import 'package:keeping/screens/allowance_ledger_page/select_ocr_text_page.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
-import 'package:keeping/screens/receipt_ocr_page/receipt_ocr_page.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_double_btn.dart';
 import 'package:keeping/widgets/completed_page.dart';

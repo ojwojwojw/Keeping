@@ -187,7 +187,7 @@ Row moneyRecordModalBtns(BuildContext context, int accountHistoryId) {
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       moneyRecordModalBtn(
-        '🧾', 
+        'assets/image/money/receipt.png', 
         '영수증 찍기', 
         context, 
         'camera',
@@ -195,7 +195,7 @@ Row moneyRecordModalBtns(BuildContext context, int accountHistoryId) {
       ),
       SizedBox(width: 16,),
       moneyRecordModalBtn(
-        '🖊️',
+        'assets/image/money/pencil.png',
         '직접 쓰기',
         context,
         AllowanceLedgerDetailCreatePage(),
@@ -232,10 +232,11 @@ Widget moneyRecordModalBtn(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                icon,
-                style: TextStyle(fontSize: 50),
-              ),
+              // Text(
+              //   icon,
+              //   style: TextStyle(fontSize: 50),
+              // ),
+              Image.asset(icon, width: 80,),
               SizedBox(height: 4,),
               Text(
                 text,
@@ -287,11 +288,12 @@ Widget _selectCameraOrGallery(BuildContext context, int accountHistoryId) {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                Text(
-                  '📷',
-                  style: TextStyle(fontSize: 50),
-                ),
+              children: [
+                // Text(
+                //   '📷',
+                //   style: TextStyle(fontSize: 50),
+                // ),
+                Image.asset('assets/image/money/camera.png', width: 80,),
                 SizedBox(height: 4,),
                 Text(
                   '촬영하기',

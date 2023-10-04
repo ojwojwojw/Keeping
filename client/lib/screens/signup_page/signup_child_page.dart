@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:keeping/screens/login_page/login_page.dart';
 import 'package:keeping/screens/main_page/main_page.dart';
 import 'package:keeping/util/dio_method.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'dart:convert';
@@ -137,6 +138,8 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         renderTextFormField(
                             label: '아이디',
@@ -154,7 +157,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                               return null;
                             },
                             controller: _userId,
-                            width: 220,
+                            width: 210,
                             onChange: handleSignupDisable()),
                         _authenticationBtn(
                           context,
@@ -235,6 +238,8 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                       controller: _userBirth,
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         renderPhoneNumberFormField(
                             label: '휴대폰 번호',
@@ -248,7 +253,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                               }
                               return null;
                             },
-                            width: 220,
+                            width: 200,
                             controller: _userPhoneNumber),
                         _authenticationBtn(context, '인증번호 받기', () {
                           checkVerification(
@@ -259,6 +264,8 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                     //인증번호 관련 로직 - verification
                     Text(_verificationResult),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         renderTextFormField(
                           label: '인증번호 입력',
@@ -272,7 +279,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                             }
                             return null;
                           },
-                          width: 220,
+                          width: 200,
                           controller: _userVerificationNumber,
                         ),
                         //인증번호 넣어주는 로직 - certification
@@ -289,6 +296,8 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                     Text(_certificationResult),
                     //부모님 인증
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         renderPhoneNumberFormField(
                           label: '부모님 휴대폰 번호',
@@ -302,7 +311,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                             }
                             return null;
                           },
-                          width: 220,
+                          width: 200,
                           controller: _parentPhone,
                         ),
                         _authenticationBtn(context, '인증번호 받기', () {
@@ -315,6 +324,8 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                     ),
                     Text(_parentVerificationResult),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         renderTextFormField(
                           label: '부모님 인증번호 입력',
@@ -328,7 +339,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                             }
                             return null;
                           },
-                          width: 220,
+                          width: 200,
                           controller: _parentVerificationNumber,
                         ),
                         //인증번호 넣어주는 로직 - certification
@@ -346,6 +357,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 60,)
             ],
           ),
         ),
@@ -465,12 +477,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
 
     if (response['resultStatus']['successCode'] == 0) {
       handleIsParentVerificationChecked(true);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginPage(),
-        ),
-      );
+      noEffectTransition(context, LoginPage());
     } else if (response['resultStatus']['resultCode'] == 409) {
       print('이미 가입한 회원입니다.');
     } else {
@@ -502,11 +509,11 @@ ButtonStyle _authenticationBtnStyle() {
           MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(18),
         side: BorderSide(
           color: const Color(0xFF8320E7), // 테두리 색상 설정
           width: 2.0, // 테두리 두께 설정
         ),
       )),
-      fixedSize: MaterialStateProperty.all<Size>(Size(120, 40)));
+      minimumSize: MaterialStateProperty.all<Size>(Size(120, 40)));
 }

@@ -72,6 +72,8 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                 var response = snapshot.data;
                 if (response['resultBody'].isEmpty) {
                   return Text('거래내역이 없습니다.');
+                } else if (response['resultStatus']['resultCode'] == '503') {
+                  return Text('');
                 }
                 List<Widget> widgetLists = [];
                 response['resultBody'].forEach((key, valueList) {
