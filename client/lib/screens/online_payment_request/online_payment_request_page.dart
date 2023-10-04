@@ -111,7 +111,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
       ),
       floatingActionButton: _parent != null && _parent! ? null : FloatingBtn(
         text: '부탁하기',
-        icon: Icon(Icons.face),
+        icon: Icons.face,
         path: MakeOnlinePaymentRequestFirstPage(),
       ),
       bottomNavigationBar: BottomNav(),

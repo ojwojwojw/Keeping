@@ -99,7 +99,7 @@ class _PiggyPageState extends State<PiggyPage> {
       ),
       floatingActionButton: _parent != null && _parent! == true ? null : FloatingBtn(
         text: '만들기',
-        icon: Icon(Icons.savings_rounded),
+        icon: Icons.savings_rounded,
         path: MakePiggyPage(),
       ),
       bottomNavigationBar: BottomNav(),

@@ -124,7 +124,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
       ),   
       floatingActionButton: FloatingBtn(
         text: '소비지도',
-        icon: Icon(Icons.map),
+        icon: Icons.map,
         path: ChildSpendingRoutePage(),
       ),
       bottomNavigationBar: BottomNav(),

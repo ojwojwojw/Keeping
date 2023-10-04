@@ -102,7 +102,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
       ),
       floatingActionButton: _parent != null && !_parent! ? FloatingBtn(
         text: '저금하기',
-        icon: Icon(Icons.savings_rounded),
+        icon: Icons.savings_rounded,
         path: PiggySavingPage(piggyDetailInfo: widget.piggyDetailInfo),
       ) : null,
       bottomNavigationBar: BottomNav(),

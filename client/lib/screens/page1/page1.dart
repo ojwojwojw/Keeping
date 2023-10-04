@@ -53,7 +53,7 @@ class Page1 extends StatelessWidget {
         ),
         floatingActionButton: FloatingBtn(
           text: '소비지도',
-          icon: Icon(Icons.map),
+          icon: Icons.map,
           path: MapTest(),
         ),
         bottomNavigationBar: BottomNav());
