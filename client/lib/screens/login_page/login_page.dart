@@ -71,6 +71,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,  // 이 부분에 원하는 색상을 설정하세요.
+
       appBar: MyHeader(
         text: '로그인',
         elementColor: Colors.black,
@@ -175,6 +177,7 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         // 로그인에 성공한 경우
         print('로그인에 성공했어요!');
+        handleLogin('');
         String? token = response.headers.value('token');
         print(token);
         String? memberKey = response.headers.value('memberKey');

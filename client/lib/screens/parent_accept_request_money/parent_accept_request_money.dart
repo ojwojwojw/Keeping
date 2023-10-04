@@ -23,9 +23,9 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
   List<Map<String, dynamic>> _result = []; // 데이터를 저장할 변수
 
   int selectedBtnIdx = 0;
-  String? _childKey;
-  String? _myKey;
-  String? _accessToken;
+  // String? _childKey;
+  // String? _myKey;
+  // String? _accessToken;
   late Future<List<Map<String, dynamic>>> _dataFuture;
   bool _isParent = true;
   String? _childName;
@@ -34,17 +34,18 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
   void initState() {
     super.initState();
     _dataFuture = renderTotalRequestMoney(context, selectedBtnIdx);
-    _childKey = context.read<ChildInfoProvider>().memberKey;
-    _myKey = context.read<UserInfoProvider>().memberKey;
-    _accessToken = context.read<UserInfoProvider>().accessToken;
     _isParent = context.read<UserInfoProvider>().parent;
-    _childName = context.read<ChildInfoProvider>().name;
   }
 
   final DateFormat dateFormat = DateFormat('MM월 dd일');
 
   Future<List<Map<String, dynamic>>> renderTotalRequestMoney(
       BuildContext context, selectedBtnIdx) async {
+    String _myKey = context.read<UserInfoProvider>().memberKey;
+    String? _childKey = context.read<ChildInfoProvider>().memberKey;
+    String _accessToken = context.read<UserInfoProvider>().accessToken;
+    String? _childName = context.read<ChildInfoProvider>().name;
+
     var _url = '';
     if (selectedBtnIdx == 0) {
       _url = '/bank-service/api/$_myKey/allowance/$_childKey';
@@ -55,6 +56,7 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
     } else {
       _url = '/bank-service/api/$_myKey/allowance/$_childKey/REJECT';
     }
+    print(_url);
     final response = await dioGet(
       accessToken: _accessToken,
       url: _url,
@@ -94,7 +96,6 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
       accessToken: accessToken,
     );
     if (response['resultStatus']['successCode'] == 0) {
-      print('리스폰스 !!!!!!!!!!!!!!!! $response');
       return response['resultBody'];
     }
   }
