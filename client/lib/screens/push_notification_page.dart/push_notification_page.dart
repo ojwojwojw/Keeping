@@ -39,7 +39,9 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyHeader(text: '알림'),
+      backgroundColor: Colors.white,  // 이 부분에 원하는 색상을 설정하세요.
+
+      appBar: MyHeader(text: '알림', bgColor: Colors.white,),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -52,36 +54,55 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
                   _updateData();
                 },
               ),
-              FutureBuilder<List<Map<String, dynamic>>>(
-                future: getPushNotification(context),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return SizedBox(
-                      height: 200, // 원하는 높이로 조정하세요
-                      child: Container(
-                        child: Center(
-                          child: Text(
-                            '잠시 기다려주세요...',
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 77, 19, 135)),
-                          ),
-                        ),
-                      ),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text('데이터를 가져오지 못했어요'); // 오류가 발생한 경우
-                  } else if (snapshot.hasData) {
-                    if (_result.isNotEmpty) {
-                      return totalPushNotification(_result);
-                    } else {
-                      return Text('데이터가 없어요');
-                    }
-                  } else {
-                    return Text('데이터가 없어요');
-                  }
-                },
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FutureBuilder(
+                      future: getPushNotification(context),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return SizedBox(
+                            height: 200,
+                            child: Container(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('데이터를 가져오지 못했어요');
+                        } else if (snapshot.hasData) {
+                          if (_result.isNotEmpty) {
+                            return totalPushNotification(_result);
+                          } else {
+                            return Container(
+                                width: 250,
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 60,
+                                    ),
+                                    Text(
+                                      '도착한 알림이 없어요!',
+                                      style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
+                                    Image.asset(
+                                      'assets/image/main/question.png',
+                                      width: 200,
+                                    ),
+                                  ],
+                                ));
+                          }
+                        } else {
+                          return Text('데이터가 없어요');
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -158,11 +179,15 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
     return Column(
       children: requests.map((noti) {
         String typeString = '';
+        String _imgpath = '';
         if (noti['type'] == 'MISSION') {
+          _imgpath = 'assets/image/main/mission.png';
           typeString = '미션';
         } else if (noti['type'] == 'QUESTION') {
           typeString = '질문';
+          _imgpath = 'assets/image/main/question.png';
         } else if (noti['type'] == 'ACCOUNT') {
+          _imgpath = 'assets/image/main/piggy.png';
           typeString = '계좌';
         }
 
@@ -184,7 +209,7 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
             children: [
               // 이미지 표시
               roundedAssetImg(
-                imgPath: 'assets/image/temp_image.jpg',
+                imgPath: _imgpath,
               ),
               SizedBox(width: 15), // 이미지와 텍스트 사이 간격
               // 나머지 요소들을 세로로 나열
