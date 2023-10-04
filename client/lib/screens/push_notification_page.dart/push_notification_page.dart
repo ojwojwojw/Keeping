@@ -84,7 +84,7 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
                                       '도착한 알림이 없어요!',
                                       style: TextStyle(
                                           fontSize: 25,
-                                          fontWeight: FontWeight.bold),
+                                        ),
                                     ),
                                     SizedBox(
                                       height: 30,
