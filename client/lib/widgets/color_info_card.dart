@@ -83,10 +83,13 @@ Widget _requestContent(String name, String profileImage) {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center, 
               children: [
-                Text(
-                  name,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  overflow: TextOverflow.ellipsis,
+                SizedBox(width: 8,),
+                Flexible(
+                  child: Text(
+                    name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 Text(
                   '을(를) 부탁했어요!',

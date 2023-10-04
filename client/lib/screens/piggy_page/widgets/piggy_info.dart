@@ -27,24 +27,49 @@ class _PiggyInfoState extends State<PiggyInfo> {
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                widget.parent != null && !widget.parent! ? 
-                  '목표를 정하고\n차곡차곡 모아보아요!'
-                  : '지금 자녀가 갖고 싶은건\n무엇일까요?',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              Column(
                 children: [
-                  Text('🐷', style: TextStyle(fontSize: 80),),
+                  Text(
+                    widget.parent != null && !widget.parent! ? 
+                      '목표를 정하고\n차곡차곡 모아보아요!'
+                      : '지금 자녀가 갖고 싶은건\n무엇일까요?',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black
+                    ),
+                  ),
+                  // Container(
+                  //   alignment: Alignment.centerLeft,
+                  //   child: widget.parent != null && widget.parent! ? null : 
+                  //     InkWell(
+                  //       onTap: () {
+                          
+                  //       }, 
+                  //       child: Row(
+                  //         mainAxisAlignment: MainAxisAlignment.start,
+                  //         children: const [
+                  //           Text('만들러가기'),
+                  //           Icon(Icons.arrow_right)
+                  //         ],
+                  //       )
+                  //     ),
+                  // ),
                 ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Image.asset('assets/image/main/cropped_piggy.png', height: 100,),
+                    // Text('🐷', style: TextStyle(fontSize: 80),),
+                  ],
+                ),
               )
             ],
           ),
