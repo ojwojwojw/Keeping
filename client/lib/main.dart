@@ -97,14 +97,15 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AccountDetailProvider()),
       ],
       child: MaterialApp(
-        navigatorKey: navigatorKey,
+  navigatorKey: navigatorKey,
+  debugShowCheckedModeBanner: false,
+  theme: ThemeData(
+    fontFamily: "NotoSansKR",
+  ),
+  home: LoginPage(),
+)
 
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          fontFamily: "NotoSansKR",
-        ),
-        home: LoginPage(), //빌드하면 바로 로그인 페이지가 보이게 수정
-      )));
+      ));
 }
 
 class MyApp extends StatelessWidget {

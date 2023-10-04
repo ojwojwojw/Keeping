@@ -222,17 +222,13 @@ Row sendTypeBtns(BuildContext context) {
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       sendTypeModalBtn(
-        Icon(
-          Icons.event,
-        ),        
+        'assets/image/pocketmoney/calendar.png',
         '정기로\n보내기', 
         context, 
         SendMoneyRegularPage()
       ),
       sendTypeModalBtn(
-        Icon(
-          Icons.payments,
-        ),
+        'assets/image/main/piggy.png',
         '바로\n보내기',
         context,
         SendPocketMoneyPage()
@@ -241,32 +237,37 @@ Row sendTypeBtns(BuildContext context) {
   );
 }
 
-InkWell sendTypeModalBtn(
-    Icon icon, String text, BuildContext context, Widget path) {
+InkWell sendTypeModalBtn(String imagePath, String text, BuildContext context, Widget path) {
   return InkWell(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => path));
-      },
-      child: Container(
-        width: 150,
-        height: 150,
-        decoration: _sendTypeModalBtnStyle(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(
-              icon.icon, // 아이콘의 IconData를 가져와서 사용
-              size: 50, // 원하는 크기로 조정
-            ),
-            Text(
-              text,
-              style: TextStyle(fontSize: 20),
-            )
-          ],
-        ),
-      ));
+    onTap: () {
+      Navigator.push(context, MaterialPageRoute(builder: (_) => path));
+    },
+    child: Container(
+      width: 150,
+      height: 150,
+      decoration: _sendTypeModalBtnStyle(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            imagePath,
+            width: 70,
+            height: 70,
+            // fit: BoxFit.cover,
+          ),
+          Text(
+            text,
+            textAlign: TextAlign.center, // 중앙 정렬 추가
+            style: TextStyle(fontSize: 15),
+          )
+        ],
+      ),
+    ),
+  );
 }
+
+
 
 BoxDecoration _sendTypeModalBtnStyle() {
   return BoxDecoration(
