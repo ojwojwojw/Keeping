@@ -69,29 +69,35 @@ class _MoneyRecordState extends State<MoneyRecord> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: categoryImg('assets/image/category/${widget.largeCategory}.png'),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.storeName,
-                        style: bigStyle(),
-                      ),
-                      Text(
-                        widget.onlyTime
-                            ? formattedTime(widget.date)
-                            : formattedFullDate(widget.date),
-                      )
-                    ],
-                  ),
-                ],
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: categoryImg('assets/image/category/${widget.largeCategory}.png'),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 170,
+                          child: Text(
+                            widget.storeName,
+                            style: bigStyle(),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text(
+                          widget.onlyTime
+                              ? formattedTime(widget.date)
+                              : formattedFullDate(widget.date),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
               Padding(
                   padding: EdgeInsets.only(right: 15),
