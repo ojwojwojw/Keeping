@@ -60,8 +60,9 @@ class _ChildMainPageState extends State<ChildMainPage> {
                       var response = snapshot.data;
                       if (response['resultStatus']['resultCode'] == '404') {
                         return MakeAccountBtn();
-                      } else if (response['resultStatus']['resultCode'] ==
-                          '503') {
+                      } else if (response == false) {
+                        return disabledAccount();
+                      } else if (response['resultStatus']['resultCode'] == '503') {
                         return AccountInfo(balance: 0);
                       } else {
                         Provider.of<AccountInfoProvider>(context, listen: false).setAccountInfo(response['resultBody']);
