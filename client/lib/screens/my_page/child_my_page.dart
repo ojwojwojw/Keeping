@@ -71,6 +71,7 @@ class _ChildMyPageState extends State<ChildMyPage> {
       Map<String, dynamic> jsonResponse =
           json.decode(utf8.decode(response.bodyBytes));
       print(jsonResponse);
+      print('코드 있냐구');
       if (jsonResponse['resultStatus']['successCode'] == 0) {
         // 코드가 유효한 경우. beforelink로 이동합니다.
         String linkcode = jsonResponse['resultBody']['linkcode'];
