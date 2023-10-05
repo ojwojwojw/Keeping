@@ -49,7 +49,8 @@ public class MissionQueryRepository {
                         mission.completed,
                         mission.createdDate))
                 .from(mission)
-                .where(mission.childKey.eq(childKey))
+                .where(mission.childKey.eq(childKey),
+                        mission.completed.ne(Completed.DISABLED))
                 .fetch();
     }
 
@@ -69,7 +70,8 @@ public class MissionQueryRepository {
                         mission.createdDate))
                 .from(mission)
                 .where(mission.childKey.eq(childKey),
-                        mission.id.eq(missionId))
+                        mission.id.eq(missionId),
+                        mission.completed.ne(Completed.DISABLED))
                 .fetchOne());
     }
 }

@@ -74,7 +74,7 @@ public class QuestionCreateSendServiceImpl implements QuestionCreateSendService 
         questionRepository.saveAll(questions);
     }
 
-    @Scheduled(cron = "0 20 18 * * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 20 * * ?", zone = "Asia/Seoul")
 //    @Scheduled(cron = "0 */6 * * * ?", zone = "Asia/Seoul")
     private void sendQuestion() {
         log.debug("[8시에 질문 보내기]");
