@@ -358,7 +358,7 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
 
       bottomNavigationBar: BottomBtn(
         bgColor: missionRequestStatusBgColor(widget.item['completed']),
-        text: _getBottomButtonText(widget.item["completed"]),
+        text: _getBottomButtonText(isParent, widget.item["completed"]),
         action: () {
           if (isParent == null) return;
           isParent!
@@ -512,18 +512,27 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
   // }
 }
 
-String _getBottomButtonText(String status) {
-  switch (status) {
-    case "CREATE_WAIT":
-      return "미션생성을 승인해요.";
-    case "YET":
-      return "완료했어요!";
-    case "FINISH_WAIT":
-      return "참 잘했어요 꾸욱 :)";
-    case "FINISH":
-      return "지난 미션이에요!";
-    default:
-      return "미션 승인하기";
+String _getBottomButtonText(bool parent, String status) {
+  if (parent == true) {
+    if (status == 'CREATE_WAIT') {
+      return '확인';
+    } else if (status == 'YET') {
+      return '참 잘했어요 꾸욱!';
+    } else if (status == 'FINISH_WAIT') {
+      return '열심히 미션을 하고 있어요!';
+    } else {
+      return '확인';
+    }
+  } else {
+    if (status == 'CREATE_WAIT') {
+      return '승인을 기다리는 중이에요!';
+    } else if (status == 'YET') {
+      return '완료를 기다리는 중이에요!';
+    } else if (status == 'FINISH_WAIT') {
+      return '완료!';
+    } else {
+      return '확인';
+    }
   }
 }
 

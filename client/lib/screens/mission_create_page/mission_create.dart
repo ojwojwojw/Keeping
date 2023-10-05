@@ -556,7 +556,7 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
                             child: Row(
                               children: [
                                 Image.asset(
-                                  'assets/image/n_face.png',
+                                  child['profileImage'] ?? 'assets/image/profile/child1.png',
                                   width: 50,
                                 ), // 이미지 경로를 지정해야 합니다.
                                 SizedBox(

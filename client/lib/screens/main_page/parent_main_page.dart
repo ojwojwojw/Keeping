@@ -4,7 +4,6 @@ import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
 import 'package:keeping/screens/main_page/util/main_future_methods.dart';
 import 'package:keeping/screens/main_page/widgets/account_info.dart';
-import 'package:keeping/screens/main_page/widgets/gradient_btn.dart';
 import 'package:keeping/screens/main_page/widgets/greeting.dart';
 import 'package:keeping/screens/main_page/widgets/main_service_btn.dart';
 import 'package:keeping/screens/main_page/widgets/make_account_btn.dart';
@@ -12,7 +11,6 @@ import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/screens/online_payment_request/online_payment_request_page.dart';
 import 'package:keeping/screens/piggy_page/piggy_page.dart';
 import 'package:keeping/screens/question_page/question_page.dart';
-import 'package:keeping/screens/user_link_page/before_user_link_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
@@ -56,7 +54,7 @@ class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStat
           width: double.infinity,
           decoration: lightGreyBgStyle(),
           child: Padding(
-            padding: const EdgeInsets.only(top: 40, left: 24, right: 24),
+            padding: const EdgeInsets.only(top: 48, left: 24, right: 24),
             child: Column(
               children: [
                 // ParentGreeting(name: _name, childName: _childName ?? '',),
@@ -285,7 +283,7 @@ Widget _changeChildrenList(BuildContext context, List<dynamic> childrenList) {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 12, right: 8),
-                          child: roundedAssetImg(imgPath: 'assets/image/temp_image.jpg' , size: 50),
+                          child: roundedAssetImg(imgPath: e['profileImage'] ?? 'assets/image/profile/child1.png' , size: 50),
                         ),
                         Text(e['name'], style: TextStyle(fontSize: 20),)
                       ],
