@@ -10,10 +10,17 @@ import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/color_info_card_elements.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+
+final _baseUrl = dotenv.env['BASE_URL'];
+
 
 class MissionDetailPage extends StatefulWidget {
   final Map<String, dynamic> item;
+  // final Map<String, dynamic> missionId;
   const MissionDetailPage({super.key, required this.item});
+  // const MissionDetailPage({super.key, required this.item , required this.missionId});
 
   @override
   State<MissionDetailPage> createState() => _MissionDetailPageState();
@@ -36,6 +43,44 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
       isFinishedCommentNull = false;
     }
   }
+
+  // 미션 상세조회 데이터 비동기 요청
+  // Future<List<Map<String, dynamic>>> getParentData() async {
+  //   // Dio 객체 생성
+  //   final dio = Dio();
+  //   var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+  //   var childInfoProvider =
+  //       Provider.of<ChildInfoProvider>(context, listen: false);
+  //   var memberKey = userProvider.memberKey;
+  //   var childMemberKey = childInfoProvider.memberKey;
+  //   var accessToken = userProvider.accessToken;
+  //   print('미션 상세조회?!?');
+  //   print(memberKey);
+  //   print(accessToken);
+
+  //     final headers = {
+  //   'Content-Type': 'application/json',
+  //   'Authorization': 'Bearer $accessToken'
+  // };
+
+  //   try {
+  //     // GET 요청 보내기
+  //     final response = await http.get(
+  //         Uri.parse("$_baseUrl/mission-service/api/$memberKey/$childMemberKey/${widget.missionId}"),
+  //         headers: headers);
+
+  //     // 요청이 성공했을 때 처리
+  //     if (response.statusCode == 200 && response.data['resultBody'] is Map) {
+  //       return <Map<String, dynamic>>.from(response.data['resultBody']);
+  //     } else {
+        
+  //     }
+  //   } catch (error) {
+  //     // 요청이 실패했을 때 처리
+  //     print('Error: $error');
+      
+  //   }
+  // }
 
   @override
   void initState() {
@@ -295,6 +340,22 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
               ),
             );
           }),
+
+      // FutureBuilder(
+      //   // 비동기 데이터를 기다리고 UI를 구성
+      //   future: getData(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.connectionState == ConnectionState.waiting) {
+      //       return Center(child: CircularProgressIndicator());
+      //     } else if (snapshot.hasError) {
+      //       return Center(child: Text('에러 발생: ${snapshot.error}'));
+      //     } else {
+      //       data = snapshot.data ?? {}; // 여기에서 snapshot의 데이터를 받아옵니다.
+      //       return 
+      // ),
+
+
+
       bottomNavigationBar: BottomBtn(
         bgColor: missionRequestStatusBgColor(widget.item['completed']),
         text: _getBottomButtonText(widget.item["completed"]),
@@ -520,7 +581,12 @@ void handleChildButtonClick(BuildContext context, dynamic item, String status) {
       //               item: item,
       //             ))); //미션 id 넘겨주는곳
 
-      noEffectReplacementTransition(context, MissionCompleteRequestPage( missionId: item["id"],item: item,));
+      noEffectReplacementTransition(
+          context,
+          MissionCompleteRequestPage(
+            missionId: item["id"],
+            item: item,
+          ));
 
       break;
     case "FINISH_WAIT":
