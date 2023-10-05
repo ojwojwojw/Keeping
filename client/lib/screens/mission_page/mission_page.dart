@@ -61,6 +61,11 @@ class _MissonPageState extends State<MissionPage> {
     setState(() {});
   }
 
+  //새로고침
+  void reload(){
+    setState(() {});
+  }
+
   Future<List<Map<String, dynamic>>> getData() async {
     // Dio 객체 생성
     final dio = Dio();
@@ -121,6 +126,17 @@ class _MissonPageState extends State<MissionPage> {
             return Center(
               child: Column(
                 children: [
+                  //새로고침 버튼
+                  // ElevatedButton(
+                  //   onPressed: reload, 
+                  //   child: Container(
+                  //     width: 100, height:100,
+                  //   child: Text('새로고침'
+                  //    )
+                  //   )
+                  // ),
+
+
                   CreateMissonBox(),
                   SizedBox(
                     height: 10,
@@ -183,6 +199,16 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
 
   //미션 상태변화 반영
   void onMissionDeleted() {
+    setState(() {});
+  }
+
+  //새로고침
+  void reload(){
+    setState(() {});
+  }
+
+  //새로고침
+  void reload2(){
     setState(() {});
   }
 
@@ -259,6 +285,19 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
             return Center(
               child: Column(
                 children: [
+
+                  /////
+
+                  //새로고침 버튼
+                  // ElevatedButton(
+                  //   onPressed: reload, 
+                  //   child: Container(
+                  //     width: 100, height:100,
+                  //   child: Text('새로고침'
+                  //    )
+                  //   )
+                  // ),
+
                   CreateMissonBox(),
                   SizedBox(
                     height: 10,
@@ -372,7 +411,7 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
     var memberKey = userProvider.memberKey;
     var userType = userProvider.parent ? "PARENT" : "CHILD";
 
-    var data = {
+    final data = {
       "type": userType,
       "missionId": widget.missionId,
       "cheeringMessage": comment,
@@ -388,7 +427,7 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
       var response = await http.patch(
           Uri.parse("$_baseUrl/mission-service/api/$memberKey/complete"),
           headers: headers,
-          body: json.encode(data));
+          body: jsonEncode(data));
       print(response);
 
       if (response.statusCode == 200) {
@@ -517,7 +556,7 @@ class _MissionCompleteRequestPageState
     var memberKey = userProvider.memberKey;
     var userType = userProvider.parent ? "PARENT" : "CHILD";
 
-    var data = {
+    final data = {
       "type": userType,
       "missionId": widget.missionId,
       "cheeringMessage": comment,
@@ -533,7 +572,7 @@ class _MissionCompleteRequestPageState
       var response = await http.patch(
           Uri.parse("$_baseUrl/mission-service/api/$memberKey/complete"),
           headers: headers,
-          body: json.encode(data));
+          body: jsonEncode(data));
       print(response);
 
       if (response.statusCode == 200) {
@@ -660,7 +699,7 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
     var memberKey = userProvider.memberKey;
     var userType = userProvider.parent ? "PARENT" : "CHILD";
 
-    var data = {
+    final data = {
       "type": userType,
       "missionId": widget.missionId,
       "cheeringMessage": comment,
@@ -676,7 +715,7 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
       var response = await http.patch(
           Uri.parse("$_baseUrl/mission-service/api/$memberKey/complete"),
           headers: headers,
-          body: json.encode(data));
+          body: jsonEncode(data));
       print(response);
 
       if (response.statusCode == 200) {
@@ -808,7 +847,7 @@ class _MissionCompleteCommentPageState
     var memberKey = userProvider.memberKey;
     var userType = userProvider.parent ? "PARENT" : "CHILD";
 
-    var data = {"missionId": widget.missionId, "comment": comment};
+    final data = {"missionId": widget.missionId, "comment": comment};
 
     final headers = {
       'Content-Type': 'application/json',
@@ -819,7 +858,7 @@ class _MissionCompleteCommentPageState
       var response = await http.patch(
         Uri.parse("$_baseUrl/mission-service/api/$memberKey/comment"),
         headers: headers,
-        body: json.encode(data),
+        body: jsonEncode(data),
       );
       print(response);
 
