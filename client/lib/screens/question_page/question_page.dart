@@ -62,34 +62,32 @@ class _QuestionPageState extends State<QuestionPage> {
               return Stack(children: [
                 // 배경 이미지
                 Positioned(
-                  top: 50, // top 위치 조절
+                  top: 0, // top 위치 조절
                   left: 0,
                   right: 0,
                   child: Align(
                     alignment: Alignment.center, // 좌우로 가운데 정렬
                     child: Image.asset(
                       'assets/image/question/micandfaces.png',
-                      width: 350,
                       height: 350,
-                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
 
-                Positioned(
-                  top: 15, // 바닥에서 50픽셀만큼 떨어지게 위치
-                  left: 0,
-                  right: 0,
-                  child: Image.asset(
-                    'assets/image/question/maintitle.png',
-                    width: 220.0,
-                    height: 120.0,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                // Positioned(
+                //   top: 15, // 바닥에서 50픽셀만큼 떨어지게 위치
+                //   left: 0,
+                //   right: 0,
+                //   child: Image.asset(
+                //     'assets/image/question/maintitle.png',
+                //     width: 220.0,
+                //     height: 120.0,
+                //     fit: BoxFit.cover,
+                //   ),
+                // ),
 
                 Positioned(
-                  bottom: 50, // 바닥에서 50픽셀만큼 떨어지게 위치
+                  bottom: 20, // 바닥에서 50픽셀만큼 떨어지게 위치
                   left: 0,
                   right: 0,
                   child: Column(children: [
