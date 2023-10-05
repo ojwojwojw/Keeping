@@ -1,12 +1,7 @@
 package com.keeping.memberservice.api.service;
 
-import com.keeping.memberservice.api.controller.response.LinkResultResponse;
 import com.keeping.memberservice.api.controller.response.LinkcodeResponse;
 import com.keeping.memberservice.api.service.member.dto.LinkResultDto;
-import com.keeping.memberservice.domain.Link;
-import com.keeping.memberservice.domain.repository.ChildRepository;
-import com.keeping.memberservice.domain.repository.LinkRepository;
-import com.keeping.memberservice.domain.repository.ParentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -29,6 +24,28 @@ public class AuthService {
     private static final long ONE_DAY = 86400;
     private static final String VERIFIED_NUMBER = "verified_number_";
     private static final String WFC = "WAITING_FOR_CONNECTION_";
+    private static final String IL = "I_LINK_";
+
+    /**
+     * 내가 링크했는지 확인
+     *
+     * @param memberKey
+     * @return
+     */
+    public boolean doILink(String memberKey) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(IL + memberKey));
+    }
+
+    /**
+     * 누가 나를 링크했나
+     *
+     * @param memberKey
+     * @param linkCode
+     * @return
+     */
+    public String whoLinkMe(String memberKey, String linkCode) {
+        return redisTemplate.opsForValue().get(WFC + linkCode);
+    }
 
 
     /**
@@ -40,20 +57,22 @@ public class AuthService {
      * @return 결과
      */
     public LinkResultDto link(String yourLinkCode, String myMemberKey, String myType) {
-        // TODO: 2023-09-26 인증번호 유효한지 확인 
+        // 인증번호 유효한지 확인
         String yourType = myType.equals("parent") ? "child" : "parent";
+        log.debug("[연결] 나 = {}, 너 = {}", myType, yourType);
         String yourKeyWithCode = createLinkCodeKey(yourType, yourLinkCode);
         if (Boolean.FALSE.equals(redisTemplate.hasKey(yourKeyWithCode))) {
-
+            log.debug("[연결] 너의 연결코드 = {} 없음", yourLinkCode);
             return LinkResultDto.builder()
                     .success(false)
                     .failMessage("일치하는 인증번호가 없습니다.")
                     .build();
         }
 
-        // TODO: 2023-09-26 상대 연결 코드가 사용 가능한지 확인
+        // 상대 연결 코드가 사용 가능한지 확인
         String yourOpponentMemberKey = redisTemplate.opsForValue().get(WFC + yourLinkCode);
         if (yourOpponentMemberKey != null && !yourOpponentMemberKey.equals(myMemberKey)) {
+            log.debug("[연결] 상대방이 다른사람 = {} 과 연결 시도중, 나는 = {}", yourOpponentMemberKey, myMemberKey);
             return LinkResultDto.builder()
                     .success(false)
                     .failMessage("상대방이 다른 사람과 연결을 시도 중 입니다.")
@@ -69,9 +88,11 @@ public class AuthService {
         }
 
         if (Boolean.TRUE.equals(redisTemplate.hasKey(linkKey))) {
+            log.debug("[연결] 상대가 먼저 연결했음");
             deleteLinkCodeKey(myMemberKey, myType);
             deleteLinkCodeKey(yourMemberKey, yourType);
             redisTemplate.delete(linkKey);
+            redisTemplate.delete(IL + yourMemberKey);
 
             return LinkResultDto.builder()
                     .success(true)
@@ -82,10 +103,11 @@ public class AuthService {
             redisStringInsert(linkKey, "ok", ONE_DAY);
             String key = createLinkCodeKey(myType, myMemberKey);
             Long expire = redisTemplate.getExpire(key);
-            // TODO: 2023-09-26 연결 대기중 키 넣기
+            // 연결 대기중 키 넣기
             String myCode = redisTemplate.opsForValue().get(createLinkCodeKey(myType, myMemberKey));
             redisStringInsert(WFC + myCode, yourMemberKey, ONE_DAY);
             redisStringInsert(WFC + yourLinkCode, myMemberKey, ONE_DAY);
+            redisStringInsert(IL + myMemberKey, "ok", ONE_DAY);
             redisTemplate.expire(key, ONE_DAY, TimeUnit.SECONDS);
 
             return LinkResultDto.builder()
@@ -210,6 +232,7 @@ public class AuthService {
     }
 
     private void redisStringInsert(String key, String value, long expire) {
+        redisTemplate.delete(key);
         redisTemplate.opsForValue().append(key, value);
         redisTemplate.expire(key, expire, TimeUnit.SECONDS);
     }

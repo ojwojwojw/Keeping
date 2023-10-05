@@ -91,6 +91,14 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - AuthorizationHeaderFilter
+        # bank other
+        - id: bank-service
+          uri: lb://BANK-SERVICE
+          predicates:
+            - Path=/bank-service/server/**
+            - Method=POST, GET, PATCH, DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
         # bank actuator
         - id: bank-service
           uri: lb://BANK-SERVICE
@@ -98,7 +106,7 @@ spring:
             - Path=/bank-service/actuator/**
             - Method=GET
           filters:
-#            - RemoveRequestHeader=Cookie
+            #            - RemoveRequestHeader=Cookie
             - RewritePath=/bank-service/(?<segment>.*), /$\{segment}
         # mission
         - id: mission-service

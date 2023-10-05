@@ -1,8 +1,6 @@
 package com.keeping.memberservice.api.service.member;
 
-import com.keeping.memberservice.api.controller.response.ChildrenResponse;
-import com.keeping.memberservice.api.controller.response.LinkResultResponse;
-import com.keeping.memberservice.api.controller.response.LoginMember;
+import com.keeping.memberservice.api.controller.response.*;
 import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.dto.AddMemberDto;
 import com.keeping.memberservice.domain.Child;
@@ -20,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -27,8 +26,8 @@ import java.util.*;
 @Transactional
 @Slf4j
 public class MemberService implements UserDetailsService {
-
     private final ParentRepository parentRepository;
+
     private final ChildRepository childRepository;
     private final MemberRepository memberRepository;
     private final LinkRepository linkRepository;
@@ -36,6 +35,116 @@ public class MemberService implements UserDetailsService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthService authService;
+
+    /**
+     * 이미 링크 되어있는지 확인
+     *
+     * @param memberKey
+     * @return
+     */
+    public boolean alreadyLink(String memberKey) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
+                new NoSuchElementException("찾을 수 없는 회원입니다."));
+        Child child = childRepository.findByMember(member).orElseThrow(() ->
+                new NoSuchElementException("자녀 회원이 아닙니다."));
+        Optional<Link> findLink = linkRepository.findByChild(child);
+        return findLink.isEmpty();
+    }
+
+    /**
+     * 모든 링크 쌍 반환
+     *
+     * @return
+     */
+    public List<LinkResponse> getAllLinks() {
+        return linkQueryRepository.getAllLink();
+    }
+
+    /**
+     * 부모 키 반환
+     *
+     * @param memberKey
+     * @return 0: 정상동작, 1: 요청자가 자녀가 아님, 2: 연결된 부모 없음
+     */
+    public String getMyParentKey(String memberKey) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
+                new NoSuchElementException("잘못된 멤버키 입니다."));
+        Child child = childRepository.findByMember(member).orElseThrow(() ->
+                new NoSuchElementException("요청한 회원이 자녀 회원이 아닙니다."));
+        Link link = linkRepository.findByChild(child).orElseThrow(() ->
+                new NoSuchElementException("연결된 부모 회원이 없습니다."));
+        return link.getParent().getMember().getMemberKey();
+    }
+
+    /**
+     * fcm 토큰 받아오기
+     *
+     * @param memberKey
+     * @return
+     */
+    public String getFcmToken(String memberKey) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
+                new NoSuchElementException("잘못된 회원키입니다."));
+        return member.getFcmToken();
+    }
+
+    /**
+     * 멤버 이름 받아오기
+     *
+     * @param memberKey
+     * @return
+     */
+    public String getMamberName(String memberKey) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
+                new NoSuchElementException("잘못된 회원키입니다."));
+        return member.getName();
+    }
+
+    /**
+     * 자녀 키 목록 출력
+     *
+     * @param memberKey
+     * @return
+     */
+    public List<ChildKeyResponse> getChildKeyList(String memberKey) {
+        return linkQueryRepository.getChildKeyList(memberKey);
+    }
+
+    /**
+     * 타입 체크
+     *
+     * @param memberKey
+     * @param type
+     * @return
+     */
+    public boolean typeCheck(String memberKey, String type) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
+                new NoSuchElementException("등록되지 않은 사용자입니다."));
+        if (type.equals("PARENT")) {
+            return parentRepository.findByMember(member).isPresent();
+        } else {
+            return childRepository.findByMember(member).isPresent();
+        }
+    }
+
+    /**
+     * 부모 자녀 관계인지 확인
+     *
+     * @return
+     */
+    public RelationshipCheckResponse relationCheck(String parentKey, String childKey) {
+        Member parentMember = memberRepository.findByMemberKey(parentKey).orElseThrow(() -> new NoSuchElementException("잘못된 부모 회원키입니다."));
+        Member childMember = memberRepository.findByMemberKey(childKey).orElseThrow(() -> new NoSuchElementException("잘못된 자녀 회원키입니다."));
+
+        Parent parent = parentRepository.findByMember(parentMember).orElseThrow(() -> new NoSuchElementException("부모로 등록된 회원이 아닙니다."));
+        Child child = childRepository.findByMember(childMember).orElseThrow(() -> new NoSuchElementException("부모로 등록된 회원이 아닙니다."));
+
+        Optional<Link> findLink = linkRepository.findByParentAndChild(parent, child);
+
+        return RelationshipCheckResponse.builder()
+                .isParentialRelationship(findLink.isPresent())
+                .build();
+    }
 
     /**
      * 부모인지, 자녀인지 확인
@@ -63,7 +172,6 @@ public class MemberService implements UserDetailsService {
         LoginMember loginMember = null;
         if (isParent) {
             // 부모일 때
-            // TODO: 2023-09-22 자녀 가져오기
             Parent parent = findParent.get();
             List<ChildrenResponse> childList = linkQueryRepository.getChildList(parent);
             loginMember = LoginMember.builder()
@@ -115,6 +223,7 @@ public class MemberService implements UserDetailsService {
 
         Child child = Child.builder()
                 .member(member)
+                .questionTime(LocalTime.of(20, 0))
                 .build();
         Child savedChild = childRepository.save(child);
         return member.getName();
