@@ -19,6 +19,7 @@ import 'package:keeping/styles.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
+
 // 자식 미션페이지 //
 class MissionPage extends StatefulWidget {
   const MissionPage({Key? key}) : super(key: key);
@@ -50,6 +51,13 @@ class _MissonPageState extends State<MissionPage> {
   void _setSelectedBtnIdx(val) {
     setState(() {
       _selectedBtnIdx = val;
+    });
+  }
+
+  //미션 상태변화 반영
+  void onMissionDeleted() {
+    setState(() {
+      
     });
   }
 
@@ -131,6 +139,7 @@ class _MissonPageState extends State<MissionPage> {
                             todo: e['todo'],
                             item: e,
                             profileImage: profileImage,
+                            onMissionDeleted: onMissionDeleted,
                           )),
                     ],
                   ))),
@@ -169,6 +178,13 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
   void _setSelectedBtnIdx(val) {
     setState(() {
       _selectedBtnIdx = val;
+    });
+  }
+
+  //미션 상태변화 반영
+  void onMissionDeleted() {
+    setState(() {
+      
     });
   }
 
@@ -264,6 +280,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
                             todo: e['todo'],
                             item: e,
                             profileImage: profileImage,
+                            onMissionDeleted: onMissionDeleted,
                           )),
                     ],
                   ))),
