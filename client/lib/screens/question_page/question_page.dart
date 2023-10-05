@@ -327,11 +327,16 @@ class _QuestionPageState extends State<QuestionPage> {
         headers: headers,
       );
       print('try를 하나요?');
-      var responseData = jsonDecode(response.body);
-      print(responseData['resultBody']);
+      Map<String, dynamic> jsonResponse =
+          json.decode(utf8.decode(response.bodyBytes));
+      print(jsonResponse);
+
+      // List<Map<String, dynamic>> responseData = json.decode(utf8.decode(response.bodyBytes));
+      // print("왜 디코딩이 안되냐? $responseData");
+      print(jsonResponse['resultBody']);
       // 요청이 성공했을 때 처리
-      if (response.statusCode == 200 && responseData['resultBody'] is List) {
-        return List<Map<String, dynamic>>.from(responseData['resultBody']);
+      if (response.statusCode == 200 && jsonResponse['resultBody'] is List) {
+        return List<Map<String, dynamic>>.from(jsonResponse['resultBody']);
       } else {
         return []; // 빈 리스트 반환
       }
@@ -387,20 +392,23 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
       // GET 요청 보내기
       final response = await http.get(
         Uri.parse("$_baseUrl/question-service/api/$memberKey/questions/today"),
+        headers: headers,
       );
       print('부모 오늘의 질문 데이터');
 
       // 요청이 성공했을 때 처리
 
-      var responseData = jsonDecode(response.body);
-      if (response.statusCode == 200 && responseData['resultBody'] is List) {
-        print(response);
+      Map<String, dynamic> jsonResponse =
+          json.decode(utf8.decode(response.bodyBytes));
+      if (response.statusCode == 200 && jsonResponse['resultBody'] is List) {
+        print(1);
+        print("jsonResponse!!!!!!!!!!!!:$jsonResponse");
         // 멤버키를 기반으로 필터링 수행
         var filteredData =
-            List<Map<String, dynamic>>.from(responseData['resultBody'])
+            List<Map<String, dynamic>>.from(jsonResponse['resultBody'])
                 .where((item) => item['memberKey'] == selectedMemberKey)
                 .toList();
-        print(filteredData);
+        print("filteredData!!!!!!!!!!!!!! : $filteredData");
         return filteredData;
       } else {
         return []; // 빈 객체 반환
@@ -729,9 +737,8 @@ class _QuestionSendPageState extends State<QuestionSendPage> {
         final responseData = jsonDecode(response.body);
         if (responseData['resultStatus']['successCode'] == 409) {
           _showErrorMessage(responseData['resultStatus']['resultMessage']);
-        } 
-        else if (response.statusCode == 400) {
-        _showErrorMessage('해당 날짜에 이미 질문이 존재합니다 (400).');
+        } else if (response.statusCode == 400) {
+          _showErrorMessage('해당 날짜에 이미 질문이 존재합니다 (400).');
         } else {
           print('사용자 개인질문 생성 데이터 전송 성공!');
           Navigator.push(
@@ -744,7 +751,6 @@ class _QuestionSendPageState extends State<QuestionSendPage> {
                         ),
                       )));
         }
-        
       } else {
         print('사용자 개인질문 생성 데이터 전송 실패.');
       }
@@ -752,7 +758,6 @@ class _QuestionSendPageState extends State<QuestionSendPage> {
       print('Error: $e');
       print(data);
       // DioException에서 응답 상태 코드 확인
-      
     }
   }
 
@@ -894,10 +899,9 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
         var responseData = jsonDecode(response.body);
         if (responseData['resultStatus']['successCode'] == 409) {
           _showErrorMessage(responseData['resultStatus']['resultMessage']);
-        } 
-        else if (response.statusCode == 400) {
+        } else if (response.statusCode == 400) {
           _showErrorMessage('해당 날짜에 이미 질문이 존재합니다 (400).');
-        }else {
+        } else {
           print('사용자 개인질문 생성 데이터 전송 성공!');
           Navigator.push(
               context,
@@ -908,8 +912,7 @@ class _ParentQuestionSendPageState extends State<ParentQuestionSendPage> {
                           action: ParentQuestionPage(),
                         ),
                       )));
-        } 
-        
+        }
       } else {
         print('사용자 개인질문 생성 데이터 전송 실패.');
       }
@@ -1283,13 +1286,16 @@ class _ParentQeustionAnswerPageState extends State<ParentQeustionAnswerPage> {
               ),
               Row(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Text(
-                      'Q. ${widget.questionText.toString()}', //기억
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold, // 글씨를 굵게
-                        fontSize: 20.0, // 글씨 크기를 14포인트로 설정
+                  Container(
+                    width: 380,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Text(
+                        'Q. ${widget.questionText.toString()}', //기억
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold, // 글씨를 굵게
+                          fontSize: 20.0, // 글씨 크기를 14포인트로 설정
+                        ),
                       ),
                     ),
                   ),
