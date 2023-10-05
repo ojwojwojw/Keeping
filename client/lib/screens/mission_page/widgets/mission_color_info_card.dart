@@ -33,8 +33,19 @@ class MissionColorInfoCard extends StatefulWidget {
 }
 
 class _MissionColorInfoCardState extends State<MissionColorInfoCard> {
+  String setImgPath(status) {
+    if (status == 'YET') {
+      return 'assets/image/face/face1.png';
+    } else if (status == 'FINISH_WAIT') {
+      return 'assets/image/face/face2.png';
+    } else if (status == 'FINISH') {
+      return 'assets/image/face/face4.png';
+    } else {
+      return 'assets/image/face/face3.png';
+    }
+  }
+
   ///미션 삭제 함수
-  ///
   _deleteMission(int missionId) async {
     // 로그인한 유저의 멤버키 및 액세스 토큰 가져오기
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
@@ -119,7 +130,7 @@ class _MissionColorInfoCardState extends State<MissionColorInfoCard> {
                     child: Column(
                       children: [
                         _requestStatus(widget.status),
-                        _requestContent(widget.todo, widget.profileImage),
+                        _requestContent(widget.todo, setImgPath(widget.status)),
                       ],
                     ),
                   )),
@@ -153,7 +164,7 @@ Widget _requestContent(String name, String profileImage) {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           roundedAssetImg(
-              imgPath: profileImage ?? 'assets/image/profile/parent1.png',
+              imgPath: profileImage,
               size: 64),
           Expanded(
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [

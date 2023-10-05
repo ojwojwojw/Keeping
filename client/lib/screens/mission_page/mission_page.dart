@@ -4,6 +4,7 @@ import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/screens/mission_page/widgets/mission_color_info_card.dart';
 import 'package:keeping/screens/mission_page/widgets/mission_filters.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
@@ -16,9 +17,10 @@ import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/styles.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 final _baseUrl = dotenv.env['BASE_URL'];
-
 
 // 자식 미션페이지 //
 class MissionPage extends StatefulWidget {
@@ -56,9 +58,7 @@ class _MissonPageState extends State<MissionPage> {
 
   //미션 상태변화 반영
   void onMissionDeleted() {
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   Future<List<Map<String, dynamic>>> getData() async {
@@ -183,9 +183,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
 
   //미션 상태변화 반영
   void onMissionDeleted() {
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   @override
@@ -334,7 +332,8 @@ class CreateMissonBox extends StatelessWidget {
                 'assets/image/mission/new_mission.png',
                 width: 100,
               ),
-              Text('새로운 미션 만들기', style: TextStyle(fontSize: 20, color: Colors.white)),
+              Text('새로운 미션 만들기',
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
             ],
           ),
         ),
@@ -380,23 +379,38 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
       "completed": "YET"
     };
 
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $accessToken'
+    };
+
     try {
-      var response = await dio.patch(
-          "$_baseUrl/mission-service/api/$memberKey/complete",
-          data: data,
-          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
+      var response = await http.patch(
+          Uri.parse("$_baseUrl/mission-service/api/$memberKey/complete"),
+          headers: headers,
+          body: json.encode(data));
       print(response);
 
       if (response.statusCode == 200) {
-        Navigator.push(
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedPage(
+        //               text: "미션승인 완료!",
+        //               button: ConfirmBtn(
+        //                 action: ParentMissionPage(),
+        //               ),
+        //             ))); //페이지터짐관련
+
+        noEffectReplacementTransition(
             context,
-            MaterialPageRoute(
-                builder: (context) => CompletedPage(
-                      text: "미션승인 완료!",
-                      button: ConfirmBtn(
-                        action: ParentMissionPage(),
-                      ),
-                    )));  //페이지터짐관련
+            CompletedPage(
+              text: "미션승인 완료!",
+              button: ConfirmBtn(
+                action: ParentMissionPage(),
+              ),
+            ));
+
         // Navigator.push(
         //     context,
         //     MaterialPageRoute(
@@ -510,23 +524,38 @@ class _MissionCompleteRequestPageState
       "completed": "FINISH_WAIT"
     };
 
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $accessToken'
+    };
+
     try {
-      var response = await dio.patch(
-          "$_baseUrl/mission-service/api/$memberKey/complete",
-          data: data,
-          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
+      var response = await http.patch(
+          Uri.parse("$_baseUrl/mission-service/api/$memberKey/complete"),
+          headers: headers,
+          body: json.encode(data));
       print(response);
 
       if (response.statusCode == 200) {
-        Navigator.push(
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedPage(
+        //               text: "미션완료 요청완료!",
+        //               button: ConfirmBtn(
+        //                 action: MissionPage(),
+        //               ),
+        //             ))); //페이지터짐관련
+
+        noEffectReplacementTransition(
             context,
-            MaterialPageRoute(
-                builder: (context) => CompletedPage(
-                      text: "미션완료 요청완료!",
-                      button: ConfirmBtn(
-                        action: MissionPage(),
-                      ),
-                    ))); //페이지터짐관련
+            CompletedPage(
+              text: "미션완료 요청완료!",
+              button: ConfirmBtn(
+                action: MissionPage(),
+              ),
+            ));
+
         // Navigator.push(
         //     context,
         //     MaterialPageRoute(
@@ -638,23 +667,39 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
       "completed": "FINISH"
     };
 
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $accessToken'
+    };
+
     try {
-      var response = await dio.patch(
-          "$_baseUrl/mission-service/api/$memberKey/complete",
-          data: data,
-          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
+      var response = await http.patch(
+          Uri.parse("$_baseUrl/mission-service/api/$memberKey/complete"),
+          headers: headers,
+          body: json.encode(data));
       print(response);
 
       if (response.statusCode == 200) {
-        Navigator.push(
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedPage(
+        //               text: "미션완료 승인완료!",
+        //               button: ConfirmBtn(
+        //                 action: ParentMissionPage(),
+        //               ),
+        //             )));
+
+        noEffectReplacementTransition(
             context,
-            MaterialPageRoute(
-                builder: (context) => CompletedPage(
-                      text: "미션완료 승인완료!",
-                      button: ConfirmBtn(
-                        action: ParentMissionPage(),
-                      ),
-                    ))); //페이지터짐관련
+            CompletedPage(
+              text: "미션완료 승인완료!",
+              button: ConfirmBtn(
+                action: ParentMissionPage(),
+              ),
+            ));
+
+        //페이지터짐관련
         // Navigator.push(
         //     context,
         //     MaterialPageRoute(
@@ -765,24 +810,40 @@ class _MissionCompleteCommentPageState
 
     var data = {"missionId": widget.missionId, "comment": comment};
 
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $accessToken'
+    };
+
     try {
-      var response = await dio.patch(
-          "$_baseUrl/mission-service/api/$memberKey/comment",
-          data: data,
-          options: Options(headers: {"Authorization": "Bearer  $accessToken"}));
+      var response = await http.patch(
+        Uri.parse("$_baseUrl/mission-service/api/$memberKey/comment"),
+        headers: headers,
+        body: json.encode(data),
+      );
       print(response);
 
       if (response.statusCode == 200) {
         print('커멘트 200');
-        Navigator.push(
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedPage(
+        //               text: "미션완료 승인완료!",
+        //               button: ConfirmBtn(
+        //                 action: MissionPage(),
+        //               ),
+        //             ))); //페이지터짐관련
+
+        noEffectReplacementTransition(
             context,
-            MaterialPageRoute(
-                builder: (context) => CompletedPage(
-                      text: "미션완료 승인완료!",
-                      button: ConfirmBtn(
-                        action: MissionPage(),
-                      ),
-                    )));  //페이지터짐관련
+            CompletedPage(
+              text: "미션완료 승인완료!",
+              button: ConfirmBtn(
+                action: MissionPage(),
+              ),
+            ));
+
         // Navigator.push(
         //     context,
         //     MaterialPageRoute(
