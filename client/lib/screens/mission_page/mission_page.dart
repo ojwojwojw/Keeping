@@ -671,7 +671,7 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $accessToken'
     };
-
+    print('$data 데이터!!!!!!!!');
     try {
       var response = await http.patch(
           Uri.parse("$_baseUrl/mission-service/api/$memberKey/complete"),
