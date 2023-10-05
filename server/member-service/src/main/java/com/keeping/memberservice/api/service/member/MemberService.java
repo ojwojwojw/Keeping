@@ -37,10 +37,22 @@ public class MemberService implements UserDetailsService {
     private final AuthService authService;
 
     /**
-     * 이미 링크 되어있는지 확인
+     * 멤버 이름 반환
      *
      * @param memberKey
      * @return
+     */
+    public String getMemberName(String memberKey) {
+        Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
+                new NoSuchElementException("잘못된 멤버 키"));
+        return member.getName();
+    }
+
+    /**
+     * 이미 링크 되어있는지 확인
+     *
+     * @param memberKey
+     * @return true: 연결 가능
      */
     public boolean alreadyLink(String memberKey) {
         Member member = memberRepository.findByMemberKey(memberKey).orElseThrow(() ->
@@ -48,6 +60,9 @@ public class MemberService implements UserDetailsService {
         Child child = childRepository.findByMember(member).orElseThrow(() ->
                 new NoSuchElementException("자녀 회원이 아닙니다."));
         Optional<Link> findLink = linkRepository.findByChild(child);
+        if(findLink.isEmpty()){
+            log.debug("[연결 되어있나 확인] 이미 부모 있음");
+        }
         return findLink.isEmpty();
     }
 

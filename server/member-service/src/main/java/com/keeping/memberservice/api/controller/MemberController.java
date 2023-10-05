@@ -32,6 +32,18 @@ public class MemberController {
     private final SmsService smsService;
     private final MemberService memberService;
 
+    @GetMapping("/{member_key}/parent")
+    public ApiResponse<String> getMyParentKey(@PathVariable String member_key) {
+        String result = memberService.getMyParentKey(member_key);
+        return ApiResponse.ok(result);
+    }
+
+    @GetMapping("/{member_key}")
+    public ApiResponse<String> getMemberName(@PathVariable String member_key) {
+        String name = memberService.getMemberName(member_key);
+        return ApiResponse.ok(name);
+    }
+
     @GetMapping("/links")
     public ApiResponse<List<LinkResponse>> getAllChildKey() {
         List<LinkResponse> response = memberService.getAllLinks();
