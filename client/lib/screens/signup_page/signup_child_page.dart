@@ -463,10 +463,14 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
       url: '/member-service/api/join/child',
       data: data,
     );
-
+    
     if (response['resultStatus']['successCode'] == 0) {
       handleIsParentVerificationChecked(true);
-      noEffectTransition(context, LoginPage());
+      Navigator.push(context, MaterialPageRoute(
+                    builder: (_) => LoginPage()
+                          
+                        ));
+      // noEffectTransition(context, LoginPage());
     } else if (response['resultStatus']['resultCode'] == 409) {
       print('이미 가입한 회원입니다.');
     } else {
