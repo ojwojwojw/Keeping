@@ -23,7 +23,6 @@ final _baseUrl = dotenv.env['BASE_URL'];
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();
 Dio dio = Dio();
-final _loginKey = GlobalKey<FormState>();
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -33,6 +32,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _loginKey = GlobalKey<FormState>();
   String _loginResult = '';
   String _loginId = '';
   String _loginPw = '';

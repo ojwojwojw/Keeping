@@ -311,7 +311,7 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
   }
 
   //미션 생성 데이터 보내기//
-  Future<void> _sendMissionData() async {
+  void _sendMissionData() async {
     var missionProvider =
         Provider.of<MissionInfoProvider>(context, listen: false);
     var userProvider = Provider.of<UserInfoProvider>(context, listen: false);
@@ -340,7 +340,7 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
       final response = await http.post(
           Uri.parse("$_baseUrl/mission-service/api/$memberKey"),
           headers: headers,
-          body: json.encode(data));
+          body: jsonEncode(data));
 
       if (response.statusCode == 200) {
         print('미션생성 데이터 전송 성공!');
