@@ -56,7 +56,7 @@ class _ParentMyPageState extends State<ParentMyPage> {
 
   void clickUserLink(BuildContext context) async {
     String _url =
-        'https://j9c207.p.ssafy.io/api/member-service/auth/api/$_memberKey/child/linkcode';
+        'https://j9c207.p.ssafy.io/api/member-service/auth/api/$_memberKey/parent/linkcode';
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $_accessToken'
@@ -66,8 +66,8 @@ class _ParentMyPageState extends State<ParentMyPage> {
       Map<String, dynamic> jsonResponse =
           json.decode(utf8.decode(response.bodyBytes));
       print(jsonResponse);
-      print('촤하하하');
       if (jsonResponse['resultStatus']['successCode'] == 0) {
+        print('코드가 유효합니다. 코드를 생성하지 않고 beforelink로 이동합니다.');
         // 코드가 유효한 경우. beforelink로 이동합니다.
         String linkcode = jsonResponse['resultBody']['linkcode'];
         noEffectTransition(context, BeforeUserLinkPage(linkcode));

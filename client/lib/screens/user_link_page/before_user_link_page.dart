@@ -5,6 +5,7 @@ import 'package:keeping/screens/user_link_page/util/render_my_number.dart';
 import 'package:keeping/screens/user_link_page/util/render_who_try_link.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/header.dart';
@@ -15,6 +16,11 @@ import 'package:keeping/widgets/render_field.dart';
 import 'package:provider/provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/provider/user_link.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+final _baseUrl = dotenv.env['BASE_URL'];
 
 TextEditingController _oppCode = TextEditingController();
 
@@ -30,17 +36,21 @@ class BeforeUserLinkPage extends StatefulWidget {
 class _UserLinkPageState extends State<BeforeUserLinkPage> {
   String _linkErrMsg = '';
   String _whoLinkMsg = '';
+  String? _memberKey;
+  String? _accessToken;
+  String? oppCode;
+  bool _isParent = true;
   Future<String>? _userCode; // 사용자 코드를 가져오는 Future
 
   @override
   void initState() {
     super.initState();
     _oppCode = TextEditingController(); // 컨트롤러 초기화
-    bool isParent =
-        Provider.of<UserInfoProvider>(context, listen: false).parent;
+    _isParent = Provider.of<UserInfoProvider>(context, listen: false).parent;
     print('Received linkcode: ${widget.linkcode}');
-    print('흐아아아아ㅏ앙');
     _userCode = Future.value(widget.linkcode); // 직접 받아온 linkcode 값을 사용
+    _memberKey = context.read<UserInfoProvider>().memberKey;
+    _accessToken = context.read<UserInfoProvider>().accessToken;
     // 사용자 코드를 가져온 후 누가 연결을 시도하는지 가져오도록 초기화
     _whoTryLink(context);
   }
@@ -51,12 +61,18 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
     });
   }
 
+  handleOppCode(result) {
+    print('상대 코드 변경 중 $result');
+    setState(() {
+      oppCode = result;
+    });
+  }
+
   _whoTryLink(BuildContext context) async {
     final userCode = await _userCode; // 사용자 코드 가져오기 (위젯 상태 변수를 사용)
-    print('유저코드초기화!! $userCode');
-    // 데이터 가져오기 (예시: renderWhoTryLink 함수)
+    print('유저코드 초기화: $userCode');
     final whoTryLink = await renderWhoTryLink(context, userCode);
-
+    print('네가 연결 중일까, 내가 연결 중일까? 결과는? $whoTryLink');
     setState(() {
       _whoLinkMsg = whoTryLink.isNotEmpty ? '$whoTryLink' : '';
     });
@@ -81,8 +97,6 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
                 } else {
                   final userCode = snapshot.data;
                   if (userCode != null && userCode.isNotEmpty) {
-                    // 사용자 코드를 가져온 경우 표시
-
                     return _myCode(userCode);
                   } else {
                     // 데이터가 없는 경우 빈 화면 또는 메시지 표시
@@ -152,9 +166,8 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
         label: '상대방 코드 입력',
         hintText: '전달받은 코드를 입력해주세요.',
         controller: _oppCode,
-        onChange: (dynamic newValue) {
-          Provider.of<UserLinkProvider>(context, listen: false)
-              .updateUserCode(oppCode: _oppCode.text);
+        onChange: (value) {
+          handleOppCode(value);
         },
       ),
     );
@@ -175,51 +188,56 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
   }
 
   Future<void> linkUser(BuildContext context) async {
-    String accessToken =
-        Provider.of<UserInfoProvider>(context, listen: false).accessToken;
-    String memberKey =
-        Provider.of<UserInfoProvider>(context, listen: false).memberKey;
-    bool isParent =
-        Provider.of<UserInfoProvider>(context, listen: false).parent;
-    String oppCode =
-        Provider.of<UserLinkProvider>(context, listen: false).oppCode;
-    print('$accessToken, $memberKey, $oppCode');
-    String url = isParent
-        ? '/member-service/auth/api/$memberKey/parent/link/$oppCode'
-        : '/member-service/auth/api/$memberKey/child/link/$oppCode';
+    print('$_accessToken, $_memberKey, $oppCode');
+
+    String url = _isParent
+        ? '$_baseUrl/member-service/auth/api/$_memberKey/parent/link/$oppCode'
+        : '$_baseUrl/member-service/auth/api/$_memberKey/child/link/$oppCode';
+
     // 비동기 작업 수행
-    if (oppCode == '' || oppCode.isEmpty) {
+    if (oppCode?.isEmpty ?? true) {
       handleLinkErrMsg('상대방 코드를 입력해주세요.');
     } else {
-      final response = await dioPost(
-        accessToken: accessToken,
-        url: url,
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $_accessToken',
+          'Content-Type': 'application/json',
+        },
       );
-      print(response);
+      Map<String, dynamic> jsonResponse =
+          json.decode(utf8.decode(response.bodyBytes));
+      print(jsonResponse);
+      print('흐흐흐흐흐');
 
-      if (response != null) {
-        if (response['resultStatus']['resultMessage'] == '일치하는 인증번호가 없습니다.') {
+      if (jsonResponse != null) {
+        if (jsonResponse['resultStatus']['resultMessage'] ==
+            '일치하는 인증번호가 없습니다.') {
           // 인증번호 오류
-          handleLinkErrMsg(response['resultStatus']['resultMessage']);
-        } else if (response['resultStatus']['successCode'] == 0) {
+          handleLinkErrMsg(jsonResponse['resultStatus']['resultMessage']);
+        } else if (jsonResponse['resultStatus']['successCode'] == 0) {
           // 연결된 상황
-          final partner = response['resultBody']['partner'];
+          final partner = jsonResponse['resultBody']['partner'];
           // ignore: use_build_context_synchronously
           bottomModal(
             context: context,
             title: '연결 완료',
-            content: Text('$partner님과 연결되었습니다!'), // Text 위젯으로 감싸기
-            button: linkAcceptedBtn(context, isParent),
+            content: Text(
+              '$partner님과 연결되었습니다!',
+              style: TextStyle(color: Colors.black, fontSize: 20),
+            ), // Text 위젯으로 감싸기
+            button: linkAcceptedBtn(context, _isParent),
           );
         } else {
           // 다음 단계
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AfterUserLinkPage()),
-          );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const AfterUserLinkPage()),
+          // );
+          noEffectReplacementTransition(context, AfterUserLinkPage());
         }
       } else {
-        // response가 null인 경우 처리
+        // jsonResponse가 null인 경우 처리
         handleLinkErrMsg('서버에서 응답을 받지 못했습니다.');
       }
     }
@@ -232,12 +250,12 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
         ElevatedButton(
           onPressed: () {
             if (isParent) {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => ParentMainPage()),
               );
             } else {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => ChildMainPage()),
               );
@@ -245,7 +263,9 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFF8320E7),
-            textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            foregroundColor: Colors.white,
+            textStyle: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0), // 모서리 둥글기 조절
             ),
