@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
+import 'package:keeping/widgets/color_info_card_elements.dart';
 import 'package:keeping/widgets/color_info_detail_card.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/request_info_detail_card.dart';
@@ -57,6 +58,7 @@ class _ChildRequestMoneyDetailPageState
       bottomNavigationBar: BottomBtn(
         text: '확인',
         isDisabled: false,
+        bgColor: requestStatusBgColor(data['approve']!)
       ),
     );
   }

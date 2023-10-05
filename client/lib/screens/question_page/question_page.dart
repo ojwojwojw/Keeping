@@ -1081,11 +1081,14 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Text(
-                      'Q. ${widget.questionText.toString()}', //기억
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold, // 글씨를 굵게
-                        fontSize: 20.0, // 글씨 크기를 14포인트로 설정
+                    child: Container(
+                      width: 340,
+                      child: Text(
+                        'Q. ${widget.questionText.toString()}', //기억
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold, // 글씨를 굵게
+                          fontSize: 20.0, // 글씨 크기를 14포인트로 설정
+                        ),
                       ),
                     ),
                   ),

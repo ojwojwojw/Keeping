@@ -7,6 +7,7 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
   final Color bgColor;
   final Color elementColor;
   final dynamic backPath;
+  final bool pushReplacement;
   final Widget? icon; // 오른쪽 상단에 들어갈 아이콘 (ex. Icon(Icons.arrow_back))
   final dynamic iconPath; // 오른쪽 상단 아이콘을 클릭했을 때 이동할 곳
   final dynamic path;
@@ -18,6 +19,7 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
     this.bgColor = Colors.transparent,
     this.elementColor = Colors.black,
     this.backPath,
+    this.pushReplacement= false,
     this.icon,
     this.iconPath,
     this.path,
@@ -40,7 +42,7 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               (backIcon) // 오른쪽 아이콘이 없을 경우 SizedBox를 추가해 정렬에 문제없도록 처리
-                ? backBtn(context, elementColor, backPath)
+                ? backBtn(context, elementColor, backPath, pushReplacement)
                 : SizedBox(width: 55, height: 55,),
               titleText(context, elementColor, text),
               (icon != null) // 오른쪽 아이콘이 없을 경우 SizedBox를 추가해 정렬에 문제없도록 처리
@@ -56,11 +58,15 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
 }
 
 // 뒤로 돌아가는 화살표 버튼
-Widget backBtn(BuildContext context, Color elementColor, dynamic backPath) {
+Widget backBtn(BuildContext context, Color elementColor, dynamic backPath, bool pushReplacement) {
   return IconButton(
     onPressed: () {
       if (backPath is Widget) {
-        noEffectReplacementTransition(context, backPath);
+        if (pushReplacement == true) {
+          noEffectReplacementTransition(context, backPath);
+        } {
+          noEffectTransition(context, backPath);
+        }
         // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => backPath));
       } else if (backPath is Function) {
         backPath();

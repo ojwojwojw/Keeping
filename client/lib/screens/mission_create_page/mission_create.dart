@@ -338,6 +338,9 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
       if (response.statusCode == 200) {
         print('미션생성 데이터 전송 성공!');
         print(data);
+
+        await Future.delayed(Duration(seconds: 2)); // 2초 동안 지연
+
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -346,7 +349,15 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
                       button: ConfirmBtn(
                         action: MissionPage(),
                       ),
-                    )));
+                    )));  //페이지터짐관련
+
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedAndGoPage(
+        //               text: '미션 생성완료!',
+        //               targetPage: MissionPage(),
+        //             )));
       } else {
         print('미션생성 데이터 전송 실패.');
       }
@@ -461,7 +472,17 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
                       button: ConfirmBtn(
                         action: ParentMissionPage(),
                       ),
-                    )));
+                    ))); //페이지터짐관련
+
+
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => CompletedAndGoPage(
+          //               text: '미션 생성완료!',
+          //               targetPage: ParentMissionPage(),
+          //             )));
+
       }
       print(response);
     } catch (e) {

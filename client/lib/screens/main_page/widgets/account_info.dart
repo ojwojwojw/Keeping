@@ -125,32 +125,31 @@ class _AccountInfoState extends State<AccountInfo> {
                     color: Color.fromARGB(255, 204, 204, 204),
                   ),
                 ),
-                _parent != null && !_parent!
-                    ? InkWell(
-                        onTap: () {
-                          noEffectReplacementTransition(
-                              context,
-                              _accountNumber != ''
-                                  ? ChildRequestMoneyPage()
-                                  : MakeAccountPage());
-                          // Navigator.push(context, MaterialPageRoute(
-                          //   builder: (_) {
-                          //     if (_accountNumber != '') {
-                          //       return ChildRequestMoneyPage();
-                          //     } else {
-                          //       return MakeAccountPage();
-                          //     }
-                          //   },
-                          // ),);
-                        },
-                        child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Text(
-                              '용돈 조르기',
-                              style: TextStyle(
-                                  color: Color(0xFFA5A5A5), fontSize: 14),
-                            )),
+                _parent != null && !_parent! ? 
+                  InkWell(
+                    onTap: () {
+                      noEffectTransition(
+                        context, 
+                        _accountNumber != '' ? ChildRequestMoneyPage() : MakeAccountPage()
+                      );
+                      // Navigator.push(context, MaterialPageRoute(
+                      //   builder: (_) {
+                      //     if (_accountNumber != '') {
+                      //       return ChildRequestMoneyPage();
+                      //     } else {
+                      //       return MakeAccountPage();
+                      //     }
+                      //   },
+                      // ),);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
+                        '용돈 조르기',
+                        style: TextStyle(color: Color(0xFFA5A5A5), fontSize: 14),
                       )
+                    )
+                  )
                     : Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Row(

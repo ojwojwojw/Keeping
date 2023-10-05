@@ -396,7 +396,12 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
                       button: ConfirmBtn(
                         action: ParentMissionPage(),
                       ),
-                    )));
+                    )));  //페이지터짐관련
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedAndGoPage(text: '미션 승인완료!', targetPage: ParentMissionPage(),
+        //             )));
       }
     } catch (e) {
       print('Error: $e');
@@ -521,7 +526,12 @@ class _MissionCompleteRequestPageState
                       button: ConfirmBtn(
                         action: MissionPage(),
                       ),
-                    )));
+                    ))); //페이지터짐관련
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedAndGoPage(text: '미션 완료!', targetPage: MissionPage(),
+        //             )));
       }
     } catch (e) {
       print('Error: $e');
@@ -533,7 +543,7 @@ class _MissionCompleteRequestPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: "미션 완료 요청 !",
+        text: "미션 완료 승인 !",
       ),
       body: Center(
         child: Column(
@@ -644,7 +654,12 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
                       button: ConfirmBtn(
                         action: ParentMissionPage(),
                       ),
-                    )));
+                    ))); //페이지터짐관련
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedAndGoPage(text: '승인 완료!', targetPage: ParentMissionPage(),
+        //             )));
       }
     } catch (e) {
       print('Error: $e');
@@ -657,7 +672,7 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: "미션 완료 요청 !",
+        text: "미션 완료 승인 !",
       ),
       body: Center(
         child: Column(
@@ -767,7 +782,12 @@ class _MissionCompleteCommentPageState
                       button: ConfirmBtn(
                         action: MissionPage(),
                       ),
-                    )));
+                    )));  //페이지터짐관련
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedAndGoPage(text: '기억하기 완료!', targetPage: MissionPage(),
+        //             )));
       }
     } catch (e) {
       print('Error: $e');
