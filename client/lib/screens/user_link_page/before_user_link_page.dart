@@ -19,7 +19,9 @@ import 'package:keeping/provider/user_link.dart';
 TextEditingController _oppCode = TextEditingController();
 
 class BeforeUserLinkPage extends StatefulWidget {
-  const BeforeUserLinkPage({super.key});
+  final String linkcode;
+
+  const BeforeUserLinkPage(this.linkcode, {Key? key}) : super(key: key);
 
   @override
   State<BeforeUserLinkPage> createState() => _UserLinkPageState();
@@ -34,12 +36,11 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
   void initState() {
     super.initState();
     _oppCode = TextEditingController(); // 컨트롤러 초기화
-
-    // 페이지가 생성될 때 사용자 코드를 가져오는 Future를 초기화
     bool isParent =
         Provider.of<UserInfoProvider>(context, listen: false).parent;
-    _userCode = renderMyNumber(context, isParent);
-
+    print('Received linkcode: ${widget.linkcode}');
+    print('흐아아아아ㅏ앙');
+    _userCode = Future.value(widget.linkcode); // 직접 받아온 linkcode 값을 사용
     // 사용자 코드를 가져온 후 누가 연결을 시도하는지 가져오도록 초기화
     _whoTryLink(context);
   }
@@ -52,7 +53,7 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
 
   _whoTryLink(BuildContext context) async {
     final userCode = await _userCode; // 사용자 코드 가져오기 (위젯 상태 변수를 사용)
-
+    print('유저코드초기화!! $userCode');
     // 데이터 가져오기 (예시: renderWhoTryLink 함수)
     final whoTryLink = await renderWhoTryLink(context, userCode);
 
@@ -230,18 +231,18 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
       children: [
         ElevatedButton(
           onPressed: () {
-          if (isParent) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ParentMainPage()),
-            );
-          } else {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChildMainPage()),
-            );
-          }
-        },
+            if (isParent) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ParentMainPage()),
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChildMainPage()),
+              );
+            }
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFF8320E7),
             textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),

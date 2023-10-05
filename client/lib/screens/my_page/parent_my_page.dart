@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/files.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/login_page/login_page.dart';
 import 'package:keeping/screens/user_link_page/before_user_link_page.dart';
@@ -10,8 +13,10 @@ import 'package:keeping/screens/my_page/password_edit_page.dart';
 import 'package:keeping/screens/my_page/phonenum_edit_page.dart';
 
 import 'package:keeping/widgets/bottom_modal.dart';
+import 'package:keeping/widgets/rounded_modal.dart';
 // import 'package:path/path.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class ParentMyPage extends StatefulWidget {
   const ParentMyPage({Key? key}) : super(key: key);
@@ -23,12 +28,16 @@ class ParentMyPage extends StatefulWidget {
 class _ParentMyPageState extends State<ParentMyPage> {
   String? _name;
   String? profileImage;
+  String? _memberKey;
+  String? _accessToken;
 
   @override
   void initState() {
     super.initState();
     _name = Provider.of<UserInfoProvider>(context, listen: false).name;
     profileImage = context.read<UserInfoProvider>().profileImage;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
+    _accessToken = context.read<UserInfoProvider>().accessToken;
   }
 
   void gotoEditPwd(BuildContext context) {
@@ -41,14 +50,66 @@ class _ParentMyPageState extends State<ParentMyPage> {
         context, MaterialPageRoute(builder: (context) => PhonenumEditPage()));
   }
 
-  void handleUserLink(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => BeforeUserLinkPage(), // UserLinkPage로 이동하는 부분
-    ));
-  }
-
   void logout(BuildContext context) {
     showLogoutConfirmationDialog(context);
+  }
+
+  void clickUserLink(BuildContext context) async {
+    String _url =
+        'https://j9c207.p.ssafy.io/api/member-service/auth/api/$_memberKey/child/linkcode';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $_accessToken'
+    };
+    try {
+      final response = await http.get(Uri.parse(_url), headers: headers);
+      Map<String, dynamic> jsonResponse =
+          json.decode(utf8.decode(response.bodyBytes));
+      print(jsonResponse);
+      print('촤하하하');
+      if (jsonResponse['resultStatus']['successCode'] == 0) {
+        // 코드가 유효한 경우. beforelink로 이동합니다.
+        String linkcode = jsonResponse['resultBody']['linkcode'];
+        noEffectTransition(context, BeforeUserLinkPage(linkcode));
+      } else {
+        // 코드가 유효하지 않은 경우, 코드를 생성한 후 이동합니다.
+        handleUserLink(context);
+      }
+    } catch (err) {
+      print(err);
+    }
+  }
+
+  void handleUserLink(BuildContext context) async {
+    print('생성하시오');
+    String _url =
+        'http://j9c207.p.ssafy.io:8000/member-service/auth/api/$_memberKey/parent/linkcode';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $_accessToken'
+    };
+    try {
+      final response = await http.post(Uri.parse(_url), headers: headers);
+      Map<String, dynamic> jsonResponse =
+          json.decode(utf8.decode(response.bodyBytes));
+      print(jsonResponse);
+      // 코드를 생성한 후 이동합니다.
+      if (jsonResponse['resultStatus']['successCode'] == 0) {
+        String linkcode = jsonResponse['resultBody']['linkcode'];
+        noEffectTransition(context, BeforeUserLinkPage(linkcode));
+      } else if (jsonResponse['resultStatus']['resultCode'] == "400") {
+        String returnMsg = jsonResponse['resultStatus']['resultMessage'];
+        roundedModal(context: context, title: returnMsg);
+        print('Request failed with status: ${response.statusCode}.');
+      } else if (jsonResponse['resultStatus']['resultCode'] == "404") {
+        String returnMsg = jsonResponse['resultStatus']['resultMessage'];
+        roundedModal(context: context, title: returnMsg);
+      } else {
+        roundedModal(context: context, title: '잠시 후 시도해주세요.');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
 // 로그아웃 모달 다이얼로그
@@ -73,7 +134,6 @@ class _ParentMyPageState extends State<ParentMyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: MyHeader(text: '마이페이지', elementColor: Colors.black),
       body: SingleChildScrollView(
         // SingleChildScrollView 추가
@@ -96,7 +156,7 @@ class _ParentMyPageState extends State<ParentMyPage> {
                 _MyPageDetailedFunctionPage(
                   context,
                   '유저 연결하기',
-                  () => handleUserLink(context),
+                  () => clickUserLink(context),
                 ),
                 _MyPageDetailedFunctionPage(
                   context,
@@ -172,9 +232,9 @@ class _ParentMyPageState extends State<ParentMyPage> {
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-              (Route<dynamic> route) => false
-            );
+                MaterialPageRoute(
+                    builder: (BuildContext context) => LoginPage()),
+                (Route<dynamic> route) => false);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFF8320E7), // 배경색 설정
