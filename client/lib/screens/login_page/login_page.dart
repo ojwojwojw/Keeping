@@ -229,7 +229,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-    Future<void> requestUserInfo(
+  Future<void> requestUserInfo(
     memberKey,
     accessToken,
     fcmToken,
@@ -242,12 +242,14 @@ class _LoginPageState extends State<LoginPage> {
     print('여기옵니다, $accessToken, $memberKey');
     try {
       final response = await http.get(
-        Uri.parse('$_baseUrl/member-service/auth/api/$memberKey/login-check/$fcmToken'),
+        Uri.parse(
+            '$_baseUrl/member-service/auth/api/$memberKey/login-check/$fcmToken'),
         headers: headers,
       );
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = json.decode(response.body);
         print(jsonResponse);
+        print('제이슨리스폰스!!!');
         String? _name = jsonResponse['resultBody']['name'];
         String? _profileImage = jsonResponse['resultBody']['profileImage'];
         dynamic childrenListData = jsonResponse['resultBody']['childrenList'];
