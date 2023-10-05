@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:keeping/fcmSetting.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeping/provider/account_info_provider.dart';
@@ -97,13 +98,21 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AccountDetailProvider()),
       ],
       child: MaterialApp(
-  navigatorKey: navigatorKey,
-  debugShowCheckedModeBanner: false,
-  theme: ThemeData(
-    fontFamily: "NotoSansKR",
-  ),
-  home: LoginPage(),
-)
+        localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ko', 'KR')
+      ],
+        navigatorKey: navigatorKey,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          fontFamily: "NotoSansKR",
+        ),
+        home: LoginPage(),
+      )
 
       ));
 }
