@@ -241,7 +241,6 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
               Image.asset(
                 'assets/image/question/micandfaces.png',
                 width: 50, // 이미지의 너비
-                height: 50, // 이미지의 높이
               ),
               Text(
                 '오늘의 질문',
@@ -875,7 +874,6 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
               Image.asset(
                 'assets/image/question/micandfaces.png',
                 width: 50, // 이미지의 너비
-                height: 50, // 이미지의 높이
               ),
               Text(
                 '오늘의 질문',
