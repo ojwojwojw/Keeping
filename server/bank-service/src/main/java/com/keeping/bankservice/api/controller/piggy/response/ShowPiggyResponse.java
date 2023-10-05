@@ -2,6 +2,7 @@ package com.keeping.bankservice.api.controller.piggy.response;
 
 import com.keeping.bankservice.api.service.piggy.dto.ShowPiggyDto;
 import com.keeping.bankservice.domain.piggy.Completed;
+import com.keeping.bankservice.domain.piggy.Piggy;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -49,6 +50,20 @@ public class ShowPiggyResponse {
                 .savedImage(base64Image)
                 .completed(dto.getCompleted())
                 .createdDate(dto.getCreatedDate())
+                .build();
+    }
+
+    public static ShowPiggyResponse toResponse(Piggy piggy, String base64Image) {
+        return ShowPiggyResponse.builder()
+                .id(piggy.getId())
+                .childKey(piggy.getChildKey())
+                .accountNumber(piggy.getAccountNumber())
+                .content(piggy.getContent())
+                .goalMoney(piggy.getGoalMoney())
+                .balance(piggy.getBalance())
+                .savedImage(base64Image)
+                .completed(piggy.getCompleted())
+                .createdDate(piggy.getCreatedDate())
                 .build();
     }
 }
