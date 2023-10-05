@@ -18,13 +18,28 @@ Widget requestPocketMoneyBox(responseData, bool isParent, {String? childName}) {
             width: 80, // 이미지의 너비
             height: 80, // 이미지의 높이
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:[
           Text(
-            isParent ? '$childName가' : '용돈을 조를까요?',
+            isParent ? '$childName' : '',
+            style: TextStyle(
+              color: const Color.fromARGB(255, 54, 54, 54),
+              fontSize: 18,
+              fontWeight: FontWeight.bold
+            ),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            isParent ? '이/가' : '용돈을 조를까요?',
             style: TextStyle(
               color: const Color.fromARGB(255, 54, 54, 54),
               fontSize: 18,
             ),
             textAlign: TextAlign.center,
+          ),
+
+            ]
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
