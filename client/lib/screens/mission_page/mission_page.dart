@@ -7,6 +7,7 @@ import 'package:keeping/screens/mission_page/widgets/mission_filters.dart';
 import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
+import 'package:keeping/widgets/loading.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/screens/mission_create_page/mission_create.dart';
 import 'package:dio/dio.dart';
@@ -111,60 +112,55 @@ class _MissonPageState extends State<MissionPage> {
         elementColor: Colors.black,
         backPath: ChildMainPage(),
       ),
-      body: FutureBuilder(
-        // 비동기 데이터를 기다리고 UI를 구성
-        future: getData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('에러 발생: ${snapshot.error}'));
-          } else {
-            data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
-            final filteredData =
-                filterMissionsByStatus(currentFilter); // 여기에서 필터링을 적용합니다
-            return Center(
-              child: Column(
-                children: [
-                  //새로고침 버튼
-                  // ElevatedButton(
-                  //   onPressed: reload, 
-                  //   child: Container(
-                  //     width: 100, height:100,
-                  //   child: Text('새로고침'
-                  //    )
-                  //   )
-                  // ),
-
-
-                  CreateMissonBox(),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  MissionFilters(
-                      setFilter: changeFilter,
-                      setIdx: _setSelectedBtnIdx,
-                      Idx: _selectedBtnIdx),
-                  Expanded(
+      body: Column(
+        children: [
+          CreateMissonBox(),
+          SizedBox(
+            height: 10,
+          ),
+          MissionFilters(
+            setFilter: changeFilter,
+            setIdx: _setSelectedBtnIdx,
+            Idx: _selectedBtnIdx
+          ),
+          FutureBuilder(
+            // 비동기 데이터를 기다리고 UI를 구성
+            future: getData(),
+            builder: (context, snapshot) {
+              // if (snapshot.connectionState == ConnectionState.waiting) {
+              //   return Center(child: CircularProgressIndicator());
+              // } else if (snapshot.hasError) {
+              //   return Center(child: Text('에러 발생: ${snapshot.error}'));
+              // } else {
+              if (snapshot.hasData) {
+                data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
+                final filteredData = filterMissionsByStatus(currentFilter); // 여기에서 필터링을 적용합니다
+                if (data == [] || data.isEmpty) {
+                  return empty(text: '미션 내역이 없습니다.');
+                }
+                return Expanded(
+                    child: Container(
+                      width: double.infinity,
                       child: SingleChildScrollView(
-                          child: Column(
-                    children: [
-                      ...filteredData.map((e) => MissionColorInfoCard(
-                            status: e["completed"],
-                            createdDate: DateTime.parse(e['startDate']),
-                            todo: e['todo'],
-                            item: e,
-                            profileImage: profileImage,
-                            onMissionDeleted: onMissionDeleted,
-                          )),
-                    ],
-                  ))),
-                  // missionData(filteredData),
-                ],
-              ),
-            );
-          }
-        },
+                        child: Column(
+                          children: [
+                            ...filteredData.map((e) => MissionColorInfoCard(
+                              status: e["completed"],
+                              createdDate: DateTime.parse(e['startDate']),
+                              todo: e['todo'],
+                              item: e,
+                              profileImage: profileImage,
+                              onMissionDeleted: onMissionDeleted,
+                            )),
+                                        ],
+                                      )),
+                    ));
+              } else {
+                return loading();
+              }
+            },
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNav(),
     );
@@ -271,47 +267,38 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
         elementColor: Colors.black,
         backPath: ParentMainPage(),
       ),
-      body: FutureBuilder(
-        // 비동기 데이터를 기다리고 UI를 구성
-        future: getParentData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('에러 발생: ${snapshot.error}'));
-          } else {
-            data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
-            final filteredData = filterMissionsByStatus(currentFilter);
-            return Center(
-              child: Column(
-                children: [
-
-                  /////
-
-                  //새로고침 버튼
-                  // ElevatedButton(
-                  //   onPressed: reload, 
-                  //   child: Container(
-                  //     width: 100, height:100,
-                  //   child: Text('새로고침'
-                  //    )
-                  //   )
-                  // ),
-
-                  CreateMissonBox(),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  MissionFilters(
-                      setFilter: changeFilter,
-                      setIdx: _setSelectedBtnIdx,
-                      Idx: _selectedBtnIdx),
-                  // filterBar(),
-                  Expanded(
-                      child: SingleChildScrollView(
-                          child: Column(
-                    children: [
-                      ...filteredData.map((e) => MissionColorInfoCard(
+      body: Column(
+        children: [
+          CreateMissonBox(),
+          SizedBox(
+            height: 10,
+          ),
+          MissionFilters(
+              setFilter: changeFilter,
+              setIdx: _setSelectedBtnIdx,
+              Idx: _selectedBtnIdx),
+          FutureBuilder(
+            // 비동기 데이터를 기다리고 UI를 구성
+            future: getParentData(),
+            builder: (context, snapshot) {
+              // if (snapshot.connectionState == ConnectionState.waiting) {
+              //   return Center(child: CircularProgressIndicator());
+              // } else if (snapshot.hasError) {
+              //   return Center(child: Text('에러 발생: ${snapshot.error}'));
+              // } else {
+              if (snapshot.hasData) {
+                data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
+                final filteredData = filterMissionsByStatus(currentFilter);
+                if (data == [] || data.isEmpty) {
+                  return empty(text: '미션 내역이 없습니다.');
+                }
+                return Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ...filteredData.map((e) => MissionColorInfoCard(
                             status: e["completed"],
                             createdDate: DateTime.parse(e['startDate']),
                             todo: e['todo'],
@@ -319,14 +306,15 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
                             profileImage: profileImage,
                             onMissionDeleted: onMissionDeleted,
                           )),
-                    ],
-                  ))),
-                  // parentMissionData(filteredData),
-                ],
-              ),
-            );
-          }
-        },
+                                      ],
+                                    )),
+                  ));
+              } else {
+                return loading();
+              }
+            },
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNav(),
     );
@@ -350,7 +338,7 @@ class CreateMissonBox extends StatelessWidget {
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(
-                  10), // 원하는 둥글게 만들 모서리의 반지름 값. 15은 예시입니다.
+                  20), // 원하는 둥글게 만들 모서리의 반지름 값. 15은 예시입니다.
             ),
           ),
         ),

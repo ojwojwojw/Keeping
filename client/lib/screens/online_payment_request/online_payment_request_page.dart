@@ -11,7 +11,7 @@ import 'package:keeping/screens/online_payment_request/widgets/online_payment_re
 import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/color_info_card.dart';
-import 'package:keeping/widgets/empty.dart';
+import 'package:keeping/widgets/loading.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
@@ -108,7 +108,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
                   )
                 );
               } else {
-                return Text('');
+                return loading();
               }
             },
           ),

@@ -11,6 +11,7 @@ import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_fut
 import 'package:keeping/screens/allowance_ledger_page/widgets/floating_date_btn.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:keeping/widgets/loading.dart';
 import 'package:provider/provider.dart';
 
 class ChildSpendingRoutePage extends StatefulWidget {
@@ -145,7 +146,7 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                           yAnchor: 1.6,
                           content: '<div style="height: 60px; padding: 10px; display: flex; align-items: center; border-radius: 20px; border: 2px solid #F0F0F0; background: #FFF;"><div><span style="font-size: 18px; font-weight: 500;">${e['storeName']}</span></br><span style="color: #696969; font-size: 15px;">${formattedTime(DateTime.parse(e['createdDate']))}</span></div></div>'
                           // content: '<div style="height: 60px; padding: 10px; display: flex; align-items: center; border-radius: 20px; border: 2px solid #F0F0F0; background: #FFF;"><div><div><img src="assets/image/category/${e['largeCategory']}.png" alt="예시 이미지" height="50"></div><div><span style="font-size: 18px; font-weight: 500;">${e['storeName']}</span></br><span style="color: #696969; font-size: 15px;">${formattedTime(DateTime.parse(e['createdDate']))}</span></div></div></div>'
-
+        
                         )
                       )
                     ],
@@ -163,18 +164,19 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
                 ],
               );
             } else {
-              return Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  KakaoMap(
-                    onMapCreated: ((controller) async {
-                      controller.clear();
-                      _onMapCreated(controller);
-                    }),
-                  ),
-                  FloatingDateBtn(setDate: _setDate, selectedDate: _date,)  // 커스텀 위젯
-                ]
-              );
+              // return Stack(
+              //   alignment: Alignment.topCenter,
+              //   children: [
+              //     KakaoMap(
+              //       onMapCreated: ((controller) async {
+              //         controller.clear();
+              //         _onMapCreated(controller);
+              //       }),
+              //     ),
+              //     FloatingDateBtn(setDate: _setDate, selectedDate: _date,)  // 커스텀 위젯
+              //   ]
+              // );
+              return Center(child: loading());
             }
           }
         )

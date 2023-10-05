@@ -14,3 +14,15 @@ Widget empty({required String text, double size = 200}) {
     ),
   );
 }
+
+Widget loading() {
+  return Expanded(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: const [
+        CircularProgressIndicator()
+      ],
+    ),
+  );
+}
