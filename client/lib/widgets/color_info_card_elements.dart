@@ -137,7 +137,7 @@ Widget colorInfoDetailCardContentGreyBox(String content, bool leftAlign) {
         child: Row(
           mainAxisAlignment: leftAlign ? MainAxisAlignment.start : MainAxisAlignment.center,
           children: [
-            Text(content),
+            Expanded(child: Text(content)),
           ],
         ),
       ));

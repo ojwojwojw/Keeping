@@ -6,6 +6,7 @@ import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/bottom_double_btn.dart';
 import 'package:keeping/widgets/bottom_modal.dart';
+import 'package:keeping/widgets/color_info_card_elements.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
@@ -72,7 +73,8 @@ class _ParentRequestMoneyDetailPageState
           ],
         ),
       ),
-      bottomNavigationBar: BottomDoubleBtn(
+      bottomNavigationBar: data['approve'] == 'WAIT' ?
+      BottomDoubleBtn(
         firstText: '거부하기',
         firstAction: () {
           determineRequestMoney('REJECT', id);
@@ -82,6 +84,11 @@ class _ParentRequestMoneyDetailPageState
           determineRequestMoney('APPROVE', id);
         },
         isDisabled: false,
+      ) :
+      BottomBtn(
+        text: '확인',
+        isDisabled: false,
+        bgColor: requestStatusBgColor(data['approve']!)
       ),
     );
   }
@@ -105,6 +112,7 @@ class _ParentRequestMoneyDetailPageState
           context,
           MaterialPageRoute(
             builder: (_) => CompletedPage(
+              image: 'assets/image/face/face6.png',
               text: '$_name에게 \n 용돈 주기 거부!',
               button: ConfirmBtn(
                 action: ParentRequestMoneyPage(),
@@ -117,6 +125,7 @@ class _ParentRequestMoneyDetailPageState
           context,
           MaterialPageRoute(
             builder: (_) => CompletedPage(
+              image: 'assets/image/face/face3.png',
               text: '$_name에게 \n 용돈 주기 승인!',
               button: ConfirmBtn(
                 action: ParentRequestMoneyPage(),

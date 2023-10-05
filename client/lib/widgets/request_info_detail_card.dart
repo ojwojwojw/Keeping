@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/color_info_card_elements.dart';
 import 'package:keeping/widgets/request_info_card_elements.dart';
+import 'package:provider/provider.dart';
 
 class RequestInfoDetailCard extends StatefulWidget {
   final String name;
@@ -40,12 +42,12 @@ class _RequestInfoDetailCardState extends State<RequestInfoDetailCard> {
               border: true,
               borderColor: requestStatusBgColor(widget.status)),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(25),
             child: Column(
               children: [
                 requestInfoCardStatus(300, widget.status),
                 requestInfoDetailCardHeader(
-                    widget.createdDate, widget.name, widget.money),
+                    widget.createdDate, widget.name, widget.money, widget.status),
                 colorInfoDetailCardContents(
                   Column(
                     children: [
@@ -62,7 +64,16 @@ class _RequestInfoDetailCardState extends State<RequestInfoDetailCard> {
   }
 }
 
-Widget requestInfoDetailCardHeader(DateTime date, String name, int money) {
+Widget requestInfoDetailCardHeader(DateTime date, String name, int money, String status) {
+  String setImgPath(status) {
+    if (status == 'APPROVE') {
+      return 'assets/image/face/face4.png';
+    } else if (status == 'REJECT') {
+      return 'assets/image/face/face6.png';
+    } else {
+      return 'assets/image/face/face1.png';
+    }
+  }
   String formatMoney = formattedMoney(money);
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -70,10 +81,10 @@ Widget requestInfoDetailCardHeader(DateTime date, String name, int money) {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         colorInfoDetailDate(date),
-        SizedBox(height: 30),
+        SizedBox(height: 10),
         Row(
           children: [
-            categoryImg('assets/image/temp_image.jpg', size: 75),
+            roundedAssetImg(imgPath: setImgPath(status), size: 90),
             SizedBox(
               width: 20,
             ),

@@ -7,6 +7,7 @@ import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_
 import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_filter.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
+import 'package:keeping/widgets/empty.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/request_info_card.dart';
@@ -95,72 +96,64 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
     return Scaffold(
       backgroundColor: Color(0xFFFAFAFA),
       appBar: MyHeader(text: '용돈 조르기'),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            FutureBuilder(
-                future: renderRequestCount(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return emptyBox();
-                  } else if (snapshot.hasError) {
-                    return Text('에러 발생: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
-                    var responseData = snapshot.data;
-                    // responseData를 이용하여 필요한 UI 작업 수행
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  RequestPocketMoneySecondPage()),
-                        );
-                      },
-                      child: requestPocketMoneyBox(responseData, _isParent),
-                    );
-                  } else {
-                    return Text('용돈 조르기 내역이 없습니다.');
-                  }
-                }),
-            RequestMoneyFilters(
-              onPressed: (int idx) {
-                setState(() {
-                  selectedBtnIdx = idx;
-                });
-                _updateData();
-              },
-            ),
-            FutureBuilder(
-              future: renderTotalRequestMoney(context, selectedBtnIdx),
+      body: Column(
+        children: [
+          FutureBuilder(
+              future: renderRequestCount(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return SizedBox(
-                    height: 200, // 원하는 높이로 조정하세요
-                    child: Container(
-                      child: Center(
-                        child: Text(
-                          '잠시 기다려주세요...',
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 77, 19, 135)),
-                        ),
+                if (snapshot.hasData) {
+                  var responseData = snapshot.data;
+                  // responseData를 이용하여 필요한 UI 작업 수행
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                RequestPocketMoneySecondPage()),
+                      );
+                    },
+                    child: requestPocketMoneyBox(responseData, _isParent),
+                  );
+                } else {
+                  return emptyBox();
+                }
+              }),
+          RequestMoneyFilters(
+            onPressed: (int idx) {
+              setState(() {
+                selectedBtnIdx = idx;
+              });
+              _updateData();
+            },
+          ),
+          FutureBuilder(
+            future: renderTotalRequestMoney(context, selectedBtnIdx),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox(
+                  height: 200, // 원하는 높이로 조정하세요
+                  child: Container(
+                    child: Center(
+                      child: Text(
+                        '',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 77, 19, 135)),
                       ),
                     ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('에러 발생: ${snapshot.error}');
-                } else if (snapshot.hasData) {
-                  // 용돈 조르기 내역을 표시하는 위젯을 반환
-                  return totalRequestPockeyMoney(_result);
-                } else {
-                  return Text('용돈 조르기 내역이 없습니다.');
-                }
-              },
-            )
-          ],
-        ),
+                  ),
+                );
+              } else if (snapshot.hasData) {
+                // 용돈 조르기 내역을 표시하는 위젯을 반환
+                return totalRequestPockeyMoney(_result);
+              } else {
+                return empty(text: '용돈 조르기 내역이 없습니다.');
+              }
+            },
+          )
+        ],
       ),
       bottomNavigationBar: BottomNav(),
     );
@@ -175,40 +168,46 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
   // 용돈 조회 필드
   Widget totalRequestPockeyMoney(List<Map<String, dynamic>> requests) {
     if (requests.isEmpty) {
-      return Column(
-        children: [
-          SizedBox(
-            height: 50,
-          ),
-          Text(
-            '내역이 없습니다.',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: Colors.grey[800],
-            ),
-          )
-        ],
-      );
+      return empty(text: '내역이 없습니다.');
+      // return Column(
+      //   children: [
+      //     SizedBox(
+      //       height: 50,
+      //     ),
+      //     Text(
+      //       '내역이 없습니다.',
+      //       style: TextStyle(
+      //         fontSize: 20,
+      //         fontWeight: FontWeight.w700,
+      //         color: Colors.grey[800],
+      //       ),
+      //     )
+      //   ],
+      // );
     }
 
-    return Container(
-      decoration: lightGreyBgStyle(),
-      width: double.infinity,
-      child: SingleChildScrollView(
-        child: Column(
-          children: requests.map((req) {
-            final DateTime createdDate = DateTime.parse(req['createdDate']);
-            final String status = req['approve'];
-            final int money = req['money'];
-
-            return RequestInfoCard(
-              money: money,
-              status: status,
-              createdDate: createdDate,
-              path: ChildRequestMoneyDetailPage(data: req), // req 데이터 전달
-            );
-          }).toList(),
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Container(
+          decoration: lightGreyBgStyle(),
+          width: double.infinity,
+          child: SingleChildScrollView(
+            child: Column(
+              children: requests.map((req) {
+                final DateTime createdDate = DateTime.parse(req['createdDate']);
+                final String status = req['approve'];
+                final int money = req['money'];
+        
+                return RequestInfoCard(
+                  money: money,
+                  status: status,
+                  createdDate: createdDate,
+                  path: ChildRequestMoneyDetailPage(data: req), // req 데이터 전달
+                );
+              }).toList(),
+            ),
+          ),
         ),
       ),
     );
