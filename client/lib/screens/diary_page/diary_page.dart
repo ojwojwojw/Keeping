@@ -1442,7 +1442,7 @@ class _DiaryCommentPageState extends State<DiaryCommentPage> {
                       ),
                       child: SingleChildScrollView(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 8),
+                          padding: const EdgeInsets.only(top: 8, left: 24, right: 24),
                           child: ListView.builder(
                               shrinkWrap:
                                   true, // ListView를 Column 내부에서 사용하기 위해 필요합니다.
