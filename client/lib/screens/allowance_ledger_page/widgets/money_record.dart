@@ -69,29 +69,34 @@ class _MoneyRecordState extends State<MoneyRecord> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: categoryImg('assets/image/category/${widget.largeCategory}.png'),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.storeName,
-                        style: bigStyle(),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: categoryImg('assets/image/category/${widget.largeCategory}.png'),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.storeName,
+                            style: bigStyle(),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            widget.onlyTime
+                                ? formattedTime(widget.date)
+                                : formattedFullDate(widget.date),
+                          )
+                        ],
                       ),
-                      Text(
-                        widget.onlyTime
-                            ? formattedTime(widget.date)
-                            : formattedFullDate(widget.date),
-                      )
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
               Padding(
                   padding: EdgeInsets.only(right: 15),
@@ -318,11 +323,12 @@ Widget _selectCameraOrGallery(BuildContext context, int accountHistoryId) {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                Text(
-                  '🖼️',
-                  style: TextStyle(fontSize: 50),
-                ),
+              children: [
+                // Text(
+                //   '🖼️',
+                //   style: TextStyle(fontSize: 50),
+                // ),
+                Image.asset('assets/image/money/gallery.png', width: 80,),
                 SizedBox(height: 4,),
                 Text(
                   '선택하기',

@@ -53,7 +53,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
       body: Column(
         children: [
           PiggyDetailInfo(
-            parent: _parent,
+            piggyId: widget.piggyDetailInfo['id'],
             content: widget.piggyDetailInfo['content'],
             balance: widget.piggyDetailInfo['balance'],
             goalMoney: widget.piggyDetailInfo['goalMoney'],
