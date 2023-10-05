@@ -94,7 +94,8 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
                                       width: 200,
                                     ),
                                   ],
-                                ));
+                                )
+                              );
                           }
                         } else {
                           return Text('데이터가 없어요');

@@ -18,9 +18,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeping/util/page_transition_effects.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
-TextEditingController _userId = TextEditingController();
-TextEditingController _userPw = TextEditingController();
-Dio dio = Dio();
+
+late TextEditingController _userId;
+late TextEditingController _userPw;
+late Dio dio;
+
 final _loginKey = GlobalKey<FormState>();
 
 class LoginPage extends StatefulWidget {
@@ -60,6 +62,8 @@ class _LoginPageState extends State<LoginPage> {
     _userId = TextEditingController();
     _userPw = TextEditingController();
     _loginResult = '';
+    dio = Dio();  // 여기서 dio 초기화
+
   }
 
   // 페이지가 파기될 때 컨트롤러를 해제
@@ -78,8 +82,6 @@ class _LoginPageState extends State<LoginPage> {
       appBar: MyHeader(
         text: '로그인',
         elementColor: Colors.black,
-        // icon: Icon(Icons.arrow_circle_up),
-        // path: LoginPage(),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -159,30 +161,29 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<void> login(context, Function handleLogin) async {
+  login(context, Function handleLogin) async {
     final data = {
       'loginId': _loginId,
       'loginPw': _loginPw,
     };
-
+    String fcmToken = Provider.of<UserInfoProvider>(context, listen: false)
+        .fcmToken; // fcmToken 가져오기
+    print('$data, $fcmToken');
     try {
       var response = await dio.post(
         '$_baseUrl/member-service/login',
         data: data,
       );
-      String fcmToken = Provider.of<UserInfoProvider>(context, listen: false)
-          .fcmToken; // fcmToken 가져오기
-      print(fcmToken);
-
+      print(response);
       if (response.statusCode == 200) {
-        // 로그인에 성공한 경우
         print('로그인에 성공했어요!');
         handleLogin('');
         String? token = response.headers.value('token');
         print(token);
         String? memberKey = response.headers.value('memberKey');
         print(memberKey);
-        // 나머지 처리 코드 추가
+
+        // 유저 정보 반환
         await requestUserInfo(memberKey, token, fcmToken,
             Provider.of<UserInfoProvider>(context, listen: false));
         Provider.of<UserInfoProvider>(context, listen: false)
@@ -200,9 +201,14 @@ class _LoginPageState extends State<LoginPage> {
         handleLogin('아이디 및 비밀번호를 확인해주세요.');
       }
     } catch (err) {
-      print(err);
-      handleLogin('아이디 및 비밀번호를 확인해주세요.');
+      if(err is DioError && err.response?.statusCode == 401) {
+          handleLogin('아이디 및 비밀번호를 확인해주세요.');
+      } else {
+          handleLogin('알 수 없는 오류가 발생했습니다.');
+      }
+      print('로그인 중 에러 발생. $err');
     }
+
   }
 
   Future<void> requestUserInfo(

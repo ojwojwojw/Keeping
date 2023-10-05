@@ -7,6 +7,7 @@ import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/util/display_format.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
@@ -150,20 +151,18 @@ class _SendMoneyRegularPageState extends State<SendMoneyRegularPage> {
           text: '다음',
           isDisabled: BtnDisable,
           action: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => WhenSendPocketMoneyPage(
-                  accessToken: _accessToken,
-                  memberKey: _memberKey,
-                  childKey: _childKey,
-                  amount: amount,
-                  childName: _childName,
-                  balance: _balance,
-                ),
+            noEffectTransition(
+              context, WhenSendPocketMoneyPage(
+                accessToken: _accessToken,
+                memberKey: _memberKey,
+                childKey: _childKey,
+                amount: amount,
+                childName: _childName,
+                balance: _balance,
               ),
             );
-          }),
+          }
+        ),
     );
   }
 
@@ -383,7 +382,7 @@ class _WhenSendPocketMoneyPageState extends State<WhenSendPocketMoneyPage> {
         ],
       ),
       bottomNavigationBar: BottomBtn(
-        text: '다음',
+        text: '보내기',
         isDisabled: BtnDisable,
         action: () async {
           var response = await sendMoney(
@@ -394,15 +393,12 @@ class _WhenSendPocketMoneyPageState extends State<WhenSendPocketMoneyPage> {
             day: int.parse(day),
           );
           if (response['resultStatus']['successCode'] == 0) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CompletedPage(
-                          text: "용돈을 보냈어요!",
-                          button: ConfirmBtn(
-                            action: ParentMainPage(),
-                          ),
-                        )));
+            noEffectTransition(context, CompletedPage(
+              text: "용돈을 보냈어요!",
+              button: ConfirmBtn(
+                action: ParentMainPage(),
+              ),
+            ));
           }
           print(response);
           print('용돈 송금 완');

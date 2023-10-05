@@ -66,48 +66,52 @@ class _AccountInfoState extends State<AccountInfo> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/image/money/coins.png', width: 90,),
+                      Image.asset(
+                        'assets/image/money/coins.png',
+                        width: 90,
+                      ),
                       Expanded(
-                        child: Column(
-                          children: [
-                            Text(
-                              formattedMoney(widget.balance),
-                              style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                          child: Column(
+                        children: [
+                          Text(
+                            formattedMoney(widget.balance),
+                            style: TextStyle(
+                                fontSize: 26, fontWeight: FontWeight.bold),
+                          ),
+                          FutureBuilder(
+                            future: getMonthTotalExpense(
+                              accessToken: _accessToken,
+                              memberKey: _memberKey,
+                              targetKey: _parent != null && _parent!
+                                  ? _childKey
+                                  : _memberKey,
+                              date:
+                                  DateFormat('yyyy-MM').format(DateTime.now()),
                             ),
-                            FutureBuilder(
-                              future: getMonthTotalExpense(
-                                accessToken: _accessToken,
-                                memberKey: _memberKey,
-                                targetKey: _parent != null && _parent! ? _childKey : _memberKey,
-                                date: DateFormat('yyyy-MM').format(DateTime.now()),
-                              ), 
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  if (snapshot.data['resultStatus']['resultCode'] == '503') {
-                                    return Text(
-                                      '${DateTime.now().month}월 총 지출액: 0원',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Color(0xFF737373)
-                                      ),
-                                    );
-                                  }
-                                  var response = snapshot.data['resultBody'];
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data['resultStatus']
+                                        ['resultCode'] ==
+                                    '503') {
                                   return Text(
-                                    '${DateTime.now().month}월 총 지출액: ${formattedMoney(response)}',
+                                    '${DateTime.now().month}월 총 지출액: 0원',
                                     style: TextStyle(
-                                      fontSize: 14, 
-                                      color: Color(0xFF737373)
-                                    ),
+                                        fontSize: 14, color: Color(0xFF737373)),
                                   );
-                                } else {
-                                  return Text('');
                                 }
-                              },
-                            ),
-                          ],
-                        )
-                      )
+                                var response = snapshot.data['resultBody'];
+                                return Text(
+                                  '${DateTime.now().month}월 총 지출액: ${formattedMoney(response)}',
+                                  style: TextStyle(
+                                      fontSize: 14, color: Color(0xFF737373)),
+                                );
+                              } else {
+                                return Text('');
+                              }
+                            },
+                          ),
+                        ],
+                      ))
                     ],
                   ),
                 ),
@@ -116,98 +120,107 @@ class _AccountInfoState extends State<AccountInfo> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(height: 1.2, color: Color.fromARGB(255, 204, 204, 204),),
+                  child: Container(
+                    height: 1.2,
+                    color: Color.fromARGB(255, 204, 204, 204),
+                  ),
                 ),
-                _parent != null && !_parent! ? 
-                  InkWell(
-                    onTap: () {
-                      noEffectReplacementTransition(
-                        context, 
-                        _accountNumber != '' ? ChildRequestMoneyPage() : MakeAccountPage()
-                      );
-                      // Navigator.push(context, MaterialPageRoute(
-                      //   builder: (_) {
-                      //     if (_accountNumber != '') {
-                      //       return ChildRequestMoneyPage();
-                      //     } else {
-                      //       return MakeAccountPage();
-                      //     }
-                      //   },
-                      // ),);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        '용돈 조르기',
-                        style: TextStyle(color: Color(0xFFA5A5A5), fontSize: 14),
+                _parent != null && !_parent!
+                    ? InkWell(
+                        onTap: () {
+                          noEffectReplacementTransition(
+                              context,
+                              _accountNumber != ''
+                                  ? ChildRequestMoneyPage()
+                                  : MakeAccountPage());
+                          // Navigator.push(context, MaterialPageRoute(
+                          //   builder: (_) {
+                          //     if (_accountNumber != '') {
+                          //       return ChildRequestMoneyPage();
+                          //     } else {
+                          //       return MakeAccountPage();
+                          //     }
+                          //   },
+                          // ),);
+                        },
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Text(
+                              '용돈 조르기',
+                              style: TextStyle(
+                                  color: Color(0xFFA5A5A5), fontSize: 14),
+                            )),
                       )
-                    ),
-                  )
-                :
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: InkWell(
-                            onTap: () {
-                              if (_accountNumber != '') {
-                                bottomModal(
-                                  context: context,
-                                  title: '용돈 보내기',
-                                  button: sendTypeBtns(context),
-                                );
-                              } else {
-                                noEffectReplacementTransition(context, MakeAccountPage());
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (_) => MakeAccountPage(),
-                                //   ),
-                                // );
-                              }
-                            },
-
-                            child: Text(
-                              '용돈 보내기', 
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Color(0xFFA5A5A5), fontSize: 14),
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  if (_accountNumber != '') {
+                                    bottomModal(
+                                      context: context,
+                                      title: '용돈 보내기',
+                                      button: sendTypeBtns(context),
+                                    );
+                                  } else {
+                                    noEffectReplacementTransition(
+                                        context, MakeAccountPage());
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (_) => MakeAccountPage(),
+                                    //   ),
+                                    // );
+                                  }
+                                },
+                                child: Text(
+                                  '용돈 보내기',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Color(0xFFA5A5A5), fontSize: 14),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        Container(width: 1.2, height: 30, color: Color.fromARGB(255, 204, 204, 204),),
-                        Expanded(
-                          child: InkWell(
-                            onTap: () {
-                              noEffectReplacementTransition(
-                                context, 
-                                _accountNumber != '' ? ParentRequestMoneyPage() : MakeAccountPage()  
-                              );
-                              // if (_accountNumber != '') {
-                              //   Navigator.push(context,
-                              //     MaterialPageRoute(
-                              //     builder: (_) => ParentRequestMoneyPage(),
-                              //     ),
-                              //   );
-                              // } else {
-                              //   Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //       builder: (_) => MakeAccountPage(),
-                              //     ),
-                              //   );
-                              // }
-                            },
-                            child: Text(
-                              '조르기 모아보기', 
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Color(0xFFA5A5A5), fontSize: 14),
+                            Container(
+                              width: 1.2,
+                              height: 30,
+                              color: Color.fromARGB(255, 204, 204, 204),
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                  onTap: () {
+                                    noEffectReplacementTransition(
+                                        context,
+                                        _accountNumber != ''
+                                            ? ParentRequestMoneyPage()
+                                            : MakeAccountPage());
+                                    // if (_accountNumber != '') {
+                                    //   Navigator.push(context,
+                                    //     MaterialPageRoute(
+                                    //     builder: (_) => ParentRequestMoneyPage(),
+                                    //     ),
+                                    //   );
+                                    // } else {
+                                    //   Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //       builder: (_) => MakeAccountPage(),
+                                    //     ),
+                                    //   );
+                                    // }
+                                  },
+                                  child: Text(
+                                    '조르기 모아보기',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Color(0xFFA5A5A5), fontSize: 14),
+                                  )),
                             )
-                          ),
-                        )
-                      ],
-                    ),
-                  )
+                          ],
+                        ),
+                      )
               ],
             ),
           ),
@@ -221,26 +234,19 @@ Row sendTypeBtns(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      sendTypeModalBtn(
-        'assets/image/pocketmoney/calendar.png',
-        '정기로\n보내기', 
-        context, 
-        SendMoneyRegularPage()
-      ),
-      sendTypeModalBtn(
-        'assets/image/main/piggy.png',
-        '바로\n보내기',
-        context,
-        SendPocketMoneyPage()
-      )
+      sendTypeModalBtn('assets/image/pocketmoney/calendar.png', '정기로\n보내기',
+          context, SendMoneyRegularPage()),
+      sendTypeModalBtn('assets/image/main/piggy.png', '바로\n보내기', context,
+          SendPocketMoneyPage())
     ],
   );
 }
 
-InkWell sendTypeModalBtn(String imagePath, String text, BuildContext context, Widget path) {
+InkWell sendTypeModalBtn(
+    String imagePath, String text, BuildContext context, Widget path) {
   return InkWell(
     onTap: () {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => path));
+      noEffectTransition(context, path);
     },
     child: Container(
       width: 150,
@@ -266,8 +272,6 @@ InkWell sendTypeModalBtn(String imagePath, String text, BuildContext context, Wi
     ),
   );
 }
-
-
 
 BoxDecoration _sendTypeModalBtnStyle() {
   return BoxDecoration(
