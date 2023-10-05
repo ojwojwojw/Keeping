@@ -68,7 +68,7 @@ class _SelectOCRImgPageState extends State<SelectOCRImgPage> {
             memberKey: _memberKey, 
             accountDetailList: accountDetailList
           );
-          if (detailResponse == 0) {
+          if (detailResponse['resultStatus']['successCode'] == 0) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
