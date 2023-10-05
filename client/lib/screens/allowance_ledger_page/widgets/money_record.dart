@@ -323,11 +323,12 @@ Widget _selectCameraOrGallery(BuildContext context, int accountHistoryId) {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                Text(
-                  '🖼️',
-                  style: TextStyle(fontSize: 50),
-                ),
+              children: [
+                // Text(
+                //   '🖼️',
+                //   style: TextStyle(fontSize: 50),
+                // ),
+                Image.asset('assets/image/money/gallery.png', width: 80,),
                 SizedBox(height: 4,),
                 Text(
                   '선택하기',
