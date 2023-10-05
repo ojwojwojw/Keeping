@@ -453,7 +453,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                                         Padding(
                                           padding: EdgeInsets.only(right: 10.0),
                                           child: Text(
-                                            "자녀",
+                                            "나",
                                             style: TextStyle(
                                               fontSize: 17,
                                               fontWeight: FontWeight.bold,
@@ -1079,7 +1079,7 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                                         Padding(
                                           padding: EdgeInsets.only(right: 10.0),
                                           child: Text(
-                                            "부모님",
+                                            "나",
                                             style: TextStyle(
                                               fontSize: 17,
                                               fontWeight: FontWeight.bold,
@@ -1241,6 +1241,8 @@ class DiaryCommentPage extends StatefulWidget {
 }
 
 class _DiaryCommentPageState extends State<DiaryCommentPage> {
+  
+
   @override
   Widget build(BuildContext context) {
     late Map<String, dynamic> data;
@@ -1387,18 +1389,13 @@ class _DiaryCommentPageState extends State<DiaryCommentPage> {
                 child: Column(
                   children: [
                     
-
-
                     SizedBox(
                       height: 15,
                     ),
                     // Question data
 
-
-
-
                     Text(
-                      "#" + widget.index.toString() + "번째 질문",
+                      widget.index == 0 ? "오늘의 질문" : "#" + widget.index.toString() + "번째 질문",
                       style: TextStyle(fontSize: 25, color: Colors.grey),
                     ),
 
