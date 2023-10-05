@@ -45,6 +45,7 @@ class _ChildMyPageState extends State<ChildMyPage> {
   }
 
   void handleUserLink(BuildContext context) {
+    
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => BeforeUserLinkPage(), // UserLinkPage로 이동하는 부분
     ));
