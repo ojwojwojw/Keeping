@@ -376,9 +376,10 @@ class _SignUpParentPageState extends State<SignUpParentPage> {
     );
     print(response);
     if (response['resultStatus']['successCode'] == 0) {
-      // noEffectTransition(context, LoginPage());
-      noEffectTransition(context, LoginPage());
-
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+        (Route<dynamic> route) => false
+        );
     } else if (response['resultStatus']['resultCode'] == 409) {
       print('이미 가입한 회원입니다.');
     } else {

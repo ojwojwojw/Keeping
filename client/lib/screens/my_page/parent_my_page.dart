@@ -171,7 +171,10 @@ class _ParentMyPageState extends State<ParentMyPage> {
       children: [
         ElevatedButton(
           onPressed: () {
-            noEffectTransition(context, LoginPage());
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+              (Route<dynamic> route) => false
+            );
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFF8320E7), // 배경색 설정
