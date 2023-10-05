@@ -45,6 +45,10 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
     }
   }
 
+  void reload() {
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -67,7 +71,7 @@ class _OnlinePaymentRequestPageState extends State<OnlinePaymentRequestPage> {
       ),
       body: Column(
         children: [
-          OnlinePaymentRequestInfo(parent: _parent),
+          OnlinePaymentRequestInfo(parent: _parent, reload: reload),
           OnlinePaymentRequestFilters(setFuture: setFuture),
           FutureBuilder(
             future: _future,
