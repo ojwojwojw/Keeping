@@ -54,7 +54,7 @@ class _ChildRequestMoneyDetailPageState
           ],
         ),
       ),
-      bottomSheet: BottomBtn(
+      bottomNavigationBar: BottomBtn(
         text: '확인',
         isDisabled: false,
       ),

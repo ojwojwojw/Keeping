@@ -5,10 +5,12 @@ import 'package:keeping/screens/parent_accept_request_money/parent_accept_reques
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/bottom_double_btn.dart';
+import 'package:keeping/widgets/bottom_modal.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/request_info_detail_card.dart';
+import 'package:keeping/widgets/rounded_modal.dart';
 import 'package:provider/provider.dart';
 
 class ParentRequestMoneyDetailPage extends StatefulWidget {
@@ -54,6 +56,7 @@ class _ParentRequestMoneyDetailPageState
         : DateTime.now();
 
     return Scaffold(
+      backgroundColor: Color(0xFFFAFAFA),
       appBar: MyHeader(text: '조르기 모아보기'),
       body: Center(
         child: Column(
@@ -69,7 +72,7 @@ class _ParentRequestMoneyDetailPageState
           ],
         ),
       ),
-      bottomSheet: BottomDoubleBtn(
+      bottomNavigationBar: BottomDoubleBtn(
         firstText: '거부하기',
         firstAction: () {
           determineRequestMoney('REJECT', id);
@@ -122,8 +125,11 @@ class _ParentRequestMoneyDetailPageState
           ),
         );
       }
+    } else if (response['resultStatus']['resultCode'] == '400') {
+      print(response['resultStatus']['resultMessage']);
+      String msg = response['resultStatus']['resultMessage'];
+      roundedModal(context: context, title: msg);
     }
     print(response);
-    print('승인할 거예요');
   }
 }
