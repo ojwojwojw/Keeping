@@ -124,6 +124,7 @@ Future<dynamic> getAccountInfo({
           accessToken: accessToken,
           url: '/bank-service/api/$memberKey/account/$targetKey');
       print('계좌 정보 반환 응답 $response');
+      print('계좌 정보 반환 응답2 ${response.runtimeType}');
       if (response == null || response['resultStatus']['resultCode'] == 404) {
         return false;
       } else {

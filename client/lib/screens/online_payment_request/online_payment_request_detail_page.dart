@@ -75,8 +75,7 @@ class _OnlinePaymentRequestDetailPageState
                       cost: response['resultBody']['totalMoney'],
                       paidMoney: response['resultBody']['childMoney'],
                       status: response['resultBody']['approve'],
-                      createdDate:
-                          DateTime.parse(response['resultBody']['createdDate']),
+                      createdDate: DateTime.parse(response['resultBody']['createdDate']),
                     ),
                   ],
                 ),
