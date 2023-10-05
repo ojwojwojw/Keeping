@@ -453,7 +453,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                                         Padding(
                                           padding: EdgeInsets.only(right: 10.0),
                                           child: Text(
-                                            "자녀",
+                                            "나",
                                             style: TextStyle(
                                               fontSize: 17,
                                               fontWeight: FontWeight.bold,
@@ -1079,7 +1079,7 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                                         Padding(
                                           padding: EdgeInsets.only(right: 10.0),
                                           child: Text(
-                                            "부모님",
+                                            "나",
                                             style: TextStyle(
                                               fontSize: 17,
                                               fontWeight: FontWeight.bold,
