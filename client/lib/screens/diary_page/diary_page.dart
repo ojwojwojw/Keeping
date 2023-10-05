@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/widgets/my_icons.dart';
 import 'package:keeping/widgets/render_field.dart';
@@ -302,211 +303,200 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
         bgColor: Color(0xFFFAF5FF),
         elementColor: const Color.fromARGB(255, 0, 0, 0),
       ),
-      body: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints viewportConstraints) {
-        return FutureBuilder(
-          // 비동기 데이터를 기다리고 UI를 구성
-          future: getData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('에러 발생: ${snapshot.error}'));
-            } else {
-              data = snapshot.data ?? {}; // 여기에서 snapshot의 데이터를 받아옵니다.
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: viewportConstraints.maxHeight),
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: FutureBuilder(
+        // 비동기 데이터를 기다리고 UI를 구성
+        future: getData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('에러 발생: ${snapshot.error}'));
+          } else {
+            data = snapshot.data ?? {}; // 여기에서 snapshot의 데이터를 받아옵니다.
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center, // 이 부분을 추가
                     children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center, // 이 부분을 추가
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(5), // 내부 패딩
-                            decoration: BoxDecoration(
-                              color: Color(0xFF805AF1),
-                              borderRadius: BorderRadius.circular(10), // 둥근 테두리
-                            ),
-                            child: Text(
-                              "부모님과 나의 질문일기",
-                              style: TextStyle(
-                                color: Colors.white, // 보라색 글씨
-                                fontSize: 16.0, // 글씨 크기
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Center(
-                        // Center 위젯 추가
-                        child: Container(
-                          height: 50,
-                          child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.center, // Row의 내용을 가운데 배치
-                            children: [
-                              Image.asset(
-                                'assets/image/diary/smileface.png',
-                              ),
-                              Image.asset(
-                                'assets/image/diary/funnyface.png',
-                              )
-                            ],
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8), // 내부 패딩
+                        decoration: BoxDecoration(
+                          color: Color(0xFF805AF1),
+                          borderRadius: BorderRadius.circular(10), // 둥근 테두리
+                        ),
+                        child: Text(
+                          "부모님과 나의 질문일기",
+                          style: TextStyle(
+                            color: Colors.white, // 보라색 글씨
+                            fontSize: 16.0, // 글씨 크기
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Container(
-                        margin:
-                            EdgeInsets.fromLTRB(20, 10, 20, 5), // 원하는 마진 값으로 조절
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              data["content"],
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5, // 필요하다면 간격을 주기 위한 SizedBox 추가
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "#${widget.index}번째 질문",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.grey[500],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  formattedYMDDate(DateTime.parse(data["createdDate"])),
-                                  style: TextStyle(
-                                    fontSize: 10.0,
-                                    color: Colors.grey[500],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        width: double.infinity,
-                        color: Colors.white,
-                        child: Container(
-                          margin: EdgeInsets.all(30),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Container(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 10.0),
-                                          child: Text(
-                                            "부모님",
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                          padding: EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFF805AF1),
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
-                                          child: Text(
-                                            data["parentAnswer"] ?? "부모님의 답을 기다리는 중입니다!",
-                                            style: TextStyle(fontSize: 15, color: Colors.white),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 25),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Container(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 10.0),
-                                          child: Text(
-                                            "나",
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                          padding: EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFF805AF1),
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
-                                          child: Text(
-                                            data["childAnswer"] ?? "답변을 적어주세요!",
-                                            style: TextStyle(fontSize: 15, color: Colors.white),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 70),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    _writeDiaryBtn(),
-                                    _commentViewBtn(),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
                       ),
                     ],
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, bottom: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, // Row의 내용을 가운데 배치
+                      children: [
+                        Image.asset(
+                          'assets/image/diary/smileface.png', width: 70,
+                        ),
+                        Image.asset(
+                          'assets/image/diary/funnyface.png', width: 70,
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.fromLTRB(20, 10, 20, 15), // 원하는 마진 값으로 조절
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data["content"],
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5, // 필요하다면 간격을 주기 위한 SizedBox 추가
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "#${widget.index}번째 질문",
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              formattedYMDDate(DateTime.parse(data["createdDate"])),
+                              style: TextStyle(
+                                fontSize: 10.0,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
-              )                
-            )
-          );
-        }
-      },
-    );
-  }
+              ),
+            ),
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                color: Colors.white,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  "부모님",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF805AF1),
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: Text(
+                                  data["parentAnswer"] ?? "부모님의 답을 기다리는 중입니다!",
+                                  style: TextStyle(fontSize: 15, color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 25),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(right: 10.0),
+                                  child: Text(
+                                    "나",
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF805AF1),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Text(
+                                    data["childAnswer"] ?? "답변을 적어주세요!",
+                                    style: TextStyle(fontSize: 15, color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        // SizedBox(height: 70),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     _writeDiaryBtn(),
+                        //     _commentViewBtn(),
+                        //   ],
+                        // )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+                          ],
+                        );
+      }
+            },
+          ),
+  floatingActionButton: Padding(
+    padding: const EdgeInsets.only(left: 32.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _writeDiaryBtn(),
+        _commentViewBtn(),
+      ],
+    ),
   ),
   bottomNavigationBar: BottomNav(
     diary: true,
@@ -711,12 +701,15 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
           }
         },
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _diaryCreateBtn(),
-          _todayQuestionBtn(),
-        ],
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left: 32),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _diaryCreateBtn(),
+            _todayQuestionBtn(),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNav(diary: true),
     );
@@ -828,8 +821,7 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
             children: [
               Image.asset(
                 'assets/image/diary/rocket.png',
-                width: 50, // 이미지의 너비
-                height: 50, // 이미지의 높이
+                width: 50,
               ),
               Text(
                 '질문 보내기',
@@ -935,211 +927,202 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
         bgColor: Color(0xFFFAF5FF),
         elementColor: const Color.fromARGB(255, 0, 0, 0),
       ),
-      body: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints viewportConstraints) {
-        return FutureBuilder(
-          // 비동기 데이터를 기다리고 UI를 구성
-          future: getData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('에러 발생: ${snapshot.error}'));
-            } else {
-              data = snapshot.data ?? {}; // 여기에서 snapshot의 데이터를 받아옵니다.
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: viewportConstraints.maxHeight),
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center, // 이 부분을 추가
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(5), // 내부 패딩
-                            decoration: BoxDecoration(
-                              color: Color(0xFF805AF1),
-                              borderRadius: BorderRadius.circular(10), // 둥근 테두리
-                            ),
-                            child: Text(
-                              "아이와 나의 질문일기",
-                              style: TextStyle(
-                                color: Colors.white, // 보라색 글씨
-                                fontSize: 16.0, // 글씨 크기
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Center(
-                        // Center 위젯 추가
-                        child: Container(
-                          height: 50,
-                          child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.center, // Row의 내용을 가운데 배치
-                            children: [
-                              Image.asset(
-                                'assets/image/diary/smileface.png',
-                              ),
-                              Image.asset(
-                                'assets/image/diary/funnyface.png',
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Container(
-                        margin:
-                            EdgeInsets.fromLTRB(20, 10, 20, 5), // 원하는 마진 값으로 조절
-                        child: Column(
+      body: FutureBuilder(
+        // 비동기 데이터를 기다리고 UI를 구성
+        future: getData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('에러 발생: ${snapshot.error}'));
+          } else {
+            data = snapshot.data ?? {}; // 여기에서 snapshot의 데이터를 받아옵니다.
+            return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              data["content"],
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5, // 필요하다면 간격을 주기 위한 SizedBox 추가
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "#${widget.index}번째 질문",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.grey[500],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  formattedYMDDate(DateTime.parse(data["createdDate"])),
-                                  style: TextStyle(
-                                    fontSize: 10.0,
-                                    color: Colors.grey[500],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center, // 이 부분을 추가
+                    children: [
                       Container(
-                        width: double.infinity,
-                        color: Colors.white,
-                        child: Container(
-                            margin: EdgeInsets.all(30),
-                            child: Column(
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,  // 아이 컨테이너를 왼쪽에 배치
-                                  child: Container(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 10.0),
-                                          child: Text(
-                                            "아이",
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                          padding: EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFF805AF1),
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
-                                          child: Text(
-                                            data["childAnswer"] ?? "아이의 답을 기다리는 중입니다!",
-                                            style: TextStyle(fontSize: 15, color: Colors.white),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 25),
-                                Align(
-                                  alignment: Alignment.centerRight,  // 부모님 컨테이너를 오른쪽에 배치
-                                  child: Container(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 10.0),
-                                          child: Text(
-                                            "나",
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                          padding: EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFF805AF1),
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
-                                          child: Text(
-                                            data["parentAnswer"] ?? "답변을 적어주세요!",
-                                            style: TextStyle(fontSize: 15, color: Colors.white),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 70),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    _writeDiaryBtn(),
-                                    _commentViewBtn(),
-                                  ],
-                                )
-                              ],
-                            ),
-
+                        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8), // 내부 패딩
+                        decoration: BoxDecoration(
+                          color: Color(0xFF805AF1),
+                          borderRadius: BorderRadius.circular(10), // 둥근 테두리
+                        ),
+                        child: Text(
+                          "아이와 나의 질문일기",
+                          style: TextStyle(
+                            color: Colors.white, // 보라색 글씨
+                            fontSize: 16.0, // 글씨 크기
                           ),
+                        ),
                       ),
                     ],
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, bottom: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, // Row의 내용을 가운데 배치
+                      children: [
+                        Image.asset(
+                          'assets/image/diary/smileface.png', width: 70,
+                        ),
+                        Image.asset(
+                          'assets/image/diary/funnyface.png', width: 70,
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.fromLTRB(20, 10, 20, 15), // 원하는 마진 값으로 조절
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data["content"],
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5, // 필요하다면 간격을 주기 위한 SizedBox 추가
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "#${widget.index}번째 질문",
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              formattedYMDDate(DateTime.parse(data["createdDate"])),
+                              style: TextStyle(
+                                fontSize: 10.0,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
-              )                
-            )
-          );
-        }
-      },
-    );
-  }
+              ),
+            ),
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                color: Colors.white,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,  // 아이 컨테이너를 왼쪽에 배치
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10.0),
+                                  child: Text(
+                                    "아이",
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF805AF1),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Text(
+                                    data["childAnswer"] ?? "아이의 답을 기다리는 중입니다!",
+                                    style: TextStyle(fontSize: 15, color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 25),
+                        Align(
+                          alignment: Alignment.centerRight,  // 부모님 컨테이너를 오른쪽에 배치
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(right: 10.0),
+                                  child: Text(
+                                    "나",
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF805AF1),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Text(
+                                    data["parentAnswer"] ?? "답변을 적어주세요!",
+                                    style: TextStyle(fontSize: 15, color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        // SizedBox(height: 70),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     _writeDiaryBtn(),
+                        //     _commentViewBtn(),
+                        //   ],
+                        // )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+                          ],
+                        );
+      }
+            },
+          ),
+  floatingActionButton: Padding(
+    padding: const EdgeInsets.only(left: 32),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _writeDiaryBtn(),
+        _commentViewBtn(),
+      ],
+    ),
   ),
   bottomNavigationBar: BottomNav(
     diary: true,
@@ -1246,8 +1229,7 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
 class DiaryCommentPage extends StatefulWidget {
   final questionId;
   final index;
-  const DiaryCommentPage(
-      {super.key, required this.questionId, required this.index});
+  const DiaryCommentPage({super.key, required this.questionId, required this.index});
 
   //질문 아이디 받아오기
 
@@ -1399,171 +1381,200 @@ class _DiaryCommentPageState extends State<DiaryCommentPage> {
           } else {
             data = snapshot.data ?? {};
 
-            return SingleChildScrollView(
-              child: Center(
-                child: Column(
-                  children: [
-                    
-                    SizedBox(
-                      height: 15,
+            return Center(
+              child: Column(
+                children: [
+                  
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 32),
+                    child: Column(
+                      children: [
+                        Text(
+                          widget.index == 0 ? "오늘의 질문" : "#" + widget.index.toString() + "번째 질문",
+                          style: TextStyle(fontSize: 25, color: Colors.grey),
+                        ),
+                        SizedBox(height: 10,),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                          child: Text(
+                            data['question']['content'],
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                                
+                        SizedBox(
+                          height: 25,
+                        ),
+                      ],
                     ),
-                    // Question data
-
-                    Text(
-                      widget.index == 0 ? "오늘의 질문" : "#" + widget.index.toString() + "번째 질문",
-                      style: TextStyle(fontSize: 25, color: Colors.grey),
-                    ),
-
-
-                    SizedBox(height: 10,),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text(
-                        data['question']['content'],
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                  ),
+                  // Question data
+            
+            
+                  //댓글 데이터//
+                  Expanded(
+                    child: Container(
+                      decoration: roundedBoxWithShadowStyle(
+                        bgColor: Color(0xffFAF5FF), shadow: false, borderRadius: 0
+                      ),
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: ListView.builder(
+                              shrinkWrap:
+                                  true, // ListView를 Column 내부에서 사용하기 위해 필요합니다.
+                              physics:
+                                  NeverScrollableScrollPhysics(), // ListView 내부 스크롤을 비활성화합니다.
+                              itemCount:
+                                  data['comments']?.length ?? 0, // 댓글 리스트의 길이를 사용합니다.
+                              itemBuilder: (context, index) {
+                                var comment = data['comments'][index];
+                                bool isCurrentUserComment =
+                                    comment['memberKey'] == memberKey;
+                          
+                                // 공통으로 사용할 날짜 위젯
+                                var dateWidget = Text(
+                                  "${timeAgo(comment['createdDate'])}",
+                                  style: TextStyle(
+                                      color: isCurrentUserComment
+                                          ? Color.fromARGB(255, 136, 136, 136)
+                                          : const Color.fromARGB(255, 128, 128, 128)),
+                                );
+                          
+                                // 댓글 텍스트 위젯
+                                var commentWidget = Container(
+                                  constraints: BoxConstraints(maxWidth: 270,),
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: isCurrentUserComment
+                                          ? Color(0xFF805AF1 )
+                                          : Color.fromARGB(255, 243, 243, 243),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            comment['content'],
+                                            softWrap: true,
+                                            style: TextStyle(
+                                              color: isCurrentUserComment
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                          
+                                return Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    GestureDetector(
+                                      onLongPress: () {
+                                        if (isCurrentUserComment) {
+                                          // 꾸욱 누르면 삭제 확인 모달 표시
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title: Text('댓글 삭제'),
+                                              content: Text('댓글을 삭제하시겠습니까?'),
+                                              actions: [
+                                                TextButton(
+                                                  child: Text('취소'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: Text('확인'),
+                                                  onPressed: () {
+                                                    _deleteComment(comment[
+                                                        'commentId']); // 댓글 삭제 함수 호출
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        child: Row(
+                                          mainAxisAlignment: isCurrentUserComment
+                                              ? MainAxisAlignment.end
+                                              : MainAxisAlignment.start,
+                                          children: [
+                                            if (isCurrentUserComment)
+                                              dateWidget, // 오른 정렬일 때 날짜를 먼저 표시
+                                              SizedBox(width: 8),
+                                              commentWidget,
+                                            if (!isCurrentUserComment)
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 8.0),
+                                                child: dateWidget,
+                                              ), // 왼정렬일 때 날짜를 나중에 표시
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }),
                         ),
                       ),
                     ),
-
-                    SizedBox(
-                      height: 15,
-                    ),
-
-                    //댓글 데이터//
-                    ListView.builder(
-                        shrinkWrap:
-                            true, // ListView를 Column 내부에서 사용하기 위해 필요합니다.
-                        physics:
-                            NeverScrollableScrollPhysics(), // ListView 내부 스크롤을 비활성화합니다.
-                        itemCount:
-                            data['comments']?.length ?? 0, // 댓글 리스트의 길이를 사용합니다.
-                        itemBuilder: (context, index) {
-                          var comment = data['comments'][index];
-                          bool isCurrentUserComment =
-                              comment['memberKey'] == memberKey;
-
-                          // 공통으로 사용할 날짜 위젯
-                          var dateWidget = Text(
-                            "${timeAgo(comment['createdDate'])}",
-                            style: TextStyle(
-                                color: isCurrentUserComment
-                                    ? Color.fromARGB(255, 136, 136, 136)
-                                    : const Color.fromARGB(255, 128, 128, 128)),
-                          );
-
-                          bool isLongComment = comment.length > 50;
-// 수정 잘 됐는지 확인하기!!!!!!!!!!!!!!!!
-                          // 댓글 텍스트 위젯
-                          var commentWidget = Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: isCurrentUserComment
-                                  ? Color(0xFF805AF1 )
-                                  : Color.fromARGB(255, 243, 243, 243),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    comment['content'],
-                                    style: TextStyle(
-                                      color: isCurrentUserComment
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-
-                          return Column(
-                            children: [
-                              SizedBox(
-                                height: 8,
-                              ),
-                              GestureDetector(
-                                onLongPress: () {
-                                  if (isCurrentUserComment) {
-                                    // 꾸욱 누르면 삭제 확인 모달 표시
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: Text('댓글 삭제'),
-                                        content: Text('댓글을 삭제하시겠습니까?'),
-                                        actions: [
-                                          TextButton(
-                                            child: Text('취소'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          TextButton(
-                                            child: Text('확인'),
-                                            onPressed: () {
-                                              _deleteComment(comment[
-                                                  'commentId']); // 댓글 삭제 함수 호출
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                },
-                                child: Row(
-                                  mainAxisAlignment: isCurrentUserComment
-                                      ? MainAxisAlignment.end
-                                      : MainAxisAlignment.start,
-                                  children: [
-                                    if (isCurrentUserComment)
-                                      dateWidget, // 오른 정렬일 때 날짜를 먼저 표시
-                                      SizedBox(width: 8),
-                                      commentWidget,
-                                    if (!isCurrentUserComment)
-                                      dateWidget, // 왼정렬일 때 날짜를 나중에 표시
-                                      SizedBox(width: 8),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          );
-                        })
-
-                    ///
-                  ],
-                ),
+                  )
+            
+                  ///
+                ],
               ),
             );
           }
         },
       ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _commentController,
-                  decoration: InputDecoration(
-                    hintText: '댓글을 작성하세요...',
-                    border: OutlineInputBorder(),
+      bottomSheet: Container(
+        decoration: roundedBoxWithShadowStyle(
+          shadow: false,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 4),
+                      child: TextField(
+                        controller: _commentController,
+                        decoration: InputDecoration(
+                          hintText: '댓글 달기',
+                          border: InputBorder.none
+                          // border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  IconButton(
+                    icon: Icon(Icons.send),
+                    onPressed: _submitComment,
+                  ),
+                ],
               ),
-              IconButton(
-                icon: Icon(Icons.send),
-                onPressed: _submitComment,
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

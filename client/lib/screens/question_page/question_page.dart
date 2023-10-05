@@ -60,9 +60,8 @@ class _QuestionPageState extends State<QuestionPage> {
             } else {
               data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
               return Stack(children: [
-                // 배경 이미지
                 Positioned(
-                  top: 0, // top 위치 조절
+                  top: 60, // top 위치 조절
                   left: 0,
                   right: 0,
                   child: Align(
@@ -73,21 +72,36 @@ class _QuestionPageState extends State<QuestionPage> {
                     ),
                   ),
                 ),
-
-                // Positioned(
-                //   top: 15, // 바닥에서 50픽셀만큼 떨어지게 위치
-                //   left: 0,
-                //   right: 0,
-                //   child: Image.asset(
-                //     'assets/image/question/maintitle.png',
-                //     width: 220.0,
-                //     height: 120.0,
-                //     fit: BoxFit.cover,
-                //   ),
-                // ),
+                Positioned(
+                  top: 15, // top 위치 조절
+                  left: 0,
+                  right: 0,
+                  child: Align(
+                    alignment: Alignment.center, // 좌우로 가운데 정렬
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text(
+                          '오늘의 질문에\n답해볼까요?', 
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 45, fontWeight: FontWeight.bold, color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                color: Color.fromARGB(255, 52, 52, 52),
+                                offset: Offset(1.5, 1.5),
+                                blurRadius: 3,
+                              )
+                            ]
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
 
                 Positioned(
-                  bottom: 20, // 바닥에서 50픽셀만큼 떨어지게 위치
+                  bottom: 60,
                   left: 0,
                   right: 0,
                   child: Column(children: [
@@ -409,36 +423,48 @@ class _ParentQuestionPageState extends State<ParentQuestionPage> {
             } else {
               data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
               return Stack(children: [
-                // 배경 이미지
                 Positioned(
-                  top: 50, // top 위치 조절
+                  top: 60, // top 위치 조절
                   left: 0,
                   right: 0,
                   child: Align(
                     alignment: Alignment.center, // 좌우로 가운데 정렬
                     child: Image.asset(
                       'assets/image/question/micandfaces.png',
-                      width: 350,
                       height: 350,
-                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 15, // top 위치 조절
+                  left: 0,
+                  right: 0,
+                  child: Align(
+                    alignment: Alignment.center, // 좌우로 가운데 정렬
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text(
+                          '오늘의 질문에\n답해볼까요?', 
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 45, fontWeight: FontWeight.bold, color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                color: Color.fromARGB(255, 52, 52, 52),
+                                offset: Offset(1.5, 1.5),
+                                blurRadius: 3,
+                              )
+                            ]
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
 
                 Positioned(
-                  top: 15, // 바닥에서 50픽셀만큼 떨어지게 위치
-                  left: 0,
-                  right: 0,
-                  child: Image.asset(
-                    'assets/image/question/maintitle.png',
-                    width: 220.0,
-                    height: 120.0,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-
-                Positioned(
-                  bottom: 50, // 바닥에서 50픽셀만큼 떨어지게 위치
+                  bottom: 60,
                   left: 0,
                   right: 0,
                   child: Column(children: [
@@ -1083,6 +1109,7 @@ class _QeustionAnswerPageState extends State<QeustionAnswerPage> {
                       width: 340,
                       child: Text(
                         'Q. ${widget.questionText.toString()}', //기억
+                        softWrap: true,
                         style: TextStyle(
                           fontWeight: FontWeight.bold, // 글씨를 굵게
                           fontSize: 20.0, // 글씨 크기를 14포인트로 설정
