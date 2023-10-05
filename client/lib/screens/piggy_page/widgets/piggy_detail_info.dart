@@ -59,7 +59,7 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
           bgColor: Color.fromARGB(255, 242, 230, 255),
         ),
         child: FutureBuilder(
-          future: getPiggyDetailList(
+          future: getPiggy(
             accessToken: accessToken,
             memberKey: memberKey,
             piggyId: widget.piggyId,
@@ -67,47 +67,6 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
           ),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              if (snapshot.data['resultStatus']['resultCode'] == '404' || snapshot.data['resultStatus']['resultCode'] == '401') {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 30),
-                        child: Column(
-                          children: [
-                            if (parent != null && parent! && childName != null) ChildTag(childName: childName!, text: '저금통',),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                roundedMemoryImg(img: widget.img),
-                                Column(
-                                  children: [
-                                    SizedBox(
-                                      width: 180,
-                                      child: Center(
-                                        child: TextScroll(
-                                          widget.content,
-                                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black,),
-                                          intervalSpaces: 10,
-                                          velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
-                                        ),
-                                      )
-                                    ),
-                                    Text(formattedMoney(widget.balance), style: TextStyle(fontSize: 32, color: Colors.black),),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      PiggyDetailChart(balance: widget.balance, goalMoney: widget.goalMoney, createdDate: widget.createdDate,)
-                    ],
-                  ),
-                );
-              }
               var response = snapshot.data['resultBody'];
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -136,7 +95,7 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
                                       ),
                                     )
                                   ),
-                                  Text(formattedMoney(widget.balance), style: TextStyle(fontSize: 32, color: Colors.black),),
+                                  Text(formattedMoney(response['balance']), style: TextStyle(fontSize: 32, color: Colors.black),),
                                 ],
                               )
                             ],
@@ -144,13 +103,49 @@ class _PiggyDetailInfoState extends State<PiggyDetailInfo> {
                         ],
                       ),
                     ),
-                    PiggyDetailChart(balance: widget.balance, goalMoney: widget.goalMoney, createdDate: widget.createdDate,)
+                    PiggyDetailChart(balance: response['balance'], goalMoney: widget.goalMoney, createdDate: widget.createdDate,)
                   ],
                 ),
               );
             }
-            return Column(
-
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30),
+                    child: Column(
+                      children: [
+                        if (parent != null && parent! && childName != null) ChildTag(childName: childName!, text: '저금통',),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            roundedMemoryImg(img: widget.img),
+                            Column(
+                              children: [
+                                SizedBox(
+                                  width: 180,
+                                  child: Center(
+                                    child: TextScroll(
+                                      widget.content,
+                                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black,),
+                                      intervalSpaces: 10,
+                                      velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
+                                    ),
+                                  )
+                                ),
+                                Text(formattedMoney(widget.balance), style: TextStyle(fontSize: 32, color: Colors.black),),
+                              ],
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  PiggyDetailChart(balance: widget.balance, goalMoney: widget.goalMoney, createdDate: widget.createdDate,)
+                ],
+              ),
             );
           }
         ),
