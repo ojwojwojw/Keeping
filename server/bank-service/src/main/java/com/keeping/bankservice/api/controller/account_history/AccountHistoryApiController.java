@@ -60,12 +60,26 @@ public class AccountHistoryApiController {
         }
     }
 
-    @GetMapping("/{target-key}/{account-number}/{date}")
-    public ApiResponse<Map<String, List<ShowAccountHistoryResponse>>> showAccountDailyHistory(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("account-number") String accountNumber, @PathVariable("date") String date) {
+    @GetMapping("/{target-key}/{account-number}/{date}/{history-type}")
+    public ApiResponse<Map<String, List<ShowAccountHistoryResponse>>> showAccountDailyHistory(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("account-number") String accountNumber, @PathVariable("date") String date, @PathVariable("history-type") String type) {
         log.debug("ShowAccountDailyHistory");
 
         try {
-            Map<String, List<ShowAccountHistoryResponse>> response = accountHistoryService.showAccountDailyHistory(memberKey, targetKey, accountNumber, date);
+            Map<String, List<ShowAccountHistoryResponse>> response = accountHistoryService.showAccountDailyHistory(memberKey, targetKey, accountNumber, date, type);
+            return ApiResponse.ok(response);
+        }
+        catch(Exception e) {
+            log.debug("에러 발생 : {}", e.toString());
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "거래 내역을 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
+        }
+    }
+
+    @GetMapping("/{target-key}/{account-number}/{date}")
+    public ApiResponse<Map<String, List<ShowAccountHistoryResponse>>> showAccountHistoryRoute(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("account-number") String accountNumber, @PathVariable("date") String date) {
+        log.debug("ShowAccountHistoryRoute");
+
+        try {
+            Map<String, List<ShowAccountHistoryResponse>> response = accountHistoryService.showAccountHistoryRoute(memberKey, targetKey, accountNumber, date);
             return ApiResponse.ok(response);
         }
         catch(Exception e) {

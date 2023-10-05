@@ -26,7 +26,7 @@ public class Comment extends TimeBaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "is_active")
     private boolean isActive;
 
     @Builder

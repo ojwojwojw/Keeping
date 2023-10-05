@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import java.util.List;
+
 import static lombok.AccessLevel.PROTECTED;
 
 @Data
@@ -15,19 +17,11 @@ import static lombok.AccessLevel.PROTECTED;
 public class AddAccountDetailRequest {
 
     @NotNull
-    private Long accountHistoryId;
-
-    @NotBlank
-    private String content;
-
-    @NotNull
-    private Long money;
+    List<AccountDetailRequest> accountDetailList;
 
 
     @Builder
-    private AddAccountDetailRequest(Long accountHistoryId, String content, Long money) {
-        this.accountHistoryId = accountHistoryId;
-        this.content = content;
-        this.money = money;
+    private AddAccountDetailRequest(List<AccountDetailRequest> accountDetailList) {
+        this.accountDetailList = accountDetailList;
     }
 }

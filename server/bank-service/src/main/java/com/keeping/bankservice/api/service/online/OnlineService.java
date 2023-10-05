@@ -14,4 +14,5 @@ public interface OnlineService {
     void approveOnline(String memberKey, ApproveOnlineDto dto);
     List<ShowOnlineResponse> showOnline(String memberKey, String targetKey);
     List<ShowOnlineResponse> showTypeOnline(String memberKey, String targetKey, Approve approve);
+    ShowOnlineResponse showDetailOnline(String memberKey, String targetKey, Long onlineId);
 }

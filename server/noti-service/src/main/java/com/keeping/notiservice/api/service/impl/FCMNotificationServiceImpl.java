@@ -4,6 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.keeping.notiservice.api.ApiResponse;
 import com.keeping.notiservice.api.controller.MemberFeignClient;
 import com.keeping.notiservice.api.controller.response.MemberFcmResponse;
 import com.keeping.notiservice.api.service.dto.FCMNotificationDto;
@@ -20,20 +21,16 @@ public class FCMNotificationServiceImpl implements FCMNotificationService {
 
     private final FirebaseMessaging firebaseMessaging;
     private final NotiRepository notiRepository;
-    private MemberFeignClient memberFeignClient; 
+    private final MemberFeignClient memberFeignClient;
     
     @Override
     public String sendNotification(FCMNotificationDto dto) {
 
         // memberKey로 fcm token 가져오기
-        MemberFcmResponse fcmKey = memberFeignClient.getFCMKey(dto.getMemberKey());
-
-        if (!fcmKey.isPresent()) {
-            throw new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 사용자를 찾을 수 없습니다.");
-        }
+        ApiResponse<String> fcmKey = memberFeignClient.getFCMKey(dto.getMemberKey());
 
         // toekn 가져오기
-        String token = fcmKey.getFcmToken();
+        String token = fcmKey.getResultBody();
         if (token != null) {
             // FCM 토큰이 존재하지 않을 때
             Notification notification = Notification.builder()
@@ -42,6 +39,7 @@ public class FCMNotificationServiceImpl implements FCMNotificationService {
                     .build();
 
             Message message = Message.builder()
+                    .putData("type", dto.getType().name())
                     .setToken(token)
                     .setNotification(notification)
                     .build();
