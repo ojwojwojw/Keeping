@@ -15,6 +15,7 @@ import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/empty.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:keeping/widgets/reload_btn.dart';
 import 'package:provider/provider.dart';
 
 class AllowanceLedgerPage extends StatefulWidget {
@@ -34,6 +35,10 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
   String? _childAccountNumber;
   int? _childBalance;
 
+  void reload() {
+    setState(() {});
+  }
+  
   @override
   void initState() {
     super.initState();
@@ -63,6 +68,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
             memberKey: _memberKey,
             parent: _parent, 
             balance: _parent != null && _parent == true ? _childBalance : _balance,
+            reload: reload,
           ),
           FutureBuilder(
             future: _parent != null && _parent! == true ? getAccountList(accessToken: _accessToken, memberKey: _memberKey, accountNumber: _childAccountNumber, targetKey: _childKey)

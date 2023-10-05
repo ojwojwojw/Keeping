@@ -32,6 +32,10 @@ class _PiggyPageState extends State<PiggyPage> {
   String? _accountNumber;
   String? _childAccountNumber;
 
+  void reload() {
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -54,7 +58,7 @@ class _PiggyPageState extends State<PiggyPage> {
       ),
       body: Column(
         children: [
-          PiggyInfo(parent: _parent),
+          PiggyInfo(parent: _parent, reload: reload),
           FutureBuilder(
             future: getPiggyList(
               accessToken: _accessToken, 
