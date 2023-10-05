@@ -13,6 +13,7 @@ import 'package:keeping/util/display_format.dart';
 import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:keeping/widgets/loading.dart';
 import 'package:keeping/widgets/request_info_card.dart';
 import 'package:provider/provider.dart';
 import 'package:keeping/provider/user_info.dart';
@@ -53,71 +54,65 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
         text: '알림',
         bgColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              PushNotificationFilters(
-                onPressed: (int idx) {
-                  setState(() {
-                    selectedBtnIdx = idx;
-                  });
-                  _updateData();
-                },
-              ),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FutureBuilder(
-                      future: getPushNotification(context),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return SizedBox(
-                            height: 200,
-                            child: Container(),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Text('데이터를 가져오지 못했어요');
-                        } else if (snapshot.hasData) {
-                          if (_result.isNotEmpty) {
-                            return totalPushNotification(_result);
-                          } else {
-                            return Container(
-                                width: 250,
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 60,
-                                    ),
-                                    Text(
-                                      '도착한 알림이 없어요!',
-                                      style: TextStyle(
-                                        fontSize: 25,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    Image.asset(
-                                      'assets/image/main/question.png',
-                                      width: 200,
-                                    ),
-                                  ],
-                                ));
-                          }
-                        } else {
-                          return Text('데이터가 없어요');
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
+      body: Column(
+        children: [
+          PushNotificationFilters(
+            onPressed: (int idx) {
+              setState(() {
+                selectedBtnIdx = idx;
+              });
+              _updateData();
+            },
           ),
-        ),
+          FutureBuilder(
+            future: getPushNotification(context),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState ==
+                  ConnectionState.waiting) {
+                // return SizedBox(
+                //   height: 200,
+                //   child: Container(),
+                // );
+                return loading();
+              } else if (snapshot.hasData) {
+                if (_result.isNotEmpty) {
+                  return Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      child: SingleChildScrollView(child: totalPushNotification(_result))
+                    )
+                  );
+                } else {
+                  return empty(text: '도착한 알림이 없습니다.');
+                  // return Container(
+                  //     width: 250,
+                  //     child: Column(
+                  //       children: [
+                  //         SizedBox(
+                  //           height: 60,
+                  //         ),
+                  //         Text(
+                  //           '도착한 알림이 없어요!',
+                  //           style: TextStyle(
+                  //             fontSize: 25,
+                  //           ),
+                  //         ),
+                  //         SizedBox(
+                  //           height: 30,
+                  //         ),
+                  //         Image.asset(
+                  //           'assets/image/main/question.png',
+                  //           width: 200,
+                  //         ),
+                  //       ],
+                  //     ));
+                }
+              } else {
+                return empty(text: '도착한 알림이 없습니다.');
+              }
+            },
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNav(
         notification: true,

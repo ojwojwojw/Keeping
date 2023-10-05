@@ -360,31 +360,37 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
         bgColor: missionRequestStatusBgColor(widget.item['completed']),
         text: _getBottomButtonText(isParent, widget.item["completed"]),
         action: () {
-          if (isParent == null) return;
-          isParent!
-              ? handleParentButtonClick(
-                  context, widget.item, widget.item["completed"])
-              : handleChildButtonClick(
-                  context, widget.item, widget.item["completed"]);
+          isParent
+            ? handleParentButtonClick(
+                context, widget.item, widget.item["completed"])
+            : handleChildButtonClick(
+                context, widget.item, widget.item["completed"]);
+          // if (isParent == null) return;
+          // isParent!
+          //     ? handleParentButtonClick(
+          //         context, widget.item, widget.item["completed"])
+          //     : handleChildButtonClick(
+          //         context, widget.item, widget.item["completed"]);
         },
-        isDisabled: () {
-          String status = widget.item["completed"];
-          if (isParent != null) {
-            if (status == "CREATE_WAIT" && !isParent!) {
-              return true; // 자녀는 비활성화
-            } else if (status == "YET" && isParent!) {
-              return true; // 부모는 비활성화
-            } else if (status == "FINISH_WAIT" && !isParent!) {
-              return true; // 자녀는 비활성화
-            } else if (status == "FINISH" && isParent!) {
-              return true; // 부모는 비활성화
-            } else if (widget.item["finishedComment"] == null) {
-              return false; // 완료 메세지가 없으면 활성화
-            }
-            return false; // 기본값은 활성화
-          }
-          return true; // 기본값은 활성화
-        }(),
+        isDisabled: false,
+        // isDisabled: () {
+        //   String status = widget.item["completed"];
+        //   if (isParent != null) {
+        //     if (status == "CREATE_WAIT" && !isParent!) {
+        //       return true; // 자녀는 비활성화
+        //     } else if (status == "YET" && isParent!) {
+        //       return true; // 부모는 비활성화
+        //     } else if (status == "FINISH_WAIT" && !isParent!) {
+        //       return true; // 자녀는 비활성화
+        //     } else if (status == "FINISH" && isParent!) {
+        //       return true; // 부모는 비활성화
+        //     } else if (widget.item["finishedComment"] == null) {
+        //       return false; // 완료 메세지가 없으면 활성화
+        //     }
+        //     return false; // 기본값은 활성화
+        //   }
+        //   return true; // 기본값은 활성화
+        // }(),
       ),
     );
   }
@@ -553,6 +559,7 @@ void handleParentButtonClick(
       break;
     case "YET":
       // 미션 진행 확인 로직
+      Navigator.pop(context);
       break;
     case "FINISH_WAIT":
       // Navigator.push(
@@ -568,6 +575,7 @@ void handleParentButtonClick(
       break;
     case "FINISH":
       // 미션 확인 로직
+      Navigator.pop(context);
       break;
     default:
       // 기본 로직
@@ -579,6 +587,7 @@ void handleChildButtonClick(BuildContext context, dynamic item, String status) {
   switch (status) {
     case "CREATE_WAIT":
       // 미션 생성 승인 로직
+      Navigator.pop(context);
       break;
     case "YET":
       // 미션 진행 확인 로직
@@ -600,6 +609,7 @@ void handleChildButtonClick(BuildContext context, dynamic item, String status) {
       break;
     case "FINISH_WAIT":
       // 미션 완료 승인 로직
+      Navigator.pop(context);
       break;
     case "FINISH":
       // 미션 확인 로직
@@ -610,6 +620,7 @@ void handleChildButtonClick(BuildContext context, dynamic item, String status) {
       //               missionId: item["id"],
       //               item: item,
       //             ))); //미션 id 넘겨주는곳
+      Navigator.pop(context);
       break;
     default:
       // 기본 로직
