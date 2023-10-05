@@ -5,6 +5,7 @@ import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/color_info_card_elements.dart';
 import 'package:keeping/widgets/header.dart';
@@ -30,7 +31,7 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
     if (widget.item['finishedComment'] == null) {
       setState(() {
         isFinishedCommentNull = true;
-      }); 
+      });
     } else {
       isFinishedCommentNull = false;
     }
@@ -132,45 +133,55 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                                 children: const [
                                   Text(
                                     '응원메시지',
-                                    style: TextStyle(color: Color(0xff808080), fontSize: 14),
+                                    style: TextStyle(
+                                        color: Color(0xff808080), fontSize: 14),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 8,),
+                              SizedBox(
+                                height: 8,
+                              ),
                               Row(
                                 children: [
                                   roundedAssetImg(
-                                    imgPath: 'assets/image/profile/parent1.png',
-                                    size: 50
+                                      imgPath:
+                                          'assets/image/profile/parent1.png',
+                                      size: 50),
+                                  SizedBox(
+                                    width: 16,
                                   ),
-                                  SizedBox(width: 16,),
                                   Expanded(
                                     child: Container(
-                                      width: double.infinity,
-                                      decoration: roundedBoxWithShadowStyle(),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-                                        child: Text(widget.item['cheeringMessage']),
-                                      )
-                                    ),
+                                        width: double.infinity,
+                                        decoration: roundedBoxWithShadowStyle(),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0, horizontal: 16),
+                                          child: Text(
+                                              widget.item['cheeringMessage']),
+                                        )),
                                   )
-                                    
                                 ],
                               )
                             ],
                           ),
-                          SizedBox(height: 16,),
+                          SizedBox(
+                            height: 16,
+                          ),
                           Column(
                             children: [
                               Row(
                                 children: const [
                                   Text(
                                     '요청메시지',
-                                    style: TextStyle(color: Color(0xff808080), fontSize: 14),
+                                    style: TextStyle(
+                                        color: Color(0xff808080), fontSize: 14),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 8,),
+                              SizedBox(
+                                height: 8,
+                              ),
                               Row(
                                 children: [
                                   isParent
@@ -182,18 +193,21 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                                           imgPath: profileImage ??
                                               'assets/image/profile/parent1.png',
                                           size: 50),
-                                  SizedBox(width: 16,),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
                                   Expanded(
                                     child: Container(
-                                      width: double.infinity,
-                                      decoration: roundedBoxWithShadowStyle(),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-                                        child: Text(widget.item['childRequestComment'] ?? ''),
-                                      )
-                                    ),
+                                        width: double.infinity,
+                                        decoration: roundedBoxWithShadowStyle(),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0, horizontal: 16),
+                                          child: Text(widget.item[
+                                                  'childRequestComment'] ??
+                                              ''),
+                                        )),
                                   )
-                                    
                                 ],
                               )
                             ],
@@ -224,11 +238,17 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                                       SizedBox(
                                         width: 4,
                                       ),
-                                      Text('만든 날', style: TextStyle(fontSize: 16),),
+                                      Text(
+                                        '만든 날',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
                                     ],
                                   ),
-                                  Text(formattedYMDDate(
-                                      DateTime.parse(widget.item['startDate'])), style: TextStyle(fontSize: 16),)
+                                  Text(
+                                    formattedYMDDate(DateTime.parse(
+                                        widget.item['startDate'])),
+                                    style: TextStyle(fontSize: 16),
+                                  )
                                 ],
                               ),
                               Row(
@@ -243,11 +263,17 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                                       SizedBox(
                                         width: 4,
                                       ),
-                                      Text('완료하는 날', style: TextStyle(fontSize: 16),),
+                                      Text(
+                                        '완료하는 날',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
                                     ],
                                   ),
-                                  Text(formattedYMDDate(
-                                      DateTime.parse(widget.item['endDate'])), style: TextStyle(fontSize: 16),)
+                                  Text(
+                                    formattedYMDDate(
+                                        DateTime.parse(widget.item['endDate'])),
+                                    style: TextStyle(fontSize: 16),
+                                  )
                                 ],
                               )
                             ],
@@ -256,10 +282,15 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
                       ),
                     ],
                   ),
+
                   /// 소감 작성하기 버튼 /// /// 소감 작성하기 버튼 ///
-                  isFinishedCommentNull && !isParent ? _commentWriteBtn() : Container(),
+                  isFinishedCommentNull && !isParent
+                      ? _commentWriteBtn()
+                      : Container(),
                   !isFinishedCommentNull ? _CompleteComment() : Container(),
-                  SizedBox(height: 50,)
+                  SizedBox(
+                    height: 50,
+                  )
                 ],
               ),
             );
@@ -311,18 +342,20 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
         }
       },
       child: Padding(
-        padding: EdgeInsets.only(top: 18),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/image/mission/pencil.png',
-              width: 50.0,
-            ),
-            Text("완료 소감 적기!", style: TextStyle(fontSize: 18),),
-          ],
-        )
-      ),
+          padding: EdgeInsets.only(top: 18),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/image/mission/pencil.png',
+                width: 50.0,
+              ),
+              Text(
+                "완료 소감 적기!",
+                style: TextStyle(fontSize: 18),
+              ),
+            ],
+          )),
     );
 
     /// 소감 작성하기 버튼 /// /// 소감 작성하기 버튼 ///
@@ -331,7 +364,10 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
   Widget _CompleteComment() {
     return Stack(
       children: [
-        Image.asset('assets/image/mission/target.png', height: 300,),
+        Image.asset(
+          'assets/image/mission/target.png',
+          height: 300,
+        ),
         SizedBox(
           height: 300,
           child: Column(
@@ -340,21 +376,26 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: const [
-                  Text('완료소감', style: TextStyle(fontSize: 20),)
+                  Text(
+                    '완료소감',
+                    style: TextStyle(fontSize: 20),
+                  )
                 ],
               ),
-              SizedBox(height: 8,),
+              SizedBox(
+                height: 8,
+              ),
               SingleChildScrollView(
                 child: Container(
                   width: double.infinity,
                   height: 130,
                   decoration: roundedBoxWithShadowStyle(),
                   // child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                      child: Text(widget.item["finishedComment"] ?? ''
-                                        ),
-                    ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
+                    child: Text(widget.item["finishedComment"] ?? ''),
+                  ),
                   // ),
                 ),
               )
@@ -430,21 +471,29 @@ void handleParentButtonClick(
   switch (status) {
     case "CREATE_WAIT":
       // 미션 생성 승인 로직
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => MissionApprovePage(
-                  missionId: item["id"], item: item))); //미션 id 넘겨주는곳
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (_) => MissionApprovePage(
+      //             missionId: item["id"], item: item))); //미션 id 넘겨주는곳
+
+      noEffectReplacementTransition(
+          context, MissionApprovePage(missionId: item["id"], item: item));
+
       break;
     case "YET":
       // 미션 진행 확인 로직
       break;
     case "FINISH_WAIT":
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => MissionCompletePage(
-                  missionId: item["id"], item: item))); //미션 id 넘겨주는곳
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (_) => MissionCompletePage(
+      //             missionId: item["id"], item: item))); //미션 id 넘겨주는곳
+
+      noEffectReplacementTransition(
+          context, MissionApprovePage(missionId: item["id"], item: item));
+
       // 미션 완료 승인 로직
       break;
     case "FINISH":
@@ -463,13 +512,16 @@ void handleChildButtonClick(BuildContext context, dynamic item, String status) {
       break;
     case "YET":
       // 미션 진행 확인 로직
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => MissionCompleteRequestPage(
-                    missionId: item["id"],
-                    item: item,
-                  ))); //미션 id 넘겨주는곳
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (_) => MissionCompleteRequestPage(
+      //               missionId: item["id"],
+      //               item: item,
+      //             ))); //미션 id 넘겨주는곳
+
+      noEffectReplacementTransition(context, MissionCompleteRequestPage( missionId: item["id"],item: item,));
+
       break;
     case "FINISH_WAIT":
       // 미션 완료 승인 로직

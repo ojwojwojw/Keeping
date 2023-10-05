@@ -15,6 +15,7 @@ import 'dart:convert';
 import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/provider/child_info_provider.dart';
+import 'package:http/http.dart' as http;
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -328,18 +329,23 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
       "endDate": missionProvider.missionDueDate
     };
 
+    final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $accessToken'
+    };
+
+
     try {
       print(data);
-      final response = await dio.post(
-          "$_baseUrl/mission-service/api/$memberKey",
-          data: data,
-          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+      final response = await http.post(
+          Uri.parse("$_baseUrl/mission-service/api/$memberKey"),
+          headers : headers ,
+          body: json.encode(data)
+          );
 
       if (response.statusCode == 200) {
         print('미션생성 데이터 전송 성공!');
         print(data);
-
-        await Future.delayed(Duration(seconds: 2)); // 2초 동안 지연
 
         Navigator.push(
             context,
@@ -458,11 +464,16 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
       "endDate": missionProvider.missionDueDate
     };
 
+    final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $accessToken'
+  };
+
     try {
-      final response = await dio.post(
-          "$_baseUrl/mission-service/api/$memberKey",
-          data: data,
-          options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+      final response = await http.post(
+          Uri.parse("$_baseUrl/mission-service/api/$memberKey"),
+          headers: headers,
+          body: json.encode);
       if (response.statusCode == 200) {
         Navigator.push(
             context,
