@@ -17,12 +17,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:keeping/util/page_transition_effects.dart';
 
+import 'package:http/http.dart' as http;
 final _baseUrl = dotenv.env['BASE_URL'];
-
-late TextEditingController _userId;
-late TextEditingController _userPw;
-late Dio dio;
-
+TextEditingController _userId = TextEditingController();
+TextEditingController _userPw = TextEditingController();
+Dio dio = Dio();
 final _loginKey = GlobalKey<FormState>();
 
 class LoginPage extends StatefulWidget {
@@ -62,8 +61,6 @@ class _LoginPageState extends State<LoginPage> {
     _userId = TextEditingController();
     _userPw = TextEditingController();
     _loginResult = '';
-    dio = Dio();  // 여기서 dio 초기화
-
   }
 
   // 페이지가 파기될 때 컨트롤러를 해제
@@ -77,8 +74,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // 이 부분에 원하는 색상을 설정하세요.
-
       appBar: MyHeader(
         text: '로그인',
         elementColor: Colors.black,
@@ -97,42 +92,58 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       height: 20,
                     ),
-                    renderTextFormField(
-                      label: '아이디',
-                      onChange: (val) {
-                        String userId = val;
-                        handleUserId(userId);
-                      },
-                      validator: (val) {
-                        if (val.length < 1) {
-                          return '아이디를 입력해주세요';
-                        }
-                        return null;
-                      },
-                      controller: _userId,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25),
+                      child: renderTextFormField(
+                        label: '아이디',
+                        onChange: (val) {
+                          String userId = val;
+                          handleUserId(userId);
+                        },
+                        validator: (val) {
+                          if (val.length < 1) {
+                            return '아이디를 입력해주세요';
+                          }
+                          return null;
+                        },
+                        controller: _userId,
+                      ),
                     ),
                     Container(
                       height: 20,
                     ),
-                    renderTextFormField(
-                      label: '비밀번호',
-                      onChange: (val) {
-                        String userPw = val;
-                        handleUserPw(userPw);
-                      },
-                      validator: (val) {
-                        if (val.length < 1) {
-                          return '비밀번호를 입력해주세요';
-                        }
-                        return null;
-                      },
-                      controller: _userPw,
-                      isPassword: true,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25),
+                      child: renderTextFormField(
+                        label: '비밀번호',
+                        onChange: (val) {
+                          String userPw = val;
+                          handleUserPw(userPw);
+                        },
+                        validator: (val) {
+                          if (val.length < 1) {
+                            return '비밀번호를 입력해주세요';
+                          }
+                          return null;
+                        },
+                        controller: _userPw,
+                        isPassword: true,
+                      ),
                     ),
                     Container(
                       height: 20,
                     ),
-                    Text(_loginResult),
+                    Padding(padding: EdgeInsets.symmetric(horizontal: 25),  
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(_loginResult,),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 20,
+                    ),
                   ],
                 ),
               ),
@@ -161,55 +172,55 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  login(context, Function handleLogin) async {
-    final data = {
-      'loginId': _loginId,
-      'loginPw': _loginPw,
-    };
-    String fcmToken = Provider.of<UserInfoProvider>(context, listen: false)
-        .fcmToken; // fcmToken 가져오기
-    print('$data, $fcmToken');
-    try {
-      var response = await dio.post(
-        '$_baseUrl/member-service/login',
-        data: data,
+
+login(context, Function handleLogin) async {
+  final data = {
+    'loginId': _loginId,
+    'loginPw': _loginPw,
+  };
+  String fcmToken = Provider.of<UserInfoProvider>(context, listen: false).fcmToken;
+  print('$data, $fcmToken');
+
+  try {
+    final response = await http.post(
+      Uri.parse('$_baseUrl/member-service/login'),
+      body: jsonEncode(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('로그인에 성공했어요!');
+      handleLogin('');
+      String? token = response.headers['token'];
+      print(token);
+      String? memberKey = response.headers['memberKey'];
+      print(memberKey);
+
+      // 유저 정보 반환
+      await requestUserInfo(memberKey, token, fcmToken,
+          Provider.of<UserInfoProvider>(context, listen: false));
+      Provider.of<UserInfoProvider>(context, listen: false)
+          .updateTokenMemberKey(
+        accessToken: token,
+        memberKey: memberKey,
       );
-      print(response);
-      if (response.statusCode == 200) {
-        print('로그인에 성공했어요!');
-        handleLogin('');
-        String? token = response.headers.value('token');
-        print(token);
-        String? memberKey = response.headers.value('memberKey');
-        print(memberKey);
-
-        // 유저 정보 반환
-        await requestUserInfo(memberKey, token, fcmToken,
-            Provider.of<UserInfoProvider>(context, listen: false));
-        Provider.of<UserInfoProvider>(context, listen: false)
-            .updateTokenMemberKey(
-          accessToken: token,
-          memberKey: memberKey,
-        );
-        await renderingUserAccount(
-          token,
-          memberKey,
-        );
-      } else {
-        // 로그인에 실패한 경우
-        print('로그인에 실패!');
-        handleLogin('아이디 및 비밀번호를 확인해주세요.');
-      }
-    } catch (err) {
-      if(err is DioError && err.response?.statusCode == 401) {
-          handleLogin('아이디 및 비밀번호를 확인해주세요.');
-      } else {
-          handleLogin('알 수 없는 오류가 발생했습니다.');
-      }
-      print('로그인 중 에러 발생. $err');
+      await renderingUserAccount(
+        token,
+        memberKey,
+      );
+    } else {
+      // 로그인에 실패한 경우
+      print('로그인에 실패!');
+      handleLogin('아이디 및 비밀번호를 확인해주세요.');
     }
-
+  } catch (err) {
+    print(err);
+    handleLogin('아이디 및 비밀번호를 확인해주세요.');
   }
+}
+
 
   Future<void> requestUserInfo(
     memberKey,
@@ -222,7 +233,7 @@ class _LoginPageState extends State<LoginPage> {
         'Authorization': 'Bearer $accessToken', // 토큰 추가
       },
     );
-
+    print('여기옵니다, $fcmToken');
     try {
       var response = await dio.get(
         '$_baseUrl/member-service/auth/api/$memberKey/login-check/$fcmToken', // fcmToken 사용
@@ -272,7 +283,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> renderingUserAccount(accessToken, memberKey) async {
-    print('계좌정보, $memberKey, $accessToken');
+    // print('계좌정보, $memberKey, $accessToken');
     final response = await dioGet(
       url: '/bank-service/api/$memberKey/account/$memberKey',
       accessToken: accessToken,
