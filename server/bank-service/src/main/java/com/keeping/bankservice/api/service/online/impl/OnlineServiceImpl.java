@@ -4,6 +4,8 @@ import com.keeping.bankservice.api.controller.feign_client.MemberFeignClient;
 import com.keeping.bankservice.api.controller.feign_client.NotiFeignClient;
 import com.keeping.bankservice.api.controller.feign_client.request.SendNotiRequest;
 import com.keeping.bankservice.api.controller.online.response.ShowOnlineResponse;
+import com.keeping.bankservice.api.service.account_history.AccountHistoryService;
+import com.keeping.bankservice.api.service.account_history.dto.TransferToParentDto;
 import com.keeping.bankservice.api.service.online.OnlineService;
 import com.keeping.bankservice.api.service.online.dto.AddOnlineDto;
 import com.keeping.bankservice.api.service.online.dto.ApproveOnlineDto;
@@ -18,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URISyntaxException;
 import java.util.List;
 
 import static com.keeping.bankservice.global.common.Approve.APPROVE;
@@ -30,6 +33,7 @@ public class OnlineServiceImpl implements OnlineService {
 
     private final MemberFeignClient memberFeignClient;
     private final NotiFeignClient notiFeignClient;
+    private final AccountHistoryService accountHistoryService;
     private final OnlineRepository onlineRepository;
     private final OnlineQueryRepository onlineQueryRepository;
 
@@ -52,7 +56,7 @@ public class OnlineServiceImpl implements OnlineService {
     }
 
     @Override
-    public void approveOnline(String memberKey, ApproveOnlineDto dto) {
+    public void approveOnline(String memberKey, ApproveOnlineDto dto) throws URISyntaxException {
         // TODO: 요청을 보낸 사용자가 부모인지 확인하는 부분 필요
 
         Online online = onlineRepository.findById(dto.getOnlineId())
@@ -63,6 +67,8 @@ public class OnlineServiceImpl implements OnlineService {
 
         if (dto.getApprove() == APPROVE) {
             // TODO: 자녀에게서 출금하는 것 필요
+            TransferToParentDto transferToParentDto = TransferToParentDto.toDto(memberKey, online.getChildMoney());
+            accountHistoryService.transferToParent(online.getChildKey(), transferToParentDto);
 
             notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
                     .memberKey(online.getChildKey())

@@ -5,6 +5,7 @@ import com.keeping.bankservice.api.controller.account_history.response.ShowChild
 import com.keeping.bankservice.api.service.account_history.dto.AddAccountDetailValidationDto;
 import com.keeping.bankservice.api.service.account_history.dto.AddAccountHistoryDto;
 import com.keeping.bankservice.api.service.account_history.dto.TransferMoneyDto;
+import com.keeping.bankservice.api.service.account_history.dto.TransferToParentDto;
 import com.keeping.bankservice.domain.account_history.AccountHistory;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,5 +22,6 @@ public interface AccountHistoryService {
     Map<String, List<ShowAccountHistoryResponse>> showAccountHistoryRoute(String memberKey, String targetKey, String accountNumber, String date);
     Long countMonthExpense(String memberKey, String targetKey, String date);
     void transferMoney(String memberKey, TransferMoneyDto dto) throws URISyntaxException;
+    void transferToParent(String memberKey, TransferToParentDto dto) throws URISyntaxException;
     List<ShowChildHistoryResponse> showChildHistory();
 }
