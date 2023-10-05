@@ -42,17 +42,18 @@ class _ColorInfoCardState extends State<ColorInfoCard> {
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 7, horizontal: 24),
         child: Container(
-            height: 110,
-            decoration: roundedBoxWithShadowStyle(borderRadius: 30),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(25),
-              child: Column(
-                children: [
-                  _requestStatus(widget.status),
-                  _requestContent(widget.name, widget.profileImage),
-                ],
-              ),
-            )),
+          width: 360,
+          height: 110,
+          decoration: roundedBoxWithShadowStyle(borderRadius: 30),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: Column(
+              children: [
+                _requestStatus(widget.status),
+                _requestContent(widget.name, widget.status),
+              ],
+            ),
+          )),
       ),
     );
   }
@@ -72,7 +73,16 @@ Widget _requestStatus(String status) {
   );
 }
 
-Widget _requestContent(String name, String profileImage) {
+Widget _requestContent(String name, String status) {
+  String setImgPath(status) {
+    if (status == 'APPROVE') {
+      return 'assets/image/face/face4.png';
+    } else if (status == 'REJECT') {
+      return 'assets/image/face/face6.png';
+    } else {
+      return 'assets/image/face/face1.png';
+    }
+  }
   return Expanded(
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 17),
@@ -80,7 +90,7 @@ Widget _requestContent(String name, String profileImage) {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          categoryImg(profileImage),
+          categoryImg(setImgPath(status)),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center, 

@@ -12,7 +12,7 @@ import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
-import 'package:keeping/widgets/empty.dart';
+import 'package:keeping/widgets/loading.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/reload_btn.dart';
@@ -124,7 +124,7 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                   )
                 );
               } else {
-                return const Text('');
+                return loading();
               }
             }
           ),
