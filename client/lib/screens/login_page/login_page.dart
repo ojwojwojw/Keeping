@@ -18,6 +18,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeping/util/page_transition_effects.dart';
 
 import 'package:http/http.dart' as http;
+
 final _baseUrl = dotenv.env['BASE_URL'];
 TextEditingController _userId = TextEditingController();
 TextEditingController _userPw = TextEditingController();
@@ -133,11 +134,14 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       height: 20,
                     ),
-                    Padding(padding: EdgeInsets.symmetric(horizontal: 25),  
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(_loginResult,),
+                          Text(
+                            _loginResult,
+                          ),
                         ],
                       ),
                     ),
@@ -172,110 +176,113 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  login(context, Function handleLogin) async {
+    final data = {
+      'loginId': _loginId,
+      'loginPw': _loginPw,
+    };
+    String fcmToken =
+        Provider.of<UserInfoProvider>(context, listen: false).fcmToken;
+    print('$data, $fcmToken');
 
-login(context, Function handleLogin) async {
-  final data = {
-    'loginId': _loginId,
-    'loginPw': _loginPw,
-  };
-  String fcmToken = Provider.of<UserInfoProvider>(context, listen: false).fcmToken;
-  print('$data, $fcmToken');
-
-  try {
-    final response = await http.post(
-      Uri.parse('$_baseUrl/member-service/login'),
-      body: jsonEncode(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      print('로그인에 성공했어요!');
-      handleLogin('');
-      String? token = response.headers['token'];
-      print(token);
-      String? memberKey = response.headers['memberKey'];
-      print(memberKey);
-
-      // 유저 정보 반환
-      await requestUserInfo(memberKey, token, fcmToken,
-          Provider.of<UserInfoProvider>(context, listen: false));
-      Provider.of<UserInfoProvider>(context, listen: false)
-          .updateTokenMemberKey(
-        accessToken: token,
-        memberKey: memberKey,
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/member-service/login'),
+        body: jsonEncode(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       );
-      await renderingUserAccount(
-        token,
-        memberKey,
-      );
-    } else {
-      // 로그인에 실패한 경우
-      print('로그인에 실패!');
+      print(response.body); // Raw response string
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['resultStatus']['successCode'] == 0) {
+        print('로그인에 성공했어요!');
+        handleLogin('');
+        String? token = response.headers['token'];
+        print('토큰 $token');
+        String? memberKey = response.headers['memberkey'];
+        print('멤버키 $memberKey');
+        print(response.headers);
+        print('위는헤더');
+
+        // 유저 정보 반환
+        await requestUserInfo(memberKey, token, fcmToken,
+            Provider.of<UserInfoProvider>(context, listen: false));
+        Provider.of<UserInfoProvider>(context, listen: false)
+            .updateTokenMemberKey(
+          accessToken: token,
+          memberKey: memberKey,
+        );
+        await renderingUserAccount(
+          token,
+          memberKey,
+        );
+      } else {
+        // 로그인에 실패한 경우
+        print('로그인에 실패!');
+        handleLogin('아이디 및 비밀번호를 확인해주세요.');
+      }
+    } catch (err) {
+      print(err);
       handleLogin('아이디 및 비밀번호를 확인해주세요.');
     }
-  } catch (err) {
-    print(err);
-    handleLogin('아이디 및 비밀번호를 확인해주세요.');
   }
-}
 
-
-  Future<void> requestUserInfo(
+    Future<void> requestUserInfo(
     memberKey,
     accessToken,
     fcmToken,
     UserInfoProvider userInfoProvider,
   ) async {
-    Options options = Options(
-      headers: {
-        'Authorization': 'Bearer $accessToken', // 토큰 추가
-      },
-    );
-    print('여기옵니다, $fcmToken');
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Content-Type': 'application/json',
+    };
+    print('여기옵니다, $accessToken, $memberKey');
     try {
-      var response = await dio.get(
-        '$_baseUrl/member-service/auth/api/$memberKey/login-check/$fcmToken', // fcmToken 사용
-        options: options,
+      final response = await http.get(
+        Uri.parse('$_baseUrl/member-service/auth/api/$memberKey/login-check/$fcmToken'),
+        headers: headers,
       );
-      Map<String, dynamic> jsonResponse = json.decode(response.toString());
-      print(response);
-      String? _name = jsonResponse['resultBody']['name'];
-      String? _profileImage = jsonResponse['resultBody']['profileImage'];
-      dynamic childrenListData = jsonResponse['resultBody']['childrenList'];
-      List<Map<String, dynamic>> _childrenList = [];
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = json.decode(response.body);
+        print(jsonResponse);
+        String? _name = jsonResponse['resultBody']['name'];
+        String? _profileImage = jsonResponse['resultBody']['profileImage'];
+        dynamic childrenListData = jsonResponse['resultBody']['childrenList'];
+        List<Map<String, dynamic>> _childrenList = [];
 
-      // childrenList가 null이 아니면 파싱하여 _childrenList에 할당
-      if (childrenListData != null) {
-        _childrenList = List<Map<String, dynamic>>.from(childrenListData);
-      }
-
-      bool? _parent = jsonResponse['resultBody']['parent'];
-
-      if (_profileImage == null) {
-        if (_parent != null) {
-          if (_parent) {
-            _profileImage = 'assets/image/profile/parent1.png';
-          } else {
-            _profileImage = 'assets/image/profile/child1.png';
-          }
-        } else {
-          _profileImage = 'assets/image/profile/parent2';
+        if (childrenListData != null) {
+          _childrenList = List<Map<String, dynamic>>.from(childrenListData);
         }
-      }
 
-      userInfoProvider.updateUserInfo(
-        name: _name,
-        profileImage: _profileImage,
-        childrenList: _childrenList,
-        parent: _parent,
-      );
-      print('Parent $_parent');
-      if (_parent == true) {
-        noEffectTransition(context, ParentMainPage());
-      } else {
-        noEffectTransition(context, ChildMainPage());
+        bool? _parent = jsonResponse['resultBody']['parent'];
+
+        if (_profileImage == null) {
+          if (_parent != null) {
+            if (_parent) {
+              _profileImage = 'assets/image/profile/parent1.png';
+            } else {
+              _profileImage = 'assets/image/profile/child1.png';
+            }
+          } else {
+            _profileImage = 'assets/image/profile/parent2';
+          }
+        }
+
+        userInfoProvider.updateUserInfo(
+          name: _name,
+          profileImage: _profileImage,
+          childrenList: _childrenList,
+          parent: _parent,
+        );
+        print('Parent $_parent');
+        if (_parent == true) {
+          noEffectTransition(context, ParentMainPage());
+        } else {
+          noEffectTransition(context, ChildMainPage());
+        }
       }
     } catch (err) {
       print(err);
