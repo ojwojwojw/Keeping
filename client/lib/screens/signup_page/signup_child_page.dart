@@ -477,11 +477,7 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
     
     if (response['resultStatus']['successCode'] == 0) {
       handleIsParentVerificationChecked(true);
-      Navigator.push(context, MaterialPageRoute(
-                    builder: (_) => LoginPage()
-                          
-                        ));
-      // noEffectTransition(context, LoginPage());
+      noEffectTransition(context, LoginPage());
     } else if (response['resultStatus']['resultCode'] == 409) {
       print('이미 가입한 회원입니다.');
     } else {

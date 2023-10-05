@@ -7,6 +7,7 @@ import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/util/display_format.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
@@ -90,76 +91,80 @@ class _SendPocketMoneyPageState extends State<SendPocketMoneyPage> {
         text: '용돈 보내기',
       ),
       body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 40),
-              child : Column(
-                  children: [
-                    SizedBox(height: 40),
-                    renderWhoReceiveMoney(),
-                    SizedBox(height: 50),
-                    sendMoneyField(),
-                    SizedBox(height: 30),
-                    Text(
-                      validateText,
-                      style: TextStyle(color: Colors.grey[800]),
-                    ),
-                  ],
-              ),
-            ),
-            Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 40),
+            child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: roundedBoxWithShadowStyle(
-                      shadow: false, bgColor: Color(0xffF0F0F0), borderRadius: 10
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('출금 가능 잔액', style: TextStyle(color: Color(0xff757575), fontSize: 16),),
-                          Row(
-                            children: [
-                              Text(formattedBalance),
-                            ],
-                          )
-                        ],
-                      ),
+                SizedBox(height: 40),
+                renderWhoReceiveMoney(),
+                SizedBox(height: 50),
+                sendMoneyField(),
+                SizedBox(height: 30),
+                Text(
+                  validateText,
+                  style: TextStyle(color: Colors.grey[800]),
+                ),
+              ],
+            ),
+          ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Container(
+                  width: double.infinity,
+                  decoration: roundedBoxWithShadowStyle(
+                      shadow: false,
+                      bgColor: Color(0xffF0F0F0),
+                      borderRadius: 10),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '출금 가능 잔액',
+                          style:
+                              TextStyle(color: Color(0xff757575), fontSize: 16),
+                        ),
+                        Row(
+                          children: [
+                            Text(formattedBalance),
+                          ],
+                        )
+                      ],
                     ),
                   ),
                 ),
-                NumberKeyboard(
-                  onNumberPress: onNumberPress,
-                  onBackspacePress: onBackspacePress,
-                ),
-              ],
-            )
-          ],
-        ),
-        bottomNavigationBar: BottomBtn(
-          text: '확인',
-          isDisabled: BtnDisable,
-          action: () async {
-            var response = await sendMoney(
+              ),
+              NumberKeyboard(
+                onNumberPress: onNumberPress,
+                onBackspacePress: onBackspacePress,
+              ),
+            ],
+          )
+        ],
+      ),
+      bottomNavigationBar: BottomBtn(
+        text: '확인',
+        isDisabled: BtnDisable,
+        action: () async {
+          var response = await sendMoney(
               accessToken: _accessToken!,
               memberKey: _memberKey!,
               money: amount,
               childKey: _childKey);
           if (response['resultStatus']['successCode'] == 0) {
-            Navigator.push(
+            noEffectTransition(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => CompletedPage(
-                          text: "용돈을 보냈어요!",
-                          button: ConfirmBtn(
-                            action: ParentMainPage(),
-                          ),
-                        )));
+                CompletedPage(
+                    text: '용돈을 보냈어요!',
+                    button: ConfirmBtn(
+                      action: ParentMainPage(),
+                    )));
           }
           print('용돈 송금 완');
         },

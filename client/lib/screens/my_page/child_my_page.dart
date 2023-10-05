@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
-import 'package:keeping/screens/my_page/util/handle_logout.dart';
+import 'package:keeping/screens/login_page/login_page.dart';
 import 'package:keeping/screens/user_link_page/before_user_link_page.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/screens/my_page/password_edit_page.dart';
@@ -71,8 +72,6 @@ class _ChildMyPageState extends State<ChildMyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,  // 이 부분에 원하는 색상을 설정하세요.
-
       appBar: MyHeader(
         text: '마이페이지',
         elementColor: Colors.black,
@@ -133,7 +132,7 @@ class _ChildMyPageState extends State<ChildMyPage> {
             roundedAssetImg(
                 imgPath: profileImage ?? 'assets/image/profile/child1.png',
                 size: 64),
-                SizedBox(
+            SizedBox(
               width: 30,
             ),
             Column(
@@ -174,8 +173,7 @@ class _ChildMyPageState extends State<ChildMyPage> {
       children: [
         ElevatedButton(
           onPressed: () {
-            Navigator.of(context).pop();
-            handlelogout();
+            noEffectTransition(context, LoginPage());
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFF8320E7), // 배경색 설정
@@ -231,23 +229,27 @@ class _ChildMyPageState extends State<ChildMyPage> {
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
-            handlelogout();
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFF8320E7), // 배경색 설정
           ),
-          child: Text('확인'),
+          child: Text(
+            '확인',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
         SizedBox(width: 20),
         ElevatedButton(
           onPressed: () {
-            Navigator.of(context).pop();
-            handlelogout();
+            noEffectTransition(context, LoginPage());
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFF8320E7), // 배경색 설정
           ),
-          child: Text('취소'),
+          child: Text(
+            '취소',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ],
     );

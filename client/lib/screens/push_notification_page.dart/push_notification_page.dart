@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:keeping/screens/allowance_ledger_page/allowance_ledger_page.dart';
+import 'package:keeping/screens/main_page/child_main_page.dart';
+import 'package:keeping/screens/main_page/parent_main_page.dart';
+import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/screens/push_notification_page.dart/utils/get_push_notification.dart';
 import 'package:keeping/screens/push_notification_page.dart/widgets/push_notification_filter.dart';
+import 'package:keeping/screens/question_page/question_page.dart';
 import 'package:keeping/screens/request_pocket_money_page/child_request_money_detail.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
 import 'package:keeping/util/display_format.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/request_info_card.dart';
@@ -20,12 +26,14 @@ class PushNotificationPage extends StatefulWidget {
 class _PushNotificationPageState extends State<PushNotificationPage> {
   List<Map<String, dynamic>> _result = []; // 데이터를 저장할 변수
   int selectedBtnIdx = 0;
+  bool isParent = true;
 
   late Future<List<Map<String, dynamic>>> _dataFuture;
   @override
   void initState() {
     super.initState();
     _dataFuture = renderPushNotification(context, selectedBtnIdx);
+    isParent = context.read<UserInfoProvider>().parent;
   }
 
   void handleResult(res) {
@@ -39,9 +47,12 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,  // 이 부분에 원하는 색상을 설정하세요.
+      // backgroundColor: Colors.white, // 이 부분에 원하는 색상을 설정하세요.
 
-      appBar: MyHeader(text: '알림', bgColor: Colors.white,),
+      appBar: MyHeader(
+        text: '알림',
+        bgColor: Colors.white,
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -83,8 +94,8 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
                                     Text(
                                       '도착한 알림이 없어요!',
                                       style: TextStyle(
-                                          fontSize: 25,
-                                        ),
+                                        fontSize: 25,
+                                      ),
                                     ),
                                     SizedBox(
                                       height: 30,
@@ -177,87 +188,104 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
       );
     }
     return Column(
-      children: requests.map((noti) {
-        String typeString = '';
-        String _imgpath = '';
-        if (noti['type'] == 'MISSION') {
-          _imgpath = 'assets/image/main/mission.png';
-          typeString = '미션';
-        } else if (noti['type'] == 'QUESTION') {
-          typeString = '질문';
-          _imgpath = 'assets/image/main/question.png';
-        } else if (noti['type'] == 'ACCOUNT') {
-          _imgpath = 'assets/image/main/piggy.png';
-          typeString = '계좌';
-        }
+  children: requests.map((noti) {
+    String typeString = '';
+    String _imgpath = '';
+    switch (noti['type']) {
+      case 'MISSION':
+        _imgpath = 'assets/image/main/mission.png';
+        typeString = '미션';
+        break;
+      case 'QUESTION':
+        typeString = '질문';
+        _imgpath = 'assets/image/main/question.png';
+        break;
+      case 'ACCOUNT':
+        _imgpath = 'assets/image/main/piggy.png';
+        typeString = '계좌';
+        break;
+      default:
+        break;
+    }
 
-        String FormatDate = '';
-        if (noti['createdDate'] == null) {
-          final now = DateTime.now();
-          FormatDate = formattedMDDate(now);
-        } else {
-          FormatDate = formattedMDDate(DateTime.parse(noti['createdDate']));
-        }
+    String FormatDate = '';
+    if (noti['createdDate'] == null) {
+      final now = DateTime.now();
+      FormatDate = formattedMDDate(now);
+    } else {
+      FormatDate = formattedMDDate(DateTime.parse(noti['createdDate']));
+    }
 
-        // 알림을 랩핑하는 컨테이너
-        return Container(
-          width: 330,
-          margin: EdgeInsets.symmetric(vertical: 8),
-          padding: EdgeInsets.all(8),
-          decoration: roundedBoxWithShadowStyle(),
-          child: Row(
-            children: [
-              // 이미지 표시
-              roundedAssetImg(
-                imgPath: _imgpath,
-              ),
-              SizedBox(width: 15), // 이미지와 텍스트 사이 간격
-              // 나머지 요소들을 세로로 나열
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 타입과 날짜를 좌우 양쪽에 배치
-                    Row(
-                      children: [
-                        Text(
-                          typeString,
-                          style: TextStyle(
-                            color: const Color.fromARGB(255, 145, 145, 145),
-                            fontSize: 16,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 140,
-                        ),
-                        Text(
-                          '$FormatDate',
-                          style: TextStyle(
-                            color: Colors.grey[700],
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 8), // 텍스트와 제목 사이 간격
-                    // 나머지 내용들은 이곳에 추가
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // 제목
-                        Text(
-                          '${noti['title']}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+    return InkWell(
+      onTap: () {
+        switch (noti['type']) {
+          case 'MISSION':
+            noEffectTransition(context, MissionPage());
+            break;
+          case 'QUESTION':
+            noEffectTransition(context, QuestionPage());
+            break;
+          case 'ACCOUNT':
+            noEffectTransition(context, AllowanceLedgerPage());
+            break;
+          default:
+            break;
+        }
+      },  // <-- 수정한 부분
+          child: Container(
+            width: 330,
+            margin: EdgeInsets.symmetric(vertical: 8),
+            padding: EdgeInsets.all(8),
+            decoration: roundedBoxWithShadowStyle(),
+            child: Row(
+              children: [
+                // 이미지 표시
+                roundedAssetImg(
+                  imgPath: _imgpath,
                 ),
-              ),
-            ],
+                SizedBox(width: 15),
+                // 나머지 요소들을 세로로 나열
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            typeString,
+                            style: TextStyle(
+                              color: const Color.fromARGB(255, 145, 145, 145),
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(width: 140),
+                          Text(
+                            '$FormatDate',
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${noti['title']}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       }).toList(),
