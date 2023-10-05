@@ -93,6 +93,7 @@ class _ChildRequestMoneyPageState extends State<ChildRequestMoneyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFAFAFA),
       appBar: MyHeader(text: '용돈 조르기'),
       body: SingleChildScrollView(
         child: Column(
