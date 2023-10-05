@@ -11,6 +11,7 @@ import 'package:keeping/screens/piggy_page/widgets/piggy_info.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_info_card.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
+import 'package:keeping/widgets/empty.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/rounded_modal.dart';
@@ -65,15 +66,16 @@ class _PiggyPageState extends State<PiggyPage> {
               if (snapshot.hasData) {
                 var response = snapshot.data;
                 if (response['resultBody'] != null && response['resultBody'].isEmpty) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      children: [
-                        Image.asset('assets/image/main/piggy.png', width: 300,),
-                        Text('개설된 저금통이 없습니다.')
-                      ],
-                    ),
-                  );
+                  return empty(text: '개설된 저금통이 없습니다.');
+                  // return Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  //   child: Column(
+                  //     children: [
+                  //       Image.asset('assets/image/main/piggy.png', width: 300,),
+                  //       Text('개설된 저금통이 없습니다.')
+                  //     ],
+                  //   ),
+                  // );
                 }
                 return Expanded(
                   child: Container(

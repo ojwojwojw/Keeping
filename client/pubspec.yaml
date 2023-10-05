@@ -161,6 +161,7 @@ flutter:
     - assets/image/main/cropped_onlineRequest.png
     - assets/image/main/cropped_piggy.png
     - assets/image/main/cropped_question.png
+    - assets/image/main/empty.png
     - assets/image/money/camera.png
     - assets/image/money/coin.png
     - assets/image/money/coins.png
