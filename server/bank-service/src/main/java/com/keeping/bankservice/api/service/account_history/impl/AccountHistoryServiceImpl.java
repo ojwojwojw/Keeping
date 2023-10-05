@@ -1,5 +1,6 @@
 package com.keeping.bankservice.api.service.account_history.impl;
 
+import com.keeping.bankservice.api.ApiResponse;
 import com.keeping.bankservice.api.controller.account_history.response.ShowAccountHistoryResponse;
 import com.keeping.bankservice.api.controller.account_history.response.ShowChildHistoryResponse;
 import com.keeping.bankservice.api.controller.feign_client.MemberFeignClient;
@@ -136,8 +137,21 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
         notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
                 .memberKey(memberKey)
-                .title(type + " " + dto.getMoney() + "원")
-                .content(dto.getStoreName() + " " + money + "원 잔액 " + balance + "원")
+                .title("용돈 기입장 등록!! ✏️")
+//                .title(type + " " + dto.getMoney() + "원")
+                .content("[" + type + "] " + dto.getStoreName() + " " + money + "원 잔액 " + balance + "원")
+                .type("ACCOUNT")
+                .build());
+
+        String parentKey = memberFeignClient.getParentMemberKey(memberKey).getResultBody();
+        String name = memberFeignClient.getMemberName(memberKey).getResultBody();
+        System.out.println("부모 고유 번호: " + parentKey + ", 자녀 이름: " + name);
+
+        // TODO: 부모에게도 알림 보내기
+        notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
+                .memberKey(parentKey)
+                .title(name + " 님 용돈 기입장 등록!! ✏️")
+                .content("[" + type + "] " + dto.getStoreName() + " " + money + "원 잔액 " + balance + "원")
                 .type("ACCOUNT")
                 .build());
 
