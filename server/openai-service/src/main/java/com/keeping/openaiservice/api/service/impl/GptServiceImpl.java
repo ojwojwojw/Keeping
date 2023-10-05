@@ -14,8 +14,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static org.springframework.integration.graph.LinkNode.Type.input;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +31,7 @@ public class GptServiceImpl implements GptService {
     private final BankFeignClient bankFeignClient;
     private final QuestionFeignClient questionFeignClient;
 
-    @Scheduled(cron = "0 15 18 * * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 20 15 * * ?", zone = "Asia/Seoul")
     private void createQuestion() {
         log.debug("[질문 생성하기]");
         ApiResponse<List<TransactionResponseList>> transactionData = bankFeignClient.getTransactionData();
@@ -34,8 +39,6 @@ public class GptServiceImpl implements GptService {
         List<TransactionResponseList> transactionResponseLists = transactionData.getResultBody();
 
         List<QuestionAiResponse> questionAiResponses = new ArrayList<>();
-
-        log.debug("[거래내역 정보] :  " + transactionResponseLists.toString());
 
         for (TransactionResponseList transactionResponseList : transactionResponseLists) {
 
@@ -98,21 +101,20 @@ public class GptServiceImpl implements GptService {
                 sendText.append(transactionStr);
             }
 
-            log.debug("[거래내역 멤버키] : " + transactionResponseList.getChildMemberKey());
-            log.debug("[보낼 값] : " + transactionStr);
-
             CompletionChatResponse chatResponse = completionChat(GPTCompletionChatRequest.builder()
                     .role("user")
                     .message(sendText.toString())
                     .build());
 
+            String answer = answerRefine(chatResponse.getMessages().stream()
+                    .map(CompletionChatResponse.Message::getMessage)
+                    .collect(Collectors.toList())
+                    .get(0));
+
             questionAiResponses.add(QuestionAiResponse.builder()
                     .parentMemberKey(transactionResponseList.getParentMemberKey())
                     .childMemberKey(transactionResponseList.getChildMemberKey())
-                    .answer(chatResponse.getMessages().stream()
-                            .map(CompletionChatResponse.Message::getMessage)
-                            .collect(Collectors.toList())
-                            .get(0))
+                    .answer(answer)
                     .build());
 
         }
@@ -122,6 +124,62 @@ public class GptServiceImpl implements GptService {
 
         // 질문 리스트 전달
         questionFeignClient.addAiQuestion(requestList);
+    }
+
+    /**
+     * GPT 응답 정제 
+     * @param answer GPT 응답
+     * @return 정제된 응답
+     */
+    private String answerRefine(String answer) {
+
+        String[] splitAnswer = answer.split("\"");
+        
+        log.debug("[문자열 쪼개기] : " + Arrays.toString(splitAnswer));
+        // ""가 포함된 경우
+        if (splitAnswer.length >= 2) {
+            return splitAnswer[1].trim();
+        } else {
+            
+            // 여러 개의 질문이 들어올 경우
+            String[] splitNumberAnswer = answer.split("\\?");
+            
+            log.debug("[여러개 질문 쪼개기] : " + Arrays.toString(splitNumberAnswer));
+            
+            if (splitNumberAnswer.length >= 2) {
+                // 숫자. 로 시작한다면 숫자.을 기준으로 문자만 반환
+                String regex = "\\d+\\.\\s*(.+)";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(splitNumberAnswer[splitNumberAnswer.length-1]);
+                
+                log.debug("[matcher] : " + matcher);
+
+                if (matcher.find()) {
+                    return matcher.group(1).trim() + "?";
+                }
+                
+                return splitNumberAnswer[splitNumberAnswer.length-1].trim() + "?";
+            }
+            
+            // 질문 이전에 사전 설명이 있는 경우 _ 예) 다음과 같습니다 : ""
+            String[] splitPrefixAnswer = answer.split(":");
+            
+            log.debug("[: 기준으로 쪼개기] : " + Arrays.toString(splitPrefixAnswer));
+
+            if (splitPrefixAnswer.length >= 2) {
+                // 숫자. 로 시작한다면 숫자.을 기준으로 문자만 반환
+                String regex = "\\d+\\.\\s*(.+)";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(splitPrefixAnswer[splitPrefixAnswer.length-1].trim());
+
+                if (matcher.find()) {
+                    return matcher.group(1).trim() + "?";
+                }
+
+                return splitPrefixAnswer[1].trim() + "?";
+            }
+        }
+        return answer;
     }
 
     @Override
