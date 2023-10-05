@@ -388,14 +388,19 @@ class _MissionApprovePageState extends State<MissionApprovePage> {
       print(response);
 
       if (response.statusCode == 200) {
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedPage(
+        //               text: "미션승인 완료!",
+        //               button: ConfirmBtn(
+        //                 action: ParentMissionPage(),
+        //               ),
+        //             )));  //페이지터짐관련
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CompletedPage(
-                      text: "미션승인 완료!",
-                      button: ConfirmBtn(
-                        action: ParentMissionPage(),
-                      ),
+                builder: (context) => CompletedAndGoPage(text: '미션 승인완료!', targetPage: ParentMissionPage(),
                     )));
       }
     } catch (e) {
@@ -513,14 +518,19 @@ class _MissionCompleteRequestPageState
       print(response);
 
       if (response.statusCode == 200) {
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedPage(
+        //               text: "미션완료 요청완료!",
+        //               button: ConfirmBtn(
+        //                 action: MissionPage(),
+        //               ),
+        //             ))); //페이지터짐관련
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CompletedPage(
-                      text: "미션완료 요청완료!",
-                      button: ConfirmBtn(
-                        action: MissionPage(),
-                      ),
+                builder: (context) => CompletedAndGoPage(text: '미션 완료!', targetPage: MissionPage(),
                     )));
       }
     } catch (e) {
@@ -533,7 +543,7 @@ class _MissionCompleteRequestPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: "미션 완료 요청 !",
+        text: "미션 완료 승인 !",
       ),
       body: Center(
         child: Column(
@@ -636,14 +646,19 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
       print(response);
 
       if (response.statusCode == 200) {
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedPage(
+        //               text: "미션완료 승인완료!",
+        //               button: ConfirmBtn(
+        //                 action: ParentMissionPage(),
+        //               ),
+        //             ))); //페이지터짐관련
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CompletedPage(
-                      text: "미션완료 승인완료!",
-                      button: ConfirmBtn(
-                        action: ParentMissionPage(),
-                      ),
+                builder: (context) => CompletedAndGoPage(text: '승인 완료!', targetPage: ParentMissionPage(),
                     )));
       }
     } catch (e) {
@@ -657,7 +672,7 @@ class _MissionCompletePageState extends State<MissionCompletePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
-        text: "미션 완료 요청 !",
+        text: "미션 완료 승인 !",
       ),
       body: Center(
         child: Column(
@@ -759,14 +774,19 @@ class _MissionCompleteCommentPageState
 
       if (response.statusCode == 200) {
         print('커멘트 200');
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedPage(
+        //               text: "미션완료 승인완료!",
+        //               button: ConfirmBtn(
+        //                 action: MissionPage(),
+        //               ),
+        //             )));페이지터짐관련
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CompletedPage(
-                      text: "미션완료 승인완료!",
-                      button: ConfirmBtn(
-                        action: MissionPage(),
-                      ),
+                builder: (context) => CompletedAndGoPage(text: '기억하기 완료!', targetPage: MissionPage(),
                     )));
       }
     } catch (e) {
