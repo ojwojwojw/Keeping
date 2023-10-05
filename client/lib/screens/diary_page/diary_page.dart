@@ -40,8 +40,19 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
       // 요청이 성공했을 때 처리
       if (response.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(
+        // 전체 데이터
+        var diaryData = List<Map<String, dynamic>>.from(
             response.data['resultBody']['questions']);
+
+        // 오늘 날짜 가져오기
+        DateTime now = DateTime.now();
+        String formattedDate = now.toString().substring(0,10);
+
+        // 오늘 질문을 필터링 해서 반환
+        List<Map<String, dynamic>> filterdData = diaryData.where((item) =>
+            item['createdDate'].toString().substring(0, 10) != formattedDate).toList();
+
+        return filterdData ;
       } else {
         throw Exception('Failed to fetch data');
       }
