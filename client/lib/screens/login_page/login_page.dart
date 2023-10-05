@@ -194,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
         },
       );
       print(response.body); // Raw response string
-      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      Map<String, dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       print(jsonResponse);
       if (jsonResponse['resultStatus']['successCode'] == 0) {
         print('로그인에 성공했어요!');
@@ -247,7 +247,7 @@ class _LoginPageState extends State<LoginPage> {
         headers: headers,
       );
       if (response.statusCode == 200) {
-        Map<String, dynamic> jsonResponse = json.decode(response.body);
+        Map<String, dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         print(jsonResponse);
         print('제이슨리스폰스!!!');
         String? _name = jsonResponse['resultBody']['name'];
