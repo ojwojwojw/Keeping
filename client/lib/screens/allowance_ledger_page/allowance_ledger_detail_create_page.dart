@@ -226,7 +226,7 @@ class _AllowanceLedgerDetailCreatePageState
           );
           Provider.of<AccountDetailProvider>(context, listen: false)
               .initAccountDetail();
-          if (response == 0) {
+          if (response['resultStatus']['resultCode'] == "") {
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -236,6 +236,8 @@ class _AllowanceLedgerDetailCreatePageState
                             action: AllowanceLedgerPage(),
                           ),
                         )));
+          } else if (response['resultStatus']['resultCode'] == "400") {
+            roundedModal(context: context, title: '입력 금액이 남은 금액을 초과했습니다. 다시 한 번 확인해주세요.');
           } else {
             roundedModal(context: context, title: '문제가 발생했습니다. 다시 시도해주세요.');
           }

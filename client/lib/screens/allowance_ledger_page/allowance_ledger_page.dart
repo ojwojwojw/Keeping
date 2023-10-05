@@ -12,6 +12,7 @@ import 'package:keeping/screens/main_page/child_main_page.dart';
 import 'package:keeping/screens/main_page/parent_main_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
+import 'package:keeping/widgets/empty.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
@@ -71,14 +72,9 @@ class _AllowanceLedgerPageState extends State<AllowanceLedgerPage> {
                 print('용돈기입장 페이지 ${snapshot.data}');
                 var response = snapshot.data;
                 if (response['resultBody'].isEmpty) {
-                  return Column(
-                    children: [
-                      Image.asset('assets/image/money/coins.png'),
-                      Text('거래내역이 없습니다.')
-                    ],
-                  );
+                  return empty(text: '거래내역이 없습니다.');
                 } else if (response['resultStatus']['resultCode'] == '503') {
-                  return Text('');
+                  return empty(text: '정보를 불러오는 중 문제가 생겼습니다.\n잠시 후 다시 시도해주세요.');
                 }
                 List<Widget> widgetLists = [];
                 response['resultBody'].forEach((key, valueList) {
