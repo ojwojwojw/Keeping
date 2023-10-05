@@ -61,6 +61,21 @@ public class PiggyApiController {
         }
     }
 
+    @GetMapping("/{target-key}/{piggy-id}")
+    public ApiResponse<ShowPiggyResponse> showDetailPiggy(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("piggy-id") Long piggyId) {
+        log.debug("ShowDetailPiggy={}", piggyId);
+
+        try {
+            ShowPiggyResponse response = piggyService.showDetailPiggy(memberKey, targetKey, piggyId);
+            return ApiResponse.ok(response);
+        } catch (NotFoundException | NoAuthorizationException e) {
+            return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
+        } catch (IOException e) {
+            log.debug("예외 발생 : {}", e.toString());
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "저금통 정보를 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
+        }
+    }
+
     @PostMapping("/saving")
     public ApiResponse<SavingPiggyResponse> savingPiggy(@PathVariable("member-key") String memberKey, @RequestBody SavingPiggyRequest request) {
         log.debug("SavingPiggyRequest={}", request);

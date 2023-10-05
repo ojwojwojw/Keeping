@@ -99,7 +99,7 @@ public class PiggyServiceImpl implements PiggyService {
 
     @Override
     public List<ShowPiggyResponse> showPiggy(String memberKey, String targetKey) throws IOException {
-        // 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
+        // TODO: 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
 
         List<ShowPiggyDto> result = piggyQueryRepository.showPiggy(targetKey);
 
@@ -124,6 +124,36 @@ public class PiggyServiceImpl implements PiggyService {
             ShowPiggyResponse piggyResponse = ShowPiggyResponse.toResponse(dto, base64Image);
             response.add(piggyResponse);
         }
+
+        return response;
+    }
+
+    @Override
+    public ShowPiggyResponse showDetailPiggy(String memberKey, String targetKey, Long piggyId) throws IOException {
+        // TODO: 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
+
+        Piggy piggy = piggyRepository.findById(piggyId)
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 저금통이 존재하지 않습니다."));
+
+        if (!piggy.getChildKey().equals(targetKey)) {
+            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
+        }
+
+        File file = null;
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("win")) {
+            file = new File(piggyWindowPath + "\\" + piggy.getSavedImage());
+        } else {
+            file = new File(piggyLinuxPath + "/" + piggy.getSavedImage());
+        }
+
+        byte[] byteImage = new byte[(int) file.length()];
+        FileInputStream fis = new FileInputStream(file);
+        fis.read(byteImage);
+        String base64Image = new String(Base64.encodeBase64(byteImage));
+
+        ShowPiggyResponse response = ShowPiggyResponse.toResponse(piggy, base64Image);
 
         return response;
     }

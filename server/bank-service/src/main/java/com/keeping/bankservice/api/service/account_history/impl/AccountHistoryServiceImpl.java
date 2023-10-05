@@ -100,10 +100,12 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         } else if (dto.getStoreName() != null && !dto.getStoreName().equals("")) {
             // 장소의 위도, 경도, 카테고리 가져오기
             Map keywordResponse = useKakaoLocalApi(true, dto.getStoreName());
+            System.out.println("장소명으로 키워드 검색 결과: " + keywordResponse.toString());
+
             try {
                 categoryType = ((LinkedHashMap) ((ArrayList) keywordResponse.get("documents")).get(0)).get("category_group_code").toString();
                 largeCategory = mappingCategory(categoryType);
-            } catch (NullPointerException e) {
+            } catch (NullPointerException | IndexOutOfBoundsException e) {
                 categoryType = "ETC";
             }
         }
@@ -112,10 +114,11 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
         if (dto.getAddress() != null && !dto.getAddress().equals("")) {
             Map addressResponse = useKakaoLocalApi(false, dto.getAddress());
+            System.out.println("주소로 장소 검색 결과: " + addressResponse.toString());
             try {
                 latitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("y"));
                 longitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("x"));
-            } catch (NullPointerException e) {
+            } catch (NullPointerException | IndexOutOfBoundsException e) {
                 latitude = null;
                 longitude = null;
             }

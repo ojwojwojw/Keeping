@@ -16,6 +16,7 @@ import java.util.List;
 public interface PiggyService {
     Long addPiggy(String memberKey, AddPiggyDto dto) throws IOException;
     List<ShowPiggyResponse> showPiggy(String memberKey, String targetKey) throws IOException;
+    ShowPiggyResponse showDetailPiggy(String memberKey, String targetKey, Long piggyId) throws IOException;
     SavingPiggyResponse savingPiggy(String memberKey, SavingPiggyDto dto) throws URISyntaxException, IOException;
     Piggy isValidPiggy(String memberKey, Long piggyId);
 }
