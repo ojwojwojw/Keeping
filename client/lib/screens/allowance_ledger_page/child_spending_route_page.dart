@@ -66,15 +66,15 @@ class _ChildSpendingRoutePageState extends State<ChildSpendingRoutePage> {
       supportedLocales: const [
         Locale('ko', 'KR')
       ],
-      theme: ThemeData(
-        datePickerTheme: DatePickerThemeData(
-          headerBackgroundColor: const Color(0xFF8320E7),
-          todayBorder: BorderSide(color: Colors.white),
-          todayBackgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
-          dayOverlayColor: MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
-          // surfaceTintColor: const Color(0xFF8320E7),
-        ),
-      ),
+      // theme: ThemeData(
+      //   datePickerTheme: DatePickerThemeData(
+      //     headerBackgroundColor: const Color(0xFF8320E7),
+      //     todayBorder: BorderSide(color: Colors.white),
+      //     todayBackgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
+      //     dayOverlayColor: MaterialStateProperty.all<Color>(const Color(0xFF8320E7)),
+      //     // surfaceTintColor: const Color(0xFF8320E7),
+      //   ),
+      // ),
       home: Scaffold(
         appBar: MyHeader(
           text: '소비경로',

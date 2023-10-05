@@ -36,7 +36,7 @@ class _PiggyInfoState extends State<PiggyInfo> {
                   Text(
                     widget.parent != null && !widget.parent! ? 
                       '목표를 정하고\n차곡차곡 모아보아요!'
-                      : '지금 자녀가 갖고 싶은건\n무엇일까요?',
+                      : '자녀가 갖고 싶은건\n무엇일까요?',
                     style: TextStyle(
                       fontSize: 20,
                       color: Colors.black

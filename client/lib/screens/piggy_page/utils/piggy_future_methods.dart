@@ -74,7 +74,7 @@ Future<dynamic> savePiggy({
   required String? accessToken, required String? memberKey,
   required String? accountNumber, required String? piggyAccountNumber, required int? money, required String? authPassword
 }) async {
-  if (accessToken != null && memberKey != null && accountNumber != null && piggyAccountNumber != null && money != null && authPassword != null) {
+  if (accessToken != null && memberKey != null && accountNumber != null && accountNumber != '' && piggyAccountNumber != null && money != null && authPassword != null) {
     try {
       final response = await dioPost(
         accessToken: accessToken,
@@ -90,6 +90,26 @@ Future<dynamic> savePiggy({
       return response;
     } catch (e) {
       print('저금통 저금하기 에러 $e');
+    }
+  } else {
+    return;
+  }
+}
+
+// 저금통 정보 조회
+Future<dynamic> getPiggy({
+  required String? accessToken, required String? memberKey, required String? targetKey, required int? piggyId
+}) async {
+  if (accessToken != null && memberKey != null && targetKey != null && piggyId != null) {
+    try {
+      final response = await dioGet(
+        accessToken: accessToken,
+        url: '/bank-service/api/$memberKey/piggy/$targetKey/$piggyId',
+      );
+      print('저금통 정보 조회 응답 $response');
+      return response;
+    } catch (e) {
+      print('저금통 정보 조회 에러 $e');
     }
   } else {
     return;

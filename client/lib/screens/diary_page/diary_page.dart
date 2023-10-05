@@ -81,7 +81,7 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('에러 발생: ${snapshot.error}'));
           } else {
-            data = snapshot.data ?? []; // 여기에서 snapshot의 데이터를 받아옵니다.
+            data = snapshot.data ?? [];
             return Center(
               child: Column(
                 children: [
@@ -89,8 +89,7 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
                     height: 70,
                     width: 410,
                     color: Color.fromARGB(255, 255, 255, 255),
-                    child: Image.asset(
-                        'assets/image/diary/key.png'), // 이미지 경로를 여기에 설정하세요.
+                    child: Image.asset('assets/image/diary/key.png'),
                   ),
                   SizedBox(
                     height: 10,
@@ -697,13 +696,13 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
 
                   ///일기 데이터 띄울 곳
                   _diaryData(data),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _diaryCreateBtn(),
-                      _todayQuestionBtn(),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     _diaryCreateBtn(),
+                  //     _todayQuestionBtn(),
+                  //   ],
+                  // ),
                   SizedBox(
                     height: 15,
                   ),
@@ -712,6 +711,13 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
             );
           }
         },
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _diaryCreateBtn(),
+          _todayQuestionBtn(),
+        ],
       ),
       bottomNavigationBar: BottomNav(diary: true),
     );
@@ -1451,25 +1457,30 @@ class _DiaryCommentPageState extends State<DiaryCommentPage> {
                           );
 
                           bool isLongComment = comment.length > 50;
-
+// 수정 잘 됐는지 확인하기!!!!!!!!!!!!!!!!
                           // 댓글 텍스트 위젯
                           var commentWidget = Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 12, 
-                                vertical: isLongComment ? 16 : 8 ),
+                                horizontal: 12, vertical: 8),
                             decoration: BoxDecoration(
                               color: isCurrentUserComment
                                   ? Color(0xFF805AF1 )
                                   : Color.fromARGB(255, 243, 243, 243),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Text(
-                              comment['content'],
-                              style: TextStyle(
-                                color: isCurrentUserComment
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    comment['content'],
+                                    style: TextStyle(
+                                      color: isCurrentUserComment
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           );
 

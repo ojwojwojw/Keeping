@@ -158,7 +158,7 @@ Widget colorInfoDetailCardContentUnderLine(String content) {
           decoration: BoxDecoration(border: Border(bottom: BorderSide())),
           child: Padding(
             padding: EdgeInsets.all(5),
-            child: Text(content),
+            child: Flexible(child: Text(content, overflow: TextOverflow.ellipsis,)),
           )));
 }
 
