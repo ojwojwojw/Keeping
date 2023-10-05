@@ -74,7 +74,7 @@ class _UserLinkPageState extends State<BeforeUserLinkPage> {
               future: _userCode,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator(); // 데이터를 기다리는 동안 표시할 내용 (로딩 스피너 예시)
+                  return CircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   return Text('데이터를 가져오지 못했어요'); // 오류가 발생한 경우
                 } else {
