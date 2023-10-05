@@ -8,12 +8,14 @@ import com.keeping.bankservice.api.service.allowance.AllowanceService;
 import com.keeping.bankservice.api.service.allowance.dto.AddAllowanceDto;
 import com.keeping.bankservice.api.service.allowance.dto.ApproveAllowanceDto;
 import com.keeping.bankservice.global.common.Approve;
+import com.keeping.bankservice.global.exception.InvalidRequestException;
 import com.keeping.bankservice.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -47,8 +49,10 @@ public class AllowanceApiController {
 
         try {
             allowanceService.approveAllowance(memberKey, dto);
-        } catch (NotFoundException e) {
+        } catch (NotFoundException | InvalidRequestException e) {
             return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
+        } catch (URISyntaxException e) {
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "현재 서비스 이용이 불가능합니다. 잠시 후 다시 시도해 주세요.", null);
         }
 
         return ApiResponse.ok(null);
@@ -77,4 +81,17 @@ public class AllowanceApiController {
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "현재 서비스 이용이 불가능합니다. 잠시 후 다시 시도해 주세요.", null);
         }
     }
+
+    @GetMapping("/{target-key}/count")
+    public ApiResponse<Integer> countMonthAllowance(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey) {
+        log.debug("CountMonthAllowance");
+
+        try {
+            int response = allowanceService.countMonthAllowance(memberKey, targetKey);
+            return ApiResponse.ok(response);
+        } catch (Exception e) {
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "현재 서비스 이용이 불가능합니다. 잠시 후 다시 시도해 주세요.", null);
+        }
+    }
+
 }
