@@ -1265,7 +1265,7 @@ class _DiaryCommentPageState extends State<DiaryCommentPage> {
       DateTime currentTime = DateTime.now().toUtc();
       Duration difference = currentTime.difference(givenTime);
 
-      int differenceInMinutes = difference.inMinutes - 540;
+      int differenceInMinutes = difference.inMinutes + 540;
 
       if (differenceInMinutes < 60) {
         return "$differenceInMinutes분 전";
