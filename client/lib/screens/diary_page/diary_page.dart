@@ -179,7 +179,7 @@ class _ChildDiaryPageState extends State<ChildDiaryPage> {
                   SizedBox(height: 8.0), // 텍스트 사이에 간격 추가
                   Text(
                     (item["createdDate"] is String
-                        ? item["createdDate"].substring(0, 10) + "일 생성"
+                        ? formattedYMDDate(DateTime.parse(item["createdDate"]))
                         : ""),
                     style: TextStyle(
                       fontSize: 8.0,
@@ -400,7 +400,7 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                                   width: 10,
                                 ),
                                 Text(
-                                  "${data["createdDate"].toString().substring(0, 10)}",
+                                  formattedYMDDate(DateTime.parse(data["createdDate"])),
                                   style: TextStyle(
                                     fontSize: 10.0,
                                     color: Colors.grey[500],
@@ -776,7 +776,7 @@ class _ParentDiaryPageState extends State<ParentDiaryPage> {
                   SizedBox(height: 8.0), // 텍스트 사이에 간격 추가
                   Text(
                     (item["createdDate"] is String
-                        ? item["createdDate"].substring(0, 10) + "일 생성"
+                        ? formattedYMDDate(DateTime.parse(item["createdDate"]))  
                         : ""),
                     style: TextStyle(
                       fontSize: 8.0,
@@ -1027,7 +1027,7 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                                   width: 10,
                                 ),
                                 Text(
-                                  "${data["createdDate"].toString().substring(0, 10)}",
+                                  formattedYMDDate(DateTime.parse(data["createdDate"])),
                                   style: TextStyle(
                                     fontSize: 10.0,
                                     color: Colors.grey[500],
