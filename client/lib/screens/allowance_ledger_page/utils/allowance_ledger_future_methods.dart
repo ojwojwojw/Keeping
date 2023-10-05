@@ -37,7 +37,7 @@ Future<dynamic> createAccountDetail({
           url: '/bank-service/api/$memberKey/account-detail',
           data: {"accountDetailList": accountDetailList});
       print('거래 상세 내용 입력 응답 $response');
-      return response['resultStatus']['successCode'];
+      return response;
     } catch (e) {
       print('거래 상세 내용 입력 에러 $e');
     }

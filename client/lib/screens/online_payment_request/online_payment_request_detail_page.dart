@@ -62,7 +62,7 @@ class _OnlinePaymentRequestDetailPageState
               var response = snapshot.data;
               if (response['resultBody'] != null &&
                   response['resultBody'].isEmpty) {
-                return Text('부탁내용이 없습니다.');
+                return Text('부탁 내용이 없습니다.');
               }
               return Center(
                 child: Column(
