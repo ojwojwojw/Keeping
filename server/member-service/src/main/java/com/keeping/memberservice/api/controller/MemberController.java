@@ -3,6 +3,7 @@ package com.keeping.memberservice.api.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keeping.memberservice.api.ApiResponse;
 import com.keeping.memberservice.api.controller.request.*;
+import com.keeping.memberservice.api.controller.response.*;
 import com.keeping.memberservice.api.service.AuthService;
 import com.keeping.memberservice.api.service.member.MemberService;
 import com.keeping.memberservice.api.service.member.dto.AddMemberDto;
@@ -18,6 +19,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,6 +32,46 @@ public class MemberController {
     private final SmsService smsService;
     private final MemberService memberService;
 
+    @GetMapping("/links")
+    public ApiResponse<List<LinkResponse>> getAllChildKey() {
+        List<LinkResponse> response = memberService.getAllLinks();
+        return ApiResponse.ok(response);
+    }
+
+    @GetMapping("/{memberKey}/registration-time")
+    public ApiResponse<QuestionTimeResponse> getQuestionTime(@PathVariable String memberKey) {
+        return ApiResponse.ok(QuestionTimeResponse.builder()
+                .registrationTime(LocalTime.of(20, 0))
+                .build());
+    }
+
+    @GetMapping("/{memberKey}/fcm-key")
+    public ApiResponse<String> getFcmToken(@PathVariable String memberKey) {
+        String fcm = memberService.getFcmToken(memberKey);
+        if (fcm == null) {
+            return ApiResponse.of(1, HttpStatus.NO_CONTENT, "토큰이 발급되지 않은 회원입니다.");
+        }
+        return ApiResponse.ok(fcm);
+    }
+
+    @GetMapping("/{member_key}/children")
+    public ApiResponse<List<ChildKeyResponse>> getChildList(@PathVariable String member_key) {
+        List<ChildKeyResponse> list = memberService.getChildKeyList(member_key);
+        return ApiResponse.ok(list);
+    }
+
+    @PostMapping("/type-check")
+    public ApiResponse<TypeCheckResult> typeCheck(@RequestBody @Valid TypeCheckRequest request) {
+        boolean result = memberService.typeCheck(request.getMemberKey(), request.getType());
+        return ApiResponse.ok(TypeCheckResult.builder().isTypeRight(result).build());
+    }
+
+    @PostMapping("/relationship")
+    public ApiResponse<RelationshipCheckResponse> isParentialRelationship(@RequestBody @Valid RelationshipCheckRequest request) {
+        log.debug("부모키 = {}", request.getParentKey());
+        RelationshipCheckResponse response = memberService.relationCheck(request.getParentKey(), request.getChildKey());
+        return ApiResponse.ok(response);
+    }
 
     @PostMapping("/password")
     public ApiResponse<String> getNewPassword(@RequestBody GetNewPasswordRequest request) {
