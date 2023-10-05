@@ -32,6 +32,10 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
   String? _memberKey;
   String? _childKey;
 
+  void reload() {
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -60,6 +64,7 @@ class _PiggyDetailPageState extends State<PiggyDetailPage> {
             goalMoney: widget.piggyDetailInfo['goalMoney'],
             img: widget.piggyDetailInfo['savedImage'],
             createdDate: DateTime.parse(widget.piggyDetailInfo['createdDate']),
+            reload: reload
           ),
           FutureBuilder(
             future: getPiggyDetailList(

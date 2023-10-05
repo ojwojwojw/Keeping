@@ -12,6 +12,9 @@ Future<dynamic> getPiggyList({
         url: '/bank-service/api/$memberKey/piggy/$targetKey',
       );
       print('저금통 전체 조회 응답 $response');
+      print('저금통 전체 조회 응답 $accessToken');
+      // print('저금통 전체 조회 응답 $memberKey');
+      print('저금통 전체 조회 응답 /bank-service/api/$memberKey/piggy/$targetKey');
       return response;
     } catch (e) {
       print('저금통 전체 조회 에러 $e');
@@ -115,3 +118,4 @@ Future<dynamic> getPiggy({
     return;
   }
 }
+
