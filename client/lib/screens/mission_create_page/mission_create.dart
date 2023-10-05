@@ -17,6 +17,7 @@ import 'package:keeping/widgets/render_field.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -319,7 +320,7 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
     var memberKey = userProvider.memberKey;
     var userType = userProvider.parent ? "PARENT" : "CHILD";
 
-    var data = {
+    final data = {
       "type": userType,
       "to": parentMemberKey,
       "todo": missionProvider.missionTitle,
@@ -327,7 +328,7 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
       "cheeringMessage": "",
       "childRequestComment": comment,
       "startDate": DateTime.now().toString().substring(0, 10),
-      "endDate": missionProvider.missionDueDate
+      "endDate": missionProvider.missionDueDate?.toString().substring(0, 10)
     };
 
     final headers = {
@@ -340,7 +341,7 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
       final response = await http.post(
           Uri.parse("$_baseUrl/mission-service/api/$memberKey"),
           headers: headers,
-          body: json.encode(data));
+          body: jsonEncode(data));
 
       if (response.statusCode == 200) {
         print('미션생성 데이터 전송 성공!');
@@ -454,7 +455,7 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
     var accessToken = userProvider.accessToken;
     var memberKey = userProvider.memberKey;
     var userType = userProvider.parent ? "PARENT" : "CHILD";
-    var data = {
+    final data = {
       "type": userType,
       "to": selectedMemberKey, //자식의 멤버키 필요
       "todo": missionProvider.missionTitle,
@@ -462,7 +463,7 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
       "cheeringMessage": comment, //부모의 응원메시지 필요
       "childRequestComment": "",
       "startDate": DateTime.now().toString().substring(0, 10),
-      "endDate": missionProvider.missionDueDate
+      "endDate": missionProvider.missionDueDate?.toString().substring(0, 10)
     };
 
     final headers = {
@@ -474,7 +475,7 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
       final response = await http.post(
           Uri.parse("$_baseUrl/mission-service/api/$memberKey"),
           headers: headers,
-          body: json.encode);
+          body: jsonEncode(data));
       if (response.statusCode == 200) {
         // Navigator.push(
         //     context,

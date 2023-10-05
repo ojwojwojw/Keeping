@@ -553,7 +553,7 @@ void handleParentButtonClick(
       //             missionId: item["id"], item: item))); //미션 id 넘겨주는곳
 
       noEffectReplacementTransition(
-          context, MissionApprovePage(missionId: item["id"], item: item));
+          context, MissionCompletePage(missionId: item["id"], item: item));
 
       // 미션 완료 승인 로직
       break;

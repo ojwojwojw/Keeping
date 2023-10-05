@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -55,11 +56,17 @@ class _MissionColorInfoCardState extends State<MissionColorInfoCard> {
     // Dio 객체 생성
     final dio = Dio();
 
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $accessToken'
+    };
+
     try {
-      final response = await dio.delete(
-        "$_baseUrl/mission-service/api/$memberKey/$missionId",
-        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      var response = await http.delete(
+        Uri.parse("$_baseUrl/mission-service/api/$memberKey/$missionId"),
+        headers: headers,
       );
+
 
       if (response.statusCode == 200) {
         print("미션 삭제 성공");
@@ -68,7 +75,7 @@ class _MissionColorInfoCardState extends State<MissionColorInfoCard> {
         setState(() {});
         widget.onMissionDeleted();
       } else {
-        print("미션 삭제 실패: ${response.data}");
+        print("미션 삭제 실패: ");
       }
     } catch (error) {
       print("미션 삭제 중 오류 발생: $error");
