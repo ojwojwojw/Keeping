@@ -23,9 +23,6 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
   List<Map<String, dynamic>> _result = []; // 데이터를 저장할 변수
 
   int selectedBtnIdx = 0;
-  // String? _childKey;
-  // String? _myKey;
-  // String? _accessToken;
   late Future<List<Map<String, dynamic>>> _dataFuture;
   bool _isParent = true;
   String? _childName;
@@ -35,6 +32,7 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
     super.initState();
     _dataFuture = renderTotalRequestMoney(context, selectedBtnIdx);
     _isParent = context.read<UserInfoProvider>().parent;
+    _childName = context.read<ChildInfoProvider>().name;
   }
 
   final DateFormat dateFormat = DateFormat('MM월 dd일');
@@ -44,8 +42,7 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
     String _myKey = context.read<UserInfoProvider>().memberKey;
     String? _childKey = context.read<ChildInfoProvider>().memberKey;
     String _accessToken = context.read<UserInfoProvider>().accessToken;
-    String? _childName = context.read<ChildInfoProvider>().name;
-
+    print('퓨처빌더 차일드네임 $_childName');
     var _url = '';
     if (selectedBtnIdx == 0) {
       _url = '/bank-service/api/$_myKey/allowance/$_childKey';
@@ -103,6 +100,7 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFAFAFA),
       appBar: MyHeader(text: '용돈 조르기 모아보기'),
       body: SingleChildScrollView(
         child: Column(
@@ -116,7 +114,6 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
                     return Text('에러 발생: ${snapshot.error}');
                   } else if (snapshot.hasData) {
                     var responseData = snapshot.data;
-                    // responseData를 이용하여 필요한 UI 작업 수행
                     return InkWell(
                       child: requestPocketMoneyBox(responseData, _isParent,
                           childName: _childName),
@@ -164,7 +161,7 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
           ],
         ),
       ),
-      bottomSheet: BottomNav(),
+      bottomNavigationBar: BottomNav(),
     );
   }
 
