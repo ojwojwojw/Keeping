@@ -1518,6 +1518,7 @@ class _DiaryCommentPageState extends State<DiaryCommentPage> {
                                       commentWidget,
                                     if (!isCurrentUserComment)
                                       dateWidget, // 왼정렬일 때 날짜를 나중에 표시
+                                      SizedBox(width: 8),
                                   ],
                                 ),
                               ),
