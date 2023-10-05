@@ -207,6 +207,11 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
     setState(() {});
   }
 
+  //새로고침
+  void reload2(){
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -281,6 +286,7 @@ class _ParentMissonPageState extends State<ParentMissionPage> {
               child: Column(
                 children: [
 
+                  /////
 
                   //새로고침 버튼
                   // ElevatedButton(
