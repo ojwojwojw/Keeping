@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
@@ -330,32 +331,32 @@ class _MissionCreatePage3State extends State<MissionCreatePage3> {
     };
 
     final headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $accessToken'
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $accessToken'
     };
-
 
     try {
       print(data);
       final response = await http.post(
           Uri.parse("$_baseUrl/mission-service/api/$memberKey"),
-          headers : headers ,
-          body: json.encode(data)
-          );
+          headers: headers,
+          body: json.encode(data));
 
       if (response.statusCode == 200) {
         print('미션생성 데이터 전송 성공!');
         print(data);
 
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CompletedPage(
-                      text: "미션생성 완료!",
-                      button: ConfirmBtn(
-                        action: MissionPage(),
-                      ),
-                    )));  //페이지터짐관련
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedPage(
+        //               text: "미션생성 완료!",
+        //               button: ConfirmBtn(
+        //                 action: MissionPage(),
+        //               ),
+        //             )));  //페이지터짐관련
+
+        noEffectReplacementTransition(context, MissionPage());
 
         // Navigator.push(
         //     context,
@@ -465,9 +466,9 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
     };
 
     final headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $accessToken'
-  };
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $accessToken'
+    };
 
     try {
       final response = await http.post(
@@ -475,25 +476,25 @@ class _ParentMissionCreatePage3State extends State<ParentMissionCreatePage3> {
           headers: headers,
           body: json.encode);
       if (response.statusCode == 200) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CompletedPage(
-                      text: "미션생성 완료!",
-                      button: ConfirmBtn(
-                        action: ParentMissionPage(),
-                      ),
-                    ))); //페이지터짐관련
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedPage(
+        //               text: "미션생성 완료!",
+        //               button: ConfirmBtn(
+        //                 action: ParentMissionPage(),
+        //               ),
+        //             ))); //페이지터짐관련
 
+        noEffectReplacementTransition(context, ParentMissionPage());
 
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => CompletedAndGoPage(
-          //               text: '미션 생성완료!',
-          //               targetPage: ParentMissionPage(),
-          //             )));
-
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CompletedAndGoPage(
+        //               text: '미션 생성완료!',
+        //               targetPage: ParentMissionPage(),
+        //             )));
       }
       print(response);
     } catch (e) {
