@@ -1,13 +1,18 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
+import 'package:keeping/screens/sample_code_page/make_piggy_sample_page.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/display_format.dart';
 import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/bottom_btn.dart';
 import 'package:keeping/widgets/color_info_card_elements.dart';
+import 'package:keeping/widgets/completed_page.dart';
+import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -31,6 +36,7 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
   String? profileImage = '';
   String? childProfileImage = '';
   bool isFinishedCommentNull = true;
+  late String memberKey;
 
   Future<void> _isFinishedCommentNull() async {
     print('debug:');
@@ -93,6 +99,7 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
     var childInfoProvider =
         Provider.of<ChildInfoProvider>(context, listen: false);
     childProfileImage = childInfoProvider.profileImage;
+    memberKey = context.read<UserInfoProvider>().memberKey;
   }
 
   @override
@@ -360,31 +367,39 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
         bgColor: missionRequestStatusBgColor(widget.item['completed']),
         text: _getBottomButtonText(isParent, widget.item["completed"]),
         action: () {
-          if (isParent == null) return;
-          isParent!
-              ? handleParentButtonClick(
-                  context, widget.item, widget.item["completed"])
-              : handleChildButtonClick(
-                  context, widget.item, widget.item["completed"]);
+          isParent
+            ? handleParentButtonClick(
+                context, widget.item, widget.item["completed"])
+            : handleChildButtonClick(
+                context, widget.item, widget.item["completed"],
+                accessToken: accessToken, memberKey: memberKey, parent: isParent, missionId: widget.item['id'],
+              );
+          // if (isParent == null) return;
+          // isParent!
+          //     ? handleParentButtonClick(
+          //         context, widget.item, widget.item["completed"])
+          //     : handleChildButtonClick(
+          //         context, widget.item, widget.item["completed"]);
         },
-        isDisabled: () {
-          String status = widget.item["completed"];
-          if (isParent != null) {
-            if (status == "CREATE_WAIT" && !isParent!) {
-              return true; // 자녀는 비활성화
-            } else if (status == "YET" && isParent!) {
-              return true; // 부모는 비활성화
-            } else if (status == "FINISH_WAIT" && !isParent!) {
-              return true; // 자녀는 비활성화
-            } else if (status == "FINISH" && isParent!) {
-              return true; // 부모는 비활성화
-            } else if (widget.item["finishedComment"] == null) {
-              return false; // 완료 메세지가 없으면 활성화
-            }
-            return false; // 기본값은 활성화
-          }
-          return true; // 기본값은 활성화
-        }(),
+        isDisabled: false,
+        // isDisabled: () {
+        //   String status = widget.item["completed"];
+        //   if (isParent != null) {
+        //     if (status == "CREATE_WAIT" && !isParent!) {
+        //       return true; // 자녀는 비활성화
+        //     } else if (status == "YET" && isParent!) {
+        //       return true; // 부모는 비활성화
+        //     } else if (status == "FINISH_WAIT" && !isParent!) {
+        //       return true; // 자녀는 비활성화
+        //     } else if (status == "FINISH" && isParent!) {
+        //       return true; // 부모는 비활성화
+        //     } else if (widget.item["finishedComment"] == null) {
+        //       return false; // 완료 메세지가 없으면 활성화
+        //     }
+        //     return false; // 기본값은 활성화
+        //   }
+        //   return true; // 기본값은 활성화
+        // }(),
       ),
     );
   }
@@ -527,7 +542,7 @@ String _getBottomButtonText(bool parent, String status) {
     if (status == 'CREATE_WAIT') {
       return '승인을 기다리는 중이에요!';
     } else if (status == 'YET') {
-      return '완료를 기다리는 중이에요!';
+      return '완료 하러 가기!';
     } else if (status == 'FINISH_WAIT') {
       return '완료!';
     } else {
@@ -553,6 +568,7 @@ void handleParentButtonClick(
       break;
     case "YET":
       // 미션 진행 확인 로직
+      Navigator.pop(context);
       break;
     case "FINISH_WAIT":
       // Navigator.push(
@@ -568,6 +584,7 @@ void handleParentButtonClick(
       break;
     case "FINISH":
       // 미션 확인 로직
+      Navigator.pop(context);
       break;
     default:
       // 기본 로직
@@ -575,10 +592,13 @@ void handleParentButtonClick(
   }
 }
 
-void handleChildButtonClick(BuildContext context, dynamic item, String status) {
+void handleChildButtonClick(BuildContext context, dynamic item, String status,
+  {required String accessToken, required String memberKey, required bool parent, required int missionId}
+) {
   switch (status) {
     case "CREATE_WAIT":
       // 미션 생성 승인 로직
+      Navigator.pop(context);
       break;
     case "YET":
       // 미션 진행 확인 로직
@@ -596,10 +616,68 @@ void handleChildButtonClick(BuildContext context, dynamic item, String status) {
             missionId: item["id"],
             item: item,
           ));
+      ///YET 상태인 미션을 FINISH_WAIT으로 바꾸는 비동기 요청
+      // Future<void> _sendData() async {
+      //   var userType = parent ? "PARENT" : "CHILD";
+
+      //   final data = {
+      //     "type": userType,
+      //     "missionId": missionId,
+      //     "cheeringMessage": '',
+      //     "completed": "FINISH_WAIT"
+      //   };
+
+      //   final headers = {
+      //     'Content-Type': 'application/json',
+      //     'Authorization': 'Bearer $accessToken'
+      //   };
+
+      //   try {
+      //     var response = await http.patch(
+      //         Uri.parse("$_baseUrl/mission-service/api/$memberKey/complete"),
+      //         headers: headers,
+      //         body: jsonEncode(data));
+      //     Map<String, dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+      //     print('미션 완료 하러 가기 ${jsonResponse}');
+      //     if (jsonResponse.isEmpty) return;
+      //     // if (jsonResponse['status'] == '500') return;
+      //     // if (jsonResponse['resultStatus']['successCode'] == '0') {
+      //     //   // Navigator.push(
+      //     //   //     context,
+      //     //   //     MaterialPageRoute(
+      //     //   //         builder: (context) => CompletedPage(
+      //     //   //               text: "미션완료 요청완료!",
+      //     //   //               button: ConfirmBtn(
+      //     //   //                 action: MissionPage(),
+      //     //   //               ),
+      //     //   //             ))); //페이지터짐관련
+
+      //     //   noEffectReplacementTransition(
+      //     //       context,
+      //     //       CompletedPage(
+      //     //         text: "미션완료 요청완료!",
+      //     //         button: ConfirmBtn(
+      //     //           action: MissionPage(),
+      //     //         ),
+      //     //       ));
+
+      //     //   // Navigator.push(
+      //     //   //     context,
+      //     //   //     MaterialPageRoute(
+      //     //   //         builder: (context) => CompletedAndGoPage(text: '미션 완료!', targetPage: MissionPage(),
+      //     //   //             )));
+      //     // }
+      //   } catch (e) {
+      //     print('Error: $e');
+      //     print(data);
+      //   }
+      // }
+      // _sendData();
 
       break;
     case "FINISH_WAIT":
       // 미션 완료 승인 로직
+      Navigator.pop(context);
       break;
     case "FINISH":
       // 미션 확인 로직
@@ -610,6 +688,7 @@ void handleChildButtonClick(BuildContext context, dynamic item, String status) {
       //               missionId: item["id"],
       //               item: item,
       //             ))); //미션 id 넘겨주는곳
+      Navigator.pop(context);
       break;
     default:
       // 기본 로직

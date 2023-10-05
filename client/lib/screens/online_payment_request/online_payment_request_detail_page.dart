@@ -11,6 +11,7 @@ import 'package:keeping/widgets/color_info_detail_card.dart';
 import 'package:keeping/widgets/completed_page.dart';
 import 'package:keeping/widgets/confirm_btn.dart';
 import 'package:keeping/widgets/header.dart';
+import 'package:keeping/widgets/loading.dart';
 import 'package:keeping/widgets/rounded_modal.dart';
 import 'package:provider/provider.dart';
 
@@ -81,7 +82,7 @@ class _OnlinePaymentRequestDetailPageState
                 ),
               );
             } else {
-              return Text('');
+              return loading();
             }
           }),
       bottomNavigationBar: _parent != null && _parent! && widget.status == 'WAIT'

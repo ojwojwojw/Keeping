@@ -8,7 +8,7 @@ import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_
 import 'package:keeping/screens/request_pocket_money_page/widgets/request_money_filter.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/util/dio_method.dart';
-import 'package:keeping/widgets/empty.dart';
+import 'package:keeping/widgets/loading.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/widgets/request_info_card.dart';
@@ -27,6 +27,10 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
   late Future<List<Map<String, dynamic>>> _dataFuture;
   bool _isParent = true;
   String? _childName;
+
+  void reload() {
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -110,16 +114,13 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return emptyBox();
-                } else if (snapshot.hasError) {
-                  return Text('에러 발생: ${snapshot.error}');
                 } else if (snapshot.hasData) {
                   var responseData = snapshot.data;
                   return InkWell(
-                    child: requestPocketMoneyBox(responseData, _isParent,
-                        childName: _childName),
+                    child: requestPocketMoneyBox(responseData, _isParent, childName: _childName, reload: reload),
                   );
                 } else {
-                  return empty(text: '용돈 조르기 내역이 없습니다.');
+                  return emptyBox();
                 }
               }),
           RequestMoneyFilters(
@@ -134,20 +135,21 @@ class _ParentRequestMoneyPageState extends State<ParentRequestMoneyPage> {
             future: renderTotalRequestMoney(context, selectedBtnIdx),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return SizedBox(
-                  height: 200, // 원하는 높이로 조정하세요
-                  child: Container(
-                    child: Center(
-                      child: Text(
-                        '',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(255, 77, 19, 135)),
-                      ),
-                    ),
-                  ),
-                );
+                // return SizedBox(
+                //   height: 200, // 원하는 높이로 조정하세요
+                //   child: Container(
+                //     child: Center(
+                //       child: Text(
+                //         '',
+                //         style: TextStyle(
+                //             fontSize: 20,
+                //             fontWeight: FontWeight.bold,
+                //             color: Color.fromARGB(255, 77, 19, 135)),
+                //       ),
+                //     ),
+                //   ),
+                // );
+                return loading();
               } else if (snapshot.hasData) {
                 // 용돈 조르기 내역을 표시하는 위젯을 반환
                 return totalRequestPockeyMoney(_result);
