@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
 import 'package:keeping/provider/child_info_provider.dart';
+import 'package:keeping/widgets/reload_btn.dart';
 
 final _baseUrl = dotenv.env['BASE_URL'];
 
@@ -1245,6 +1246,17 @@ class _DiaryCommentPageState extends State<DiaryCommentPage> {
     late Map<String, dynamic> data;
     String? memberKey; //로그인한 유저의 멤버키
 
+
+
+    void reload () {
+      setState(() {
+        
+      });
+    }
+
+
+
+
     //몇분전인지 출력하는 함수//
     String timeAgo(String timeString) {
       DateTime givenTime = DateTime.parse(timeString).toUtc();
@@ -1384,32 +1396,40 @@ class _DiaryCommentPageState extends State<DiaryCommentPage> {
             return Center(
               child: Column(
                 children: [
-                  
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 32),
-                    child: Column(
-                      children: [
-                        Text(
-                          widget.index == 0 ? "오늘의 질문" : "#" + widget.index.toString() + "번째 질문",
-                          style: TextStyle(fontSize: 25, color: Colors.grey),
-                        ),
-                        SizedBox(height: 10,),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                          child: Text(
-                            data['question']['content'],
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                  Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 32),
+                        child: Column(
+                          children: [
+                            Text(
+                              widget.index == 0 ? "오늘의 질문" : "#" + widget.index.toString() + "번째 질문",
+                              style: TextStyle(fontSize: 25, color: Colors.grey),
                             ),
-                          ),
+                            SizedBox(height: 10,),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                              child: Text(
+                                data['question']['content'],
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                                    
+                            SizedBox(
+                              height: 25,
+                            ),
+                          ],
                         ),
-                                
-                        SizedBox(
-                          height: 25,
-                        ),
-                      ],
-                    ),
+                      ),
+                      Positioned(
+                        bottom: 10,
+                        right: 10,
+                        child: reloadBtn(reload),
+                      )
+                    ],
                   ),
                   // Question data
             
@@ -1422,7 +1442,7 @@ class _DiaryCommentPageState extends State<DiaryCommentPage> {
                       ),
                       child: SingleChildScrollView(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 8),
+                          padding: const EdgeInsets.only(top: 8, left: 24, right: 24),
                           child: ListView.builder(
                               shrinkWrap:
                                   true, // ListView를 Column 내부에서 사용하기 위해 필요합니다.
