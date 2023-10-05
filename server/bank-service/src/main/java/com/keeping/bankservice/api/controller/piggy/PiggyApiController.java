@@ -2,6 +2,7 @@ package com.keeping.bankservice.api.controller.piggy;
 
 import com.keeping.bankservice.api.ApiResponse;
 import com.keeping.bankservice.api.controller.piggy.request.AddPiggyRequest;
+import com.keeping.bankservice.api.controller.piggy.response.SavingPiggyResponse;
 import com.keeping.bankservice.api.controller.piggy_history.response.ShowPiggyHistoryResponse;
 import com.keeping.bankservice.api.controller.piggy.response.ShowPiggyResponse;
 import com.keeping.bankservice.api.controller.piggy.request.SavingPiggyRequest;
@@ -60,21 +61,36 @@ public class PiggyApiController {
         }
     }
 
+    @GetMapping("/{target-key}/{piggy-id}")
+    public ApiResponse<ShowPiggyResponse> showDetailPiggy(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("piggy-id") Long piggyId) {
+        log.debug("ShowDetailPiggy={}", piggyId);
+
+        try {
+            ShowPiggyResponse response = piggyService.showDetailPiggy(memberKey, targetKey, piggyId);
+            return ApiResponse.ok(response);
+        } catch (NotFoundException | NoAuthorizationException e) {
+            return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
+        } catch (IOException e) {
+            log.debug("예외 발생 : {}", e.toString());
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "저금통 정보를 불러오는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
+        }
+    }
+
     @PostMapping("/saving")
-    public ApiResponse<Void> savingPiggy(@PathVariable("member-key") String memberKey, @RequestBody SavingPiggyRequest request) {
+    public ApiResponse<SavingPiggyResponse> savingPiggy(@PathVariable("member-key") String memberKey, @RequestBody SavingPiggyRequest request) {
         log.debug("SavingPiggyRequest={}", request);
 
         SavingPiggyDto dto = SavingPiggyDto.toDto(request);
 
         try {
-            piggyService.savingPiggy(memberKey, dto);
+            SavingPiggyResponse response = piggyService.savingPiggy(memberKey, dto);
+            return ApiResponse.ok(response);
         } catch (NotFoundException | NoAuthorizationException e) {
             return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
-        } catch (URISyntaxException e) {
+        } catch (URISyntaxException | IOException e) {
             log.debug("예외 발생 : {}", e.toString());
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "저금통에 저금하는 중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.", null);
         }
-        return ApiResponse.ok(null);
     }
 
     @DeleteMapping("/{account-number}")

@@ -1,6 +1,7 @@
 package com.keeping.bankservice.api.service.account.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.keeping.bankservice.api.controller.account.response.AddAccountResponse;
 import com.keeping.bankservice.api.controller.account.response.ShowAccountResponse;
 import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.*;
@@ -17,7 +18,6 @@ import com.keeping.bankservice.global.utils.RedisUtils;
 import com.keeping.bankservice.global.utils.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -45,7 +41,7 @@ public class AccountServiceImpl implements AccountService {
     private final SmsService smsService;
 
     @Override
-    public Long addAccount(String memberKey, AddAccountDto dto) throws JsonProcessingException {
+    public AddAccountResponse addAccount(String memberKey, AddAccountDto dto) throws JsonProcessingException {
         String key = "AccountAuth_" + memberKey;
 
         if(redisUtils.getRedisValue(key, String.class) == null) {
@@ -58,7 +54,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = Account.toAccount(memberKey, accountNumber, dto.getAuthPassword());
         Account saveAccount = accountRepository.save(account);
 
-        return saveAccount.getId();
+        return AddAccountResponse.toResponse(saveAccount.getId(), saveAccount.getAccountNumber(), saveAccount.getCreatedDate());
     }
 
     @Override

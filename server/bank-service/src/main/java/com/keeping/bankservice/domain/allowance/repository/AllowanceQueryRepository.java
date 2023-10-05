@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.keeping.bankservice.domain.allowance.QAllowance.allowance;
@@ -46,6 +47,16 @@ public class AllowanceQueryRepository {
                 .where(allowance.childKey.eq(memberKey), allowance.approve.eq(approve))
                 .orderBy(allowance.createdDate.desc())
                 .fetch();
+
+        return result;
+    }
+
+    public int countMonthAllowance(String memberKey, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        int result = Math.toIntExact(queryFactory
+                .select(allowance.count())
+                .from(allowance)
+                .where(allowance.childKey.eq(memberKey), allowance.createdDate.between(startDateTime, endDateTime))
+                .fetchFirst());
 
         return result;
     }
