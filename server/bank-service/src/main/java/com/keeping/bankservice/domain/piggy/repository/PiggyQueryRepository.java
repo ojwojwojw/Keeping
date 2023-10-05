@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static com.keeping.bankservice.domain.piggy.Completed.INCOMPLETED;
 import static com.keeping.bankservice.domain.piggy.QPiggy.piggy;
 
 @Repository
@@ -32,7 +33,7 @@ public class PiggyQueryRepository {
                         piggy.completed,
                         piggy.createdDate))
                 .from(piggy)
-                .where(piggy.childKey.eq(memberKey), piggy.active.isTrue())
+                .where(piggy.childKey.eq(memberKey), piggy.completed.eq(INCOMPLETED))
                 .fetch();
 
         return result;
