@@ -15,55 +15,58 @@ class _RequestMoneyFiltersState extends State<RequestMoneyFilters> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center, // 좌우 정렬 추가
-        children: [
-          _RequestMoneyFilter(
-            value: 0,
-            text: '전체',
-            isSelected: selectedBtnIdx == 0,
-            onPressed: () {
-              setState(() {
-                selectedBtnIdx = 0;
-              });
-              widget.onPressed(selectedBtnIdx); // onPressed 콜백 호출
-            },
-          ),
-          _RequestMoneyFilter(
-            value: 1,
-            text: '대기중',
-            isSelected: selectedBtnIdx == 1,
-            onPressed: () {
-              setState(() {
-                selectedBtnIdx = 1;
-              });
-              widget.onPressed(selectedBtnIdx); // onPressed 콜백 호출
-            },
-          ),
-          _RequestMoneyFilter(
-            value: 2,
-            text: '승인',
-            isSelected: selectedBtnIdx == 2,
-            onPressed: () {
-              setState(() {
-                selectedBtnIdx = 2;
-              });
-              widget.onPressed(selectedBtnIdx); // onPressed 콜백 호출
-            },
-          ),
-          _RequestMoneyFilter(
-            value: 3,
-            text: '거부',
-            isSelected: selectedBtnIdx == 3,
-            onPressed: () {
-              setState(() {
-                selectedBtnIdx = 3;
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 24),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center, // 좌우 정렬 추가
+          children: [
+            _RequestMoneyFilter(
+              value: 0,
+              text: '전체',
+              isSelected: selectedBtnIdx == 0,
+              onPressed: () {
+                setState(() {
+                  selectedBtnIdx = 0;
+                });
                 widget.onPressed(selectedBtnIdx); // onPressed 콜백 호출
-              });
-            },
-          ),
-        ],
+              },
+            ),
+            _RequestMoneyFilter(
+              value: 1,
+              text: '대기중',
+              isSelected: selectedBtnIdx == 1,
+              onPressed: () {
+                setState(() {
+                  selectedBtnIdx = 1;
+                });
+                widget.onPressed(selectedBtnIdx); // onPressed 콜백 호출
+              },
+            ),
+            _RequestMoneyFilter(
+              value: 2,
+              text: '승인',
+              isSelected: selectedBtnIdx == 2,
+              onPressed: () {
+                setState(() {
+                  selectedBtnIdx = 2;
+                });
+                widget.onPressed(selectedBtnIdx); // onPressed 콜백 호출
+              },
+            ),
+            _RequestMoneyFilter(
+              value: 3,
+              text: '거부',
+              isSelected: selectedBtnIdx == 3,
+              onPressed: () {
+                setState(() {
+                  selectedBtnIdx = 3;
+                  widget.onPressed(selectedBtnIdx); // onPressed 콜백 호출
+                });
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

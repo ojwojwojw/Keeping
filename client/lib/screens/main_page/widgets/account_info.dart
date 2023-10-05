@@ -121,7 +121,7 @@ class _AccountInfoState extends State<AccountInfo> {
                 _parent != null && !_parent! ? 
                   InkWell(
                     onTap: () {
-                      noEffectReplacementTransition(
+                      noEffectTransition(
                         context, 
                         _accountNumber != '' ? ChildRequestMoneyPage() : MakeAccountPage()
                       );

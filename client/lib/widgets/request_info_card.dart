@@ -39,7 +39,7 @@ class _RequestInfoCardState extends State<RequestInfoCard> {
               child: Column(
                 children: [
                   _requestStatus(widget.status),
-                  _requestContent(widget.money),
+                  _requestContent(widget.money, widget.status),
                 ],
               ),
             )),
@@ -62,7 +62,16 @@ Widget _requestStatus(String status) {
   );
 }
 
-Widget _requestContent(int money) {
+Widget _requestContent(int money, String status) {
+  String setImgPath(status) {
+    if (status == 'APPROVE') {
+      return 'assets/image/face/face4.png';
+    } else if (status == 'REJECT') {
+      return 'assets/image/face/face6.png';
+    } else {
+      return 'assets/image/face/face1.png';
+    }
+  }
   return Expanded(
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 17),
@@ -70,7 +79,7 @@ Widget _requestContent(int money) {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          categoryImg('assets/image/temp_image.jpg'),
+          categoryImg(setImgPath(status)),
           SizedBox(
             width: 250,
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
