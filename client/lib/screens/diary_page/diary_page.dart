@@ -1136,7 +1136,7 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => QeustionAnswerPage(
+              builder: (context) => ParentQeustionAnswerPage(
                 questionDate: data["createdDate"].toString().substring(0, 10),
                 questionText: data["content"],
                 questionId: data["id"],

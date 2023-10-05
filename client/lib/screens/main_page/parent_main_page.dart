@@ -178,7 +178,7 @@ class _ChildContentState extends State<ChildContent> {
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return disabledAccount();
               } else {
-                return disabledAccountForParent(context);
+                return disabledAccount();
               }
             },
           ),

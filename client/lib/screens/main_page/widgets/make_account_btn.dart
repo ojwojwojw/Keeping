@@ -45,7 +45,7 @@ class MakeAccountBtn extends StatelessWidget {
 Widget disabledAccountForParent(BuildContext context) {
   return InkWell(
     onTap: () {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => BeforeUserLinkPage()));
+      // Navigator.push(context, MaterialPageRoute(builder: (_) => BeforeUserLinkPage()));
     },
     child: Padding(
       padding: const EdgeInsets.only(top: 24, bottom: 12),
