@@ -103,6 +103,14 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public QuestionResponseList showQuestionByMemberKey(String targetKey) {
+        List<QuestionResponse> questionByTargetKey = questionQueryRepository.getQuestionByChildKey(targetKey);
+        return QuestionResponseList.builder()
+                .questions(questionByTargetKey)
+                .build();
+    }
+
+    @Override
     public QuestionCommentResponse showDetailQuestion(String memberKey, Long questionId) {
         QuestionResponse questionResponse = questionQueryRepository.getQuetsionByMemberKeyAndId(memberKey, questionId)
                 .orElseThrow(() -> new NotFoundException("400", HttpStatus.BAD_REQUEST, "해당하는 질문을 찾을 수 없습니다."));
