@@ -1,0 +1,30 @@
+package com.keeping.memberservice.api.service.sms.dto;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Getter
+@NoArgsConstructor
+public class SmsRequestDto {
+
+    private String type;
+    private String contentType;
+    private String countryCode;
+    private String from;
+    private String content;
+    private List<MessageDto> messages;
+
+    @Builder
+    private SmsRequestDto(String type, String contentType, String countryCode, String from, String content, List<MessageDto> messages) {
+        this.type = type;
+        this.contentType = contentType;
+        this.countryCode = countryCode;
+        this.from = from;
+        this.content = content;
+        this.messages = messages;
+    }
+
+}
