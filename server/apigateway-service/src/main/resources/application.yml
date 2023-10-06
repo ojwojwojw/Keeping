@@ -110,7 +110,7 @@ spring:
             - RewritePath=/bank-service/(?<segment>.*), /$\{segment}
         # mission
         - id: mission-service
-          uri: lb://MISSION-SERVICE
+          uri: lb://MISSION-SERVICE-DEMO
           predicates:
             - Path=/mission-service/api/**
             - Method=POST, GET, PATCH, DELETE

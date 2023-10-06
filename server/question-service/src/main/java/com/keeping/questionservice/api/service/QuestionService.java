@@ -14,6 +14,8 @@ public interface QuestionService {
     public List<TodayQuestionCommentResponse> showQuestionToday(String memberKey);
 
     public QuestionResponseList showQuestion(String memberKey);
+    
+    public QuestionResponseList showQuestionByMemberKey(String targetKey);
 
     public QuestionCommentResponse showDetailQuestion(String memberKey, Long questionId);
 

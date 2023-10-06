@@ -29,7 +29,9 @@ public class NotiQueryRepository {
                         noti.type,
                         noti.createdDate))
                 .from(noti)
-                .where(noti.memberKey.eq(memberKey))
+                .where(noti.memberKey.eq(memberKey),
+                        noti.type.ne(Type.MEMBER))
+                .orderBy(noti.createdDate.desc())
                 .fetch();
     }
 
@@ -45,6 +47,7 @@ public class NotiQueryRepository {
                 .from(noti)
                 .where(noti.memberKey.eq(memberKey),
                         noti.type.eq(type))
+                .orderBy(noti.createdDate.desc())
                 .fetch();
     }
     

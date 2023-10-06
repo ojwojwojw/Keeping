@@ -39,6 +39,14 @@ public class QuestionController {
     public ApiResponse<QuestionResponseList> getQuestionList(@PathVariable String memberKey) {
         return ApiResponse.ok(questionService.showQuestion(memberKey));
     }
+    
+    @GetMapping("/{targetKey}/questions")
+    public ApiResponse<QuestionResponseList> getQuestionListByTargetKey(
+            @PathVariable String memberKey,
+            @PathVariable String targetKey
+    ) {
+        return ApiResponse.ok(questionService.showQuestionByMemberKey(targetKey));
+    }
 
     @GetMapping("/questions/{question_id}")
     public ApiResponse<QuestionCommentResponse> getQuestion(
