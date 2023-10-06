@@ -101,7 +101,7 @@ class _AccountInfoState extends State<AccountInfo> {
                                 }
                                 var response = snapshot.data['resultBody'];
                                 return Text(
-                                  '${DateTime.now().month}월 총 지출액: ${formattedMoney(response)}',
+                                  '${DateTime.now().month}월 총 지출액: ${formattedMoney(response['sum'])}',
                                   style: TextStyle(
                                       fontSize: 14, color: Color(0xFF737373)),
                                 );
