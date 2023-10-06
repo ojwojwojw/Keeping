@@ -2,9 +2,9 @@ package com.keeping.questionservice.api.controller;
 
 import com.keeping.questionservice.api.ApiResponse;
 import com.keeping.questionservice.api.controller.request.*;
-import com.keeping.questionservice.api.controller.response.QuestionResponse;
+import com.keeping.questionservice.api.controller.response.QuestionCommentResponse;
 import com.keeping.questionservice.api.controller.response.QuestionResponseList;
-import com.keeping.questionservice.api.controller.response.TodayQuestionResponse;
+import com.keeping.questionservice.api.controller.response.TodayQuestionCommentResponse;
 import com.keeping.questionservice.api.service.QuestionService;
 import com.keeping.questionservice.api.service.dto.*;
 import com.keeping.questionservice.global.exception.AlreadyExistException;
@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -24,10 +25,10 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @GetMapping("/questions/today")
-    public ApiResponse<TodayQuestionResponse> getQuestionToday(@PathVariable String memberKey){
+    public ApiResponse<List<TodayQuestionCommentResponse>> getQuestionToday(@PathVariable String memberKey){
         try {
-            TodayQuestionResponse todayQuestionResponse = questionService.showQuestionToday(memberKey);
-            return ApiResponse.ok(todayQuestionResponse);
+            List<TodayQuestionCommentResponse> todayQuestionCommentRespons = questionService.showQuestionToday(memberKey);
+            return ApiResponse.ok(todayQuestionCommentRespons);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage());
         }
@@ -38,16 +39,24 @@ public class QuestionController {
     public ApiResponse<QuestionResponseList> getQuestionList(@PathVariable String memberKey) {
         return ApiResponse.ok(questionService.showQuestion(memberKey));
     }
+    
+    @GetMapping("/{targetKey}/questions")
+    public ApiResponse<QuestionResponseList> getQuestionListByTargetKey(
+            @PathVariable String memberKey,
+            @PathVariable String targetKey
+    ) {
+        return ApiResponse.ok(questionService.showQuestionByMemberKey(targetKey));
+    }
 
     @GetMapping("/questions/{question_id}")
-    public ApiResponse<QuestionResponse> getQuestion(
+    public ApiResponse<QuestionCommentResponse> getQuestion(
             @PathVariable String memberKey,
             @PathVariable(name = "question_id") Long questionId
     ) {
 
         try {
-            QuestionResponse questionResponse = questionService.showDetailQuestion(memberKey, questionId);
-            return ApiResponse.ok(questionResponse);
+            QuestionCommentResponse questionCommentResponse = questionService.showDetailQuestion(memberKey, questionId);
+            return ApiResponse.ok(questionCommentResponse);
         } catch (NotFoundException e) {
             return ApiResponse.of(Integer.parseInt(e.getResultCode()), e.getHttpStatus(), e.getResultMessage());
         }

@@ -22,7 +22,7 @@ public class EditCompleteRequest {
     @NotNull
     private String cheeringMessage;
 
-    @NotBlank
+    @NotNull
     private Completed completed;
 
     @Builder

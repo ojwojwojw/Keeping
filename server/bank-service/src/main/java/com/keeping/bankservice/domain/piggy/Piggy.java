@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static com.keeping.bankservice.domain.piggy.Completed.COMPLETED;
 import static com.keeping.bankservice.domain.piggy.Completed.INCOMPLETED;
 import static javax.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PROTECTED;
@@ -80,4 +81,6 @@ public class Piggy extends TimeBaseEntity {
     public void updateBalance(int money) {
         this.balance += money;
     }
+
+    public void updateCompleted() { this.completed = COMPLETED; }
 }

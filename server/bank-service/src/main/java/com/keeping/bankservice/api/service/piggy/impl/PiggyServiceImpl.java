@@ -1,6 +1,10 @@
 package com.keeping.bankservice.api.service.piggy.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.keeping.bankservice.api.controller.feign_client.MemberFeignClient;
+import com.keeping.bankservice.api.controller.feign_client.NotiFeignClient;
+import com.keeping.bankservice.api.controller.feign_client.request.SendNotiRequest;
+import com.keeping.bankservice.api.controller.piggy.response.SavingPiggyResponse;
 import com.keeping.bankservice.api.controller.piggy.response.ShowPiggyResponse;
 import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.SavingPiggyDto;
@@ -49,9 +53,10 @@ public class PiggyServiceImpl implements PiggyService {
     @Value("${file.path.piggy.linux}")
     private String piggyLinuxPath;
 
+    private final MemberFeignClient memberFeignClient;
+    private final NotiFeignClient notiFeignClient;
     private final PiggyRepository piggyRepository;
     private final PiggyQueryRepository piggyQueryRepository;
-    private final AccountService accountService;
     private final AccountHistoryService accountHistoryService;
     private final PiggyHistoryService piggyHistoryService;
     //    private final PasswordEncoder passwordEncoder;
@@ -90,6 +95,16 @@ public class PiggyServiceImpl implements PiggyService {
             Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), originalFileName, saveFileName);
             Piggy savePiggy = piggyRepository.save(piggy);
 
+            String parentKey = memberFeignClient.getParentMemberKey(memberKey).getResultBody();
+            String name = memberFeignClient.getMemberName(memberKey).getResultBody();
+
+            notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
+                    .memberKey(parentKey)
+                    .title("️저금통 등록!! 🐷")
+                    .content(name + " 님이 " + dto.getContent() + " 저금통 챌린지를 시작했어요!")
+                    .type("ACCOUNT")
+                    .build());
+
             return savePiggy.getId();
         }
 
@@ -98,7 +113,7 @@ public class PiggyServiceImpl implements PiggyService {
 
     @Override
     public List<ShowPiggyResponse> showPiggy(String memberKey, String targetKey) throws IOException {
-        // 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
+        // TODO: 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
 
         List<ShowPiggyDto> result = piggyQueryRepository.showPiggy(targetKey);
 
@@ -128,7 +143,37 @@ public class PiggyServiceImpl implements PiggyService {
     }
 
     @Override
-    public void savingPiggy(String memberKey, SavingPiggyDto dto) throws URISyntaxException {
+    public ShowPiggyResponse showDetailPiggy(String memberKey, String targetKey, Long piggyId) throws IOException {
+        // TODO: 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
+
+        Piggy piggy = piggyRepository.findById(piggyId)
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 저금통이 존재하지 않습니다."));
+
+        if (!piggy.getChildKey().equals(targetKey)) {
+            throw new NoAuthorizationException("401", HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다.");
+        }
+
+        File file = null;
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("win")) {
+            file = new File(piggyWindowPath + "\\" + piggy.getSavedImage());
+        } else {
+            file = new File(piggyLinuxPath + "/" + piggy.getSavedImage());
+        }
+
+        byte[] byteImage = new byte[(int) file.length()];
+        FileInputStream fis = new FileInputStream(file);
+        fis.read(byteImage);
+        String base64Image = new String(Base64.encodeBase64(byteImage));
+
+        ShowPiggyResponse response = ShowPiggyResponse.toResponse(piggy, base64Image);
+
+        return response;
+    }
+
+    @Override
+    public SavingPiggyResponse savingPiggy(String memberKey, SavingPiggyDto dto) throws URISyntaxException, IOException {
         Piggy piggy = piggyRepository.findByAccountNumber(dto.getPiggyAccountNumber())
                 .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당하는 저금통이 존재하지 않습니다."));
 
@@ -150,6 +195,55 @@ public class PiggyServiceImpl implements PiggyService {
         // 저금통 저금 내역을 등록하는 코드
         AddPiggyHistoryDto addPiggyHistoryDto = AddPiggyHistoryDto.toDto(piggy, dto.getMoney(), balance);
         piggyHistoryService.addPiggyHistory(memberKey, addPiggyHistoryDto);
+
+
+        // 목표 금액을 채웠을 때
+        if (balance >= piggy.getGoalMoney()) {
+            addAccountHistoryDto = AddAccountHistoryDto.toDto(dto.getAccountNumber(), "저금통 성공", true, Long.valueOf(piggy.getBalance()), "");
+            accountHistoryService.addAccountHistory(memberKey, addAccountHistoryDto);
+
+            piggy.updateCompleted();
+            piggy.updateBalance(0);
+
+
+            File file = null;
+            String os = System.getProperty("os.name").toLowerCase();
+
+            if (os.contains("win")) {
+                file = new File(piggyWindowPath + "\\" + piggy.getSavedImage());
+            } else {
+                file = new File(piggyLinuxPath + "/" + piggy.getSavedImage());
+            }
+
+            byte[] byteImage = new byte[(int) file.length()];
+            FileInputStream fis = new FileInputStream(file);
+            fis.read(byteImage);
+            String base64Image = new String(Base64.encodeBase64(byteImage));
+
+            ShowPiggyResponse showPiggyResponse = ShowPiggyResponse.toResponse(piggy, base64Image);
+            SavingPiggyResponse response = SavingPiggyResponse.toResponse(true, showPiggyResponse);
+
+            notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
+                    .memberKey(memberKey)
+                    .title("저금통 성공!️! 🎉")
+                    .content(piggy.getContent() + " 저금통 챌린지를 성공했습니다!")
+                    .type("ACCOUNT")
+                    .build());
+
+            String parentKey = memberFeignClient.getParentMemberKey(memberKey).getResultBody();
+            String name = memberFeignClient.getMemberName(memberKey).getResultBody();
+
+            notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
+                    .memberKey(parentKey)
+                    .title("저금통 성공!️! 🎉")
+                    .content(name + " 님이 " + piggy.getContent() + " 저금통 챌린지를 성공했습니다!")
+                    .type("ACCOUNT")
+                    .build());
+
+            return response;
+        }
+
+        return SavingPiggyResponse.toResponse(false, null);
     }
 
     // TODO: 없애기

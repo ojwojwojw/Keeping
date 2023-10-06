@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Optional;
 
 import static com.keeping.questionservice.domain.QComment.comment;
 import static com.querydsl.core.types.Projections.constructor;
@@ -20,7 +19,7 @@ public class CommentQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public List<CommentResponse> findByIdAndActive(String memberKey, boolean isActive) {
+    public List<CommentResponse> findByIdAndIsActive(Long questionId, boolean isActive) {
         return queryFactory
                 .select(constructor(CommentResponse.class,
                         comment.id,
@@ -28,7 +27,7 @@ public class CommentQueryRepository {
                         comment.content,
                         comment.createdDate))
                 .from(comment)
-                .where(comment.memberKey.eq(memberKey),
+                .where(comment.question.id.eq(questionId),
                         comment.isActive.eq(isActive))
                 .fetch();
     }

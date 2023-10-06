@@ -50,17 +50,16 @@ public class NotiServiceImpl implements NotiService {
     }
 
     @Override
-    public Long sendNoti(String memberKey, SendNotiDto dto) {
-
-        log.debug("[알림 전송] : " + memberKey);
-        log.debug(dto.toString());
+    public Long sendNoti(SendNotiDto dto) {
+        
+        log.debug("[알림 전송] : " + dto.getContent());
 
         // FCMNotificationDto로 분류
         FCMNotificationDto fcmDto = FCMNotificationDto.toDto(dto);
 
         String sendReturn = fcmNotificationService.sendNotification(fcmDto);
 
-        ApiResponse<String> fcmKey = memberFeignClient.getFCMKey(memberKey);
+        ApiResponse<String> fcmKey = memberFeignClient.getFCMKey(dto.getMemberKey());
 
         log.debug("[알림 전송 완료] : ");
         log.debug(sendReturn);
@@ -84,20 +83,50 @@ public class NotiServiceImpl implements NotiService {
         return notiQueryRepository.findByMemberKeyAndType(memberKey, Type.valueOf(notiType));
     }
 
-//    @Scheduled(cron = "0 0/2 * * * ?")
+//    @Scheduled(cron = "0 */2 * * * ?")
 //    private void sendNotiTest() {
 //        LocalTime localTime = LocalTime.now(ZoneId.of("Asia/Seoul"));
 //        String time = localTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 //        log.debug("[알람 전송] 현재시간 : " + time);
 //
-//        String test = fcmNotificationService.sendNotification(FCMNotificationDto.builder()
-//                .memberKey("test")
-//                .title("테스트 알람이 도착했어요~!~💸")
+//        fcmNotificationService.sendNotification(FCMNotificationDto.builder()
+//                .type(Type.MISSION)
+//                .memberKey("f98fdc0a-e685-4e5c-a03f-1280a4418442")
+//                .title("미션 테스트 알람이 도착했어요~!~💸")
 //                .body("현재 시간은 " + time + "입니다.😆")
 //                .build());
 //
-//        log.debug("결과값 : ");
-//        log.debug(test);
-//        log.debug("[알람 전송 성공]");/**/
+//        log.debug("[알람 전송 성공]");
+//    }
+//    @Scheduled(cron = "0 */3 * * * ?")
+//    private void sendNotiTest2() {
+//        LocalTime localTime = LocalTime.now(ZoneId.of("Asia/Seoul"));
+//        String time = localTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+//        log.debug("[알람 전송] 현재시간 : " + time);
+//
+//        fcmNotificationService.sendNotification(FCMNotificationDto.builder()
+//                .type(Type.QUESTION)
+//                .memberKey("f98fdc0a-e685-4e5c-a03f-1280a4418442")
+//                .title("질문 테스트 알람이 도착했어요~!~💸")
+//                .body("현재 시간은 " + time + "입니다.😆")
+//                .build());
+//
+//        log.debug("[알람 전송 성공]");
+//    }
+//
+//    @Scheduled(cron = "0 */4 * * * ?")
+//    private void sendNotiTest3() {
+//        LocalTime localTime = LocalTime.now(ZoneId.of("Asia/Seoul"));
+//        String time = localTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+//        log.debug("[알람 전송] 현재시간 : " + time);
+//
+//        fcmNotificationService.sendNotification(FCMNotificationDto.builder()
+//                .type(Type.ACCOUNT)
+//                .memberKey("f98fdc0a-e685-4e5c-a03f-1280a4418442")
+//                .title("계좌 테스트 알람이 도착했어요~!~💸")
+//                .body("현재 시간은 " + time + "입니다.😆")
+//                .build());
+//
+//        log.debug("[알람 전송 성공]");
 //    }
 }

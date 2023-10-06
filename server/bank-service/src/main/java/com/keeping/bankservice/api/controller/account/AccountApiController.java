@@ -3,7 +3,9 @@ package com.keeping.bankservice.api.controller.account;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keeping.bankservice.api.ApiResponse;
 import com.keeping.bankservice.api.controller.account.request.*;
+import com.keeping.bankservice.api.controller.account.response.AddAccountResponse;
 import com.keeping.bankservice.api.controller.account.response.ShowAccountResponse;
+import com.keeping.bankservice.api.controller.regular_allowance.request.MakeRegularAllowanceRequest;
 import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.AddAccountDto;
 import com.keeping.bankservice.api.service.account.dto.AuthPhoneDto;
@@ -29,14 +31,14 @@ public class AccountApiController {
     private final AccountService accountService;
 
     @PostMapping()
-    public ApiResponse<Void> addAccount(@PathVariable("member-key") String memberKey, @RequestBody AddAccountRequest request) {
+    public ApiResponse<AddAccountResponse> addAccount(@PathVariable("member-key") String memberKey, @RequestBody AddAccountRequest request) {
         log.debug("AddAccountRequest={}", request);
 
         AddAccountDto dto = AddAccountDto.toDto(request);
 
         try {
-            Long accountId = accountService.addAccount(memberKey, dto);
-            return ApiResponse.ok(null);
+            AddAccountResponse response = accountService.addAccount(memberKey, dto);
+            return ApiResponse.ok(response);
         }
         catch(JsonProcessingException e) {
             return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "현재 서비스 이용이 불가능합니다. 잠시 후 다시 시도해 주세요.", null);
@@ -102,15 +104,8 @@ public class AccountApiController {
         return null;
     }
 
-    @PostMapping("/allowance")
-    public ApiResponse<Void> depositAllowance(@RequestBody DepositAllowanceRequest request) {
-        log.debug("DepositAllowanceRequest={}", request);
-
-        return null;
-    }
-
     @PostMapping("/allowance/sub")
-    public ApiResponse<Void> depositAllowanceSub(@RequestBody DepositAllowanceRequest request) {
+    public ApiResponse<Void> depositAllowanceSub(@RequestBody MakeRegularAllowanceRequest request) {
         log.debug("DepositAllowanceSubRequest={}", request);
 
         return null;

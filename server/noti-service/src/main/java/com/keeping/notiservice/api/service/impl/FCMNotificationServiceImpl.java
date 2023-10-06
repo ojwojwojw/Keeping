@@ -31,7 +31,6 @@ public class FCMNotificationServiceImpl implements FCMNotificationService {
 
         // toekn 가져오기
         String token = fcmKey.getResultBody();
-//        String token = "cm_uacCbSkuKgufTeKr_Gc:APA91bHYncdzysnQzuiQNe3fcifp5LujxbTAURrg_Y1g36mI6U7jbfou1N6wvzX5BVm54l815Vm83EcdUYbQ7HZ8grqLUYWotXliywPF4n4Rf-bjbarAWnHc6c4kJ67Zx3uueXdkhW_z";
         if (token != null) {
             // FCM 토큰이 존재하지 않을 때
             Notification notification = Notification.builder()
@@ -40,6 +39,7 @@ public class FCMNotificationServiceImpl implements FCMNotificationService {
                     .build();
 
             Message message = Message.builder()
+                    .putData("type", dto.getType().name())
                     .setToken(token)
                     .setNotification(notification)
                     .build();

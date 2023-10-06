@@ -7,13 +7,10 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "member_service")
+@FeignClient(name = "member-service",  url = "https://j9c207.p.ssafy.io/api")
 public interface MemberFeignClient {
 
-    @GetMapping("/member_service/api/{member_key}/type")
-    ApiResponse<MemberTypeResponse> getMemberType(@PathVariable(name = "member_key") String memberKey);
-
-    @GetMapping("/member-service/api/{member_key}")
+    @GetMapping("/member-service/api/{member_key}/registration-time")
     ApiResponse<MemberTimeResponse> getMemberTime(@PathVariable(name = "member_key") String memberKey);
 
 }

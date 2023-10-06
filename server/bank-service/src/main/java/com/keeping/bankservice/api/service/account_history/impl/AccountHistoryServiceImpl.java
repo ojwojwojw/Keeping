@@ -1,8 +1,11 @@
 package com.keeping.bankservice.api.service.account_history.impl;
 
+import com.keeping.bankservice.api.ApiResponse;
 import com.keeping.bankservice.api.controller.account_history.response.ShowAccountHistoryResponse;
 import com.keeping.bankservice.api.controller.account_history.response.ShowChildHistoryResponse;
 import com.keeping.bankservice.api.controller.feign_client.MemberFeignClient;
+import com.keeping.bankservice.api.controller.feign_client.NotiFeignClient;
+import com.keeping.bankservice.api.controller.feign_client.request.SendNotiRequest;
 import com.keeping.bankservice.api.controller.feign_client.response.MemberKeyResponse;
 import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.DepositMoneyDto;
@@ -34,9 +37,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -52,16 +57,18 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
     private final AccountHistoryQueryRepository accountHistoryQueryRepository;
     private final AccountDetailQueryRepository accountDetailQueryRepository;
     private final MemberFeignClient memberFeignClient;
+    private final NotiFeignClient notiFeignClient;
     private final Environment env;
     private String kakaoAk;
 
-    public AccountHistoryServiceImpl(AccountService accountService, AccountRepository accountRepository, AccountHistoryRepository accountHistoryRepository, AccountHistoryQueryRepository accountHistoryQueryRepository, AccountDetailQueryRepository accountDetailQueryRepository, MemberFeignClient memberFeignClient, Environment env) {
+    public AccountHistoryServiceImpl(AccountService accountService, AccountRepository accountRepository, AccountHistoryRepository accountHistoryRepository, AccountHistoryQueryRepository accountHistoryQueryRepository, AccountDetailQueryRepository accountDetailQueryRepository, MemberFeignClient memberFeignClient, NotiFeignClient notiFeignClient, Environment env) {
         this.accountService = accountService;
         this.accountRepository = accountRepository;
         this.accountHistoryRepository = accountHistoryRepository;
         this.accountHistoryQueryRepository = accountHistoryQueryRepository;
         this.accountDetailQueryRepository = accountDetailQueryRepository;
         this.memberFeignClient = memberFeignClient;
+        this.notiFeignClient = notiFeignClient;
         this.env = env;
         this.kakaoAk = this.env.getProperty("kakao.api");
     }
@@ -89,15 +96,17 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         LargeCategory largeCategory = ETC;
         String categoryType = null;
 
-        if (dto.getStoreName().equals("저금통 저금") || dto.getStoreName().equals("용돈 지급") || dto.getStoreName().equals("용돈")) {
+        if (dto.getStoreName().equals("저금통 저금") || dto.getStoreName().equals("저금통 성공") || dto.getStoreName().equals("용돈 지급") || dto.getStoreName().equals("용돈")) {
             largeCategory = BANK;
-        } else if (dto.getStoreName() != null) {
+        } else if (dto.getStoreName() != null && !dto.getStoreName().equals("")) {
             // 장소의 위도, 경도, 카테고리 가져오기
             Map keywordResponse = useKakaoLocalApi(true, dto.getStoreName());
+            System.out.println("장소명으로 키워드 검색 결과: " + keywordResponse.toString());
+
             try {
                 categoryType = ((LinkedHashMap) ((ArrayList) keywordResponse.get("documents")).get(0)).get("category_group_code").toString();
                 largeCategory = mappingCategory(categoryType);
-            } catch (NullPointerException e) {
+            } catch (NullPointerException | IndexOutOfBoundsException e) {
                 categoryType = "ETC";
             }
         }
@@ -106,10 +115,11 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
         if (dto.getAddress() != null && !dto.getAddress().equals("")) {
             Map addressResponse = useKakaoLocalApi(false, dto.getAddress());
+            System.out.println("주소로 장소 검색 결과: " + addressResponse.toString());
             try {
                 latitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("y"));
                 longitude = Double.parseDouble((String) ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) addressResponse.get("documents")).get(0)).get("address")).get("x"));
-            } catch (NullPointerException e) {
+            } catch (NullPointerException | IndexOutOfBoundsException e) {
                 latitude = null;
                 longitude = null;
             }
@@ -118,6 +128,32 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         // 새로운 거래 내역 등록
         AccountHistory accountHistory = AccountHistory.toAccountHistory(account, dto.getStoreName(), dto.isType(), dto.getMoney(), account.getBalance(), dto.getMoney(), largeCategory, false, dto.getAddress(), latitude, longitude);
         AccountHistory saveAccountHistory = accountHistoryRepository.save(accountHistory);
+
+        // 자녀에게 알림 전송
+        String type = saveAccountHistory.isType()? "입금" : "출금";
+        DecimalFormat decFormat = new DecimalFormat("###,###");
+        String money = decFormat.format(dto.getMoney());
+        String balance = decFormat.format(account.getBalance());
+
+        notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
+                .memberKey(memberKey)
+                .title("용돈 기입장 등록!! ✏️")
+//                .title(type + " " + dto.getMoney() + "원")
+                .content("[" + type + "] " + dto.getStoreName() + " " + money + "원 잔액 " + balance + "원")
+                .type("ACCOUNT")
+                .build());
+
+        String parentKey = memberFeignClient.getParentMemberKey(memberKey).getResultBody();
+        String name = memberFeignClient.getMemberName(memberKey).getResultBody();
+        System.out.println("부모 고유 번호: " + parentKey + ", 자녀 이름: " + name);
+
+        // TODO: 부모에게도 알림 보내기
+        notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
+                .memberKey(parentKey)
+                .title(name + " 님 용돈 기입장 등록!! ✏️")
+                .content("[" + type + "] " + dto.getStoreName() + " " + money + "원 잔액 " + balance + "원")
+                .type("ACCOUNT")
+                .build());
 
         return saveAccountHistory.getId();
     }
@@ -278,7 +314,10 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         Long total = 0l;
         for (Account account : accounts) {
             Long result = accountHistoryQueryRepository.countMonthExpense(account, startDateTime, endDateTime);
-            total += result;
+
+            if(result != null) {
+                total += result;
+            }
         }
 
         return total;
@@ -311,7 +350,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
         List<MemberKeyResponse> memberKeyResponseList = memberFeignClient.getChildMemberKey().getResultBody();
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         LocalDateTime startDateTime = today.minusDays(1).atStartOfDay();
         LocalDateTime endDateTime = today.minusDays(1).atTime(LocalTime.MAX);
 
@@ -342,7 +381,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
                 transactionList.add(showAccountHistoryResponse);
             }
 
-            ShowChildHistoryResponse showChildHistoryResponse = ShowChildHistoryResponse.toResponse(childKey, memberKeyResponse.getParentKey(), transactionList);
+            ShowChildHistoryResponse showChildHistoryResponse = ShowChildHistoryResponse.toResponse(memberKeyResponse.getParentKey(), childKey, transactionList);
             response.add((showChildHistoryResponse));
         }
 

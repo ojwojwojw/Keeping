@@ -28,7 +28,7 @@ public class NotiApiController {
             @Valid @PathVariable(name = "member_key") String memberKey,
             @RequestBody SendNotiRequest request
     ) {
-        Long notiId = notiService.sendNoti(memberKey, SendNotiDto.toDto(request));
+        Long notiId = notiService.sendNoti(SendNotiDto.toDto(request));
         return ApiResponse.ok(notiId);
     }
     
