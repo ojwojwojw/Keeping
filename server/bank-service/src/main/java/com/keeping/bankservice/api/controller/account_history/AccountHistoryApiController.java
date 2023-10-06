@@ -3,6 +3,7 @@ package com.keeping.bankservice.api.controller.account_history;
 import com.keeping.bankservice.api.ApiResponse;
 import com.keeping.bankservice.api.controller.account_history.request.TransferMoneyRequest;
 import com.keeping.bankservice.api.controller.account_history.request.AddAccountHistoryRequest;
+import com.keeping.bankservice.api.controller.account_history.response.CountMonthExpenseResponse;
 import com.keeping.bankservice.api.controller.account_history.response.ShowAccountHistoryResponse;
 import com.keeping.bankservice.api.service.account_history.dto.TransferMoneyDto;
 import com.keeping.bankservice.api.service.account_history.AccountHistoryService;
@@ -89,12 +90,12 @@ public class AccountHistoryApiController {
     }
 
     @GetMapping("/{target-key}/expense/{date}")
-    public ApiResponse<Long> countMonthExpense(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("date") String date) {
+    public ApiResponse<CountMonthExpenseResponse> countMonthExpense(@PathVariable("member-key") String memberKey, @PathVariable("target-key") String targetKey, @PathVariable("date") String date) {
         log.debug("CountMonthExpense");
 
         try {
-            Long totalExpense = accountHistoryService.countMonthExpense(memberKey, targetKey, date);
-            return ApiResponse.ok(totalExpense);
+            CountMonthExpenseResponse response = accountHistoryService.countMonthExpense(memberKey, targetKey, date);
+            return ApiResponse.ok(response);
         }
         catch (Exception e) {
             log.debug("에러 발생 : {}", e.toString());
@@ -112,7 +113,7 @@ public class AccountHistoryApiController {
             accountHistoryService.transferMoney(memberKey, dto);
             return ApiResponse.ok(null);
         }
-        catch (NotFoundException e) {
+        catch (NotFoundException | InvalidRequestException e) {
             return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
         }
         catch (URISyntaxException e) {

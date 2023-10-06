@@ -1,21 +1,20 @@
 package com.keeping.bankservice.api.service.account_history.impl;
 
-import com.keeping.bankservice.api.ApiResponse;
+import com.keeping.bankservice.api.controller.account_history.response.CountMonthExpenseResponse;
 import com.keeping.bankservice.api.controller.account_history.response.ShowAccountHistoryResponse;
 import com.keeping.bankservice.api.controller.account_history.response.ShowChildHistoryResponse;
 import com.keeping.bankservice.api.controller.feign_client.MemberFeignClient;
 import com.keeping.bankservice.api.controller.feign_client.NotiFeignClient;
+import com.keeping.bankservice.api.controller.feign_client.request.MemberTypeRequest;
 import com.keeping.bankservice.api.controller.feign_client.request.SendNotiRequest;
 import com.keeping.bankservice.api.controller.feign_client.response.MemberKeyResponse;
+import com.keeping.bankservice.api.controller.feign_client.response.MemberTypeResponse;
 import com.keeping.bankservice.api.service.account.AccountService;
 import com.keeping.bankservice.api.service.account.dto.DepositMoneyDto;
 import com.keeping.bankservice.api.service.account.dto.WithdrawMoneyDto;
 import com.keeping.bankservice.api.service.account_detail.dto.ShowAccountDetailDto;
 import com.keeping.bankservice.api.service.account_history.AccountHistoryService;
-import com.keeping.bankservice.api.service.account_history.dto.AddAccountDetailValidationDto;
-import com.keeping.bankservice.api.service.account_history.dto.AddAccountHistoryDto;
-import com.keeping.bankservice.api.service.account_history.dto.ShowAccountHistoryDto;
-import com.keeping.bankservice.api.service.account_history.dto.TransferMoneyDto;
+import com.keeping.bankservice.api.service.account_history.dto.*;
 import com.keeping.bankservice.domain.account.Account;
 import com.keeping.bankservice.domain.account.repository.AccountRepository;
 import com.keeping.bankservice.domain.account_detail.SmallCategory;
@@ -46,6 +45,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.keeping.bankservice.domain.account_history.LargeCategory.*;
+import static com.keeping.bankservice.global.common.MemberType.CHILD;
 
 @Service
 @Transactional
@@ -96,7 +96,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         LargeCategory largeCategory = ETC;
         String categoryType = null;
 
-        if (dto.getStoreName().equals("저금통 저금") || dto.getStoreName().equals("저금통 성공") || dto.getStoreName().equals("용돈 지급") || dto.getStoreName().equals("용돈")) {
+        if (dto.getStoreName().equals("저금통 저금") || dto.getStoreName().equals("저금통 성공") || dto.getStoreName().equals("용돈 지급") || dto.getStoreName().equals("용돈") || dto.getStoreName().equals("온라인 결제")) {
             largeCategory = BANK;
         } else if (dto.getStoreName() != null && !dto.getStoreName().equals("")) {
             // 장소의 위도, 경도, 카테고리 가져오기
@@ -129,31 +129,37 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         AccountHistory accountHistory = AccountHistory.toAccountHistory(account, dto.getStoreName(), dto.isType(), dto.getMoney(), account.getBalance(), dto.getMoney(), largeCategory, false, dto.getAddress(), latitude, longitude);
         AccountHistory saveAccountHistory = accountHistoryRepository.save(accountHistory);
 
-        // 자녀에게 알림 전송
-        String type = saveAccountHistory.isType()? "입금" : "출금";
-        DecimalFormat decFormat = new DecimalFormat("###,###");
-        String money = decFormat.format(dto.getMoney());
-        String balance = decFormat.format(account.getBalance());
-
-        notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
+        MemberTypeResponse memberTypeResponse = memberFeignClient.getMemberType(MemberTypeRequest.builder()
                 .memberKey(memberKey)
-                .title("용돈 기입장 등록!! ✏️")
-//                .title(type + " " + dto.getMoney() + "원")
-                .content("[" + type + "] " + dto.getStoreName() + " " + money + "원 잔액 " + balance + "원")
-                .type("ACCOUNT")
-                .build());
+                .type(CHILD)
+                .build()).getResultBody();
 
-        String parentKey = memberFeignClient.getParentMemberKey(memberKey).getResultBody();
-        String name = memberFeignClient.getMemberName(memberKey).getResultBody();
-        System.out.println("부모 고유 번호: " + parentKey + ", 자녀 이름: " + name);
+        if(memberTypeResponse.isTypeRight()) {
+            // 자녀에게 알림 전송
+            String type = saveAccountHistory.isType()? "입금" : "출금";
+            DecimalFormat decFormat = new DecimalFormat("###,###");
+            String money = decFormat.format(dto.getMoney());
+            String balance = decFormat.format(account.getBalance());
 
-        // TODO: 부모에게도 알림 보내기
-        notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
-                .memberKey(parentKey)
-                .title(name + " 님 용돈 기입장 등록!! ✏️")
-                .content("[" + type + "] " + dto.getStoreName() + " " + money + "원 잔액 " + balance + "원")
-                .type("ACCOUNT")
-                .build());
+            notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
+                    .memberKey(memberKey)
+                    .title("용돈 기입장 등록!! ✏️")
+                    .content("[" + type + "] " + dto.getStoreName() + " " + money + "원 잔액 " + balance + "원")
+                    .type("ACCOUNT")
+                    .build());
+
+            String parentKey = memberFeignClient.getParentMemberKey(memberKey).getResultBody();
+            String name = memberFeignClient.getMemberName(memberKey).getResultBody();
+            System.out.println("부모 고유 번호: " + parentKey + ", 자녀 이름: " + name);
+
+            // TODO: 부모에게도 알림 보내기
+            notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
+                    .memberKey(parentKey)
+                    .title(name + " 님 용돈 기입장 등록!! ✏️")
+                    .content("[" + type + "] " + dto.getStoreName() + " " + money + "원 잔액 " + balance + "원")
+                    .type("ACCOUNT")
+                    .build());
+        }
 
         return saveAccountHistory.getId();
     }
@@ -296,31 +302,29 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
     }
 
     @Override
-    public Long countMonthExpense(String memberKey, String targetKey, String date) {
+    public CountMonthExpenseResponse countMonthExpense(String memberKey, String targetKey, String date) {
         // TODO: 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
 
         Optional<List<Account>> accountList = accountRepository.findByMemberKey(targetKey);
 
-        if (accountList.isEmpty()) {
-            return 0l;
+        if (accountList.isEmpty() || accountList.get().size() == 0) {
+            throw new NotFoundException("404", HttpStatus.NOT_FOUND, "계좌가 존재하지 않습니다.");
         }
 
-        List<Account> accounts = accountList.get();
+        Account account = accountList.get().get(0);
 
         LocalDate startDate = LocalDate.parse(date + "-01", DateTimeFormatter.ISO_DATE);
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = startDate.plusMonths(1).atStartOfDay().minusSeconds(1);
 
-        Long total = 0l;
-        for (Account account : accounts) {
-            Long result = accountHistoryQueryRepository.countMonthExpense(account, startDateTime, endDateTime);
+        Long total = accountHistoryQueryRepository.countMonthExpense(account, startDateTime, endDateTime);
+        Long balance = account.getBalance();
 
-            if(result != null) {
-                total += result;
-            }
+        if(total == null) {
+            total = 0l;
         }
 
-        return total;
+        return CountMonthExpenseResponse.toResponse(total, balance);
     }
 
     @Override
@@ -342,6 +346,27 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         Account childAccount = childAccountList.get(0);
         AddAccountHistoryDto childAccountHistoryDto = AddAccountHistoryDto.toDto(childAccount.getAccountNumber(), "용돈", true, Long.valueOf(dto.getMoney()), "");
         addAccountHistory(dto.getChildKey(), childAccountHistoryDto);
+    }
+
+    @Override
+    public void transferToParent(String memberKey, TransferToParentDto dto) throws URISyntaxException {
+        // TODO: 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
+
+        // 자식 계좌에서 출금
+        List<Account> childAccountList = accountRepository.findByMemberKey(memberKey)
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당 회원의 계좌가 존재하지 않습니다."));
+
+        Account childAccount = childAccountList.get(0);
+        AddAccountHistoryDto childAccountHistoryDto = AddAccountHistoryDto.toDto(childAccount.getAccountNumber(), "온라인 결제", false, Long.valueOf(dto.getMoney()), "");
+        addAccountHistory(memberKey, childAccountHistoryDto);
+
+        // 부모 계좌로 입금
+        List<Account> parentAccountList = accountRepository.findByMemberKey(dto.getParentKey())
+                .orElseThrow(() -> new NotFoundException("404", HttpStatus.NOT_FOUND, "해당 회원의 계좌가 존재하지 않습니다."));
+
+        Account parentAccount = parentAccountList.get(0);
+        AddAccountHistoryDto parentAccountHistoryDto = AddAccountHistoryDto.toDto(parentAccount.getAccountNumber(), "온라인 결제", true, Long.valueOf(dto.getMoney()), "");
+        addAccountHistory(dto.getParentKey(), parentAccountHistoryDto);
     }
 
     @Override
