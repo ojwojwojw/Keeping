@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -50,6 +51,8 @@ public class OnlineApiController {
             onlineService.approveOnline(memberKey, dto);
         } catch (NotFoundException e) {
             return ApiResponse.of(1, e.getHttpStatus(), e.getResultMessage(), null);
+        } catch (URISyntaxException e) {
+            return ApiResponse.of(1, HttpStatus.SERVICE_UNAVAILABLE, "현재 서비스 이용이 불가능합니다. 잠시 후 다시 시도해 주세요.", null);
         }
 
         return ApiResponse.ok(null);
