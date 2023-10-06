@@ -8,8 +8,11 @@ import 'package:keeping/widgets/bottom_btn.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:keeping/widgets/render_field.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Dio dio = Dio();
+final _baseUrl = dotenv.env['BASE_URL'];
 
 final _signupKey = GlobalKey<FormState>();
 
@@ -168,7 +171,10 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                         ),
                       ],
                     ),
-                    Text(_idDupRes),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(_idDupRes),
+                    ),
                     renderTextFormField(
                       label: '비밀번호',
                       hintText: '비밀번호를 입력해주세요.',
@@ -262,7 +268,10 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                       ],
                     ),
                     //인증번호 관련 로직 - verification
-                    Text(_verificationResult),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(_verificationResult),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -293,7 +302,10 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                         }),
                       ],
                     ),
-                    Text(_certificationResult),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(_certificationResult),
+                    ),
                     //부모님 인증
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -322,7 +334,10 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                         }),
                       ],
                     ),
-                    Text(_parentVerificationResult),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(_parentVerificationResult),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -353,11 +368,16 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
                         }),
                       ],
                     ),
-                    Text(_parentCertificationResult),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(_parentCertificationResult),
+                    ),
                   ],
                 ),
               ),
-              SizedBox(height: 60,)
+              SizedBox(
+                height: 60,
+              )
             ],
           ),
         ),
@@ -376,27 +396,37 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
       BuildContext context, Function handledupCheck) async {
     final id = _userId.text;
     print(id);
-    final response = await dioGet(url: '/member-service/api/id/$id');
-    print(response);
-    if (id != '') {
-      if (response['resultStatus']['successCode'] == 0) {
-        handledupCheck(response['resultBody']);
-        handleIsIdDupChecked(true); // 아이디 중복 아님
+
+    try {
+      final response =
+          await http.get(Uri.parse('$_baseUrl/member-service/api/id/$id'));
+      Map<String, dynamic> jsonResponse =
+          json.decode(utf8.decode(response.bodyBytes));
+      print(jsonResponse);
+
+      if (id != '') {
+        if (jsonResponse['resultStatus']['successCode'] == 0) {
+          handledupCheck(jsonResponse['resultBody']);
+          handleIsIdDupChecked(true); // 아이디 중복 아님
+        } else {
+          handledupCheck(jsonResponse['resultStatus']['resultMessage']);
+          handleIsIdDupChecked(false);
+        }
       } else {
-        handledupCheck(response['resultStatus']['resultMessage']);
-        handleIsIdDupChecked(false);
+        handledupCheck('아이디는 5~20자 사이로,\n영어와 숫자가 최소 한 개씩 들어가야 합니다.');
       }
-    } else {
-      handledupCheck('아이디는 5~20자 사이로,\n영어와 숫자가 최소 한 개씩 들어가야 합니다.');
+    } catch (err) {
+      print(err);
+      handledupCheck('오류 발생! 다시 시도해주세요.');
     }
   }
 
 // 인증 번호 받기 로직
   Future<void> checkVerification(
-      phone, Function handleCheckVerification) async {
+      TextEditingController phone, Function handleCheckVerification) async {
     final phoneText = phone.text;
 
-    // 휴대폰 번호의 길이가 11자가 아닌 경우 에러 처리
+    // 휴대폰 번호의 길이가 13자가 아닌 경우 에러 처리
     if (phoneText.length != 13) {
       handleCheckVerification('휴대폰 번호는 13자여야 합니다.');
       return; // 함수 종료
@@ -405,57 +435,85 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
     final data = {
       'phone': phoneText,
     };
-    final response = await dioPost(
-      url: '/member-service/api/phone',
-      data: data,
-    );
-    print(response);
-    if (response['resultStatus']['successCode'] == 0) {
-      handleCheckVerification(response['resultBody']);
-    } else if (response.data.resultStatus.successCode == 409) {
-      handleCheckVerification(response['resultBody']);
-    } else {
-      handleCheckVerification('휴대폰 번호를 다시 확인해주세요');
+
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/member-service/api/phone'),
+        body: jsonEncode(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      Map<String, dynamic> jsonResponse =
+          json.decode(utf8.decode(response.bodyBytes));
+      print(jsonResponse);
+
+      if (jsonResponse['resultStatus']['successCode'] == 0) {
+        handleCheckVerification(jsonResponse['resultBody']);
+      } else if (jsonResponse['resultStatus']['successCode'] == 409) {
+        handleCheckVerification(jsonResponse['resultBody']);
+      } else {
+        handleCheckVerification('휴대폰 번호를 다시 확인해주세요');
+      }
+    } catch (err) {
+      print(err);
+      handleCheckVerification('오류 발생! 다시 시도해주세요.');
     }
   }
 
   // 유저가 넣어준 인증번호 판별하기
   Future<void> checkCertification(
-      phone, certification, userType, Function handleCheckCertification) async {
+      TextEditingController phone,
+      TextEditingController certification,
+      String userType,
+      Function handleCheckCertification) async {
     final data = {
       'phone': phone.text,
       'certification': certification.text,
     };
-    final certificationText = certification.text;
-    final response = await dioPost(
-      url: '/member-service/api/phone-check',
-      data: data,
-    );
-    print('$response, $userType');
-    if (certificationText.length != 6 || phone.text.length != 13) {
-      if (userType == 'child') {
-        handleIsVerificationChecked(false);
-      } else {
-        handleIsParentVerificationChecked(false);
+
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/member-service/api/phone-check'),
+        body: jsonEncode(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      Map<String, dynamic> jsonResponse =
+          json.decode(utf8.decode(response.bodyBytes));
+      print('${jsonResponse}, $userType');
+
+      if (certification.text.length != 6 || phone.text.length != 13) {
+        if (userType == 'child') {
+          handleIsVerificationChecked(false);
+        } else {
+          handleIsParentVerificationChecked(false);
+        }
+        handleCheckCertification('휴대폰 번호와 인증번호를 모두 입력해주세요.');
+        return;
       }
-      handleCheckCertification('휴대폰 번호와 인증번호를 모두 입력해주세요.');
-    } else {
-      if (response['resultStatus']['successCode'] == 0) {
-        handleCheckCertification(response['resultBody']);
+
+      if (jsonResponse['resultStatus']['successCode'] == 0) {
+        handleCheckCertification(jsonResponse['resultBody']);
         if (userType == 'child') {
           handleIsVerificationChecked(true);
         } else {
           handleIsParentVerificationChecked(true);
         }
-        handleIsVerificationChecked(true);
       } else {
-        handleCheckCertification(response['resultStatus']['resultMessage']);
+        handleCheckCertification(jsonResponse['resultStatus']['resultMessage']);
         if (userType == 'child') {
           handleIsVerificationChecked(false);
         } else {
           handleIsParentVerificationChecked(false);
         }
       }
+    } catch (err) {
+      print(err);
+      handleCheckCertification('오류 발생! 다시 시도해주세요.');
     }
   }
 
@@ -468,23 +526,30 @@ class _SignUpChildPageState extends State<SignUpChildPage> {
       'parentPhone': _parentPhone.text,
       'birth': _userBirth.text
     };
-    BuildContext currentContext = context;
-
-    final response = await dioPost(
-      url: '/member-service/api/join/child',
-      data: data,
-    );
-    
-    if (response['resultStatus']['successCode'] == 0) {
-      handleIsParentVerificationChecked(true);
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-        (Route<dynamic> route) => false
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/member-service/api/join/child'),
+        body: jsonEncode(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       );
-    } else if (response['resultStatus']['resultCode'] == 409) {
-      print('이미 가입한 회원입니다.');
-    } else {
-      print('유효성 검사 실패');
+      Map<String, dynamic> jsonResponse =
+          json.decode(utf8.decode(response.bodyBytes));
+      print(jsonResponse);
+      if (jsonResponse['resultStatus']['successCode'] == 0) {
+        handleIsParentVerificationChecked(true);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+            (Route<dynamic> route) => false);
+      } else if (jsonResponse['resultStatus']['resultCode'] == 409) {
+        print('이미 가입한 회원입니다.');
+      } else {
+        print('유효성 검사 실패');
+      }
+    } catch (err) {
+      print(err);
+      print('오류 발생! 다시 시도해주세요.');
     }
   }
 }
