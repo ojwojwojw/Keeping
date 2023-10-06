@@ -70,6 +70,21 @@ public class QuestionQueryRepository {
                         .or(question.childKey.eq(memberKey)))
                 .fetch();
     }
+    
+    public List<QuestionResponse> getQuestionByChildKey(String childKey) {
+        return queryFactory
+                .select(constructor(QuestionResponse.class,
+                        question.id,
+                        question.childKey,
+                        question.content,
+                        question.parentAnswer,
+                        question.childAnswer,
+                        question.isCreated,
+                        question.createdDate))
+                .from(question)
+                .where(question.childKey.eq(childKey))
+                .fetch();
+    }
 
     public Optional<QuestionResponse> getQuetsionByMemberKeyAndId(String memberKey, Long questionId) {
         return Optional.ofNullable(queryFactory

@@ -50,17 +50,16 @@ public class NotiServiceImpl implements NotiService {
     }
 
     @Override
-    public Long sendNoti(String memberKey, SendNotiDto dto) {
-
-        log.debug("[알림 전송] : " + memberKey);
-        log.debug(dto.toString());
+    public Long sendNoti(SendNotiDto dto) {
+        
+        log.debug("[알림 전송] : " + dto.getContent());
 
         // FCMNotificationDto로 분류
         FCMNotificationDto fcmDto = FCMNotificationDto.toDto(dto);
 
         String sendReturn = fcmNotificationService.sendNotification(fcmDto);
 
-        ApiResponse<String> fcmKey = memberFeignClient.getFCMKey(memberKey);
+        ApiResponse<String> fcmKey = memberFeignClient.getFCMKey(dto.getMemberKey());
 
         log.debug("[알림 전송 완료] : ");
         log.debug(sendReturn);

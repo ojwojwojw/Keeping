@@ -88,8 +88,8 @@ public class MissionServiceImpl implements MissionService {
             // 자녀에게 알림 전송
             notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
                     .memberKey(dto.getTo())
-                    .title("미션 도착!! 😆")
-                    .content(dto.getTodo())
+                    .title("[" + dto.getTodo() + "]" + " 도착!! 😆")
+                    .content("미션 페이지를 확인해주세요!")
                     .type("MISSION")
                     .build());
 
@@ -115,8 +115,8 @@ public class MissionServiceImpl implements MissionService {
             //  부모에게 알림 전송
             notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
                     .memberKey(dto.getTo())
-                    .title("🎁미션 요청이 도착했어요~! ")
-                    .content(dto.getTodo())
+                    .title("[" + dto.getTodo() + "]" + " 요청이 도착했어요~! 🎁")
+                    .content("미션 페이지를 확인해주세요!")
                     .type("MISSION")
                     .build());
 
@@ -193,10 +193,9 @@ public class MissionServiceImpl implements MissionService {
                     }
                 }
 
-                if (totalMissionMoney < limitAmount) {
-
-                    throw new AlreadyExistException("400", HttpStatus.BAD_REQUEST, "잔액보다 미션 총액이 많습니다.");
-                }
+//                if (totalMissionMoney < limitAmount) {
+//                    throw new AlreadyExistException("400", HttpStatus.BAD_REQUEST, "잔액보다 미션 총액이 많습니다.");
+//                }
 
                 // cheeringMessage 추가
                 mission.updateCheeringMessage(dto.getCheeringMessage());

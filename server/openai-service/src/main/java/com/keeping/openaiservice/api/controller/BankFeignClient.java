@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@FeignClient(name = "bank-service")
+@FeignClient(name = "bank-service-demo")
 public interface BankFeignClient {
 
     @GetMapping("/bank-service/server/account-history/question")

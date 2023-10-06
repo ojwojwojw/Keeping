@@ -31,7 +31,7 @@ public class GptServiceImpl implements GptService {
     private final BankFeignClient bankFeignClient;
     private final QuestionFeignClient questionFeignClient;
 
-    @Scheduled(cron = "0 20 15 * * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 40 0 * * ?", zone = "Asia/Seoul")
     private void createQuestion() {
         log.debug("[질문 생성하기]");
         ApiResponse<List<TransactionResponseList>> transactionData = bankFeignClient.getTransactionData();
