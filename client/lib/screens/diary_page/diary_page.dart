@@ -372,7 +372,12 @@ class _ChildDiaryDetailPageState extends State<ChildDiaryDetailPage> {
                         ),
                         Row(
                           children: [
-                            Text(
+                            widget.index == 0 ? 
+                            Text('오늘의 질문' , style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey[500],
+                              ),)  :
+                            Text( 
                               "#${widget.index}번째 질문",
                               style: TextStyle(
                                 fontSize: 13,
@@ -996,7 +1001,12 @@ class _ParentDiaryDetailPageState extends State<ParentDiaryDetailPage> {
                         ),
                         Row(
                           children: [
-                            Text(
+                            widget.index == 0 ? 
+                            Text('오늘의 질문' ,style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey[500],
+                              ),)  :
+                            Text( 
                               "#${widget.index}번째 질문",
                               style: TextStyle(
                                 fontSize: 13,
