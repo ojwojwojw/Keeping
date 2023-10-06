@@ -84,7 +84,7 @@ spring:
             - AuthorizationHeaderFilter
         # bank
         - id: bank-service
-          uri: lb://BANK-SERVICE
+          uri: lb://BANK-SERVICE-DEMO
           predicates:
             - Path=/bank-service/api/**
             - Method=POST, GET, PATCH, DELETE
@@ -93,7 +93,7 @@ spring:
             - AuthorizationHeaderFilter
         # bank other
         - id: bank-service
-          uri: lb://BANK-SERVICE
+          uri: lb://BANK-SERVICE-DEMO
           predicates:
             - Path=/bank-service/server/**
             - Method=POST, GET, PATCH, DELETE
@@ -101,7 +101,7 @@ spring:
             - RemoveRequestHeader=Cookie
         # bank actuator
         - id: bank-service
-          uri: lb://BANK-SERVICE
+          uri: lb://BANK-SERVICE-DEMO
           predicates:
             - Path=/bank-service/actuator/**
             - Method=GET
@@ -110,7 +110,7 @@ spring:
             - RewritePath=/bank-service/(?<segment>.*), /$\{segment}
         # mission
         - id: mission-service
-          uri: lb://MISSION-SERVICE
+          uri: lb://MISSION-SERVICE-DEMO
           predicates:
             - Path=/mission-service/api/**
             - Method=POST, GET, PATCH, DELETE
@@ -119,7 +119,7 @@ spring:
             - AuthorizationHeaderFilter
         # mission actuator
         - id: mission-service
-          uri: lb://MISSION-SERVICE
+          uri: lb://MISSION-SERVICE-DEMO
           predicates:
             - Path=/mission-service/actuator/**
             - Method=GET

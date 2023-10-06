@@ -5,6 +5,7 @@ import com.keeping.memberservice.api.controller.request.SendNotiRequest;
 import com.keeping.memberservice.api.controller.response.LinkcodeResponse;
 import com.keeping.memberservice.api.service.member.MemberService;
 import com.keeping.memberservice.api.service.member.dto.LinkResultDto;
+import com.keeping.memberservice.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -23,7 +24,7 @@ public class AuthService {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final NotiFeignClient notiFeignClient;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
     private static final String CERTIFICATION_REQUEST = "certification_request";
     private static final long CERTIFICATION_NUMBER_EXPIRE = 200;
     private static final long ONE_DAY = 86400;
@@ -99,7 +100,7 @@ public class AuthService {
             redisTemplate.delete(linkKey);
             redisTemplate.delete(IL + yourMemberKey);
 
-            String myName = memberService.getMemberName(myMemberKey);
+            String myName = memberRepository.findByMemberKey(myMemberKey).get().getName();
             notiFeignClient.sendNoti(myMemberKey, SendNotiRequest.builder()
                     .memberKey(yourMemberKey)
                     .title("연결이 되었습니다 😆")
@@ -123,7 +124,7 @@ public class AuthService {
             redisStringInsert(IL + myMemberKey, "ok", ONE_DAY);
             redisTemplate.expire(key, ONE_DAY, TimeUnit.SECONDS);
 
-            String myName = memberService.getMemberName(myMemberKey);
+            String myName = memberRepository.findByMemberKey(myMemberKey).get().getName();
             notiFeignClient.sendNoti(myMemberKey, SendNotiRequest.builder()
                     .memberKey(yourMemberKey)
                     .title("누군가 연결을 시도중이에요😆")

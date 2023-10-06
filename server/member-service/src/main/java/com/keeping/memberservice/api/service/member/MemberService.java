@@ -61,7 +61,7 @@ public class MemberService implements UserDetailsService {
                 new NoSuchElementException("자녀 회원이 아닙니다."));
         Optional<Link> findLink = linkRepository.findByChild(child);
         if(findLink.isEmpty()){
-            log.debug("[연결 되어있나 확인] 이미 부모 있음");
+            log.debug("[연결 되어있나 확인] 이미 부모 없음");
         }
         return findLink.isEmpty();
     }
