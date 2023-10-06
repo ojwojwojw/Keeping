@@ -1,5 +1,6 @@
 package com.keeping.bankservice.api.service.account_history.impl;
 
+import com.keeping.bankservice.api.controller.account_history.response.CountMonthExpenseResponse;
 import com.keeping.bankservice.api.controller.account_history.response.ShowAccountHistoryResponse;
 import com.keeping.bankservice.api.controller.account_history.response.ShowChildHistoryResponse;
 import com.keeping.bankservice.api.controller.feign_client.MemberFeignClient;
@@ -301,31 +302,29 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
     }
 
     @Override
-    public Long countMonthExpense(String memberKey, String targetKey, String date) {
+    public CountMonthExpenseResponse countMonthExpense(String memberKey, String targetKey, String date) {
         // TODO: 두 고유 번호가 부모-자식 관계인지 확인하는 부분 필요
 
         Optional<List<Account>> accountList = accountRepository.findByMemberKey(targetKey);
 
-        if (accountList.isEmpty()) {
-            return 0l;
+        if (accountList.isEmpty() || accountList.get().size() == 0) {
+            throw new NotFoundException("404", HttpStatus.NOT_FOUND, "계좌가 존재하지 않습니다.");
         }
 
-        List<Account> accounts = accountList.get();
+        Account account = accountList.get().get(0);
 
         LocalDate startDate = LocalDate.parse(date + "-01", DateTimeFormatter.ISO_DATE);
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = startDate.plusMonths(1).atStartOfDay().minusSeconds(1);
 
-        Long total = 0l;
-        for (Account account : accounts) {
-            Long result = accountHistoryQueryRepository.countMonthExpense(account, startDateTime, endDateTime);
+        Long total = accountHistoryQueryRepository.countMonthExpense(account, startDateTime, endDateTime);
+        Long balance = account.getBalance();
 
-            if(result != null) {
-                total += result;
-            }
+        if(total == null) {
+            total = 0l;
         }
 
-        return total;
+        return CountMonthExpenseResponse.toResponse(total, balance);
     }
 
     @Override
