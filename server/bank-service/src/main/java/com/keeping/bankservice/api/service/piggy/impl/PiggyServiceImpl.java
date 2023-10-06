@@ -1,6 +1,9 @@
 package com.keeping.bankservice.api.service.piggy.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.keeping.bankservice.api.controller.feign_client.MemberFeignClient;
+import com.keeping.bankservice.api.controller.feign_client.NotiFeignClient;
+import com.keeping.bankservice.api.controller.feign_client.request.SendNotiRequest;
 import com.keeping.bankservice.api.controller.piggy.response.SavingPiggyResponse;
 import com.keeping.bankservice.api.controller.piggy.response.ShowPiggyResponse;
 import com.keeping.bankservice.api.service.account.AccountService;
@@ -50,9 +53,10 @@ public class PiggyServiceImpl implements PiggyService {
     @Value("${file.path.piggy.linux}")
     private String piggyLinuxPath;
 
+    private final MemberFeignClient memberFeignClient;
+    private final NotiFeignClient notiFeignClient;
     private final PiggyRepository piggyRepository;
     private final PiggyQueryRepository piggyQueryRepository;
-    private final AccountService accountService;
     private final AccountHistoryService accountHistoryService;
     private final PiggyHistoryService piggyHistoryService;
     //    private final PasswordEncoder passwordEncoder;
@@ -90,6 +94,16 @@ public class PiggyServiceImpl implements PiggyService {
 //            Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), passwordEncoder.encode(dto.getAuthPassword()), originalFileName, saveFileName);
             Piggy piggy = Piggy.toPiggy(memberKey, piggyAccountNumber, dto.getContent(), dto.getGoalMoney(), originalFileName, saveFileName);
             Piggy savePiggy = piggyRepository.save(piggy);
+
+            String parentKey = memberFeignClient.getParentMemberKey(memberKey).getResultBody();
+            String name = memberFeignClient.getMemberName(memberKey).getResultBody();
+
+            notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
+                    .memberKey(parentKey)
+                    .title("️저금통 등록!! 🐷")
+                    .content(name + " 님이 " + dto.getContent() + " 저금통 챌린지를 시작했어요!")
+                    .type("ACCOUNT")
+                    .build());
 
             return savePiggy.getId();
         }
@@ -184,7 +198,7 @@ public class PiggyServiceImpl implements PiggyService {
 
 
         // 목표 금액을 채웠을 때
-        if(balance >= piggy.getGoalMoney()) {
+        if (balance >= piggy.getGoalMoney()) {
             addAccountHistoryDto = AddAccountHistoryDto.toDto(dto.getAccountNumber(), "저금통 성공", true, Long.valueOf(piggy.getBalance()), "");
             accountHistoryService.addAccountHistory(memberKey, addAccountHistoryDto);
 
@@ -208,6 +222,23 @@ public class PiggyServiceImpl implements PiggyService {
 
             ShowPiggyResponse showPiggyResponse = ShowPiggyResponse.toResponse(piggy, base64Image);
             SavingPiggyResponse response = SavingPiggyResponse.toResponse(true, showPiggyResponse);
+
+            notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
+                    .memberKey(memberKey)
+                    .title("저금통 성공!️! 🎉")
+                    .content(piggy.getContent() + " 저금통 챌린지를 성공했습니다!")
+                    .type("ACCOUNT")
+                    .build());
+
+            String parentKey = memberFeignClient.getParentMemberKey(memberKey).getResultBody();
+            String name = memberFeignClient.getMemberName(memberKey).getResultBody();
+
+            notiFeignClient.sendNoti(memberKey, SendNotiRequest.builder()
+                    .memberKey(parentKey)
+                    .title("저금통 성공!️! 🎉")
+                    .content(name + " 님이 " + piggy.getContent() + " 저금통 챌린지를 성공했습니다!")
+                    .type("ACCOUNT")
+                    .build());
 
             return response;
         }

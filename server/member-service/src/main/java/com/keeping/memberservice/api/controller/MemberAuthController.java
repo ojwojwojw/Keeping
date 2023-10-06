@@ -77,9 +77,15 @@ public class MemberAuthController {
     @PostMapping("/{type}/linkcode")
     public ApiResponse<LinkcodeResponse> createLinkcode(@PathVariable String memberKey,
                                                         @PathVariable String type) {
+        log.debug("[연결코드 생성 컨트롤러]");
         boolean isParent = memberService.isParent(memberKey);
+        log.debug("[연결코드 생성 컨트롤러] 부모인가 ? : {}", isParent);
         if ((isParent && type.equals("parent")) ||
                 (!isParent && type.equals("child"))) {
+            if (!isParent && !memberService.alreadyLink(memberKey)) {
+                log.debug("[연결코드 생성 컨트롤러] 이미 연결된 부모 있음");
+                return ApiResponse.of(1, HttpStatus.BAD_REQUEST, "이미 연결된 부모 계정이 있습니다.");
+            }
             String linkCode = authService.createLinkCode(type, memberKey);
             return ApiResponse.ok(createLinkcodeResponse(linkCode));
         } else {
