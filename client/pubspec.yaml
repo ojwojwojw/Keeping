@@ -30,7 +30,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.6
   intl: ^0.18.1
   # camera: ^0.10.5+4
   path_provider: ^2.1.1
@@ -38,21 +37,19 @@ dependencies:
   image: ^4.0.17
   image_picker: ^0.8.4+4
   gallery_saver: ^2.3.2
-  flutter_image_compress: ^2.0.4
   kakao_map_plugin: ^0.2.1
   flutter_dotenv: ^5.1.0
   fluttertoast: ^8.2.2
+  dotted_border: ^2.0.0+2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   camera: ^0.10.5+4
-  google_mlkit_text_recognition: ^0.10.0
-  google_ml_kit: ^0.16.2
-  # google_ml_kit_for_korean: ^0.0.10
   permission_handler: ^11.0.0
   provider: ^6.0.5
   dio: ^5.3.2
+  http: ^0.13.6
 
   #FCM
   firebase_messaging: ^14.6.7
@@ -60,6 +57,11 @@ dependencies:
   firebase_core: ^2.15.1
   fl_chart: ^0.63.0
   pointycastle: ^3.7.3
+  flutter_localizations:
+    sdk: flutter
+  text_scroll: ^0.2.0
+
+
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +73,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -85,7 +88,91 @@ flutter:
 
   assets:
     - lib/.env
+    - assets/image/app_icon.png
     - assets/image/temp_image.jpg
+    - assets/image/money_coins.png
+    - assets/image/diary/diary.png
+    - assets/image/diary/key.png
+    - assets/image/diary/rocket.png
+    - assets/image/diary/todayquestion.png
+    - assets/image/diary/smileface.png
+    - assets/image/diary/funnyface.png
+    - assets/image/mission/how_much.png
+    - assets/image/mission/what_mission.png
+    - assets/image/mission/new_mission.png
+    - assets/image/mission/target.png
+    - assets/image/mission/pencil.png
+    - assets/image/mission/smile1.png
+    - assets/image/mission/smile2.png
+    - assets/image/question/answer.png
+    - assets/image/question/folder.png
+    - assets/image/question/maintitle.png
+    - assets/image/question/mic.png
+    - assets/image/question/micandfaces.png
+    - assets/image/question/pencil.png
+    - assets/image/question/reply.png
+    - assets/image/question/send_question.png
+    - assets/image/c_face.png
+    - assets/image/edit_square.png
+    - assets/image/m_face.png
+    - assets/image/money_bag.png
+    - assets/image/money_coins.png
+    - assets/image/n_face.png
+    - assets/image/right_arrow.png
+    - assets/image/sms.png
+    - assets/image/make_quest.png
+    - assets/image/send_quest.png
+    - assets/image/today_quest.png
+    - assets/image/profile/parent1.png
+    - assets/image/profile/parent2.png
+    - assets/image/profile/parent2_noBg.png
+    - assets/image/profile/child1.png
+    - assets/image/profile/child2.png
+    - assets/image/profile/child2_noBg.png
+    - assets/image/category/MART.png
+    - assets/image/category/CONVENIENCE.png
+    - assets/image/category/FOOD.png
+    - assets/image/category/SCHOOL.png
+    - assets/image/category/CAFE.png
+    - assets/image/category/CLOTH.png
+    - assets/image/category/CULTURE.png
+    - assets/image/category/PLAY.png
+    - assets/image/category/SUBWAY.png
+    - assets/image/category/BUS.png
+    - assets/image/category/TAXI.png
+    - assets/image/category/DIGGING.png
+    - assets/image/category/GIFT.png
+    - assets/image/category/OTT.png
+    - assets/image/category/CONTENT.png
+    - assets/image/category/ACADEMY.png
+    - assets/image/category/TOUR.png
+    - assets/image/category/BANK.png
+    - assets/image/category/HOSPITAL.png
+    - assets/image/category/PHARMACY.png
+    - assets/image/category/ETC.png
+    - assets/image/face/face1.png
+    - assets/image/face/face2.png
+    - assets/image/face/face3.png
+    - assets/image/face/face4.png
+    - assets/image/face/face5.png
+    - assets/image/face/face6.png
+    - assets/image/main/mission.png
+    - assets/image/main/onlineRequest.png
+    - assets/image/main/piggy.png
+    - assets/image/main/question.png
+    - assets/image/main/cropped_mission.png
+    - assets/image/main/cropped_onlineRequest.png
+    - assets/image/main/cropped_piggy.png
+    - assets/image/main/cropped_question.png
+    - assets/image/main/empty.png
+    - assets/image/money/camera.png
+    - assets/image/money/coin.png
+    - assets/image/money/coins.png
+    - assets/image/money/pencil.png
+    - assets/image/money/receipt.png
+    - assets/image/money/gallery.png
+    - assets/image/pocketmoney/calendar.png
+    - assets/image/pocketmoney/request_money.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -117,3 +204,45 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+  fonts:
+    - family: Pretendard
+      fonts:
+        - asset: assets/font/Pretendard-Thin.ttf
+          weight: 100
+        - asset: assets/font/Pretendard-ExtraLight.ttf
+          weight: 200
+        - asset: assets/font/Pretendard-Light.ttf
+          weight: 300
+        - asset: assets/font/Pretendard-Regular.ttf
+          weight: 400
+        - asset: assets/font/Pretendard-Medium.ttf
+          weight: 500
+        - asset: assets/font/Pretendard-SemiBold.ttf
+          weight: 600
+        - asset: assets/font/Pretendard-Bold.ttf
+          weight: 700
+        - asset: assets/font/Pretendard-ExtraBold.ttf
+          weight: 800
+        - asset: assets/font/Pretendard-Black.ttf
+          weight: 900
+    - family: NotoSansKR
+      fonts:
+        - asset: assets/font/NotoSansKR-Thin.ttf
+          weight: 100
+        - asset: assets/font/NotoSansKR-ExtraLight.ttf
+          weight: 200
+        - asset: assets/font/NotoSansKR-Light.ttf
+          weight: 300
+        - asset: assets/font/NotoSansKR-Regular.ttf
+          weight: 400
+        - asset: assets/font/NotoSansKR-Medium.ttf
+          weight: 500
+        - asset: assets/font/NotoSansKR-SemiBold.ttf
+          weight: 600
+        - asset: assets/font/NotoSansKR-Bold.ttf
+          weight: 700
+        - asset: assets/font/NotoSansKR-ExtraBold.ttf
+          weight: 800
+        - asset: assets/font/NotoSansKR-Black.ttf
+          weight: 900

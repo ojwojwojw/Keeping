@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/page_transition_effects.dart';
 import 'package:keeping/widgets/color_info_card_elements.dart';
 
 class ColorInfoCard extends StatefulWidget {
@@ -11,6 +12,7 @@ class ColorInfoCard extends StatefulWidget {
   final String status;
   final DateTime createdDate;
   final Widget path;
+  final String profileImage;
 
   ColorInfoCard({
     super.key,
@@ -22,6 +24,7 @@ class ColorInfoCard extends StatefulWidget {
     required this.status,
     required this.createdDate,
     required this.path,
+    required this.profileImage,
   });
 
   @override
@@ -33,24 +36,24 @@ class _ColorInfoCardState extends State<ColorInfoCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => widget.path));
+        noEffectTransition(context, widget.path);
+        // Navigator.push(context, MaterialPageRoute(builder: (_) => widget.path));
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 7),
+        padding: EdgeInsets.symmetric(vertical: 7, horizontal: 24),
         child: Container(
           width: 360,
-          height: 120,
+          height: 110,
           decoration: roundedBoxWithShadowStyle(borderRadius: 30),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(30),
             child: Column(
               children: [
                 _requestStatus(widget.status),
-                _requestContent(widget.name),
+                _requestContent(widget.name, widget.status),
               ],
             ),
-          ) 
-        ),
+          )),
       ),
     );
   }
@@ -61,22 +64,55 @@ Widget _requestStatus(String status) {
     width: 360,
     height: 30,
     alignment: Alignment.center,
-    decoration: BoxDecoration(
-      color: requestStatusBgColor(status)
-    ),
+    decoration: BoxDecoration(color: requestStatusBgColor(status)),
     child: Text(
-      requestStatusText(status), 
-      style: TextStyle(color: requestStatusTextColor(status), fontWeight: FontWeight.bold),
+      requestStatusText('부탁', status),
+      style: TextStyle(
+          color: requestStatusTextColor(status), fontWeight: FontWeight.bold),
     ),
   );
 }
 
-Widget _requestContent(String name) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Text(name, style: TextStyle(fontWeight: FontWeight.bold),),
-      Text('을(를) 부탁했어요!')
-    ]
+Widget _requestContent(String name, String status) {
+  String setImgPath(status) {
+    if (status == 'APPROVE') {
+      return 'assets/image/face/face4.png';
+    } else if (status == 'REJECT') {
+      return 'assets/image/face/face6.png';
+    } else {
+      return 'assets/image/face/face1.png';
+    }
+  }
+  return Expanded(
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 17),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          categoryImg(setImgPath(status)),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center, 
+              children: [
+                SizedBox(width: 8,),
+                Flexible(
+                  child: Text(
+                    name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Text(
+                  '을(를) 부탁했어요!',
+                  style: TextStyle(fontSize: 20),
+                  overflow: TextOverflow.ellipsis,
+                )
+              ]
+            ),
+          ),
+        ],
+      ),
+    ),
   );
 }

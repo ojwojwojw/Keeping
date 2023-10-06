@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:keeping/util/display_format.dart';
 
 class MoneyRecordsDate extends StatefulWidget {
   final DateTime date;
@@ -14,21 +14,22 @@ class MoneyRecordsDate extends StatefulWidget {
 }
 
 class _MoneyRecordsDateState extends State<MoneyRecordsDate> {
-  final formattedDate = DateFormat('M월 d일');
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: SizedBox(
-        width: 360,
-        child: Text(
-          formattedDate.format(widget.date).toString(),
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w400
-          ),
-        )  
+      padding: EdgeInsets.only(top: 15, bottom: 8, left: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            formattedMDDate(widget.date),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w400
+            ),
+          )
+        ]
       )
     );
   }

@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:keeping/screens/main_page/child_main_page.dart';
+import 'package:keeping/provider/child_info_provider.dart';
+import 'package:keeping/provider/user_info.dart';
+import 'package:keeping/screens/allowance_ledger_page/utils/allowance_ledger_future_methods.dart';
+import 'package:keeping/screens/main_page/util/main_future_methods.dart';
 import 'package:keeping/screens/main_page/widgets/account_info.dart';
-import 'package:keeping/screens/main_page/widgets/gradient_btn.dart';
+import 'package:keeping/screens/main_page/widgets/greeting.dart';
+import 'package:keeping/screens/main_page/widgets/main_service_btn.dart';
 import 'package:keeping/screens/main_page/widgets/make_account_btn.dart';
-import 'package:keeping/screens/main_page/widgets/tab_profile.dart';
-import 'package:keeping/screens/make_account_page/widgets/styles.dart';
 import 'package:keeping/screens/mission_page/mission_page.dart';
 import 'package:keeping/screens/online_payment_request/online_payment_request_page.dart';
 import 'package:keeping/screens/piggy_page/piggy_page.dart';
 import 'package:keeping/screens/question_page/question_page.dart';
+import 'package:keeping/styles.dart';
+import 'package:keeping/util/page_transition_effects.dart';
+import 'package:keeping/widgets/bottom_modal.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
+import 'package:provider/provider.dart';
 
 class ParentMainPage extends StatefulWidget {
   ParentMainPage({super.key});
@@ -19,162 +25,276 @@ class ParentMainPage extends StatefulWidget {
 }
 
 class _ParentMainPageState extends State<ParentMainPage> with TickerProviderStateMixin {
-  bool account = false;
-  late final TabController _tabController;
-
-  makeAccount() {
-    setState(() {
-      account = true;
-    });
-  }
+  String? _accessToken;
+  String? _memberKey;
+  String? _fcmToken;
+  String _name = '';
+  String? _profileImage;
+  String? _childKey;
+  String? _childName;
+  String? _childProfileImage;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
+    _fcmToken = context.read<UserInfoProvider>().fcmToken;
+    _name = context.read<UserInfoProvider>().name;
+    _childKey = context.read<ChildInfoProvider>().memberKey;
+    _childName = context.read<ChildInfoProvider>().name;
+    _childProfileImage = context.read<ChildInfoProvider>().profileImage;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: bgStyle(),
-        child: Column(
-          children: [
-            SizedBox(height: 50,),
-            TabBar(
-              controller: _tabController,
-              isScrollable: true,
-              tabAlignment: TabAlignment.center,
-              indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                color: const Color(0xFFFFD600).withOpacity(0.2),
-                backgroundBlendMode: BlendMode.srcATop,
-                border: Border.all(
-                  color: const Color(0xFFFFD600), // 테두리 색상
-                  width: 2.0, // 테두리 두께
-                ),
-              ),
-              tabs: <Widget>[
-                Tab(
-                  height: 110,
-                  child: TabProfile(
-                    imgPath: 'assets/image/temp_image.jpg',
-                    name: '나',
+      body: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          decoration: lightGreyBgStyle(),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 48, left: 24, right: 24),
+            child: Column(
+              children: [
+                // ParentGreeting(name: _name, childName: _childName ?? '',),
+                FutureBuilder(
+                  future: getChildrenList(
+                    accessToken: _accessToken, 
+                    memberKey: _memberKey, 
+                    fcmToken: _fcmToken
                   ),
-                ),
-                Tab(
-                  height: 110,
-                  child: TabProfile(
-                    imgPath: 'assets/image/temp_image.jpg',
-                    name: '김첫째',
-                  ),
-                ),
-                Tab(
-                  height: 110,
-                  child: TabProfile(
-                    imgPath: 'assets/image/temp_image.jpg',
-                    name: '김둘째',
-                  ),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      print('부모 메인 페이지 ${snapshot.data}');
+                      var response = snapshot.data;
+                      if (response['resultBody']['childrenList'].isEmpty) {
+                        return Column(
+                          children: [
+                            _changeChildBtn(
+                              context: context, childrenList: [], isDisabled: true
+                            ),
+                            ParentGreeting(name: _name, childName: null, profileImage: _profileImage),
+                            ChildContent(childInfo: null),
+                          ],
+                        );
+                      } else if (_childKey == null && _childName == null) {
+                        return Column(
+                          children: [
+                            _changeChildBtn(
+                              context: context, childrenList: response['resultBody']['childrenList']
+                            ),
+                            ParentGreeting(name: _name, childName: response['resultBody']['childrenList'].first['name'], profileImage: _profileImage,),
+                            ChildContent(childInfo: response['resultBody']['childrenList'].first),
+                          ],
+                        );
+                      }
+                      return Column(
+                        children: [
+                          _changeChildBtn(
+                            context: context, childrenList: response['resultBody']['childrenList']
+                          ),
+                          ParentGreeting(name: _name, childName: _childName!, profileImage: _profileImage,),
+                          ChildContent(childInfo: {
+                            'memberKey': _childKey,
+                            'name': _childName,
+                            'profileImage': _childProfileImage,
+                          }),
+                        ],
+                      );
+                    } else {
+                      return const Text('');
+                    }
+                  },
                 ),
               ],
             ),
-            SizedBox(height: 20,),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: <Widget>[
-                  me(context, account, makeAccount),
-                  myChild(context, account, makeAccount),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => ChildMainPage()));
-                      },
-                      child: Text('자식 계정 전환'),
-                    )
-                  ),
-                ],
-              ),
-            ), 
-          ]
-        )
+          )
+        ),
       ),
-      bottomNavigationBar: BottomNav(),
+      bottomNavigationBar: BottomNav(home: true,),
     );
   }
 }
 
-Widget myChild(BuildContext context, bool account, Function makeAccount) {
-  return SizedBox(
-    width: 350,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        account ? AccountInfo() : MakeAccountBtn(),
-        SizedBox(height: 10),
-        SizedBox(
-          width: 350,
-          child: Row(
+class ChildContent extends StatefulWidget {
+  final Map<String, dynamic>? childInfo;
+
+  ChildContent({
+    super.key,
+    required this.childInfo,
+  });
+
+  @override
+  State<ChildContent> createState() => _ChildContentState();
+}
+
+class _ChildContentState extends State<ChildContent> {
+  String? _accessToken;
+  String? _memberKey;
+  bool? _hasChildAccount;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ChildInfoProvider>(context, listen: false).initChildInfo();
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
+    Provider.of<ChildInfoProvider>(context, listen: false).setChildInfo(widget.childInfo);
+    _hasChildAccount = context.read<ChildInfoProvider>().accountNumber.isNotEmpty ? true : false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 350,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          FutureBuilder(
+            future: getAccountInfo(
+              accessToken: _accessToken,
+              memberKey: _memberKey,
+              targetKey: widget.childInfo != null ? widget.childInfo!['memberKey'] : null
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                Provider.of<ChildInfoProvider>(context, listen: false).initChildAccount();
+                var response = snapshot.data;
+                if (response['resultStatus']['resultCode'] == '404') {
+                  return noAccountForParent(context);
+                } else if (response['resultStatus']['resultCode'] == '503') {
+                  return AccountInfo(balance: 0);
+                } else {
+                  print('***********************************************');
+                  print(widget.childInfo.toString());
+                  print(response);
+                  print('***********************************************');
+                  Provider.of<ChildInfoProvider>(context).setChildAccount(response['resultBody']);
+                  return AccountInfo(
+                    balance: response['resultBody']['balance'],
+                  );
+                }
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return disabledAccount();
+              } else {
+                return MakeAccountBtn();
+              }
+            },
+          ),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GradientBtn(
-                path: PiggyPage(),
-                text: '저금통',
-                beginColor: Color(0xFF9271C8),
-                endColor: Color(0xFF6E2FD5),
+              MainServiceBtn(
+                hasAccount: context.read<ChildInfoProvider>().accountNumber != '' ? true : false,
+                path: ParentMissionPage(),
+                name: '미션',
+                text: '자녀 소비습관 쑥쑥!',
+                service: 'mission',
+                parent: true,
               ),
-              GradientBtn(
+              SizedBox(width: 12,),
+              MainServiceBtn(
+                hasAccount: context.read<ChildInfoProvider>().accountNumber != '' ? true : false,
                 path: OnlinePaymentRequestPage(),
-                text: '온라인 결제\n부탁 목록',
-                beginColor: Color(0xFFFF7595),
-                endColor: Color(0xFFFA3B68),
-                fontSize: 26,
-              ),
-            ],
-          )
-        ),
-        SizedBox(height: 8),
-        SizedBox(
-          width: 350,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GradientBtn(
-                path: MissionPage(),
-                text: '미션',
-                beginColor: Color(0xFF07B399),
-                endColor: Color(0xFF068572),
-              ),
-              GradientBtn(
-                path: QuestionPage(),
-                text: '질문',
-                beginColor: Color(0xFFFFCE72),
-                endColor: Color(0xFFFFBC3F),
+                name: '결제 부탁하기',
+                text: '자녀가 부탁한\n결제 목록이에요.',
+                service: 'onlineRequest',
+                parent: true,
               ),
             ],
           ),
+          SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              MainServiceBtn(
+                hasAccount: context.read<ChildInfoProvider>().accountNumber != '' ? true : false,
+                path: ParentQuestionPage(),
+                name: '질문',
+                text: '질문에 답하고\n자녀와 소통해요',
+                service: 'question',
+                parent: true,
+              ),
+              SizedBox(width: 12,),
+              MainServiceBtn(
+                hasAccount: context.read<ChildInfoProvider>().accountNumber != '' ? true : false,
+                path: PiggyPage(),
+                name: '저금통',
+                text: '자녀의 위시리스트는?',
+                service: 'piggy',
+                parent: true,
+              ),
+            ],
+          ),
+        ],
+      )
+    );
+  }
+}
+
+// 자녀 전환 버튼
+Widget _changeChildBtn({required BuildContext context, required List<dynamic> childrenList, bool isDisabled = false}) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      InkWell(
+        onTap: () {
+          if (!isDisabled) bottomModal(context: context, title: '자녀 계정 전환', content: _changeChildrenList(context, childrenList), button: Container());
+        },
+        child: Container(
+          width: 66,
+          height: 36,
+          decoration: roundedBoxWithShadowStyle(shadow: false, border: true, borderColor: Color(0xFFB9B9B9)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(Icons.person_outline, color: Color(0xFFB9B9B9),),
+              Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFFB9B9B9),)
+            ],
+          ),
         ),
-        SizedBox(height: 20,),
-      ],
-    )
+      ),
+    ],
   );
 }
 
-Widget me(BuildContext context, bool account, Function makeAccount) {
+// 하단 모달에 들어갈 자녀 리스트
+Widget _changeChildrenList(BuildContext context, List<dynamic> childrenList) {
   return SizedBox(
-    width: 350,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        account ? AccountInfo() : MakeAccountBtn(),
-      ],
-    )
+    height: 150,
+    child: SingleChildScrollView(
+      child: Column(
+        children: [
+          ...childrenList.map((e) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: InkWell(
+                onTap: () {
+                  Provider.of<ChildInfoProvider>(context, listen: false).initChildInfo();
+                  Provider.of<ChildInfoProvider>(context, listen: false).setChildInfo(e);
+                  noEffectReplacementTransition(context, ParentMainPage());
+                },
+                child: Container(
+                  decoration: roundedBoxWithShadowStyle(shadow: false, border: true, borderColor: Color(0xFFB9B9B9), borderWidth: 1),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12, right: 8),
+                          child: roundedAssetImg(imgPath: e['profileImage'] ?? 'assets/image/profile/child1.png' , size: 50),
+                        ),
+                        Text(e['name'], style: TextStyle(fontSize: 20),)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          })
+        ],
+      ),
+    ),
   );
 }

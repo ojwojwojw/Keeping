@@ -8,7 +8,8 @@ import '../mission_page/mission_page.dart';
 import '../signup_page/signup_user_type_select_page.dart';
 import '../login_page/login_page.dart';
 import '../user_link_page/before_user_link_page.dart';
-import '../my_page/my_page.dart';
+import '../my_page/parent_my_page.dart';
+import '../diary_page/diary_page.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -52,31 +53,42 @@ class MainPage extends StatelessWidget {
             },
             child: const Text('로그인'), // 로그인 페이지 이동 버튼 추가
           ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => const BeforeUserLinkPage(),
+          //       ),
+          //     );
+          //   },
+          //   child: const Text('유저 연결 페이지'),
+          // ),
           ElevatedButton(
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const BeforeUserLinkPage(),
+                  builder: (context) => const ParentMyPage(),
                 ),
               );
             },
-            child: const Text('유저 연결 페이지'),
+            child: Text('마이페이지'),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const MyPage(),
+                  builder: (context) => ChildDiaryPage(),
                 ),
               );
             },
-            child: Text('마이페이지'),
-          )
+            child: Text('일기페이지'),
+          ),
         ],
       )),
-      bottomNavigationBar: BottomAppBar(
+      bottomSheet: BottomAppBar(
           child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
