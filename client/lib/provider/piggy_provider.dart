@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 
-class PiggyProvider with ChangeNotifier {
-  List<Map>? _piggyInfos;
-  List<Map>? get piggyInfos => _piggyInfos;
-
-  void initPiggy(List<Map> piggyInfos) {
-    _piggyInfos = piggyInfos;
-
-    notifyListeners();
-  }
-
-  void removePiggy() {
-    _piggyInfos = null;
-
-    notifyListeners();
-  }
-}
-
 class PiggyDetailProvider with ChangeNotifier {
+  Map<String, dynamic>? _selectedPiggyDetailInfo;
+  Map<String, dynamic>? get selectedPiggyDetailInfo => _selectedPiggyDetailInfo;
+
+  setSelectedPiggyDetailInfo(Map<String, dynamic> data) {
+    _selectedPiggyDetailInfo = data;
+  }
+
+  initSelectedPiggyDetailInfo() {
+    _selectedPiggyDetailInfo = null;
+  }
+
   int? _id;
   String? _childKey;
   String? _accountNumber;

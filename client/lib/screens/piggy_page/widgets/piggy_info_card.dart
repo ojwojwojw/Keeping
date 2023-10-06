@@ -1,25 +1,19 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:keeping/styles.dart';
+import 'package:keeping/util/display_format.dart';
 
 class PiggyInfoCard extends StatefulWidget {
   final String content;
   final num balance;
   final num goalMoney;
-  // final Uint8List img;
-  final dynamic img;
-  final String imgPath;
+  final String img;
 
   PiggyInfoCard({
     super.key,
     required this.content,
     required this.balance,
     required this.goalMoney,
-    this.img,
-    // required this.img,
-    this.imgPath = 'assets/image/temp_image.jpg',
+    required this.img,
   });
 
   @override
@@ -27,14 +21,12 @@ class PiggyInfoCard extends StatefulWidget {
 }
 
 class _PiggyInfoCardState extends State<PiggyInfoCard> {
-  final formattedMoney = NumberFormat('#,##0');
   
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 7),
+      padding: EdgeInsets.symmetric(vertical: 7, horizontal: 24),
       child: Container(
-        width: 360,
         height: 160,
         decoration: roundedBoxWithShadowStyle(),
         child: Padding(
@@ -42,8 +34,8 @@ class _PiggyInfoCardState extends State<PiggyInfoCard> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _piggyStringImg(widget.imgPath),
-              // widget.img ? _piggyStringImg(widget.imgPath) : _piggyImg(widget.img!),
+              // _piggyStringImg(widget.imgPath),
+              roundedMemoryImg(img: widget.img),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -52,11 +44,11 @@ class _PiggyInfoCardState extends State<PiggyInfoCard> {
                     style: _contentStyle(),
                   ),
                   Text(
-                    '${formattedMoney.format(widget.balance)}원',
+                    formattedMoney(widget.balance),
                     style: _balanceStyle(),
                   ),
                   Text(
-                    '목표 금액 ${formattedMoney.format(widget.goalMoney)}원',
+                    '목표 금액 ${formattedMoney(widget.goalMoney)}',
                     style: _goalMoneyStyle(),
                   ),
                 ],
@@ -67,32 +59,6 @@ class _PiggyInfoCardState extends State<PiggyInfoCard> {
       )
     );
   }
-}
-
-ClipOval _piggyImg(Uint8List img) {
-  return ClipOval(
-    child: SizedBox(
-      width: 100,
-      height: 100,
-      child: Image.memory(
-        img,
-        fit: BoxFit.cover
-      ),
-    ),
-  );
-}
-
-ClipOval _piggyStringImg(String imgPath) {
-  return ClipOval(
-    child: SizedBox(
-      width: 100,
-      height: 100,
-      child: Image.asset(
-        imgPath,
-        fit: BoxFit.cover
-      ),
-    ),
-  );
 }
 
 TextStyle _contentStyle() {

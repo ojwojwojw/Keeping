@@ -1,26 +1,25 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:keeping/provider/child_info_provider.dart';
 import 'package:keeping/provider/piggy_provider.dart';
-import 'package:keeping/screens/allowance_ledger_page/widgets/allow_search_bar.dart';
+import 'package:keeping/provider/user_info.dart';
 import 'package:keeping/screens/allowance_ledger_page/widgets/money_record.dart';
-import 'package:keeping/screens/allowance_ledger_page/widgets/money_records_date.dart';
-import 'package:keeping/screens/piggy_page/make_piggy_test.dart';
 import 'package:keeping/screens/piggy_page/piggy_saving_page.dart';
-import 'package:keeping/screens/piggy_page/widgets/chart_sample.dart';
+import 'package:keeping/screens/piggy_page/utils/piggy_future_methods.dart';
 import 'package:keeping/screens/piggy_page/widgets/piggy_detail_info.dart';
+import 'package:keeping/screens/piggy_page/widgets/piggy_money_record.dart';
 import 'package:keeping/styles.dart';
 import 'package:keeping/widgets/bottom_nav.dart';
+import 'package:keeping/widgets/loading.dart';
 import 'package:keeping/widgets/floating_btn.dart';
 import 'package:keeping/widgets/header.dart';
 import 'package:provider/provider.dart';
 
 class PiggyDetailPage extends StatefulWidget {
-  final String piggyAccountNumber;
+  final Map<String, dynamic> piggyDetailInfo;
 
   PiggyDetailPage({
     super.key,
-    required this.piggyAccountNumber,
+    required this.piggyDetailInfo,
   });
 
   @override
@@ -28,88 +27,90 @@ class PiggyDetailPage extends StatefulWidget {
 }
 
 class _PiggyDetailPageState extends State<PiggyDetailPage> {
-  dynamic piggyResponse;
+  bool? _parent;
+  String? _accessToken;
+  String? _memberKey;
+  String? _childKey;
+
+  void reload() {
+    setState(() {});
+  }
 
   @override
   void initState() {
     super.initState();
-    context.read<PiggyDetailProvider>().removePiggyDetail();
-    initPiggyDetail();
+    context.read<PiggyDetailProvider>().initSelectedPiggyDetailInfo();
+    context.read<PiggyDetailProvider>().setSelectedPiggyDetailInfo(widget.piggyDetailInfo);
+    _parent = context.read<UserInfoProvider>().parent;
+    _accessToken = context.read<UserInfoProvider>().accessToken;
+    _memberKey = context.read<UserInfoProvider>().memberKey;
+    _childKey = context.read<ChildInfoProvider>().memberKey;
   }
-
-  initPiggyDetail() async {
-    final _response = {
-      "piggy": {
-        "id": 3,
-        "piggyAccountNumber": "1",
-        "content": "아디다스 삼바",
-        "goalMoney": 140000,
-        "balance": 70000,
-        "uploadImage": "produce1.png",
-      },
-      "saving": [
-        {
-          "id": 13,
-          "name": "1회차",
-          "money": 3000,
-          "balance": 3000,
-          "createdDate": "2023-09-01 12:23"
-        },
-        {
-          "id": 35,
-          "name": "2회차",
-          "money": 5500,
-          "balance": 8500,
-          "createdDate": "2023-09-02 18:45"
-        }
-      ]
-    };
-    await context.read<PiggyDetailProvider>().initPiggyDetail(_response['piggy']);
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyHeader(
         text: '저금통',
-        bgColor: const Color(0xFF8320E7),
-        elementColor: Colors.white,
+        // bgColor: const Color(0xFF8320E7),
+        // elementColor: Colors.white,
       ),
       body: Column(
         children: [
-          PiggyDetailInfo(),
-          AllowSearchBar(),
-          Expanded(
-            child: Container(
-              decoration: lightGreyBgStyle(),
-              width: double.infinity,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    MoneyRecordsDate(date: DateTime.parse('2020-10-10T14:58:04+09:00')),
-                    // ..._response['saving']?.map((e) =>
-                    //   MoneyRecord(
-                    //     date: DateTime.parse(e['date']), 
-                    //     storeName: e['store_name'], 
-                    //     money: e['money'], 
-                    //     balance: e['balance']
-                    //   )
-                    // ).toList(),
-                  ]
-                ),
-              )
-            )
-          )
-          // ChartSample(),
+          PiggyDetailInfo(
+            piggyId: widget.piggyDetailInfo['id'],
+            content: widget.piggyDetailInfo['content'],
+            balance: widget.piggyDetailInfo['balance'],
+            goalMoney: widget.piggyDetailInfo['goalMoney'],
+            img: widget.piggyDetailInfo['savedImage'],
+            createdDate: DateTime.parse(widget.piggyDetailInfo['createdDate']),
+            reload: reload
+          ),
+          FutureBuilder(
+            future: getPiggyDetailList(
+              accessToken: _accessToken,
+              memberKey: _memberKey,
+              piggyId: widget.piggyDetailInfo['id'],
+              targetKey: _parent != null && _parent == true ? _childKey : _memberKey,
+            ),
+            builder: (context, snapshot) {
+              print('저금통 상세 페이지 ${snapshot.toString()}');
+              if (snapshot.hasData) {
+                var response = snapshot.data;
+                if (response['resultBody'] != null && response['resultBody'].isEmpty) {
+                  return empty(text: '저금 내역이 없습니다.');
+                }
+                return Expanded(
+                  child: Container(
+                    decoration: lightGreyBgStyle(),
+                    width: double.infinity,
+                    child: SingleChildScrollView(
+                      child: Column(children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        ...response['resultBody'].map((e) => PiggyMoneyRecord(
+                          date: DateTime.parse(e['createdDate']),
+                          name: '${int.parse(e['name'])}회차',
+                          money: e['money'],
+                          balance: e['balance'],
+                        )).toList(),
+                      ]),
+                    )
+                  )
+                );
+              } else {
+                return loading();
+              }
+            },
+          ),
         ],
       ),
-      floatingActionButton: FloatingBtn(
+      floatingActionButton: _parent != null && !_parent! ? FloatingBtn(
         text: '저금하기',
-        icon: Icon(Icons.savings_rounded),
-        path: PiggySavingPage(),
-      ),
+        icon: Icons.savings_rounded,
+        path: PiggySavingPage(piggyDetailInfo: widget.piggyDetailInfo),
+      ) : null,
       bottomNavigationBar: BottomNav(),
     );
   }

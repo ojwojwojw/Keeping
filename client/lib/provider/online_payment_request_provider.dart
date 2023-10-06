@@ -1,31 +1,51 @@
 import 'package:flutter/material.dart';
 
 class OnlinePaymentRequestFormProvider with ChangeNotifier {
-  String? _name;
+  String? _productName;
   String? _url;
-  String? _reason;
-  int? _cost;
-  int? _paidMoney;
+  String? _content;
+  int? _totalMoney;
+  int? _childMoney;
 
-  String? get name => _name;
+  String? get productName => _productName;
   String? get url => _url;
-  String? get reason => _reason;
-  int? get cost => _cost;
-  int? get paidMoney => _paidMoney;
+  String? get content => _content;
+  int? get totalMoney => _totalMoney;
+  int? get childMoney => _childMoney;
 
-  void setName(String name) {
-    _name = name;
+  void setProductName(String productName) {
+    _productName = productName;
   }
 
   void setUrl(String url) {
     _url = url;
   }
 
+  void setContent(String content) {
+    _content = content;
+  }
+
+  void setTotalMoney(String totalMoney) {
+    if (totalMoney.isNotEmpty) {
+      _totalMoney = int.parse(totalMoney);
+    } else {
+      _totalMoney = 0;
+    }
+  }
+
+  void setChildMoney(String childMoney) {
+    if (childMoney.isNotEmpty) {
+      _childMoney = int.parse(childMoney);
+    } else {
+      _childMoney = 0;
+    }
+  }
+
   void removeOnlinePaymentRequestForm() {
-    _name = null;
+    _productName = null;
     _url = null;
-    _reason = null;
-    _cost = null;
-    _paidMoney = null;
+    _content = null;
+    _totalMoney = null;
+    _childMoney = null;
   }
 }

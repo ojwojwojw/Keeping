@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
 // 확인 버튼 클래스
-class ConfirmBtn extends StatelessWidget {
+class ConfirmBtn extends StatefulWidget {
   final String text;
   final Color bgColor;
   final Color borderColor;
   final Color textColor;
   final dynamic action;
   final bool shadow;
-  // final Widget? path;  // 버튼 클릭 후 이동할 곳. 비어있으면 이전 페이지로 이동
 
   const ConfirmBtn({
     super.key,
@@ -21,19 +20,24 @@ class ConfirmBtn extends StatelessWidget {
   });
 
   @override
+  State<ConfirmBtn> createState() => _ConfirmBtnState();
+}
+
+class _ConfirmBtnState extends State<ConfirmBtn> {
+  @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        if (action is Widget) {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => action));
-        } else if (action is Function) {
-          action();
+        if (widget.action is Widget) {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => widget.action));
+        } else if (widget.action is Function) {
+          widget.action();
         } else {
           Navigator.pop(context);
         }
       },
-      style: confirmBtnStyle(bgColor, textColor, borderColor, shadow),
-      child: Text(text),
+      style: confirmBtnStyle(widget.bgColor, widget.textColor, widget.borderColor, widget.shadow),
+      child: Text(widget.text),
     );
   }
 }
