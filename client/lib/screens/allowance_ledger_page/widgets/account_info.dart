@@ -33,6 +33,11 @@ class _AccountInfoState extends State<AccountInfo> {
   String? _childName;
   String? _childKey;
 
+  reload() {
+    setState(() {});
+    widget.reload();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -57,66 +62,116 @@ class _AccountInfoState extends State<AccountInfo> {
                 top: widget.parent != null && widget.parent! == true && _childName != null ? 10 : 30, 
                 bottom: 30
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (widget.parent != null && widget.parent! == true && _childName != null)
-                    ChildTag(childName: _childName!, text: '용돈 잔액'),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Text(
-                      //   '🪙 ',
-                      //   style: TextStyle(fontSize: 35,),
-                      // ),
-                      Image.asset('assets/image/money/coin.png', height: 60,),
-                      SizedBox(width: 8,),
-                      Text(
-                        widget.balance == null ? '0원' : formattedMoney(widget.balance),
-                        style: TextStyle(fontSize: 30, color: Colors.black),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  FutureBuilder(
-                    future: getMonthTotalExpense(
-                      accessToken: widget.accessToken,
-                      memberKey: widget.memberKey,
-                      targetKey: widget.parent != null && widget.parent!
-                          ? _childKey
-                          : widget.memberKey,
-                      date: DateFormat('yyyy-MM').format(DateTime.now()),
-                    ),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        if (snapshot.data['resultStatus']['resultCode'] == '503') {
-                          return Text(
+              // child: Column(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+                  // if (widget.parent != null && widget.parent! == true && _childName != null)
+                  //   ChildTag(childName: _childName!, text: '용돈 잔액'),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     // Text(
+                  //     //   '🪙 ',
+                  //     //   style: TextStyle(fontSize: 35,),
+                  //     // ),
+                  //     Image.asset('assets/image/money/coin.png', height: 60,),
+                  //     SizedBox(width: 8,),
+                  //     Text(
+                  //       widget.balance == null ? '0원' : formattedMoney(widget.balance),
+                  //       style: TextStyle(fontSize: 30, color: Colors.black),
+                  //     ),
+                  //   ],
+                  // ),
+                  // SizedBox(
+                  //   height: 10,
+                  // ),
+              child: FutureBuilder(
+                future: getMonthTotalExpense(
+                  accessToken: widget.accessToken,
+                  memberKey: widget.memberKey,
+                  targetKey: widget.parent != null && widget.parent!
+                      ? _childKey
+                      : widget.memberKey,
+                  date: DateFormat('yyyy-MM').format(DateTime.now()),
+                ),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data['resultStatus']['resultCode'] == '503') {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (widget.parent != null && widget.parent! == true && _childName != null)
+                            ChildTag(childName: _childName!, text: '용돈 잔액'),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Text(
+                              //   '🪙 ',
+                              //   style: TextStyle(fontSize: 35,),
+                              // ),
+                              Image.asset('assets/image/money/coin.png', height: 60,),
+                              SizedBox(width: 8,),
+                              Text(
+                                widget.balance == null ? '0원' : formattedMoney(widget.balance),
+                                style: TextStyle(fontSize: 30, color: Colors.black),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
                             '${DateTime.now().month}월 총 지출액: 0원',
                             style: TextStyle(
                               fontSize: 20,
                               color: Colors.black
                             ),
-                          );
-                        }
-                        var response = snapshot.data['resultBody'];
-                        return Text(
-                          '${DateTime.now().month}월 총 지출액: ${formattedMoney(response)}',
+                          ),
+                        ],
+                      );
+                    }
+                    var response = snapshot.data['resultBody'];
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (widget.parent != null && widget.parent! == true && _childName != null)
+                        ChildTag(childName: _childName!, text: '용돈 잔액'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Text(
+                          //   '🪙 ',
+                          //   style: TextStyle(fontSize: 35,),
+                          // ),
+                          Image.asset('assets/image/money/coin.png', height: 60,),
+                          SizedBox(width: 8,),
+                          Text(
+                            widget.balance == null ? '0원' : formattedMoney(response['balance']),
+                            style: TextStyle(fontSize: 30, color: Colors.black),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                        Text(
+                          '${DateTime.now().month}월 총 지출액: ${formattedMoney(response['sum'])}',
                           style: TextStyle(fontSize: 20, color: Colors.black),
-                        );
-                      } else {
-                        return Text('');
-                      }
-                    },
-                  ),
-                ],
+                        ),
+                      ],
+                    );
+                  } else {
+                    return SizedBox(height: 70,);
+                  }
+                },
               ),
+              //   ],
+              // ),
             ),
             Positioned(
               top: 10,
               right: 10,
-              child: reloadBtn(widget.reload),
+              child: reloadBtn(reload),
             ),
           ],
         ),

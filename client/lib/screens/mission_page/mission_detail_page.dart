@@ -530,7 +530,7 @@ class _MissionDetailPageState extends State<MissionDetailPage> {
 String _getBottomButtonText(bool parent, String status) {
   if (parent == true) {
     if (status == 'CREATE_WAIT') {
-      return '확인';
+      return '승인하기';
     } else if (status == 'YET') {
       return '참 잘했어요 꾸욱!';
     } else if (status == 'FINISH_WAIT') {
